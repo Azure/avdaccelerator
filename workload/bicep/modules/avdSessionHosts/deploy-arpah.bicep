@@ -159,6 +159,17 @@ var varCustomOsDiskProperties = {
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
 }
 
+var extensionDomainJoinConfig = {
+    enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+    settings: {
+        name: identityDomainName
+        ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+        user: domainJoinUserName
+        restart: 'true'
+        options: '3'
+    }
+}
+
 // =========== //
 // Deployments //
 // =========== //
@@ -172,7 +183,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = if (identity
 // Session hosts
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${i - 1}-${time}'
+    name: 'SH-${namePrefix}-${batchId}-${i - 1}-${time}'
     params: {
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
@@ -221,6 +232,8 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
             enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+            // disable dom join when vm is created, so that we can install the antimalware extension first
+            //enabled: false
             settings: {
                 name: identityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
@@ -245,38 +258,61 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 }]
 
 // Add antimalware extension to session host.
-// module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
-//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-//     name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'SH-Antimal-${namePrefix}-${batchId}-${i - 1}-${time}'
+    params: {
+        location: location
+        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        name: 'MicrosoftAntiMalware'
+        publisher: 'Microsoft.Azure.Security'
+        type: 'IaaSAntimalware'
+        typeHandlerVersion: '1.3'
+        autoUpgradeMinorVersion: true
+        enableAutomaticUpgrade: false
+        settings: {
+            AntimalwareEnabled: true
+            RealtimeProtectionEnabled: 'true'
+            ScheduledScanSettings: {
+                isEnabled: 'true'
+                day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+                time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+                scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
+            }
+            Exclusions: createAvdFslogixDeployment ? {
+                Extensions: '*.vhd;*.vhdx'
+                Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
+                Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+            } : {}
+        }
+    }
+    dependsOn: [
+        sessionHosts
+    ]
+}]
+
+// // Add domjoin ext separately from vm module to session host
+// module vm_domainJoinExtension '.bicep/domJoinExtension.bicep' = [for i in range(1, count): {
+//     name: 'VMDomJoin-${namePrefix}-${batchId}-${i - 1}-${time}'
 //     params: {
-//         location: location
 //         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-//         name: 'MicrosoftAntiMalware'
-//         publisher: 'Microsoft.Azure.Security'
-//         type: 'IaaSAntimalware'
+//         name: 'DomainJoin'
+//         location: location
+//         publisher: 'Microsoft.Compute'
+//         type: 'JsonADDomainExtension'
 //         typeHandlerVersion: '1.3'
 //         autoUpgradeMinorVersion: true
 //         enableAutomaticUpgrade: false
-//         settings: {
-//             AntimalwareEnabled: true
-//             RealtimeProtectionEnabled: 'true'
-//             ScheduledScanSettings: {
-//                 isEnabled: 'true'
-//                 day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
-//                 time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
-//                 scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
-//             }
-//             Exclusions: createAvdFslogixDeployment ? {
-//                 Extensions: '*.vhd;*.vhdx'
-//                 Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
-//                 Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-//             } : {}
-//         }
+//         settings: extensionDomainJoinConfig.settings
+//         supressFailures: extensionDomainJoinConfig.?supressFailures ?? false
+//         tags: tags
+//         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
 //     }
+//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
 //     dependsOn: [
-//         sessionHosts
+//         sessionHostsAntimalwareExtension
 //     ]
-// }]
+//   }]
 
 // Call to the ALA workspace
 resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
@@ -287,7 +323,7 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 // Add monitoring extension to session host
 module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${batchId}-${i - 1}-${time}'
+    name: 'SH-Mon-${namePrefix}-${batchId}-${i - 1}-${time}'
     params: {
         location: location
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -305,8 +341,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         }
     }
     dependsOn: [
-        //sessionHostsAntimalwareExtension
-        sessionHosts // jwi added when sessionHostAntimalwareExtension was commented out
+        sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -314,14 +349,14 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
 // Data collection rule association
 module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
+    name: 'DCR-Asso-${namePrefix}-${batchId}-${i - 1}-${time}'
     params: {
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         dataCollectionRuleId: dataCollectionRuleId
     }
     dependsOn: [
         monitoring
-        //sessionHostsAntimalwareExtension
+        sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -329,11 +364,10 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Config-${batchId}-${i}-${time}'
+    name: 'SH-Config-${namePrefix}-${batchId}-${i}-${time}'
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        //hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
         hostPoolToken: keyVault.getSecret(hostPoolName)
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
@@ -345,6 +379,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
         identityServiceProvider: identityServiceProvider
     }
     dependsOn: [
+        //sessionHostsAntimalwareExtension
         sessionHosts
         monitoring
     ]

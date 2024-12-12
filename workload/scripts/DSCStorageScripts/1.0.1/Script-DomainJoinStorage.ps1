@@ -1,7 +1,7 @@
 <#
 	.SYNOPSIS
 		Domain Join Storage Account
-	
+
 	.DESCRIPTION
 		In case of AD_DS scenario, domain join storage account as a machine on the domain.
 #>
@@ -9,7 +9,7 @@ param(
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
 	[string] $StorageAccountName,
-	
+
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
 	[string] $StorageAccountRG,
@@ -63,9 +63,9 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
-if ($IdentityServiceProvider -ne 'EntraID') {
+if ($IdentityServiceProvider -ne 'AAD') {
 	Write-Log "Forcing group policy updates"
-	gpupdate /force
+	gpupdate /force /wait:0
 
 	Write-Log "Waiting for domain policies to be applied (1 minute)"
 	Start-Sleep -Seconds 60
@@ -114,21 +114,23 @@ Connect-AzAccount -Identity -AccountId $ClientId
 Write-Log "Setting Azure subscription to $SubscriptionId"
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
-$Path = 'C:\Windows\Temp\JoinAzStorageAccount.log'
-if (!(Test-Path -Path $Path)) {
-		New-Item -Path 'C:\' -Name 'JoinAzStorageAccount.log' | Out-Null
-}
-
 if ($IdentityServiceProvider -eq 'ADDS') {
 	Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
 	if ( $CustomOuPath -eq 'true') {
 		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
-		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject -Verbose | Out-File -Path $Path #-SamAccountName $SamAccountName
+		
+		# JWI: added log path for join-azstorageaccount
+		$Path = 'C:\Windows\Temp\JoinAzStorageAccount.log'
+		if (!(Test-Path -Path $Path)) {
+				New-Item -Path 'C:\' -Name 'JoinAzStorageAccount.log' | Out-Null
+		}
+
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject -Verbose | Out-File -Path $Path
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
 	}
  else {
 		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
-		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject -Verbose | Out-File -Path $Path #-SamAccountName $SamAccountName
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
 	}
 }
@@ -169,14 +171,14 @@ Catch {
 }
 
 Try {
-	Write-Log "setting up NTFS permission for FSLogix or App attach"
+	Write-Log "setting up NTFS permission for FSLogix"
 	icacls ${DriveLetter}: /inheritance:r
 	icacls ${DriveLetter}: /remove "BUILTIN\Administrators"
 	icacls ${DriveLetter}: /grant "Creator Owner:(OI)(CI)(IO)(M)"
 	icacls ${DriveLetter}: /remove "BUILTIN\Users"
 	Write-Log "ACLs set"
 	#AVD group permissions
-	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'EntraID') {
+	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
 		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
 	}
 	else {
@@ -191,7 +193,7 @@ Try {
 	# Write-Log "Drive unmounted"
 }
 Catch {
-	Write-Log -Err "Error while setting up NTFS permission for FSLogix or App attach"
+	Write-Log -Err "Error while setting up NTFS permission for FSLogix"
 	Write-Log -Err $_.Exception.Message
 	Throw $_
 }

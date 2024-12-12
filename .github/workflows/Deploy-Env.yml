@@ -21,7 +21,7 @@ jobs:
     - name: Log into Azure
       uses: azure/login@v1
       with:
-        creds: ${{ secrets.AZURE_CREDENTIALS }}
+        creds: ${{ secrets.AZURE_CREDENTIALS }} 
         enable-AzPSSession: true
 
     - name: Deploy Bicep file to ${{ github.event.inputs.environment }} environment
@@ -29,19 +29,31 @@ jobs:
       with:
         scope: subscription
         subscriptionId: ${{ secrets.AZURE_SUB_ID }}
-        region: eastus
+        region: eastus2
+        #deploymentMode: 'Validate'
         template: ./workload/bicep/deploy-baseline-arpah.bicep
-        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU }}" storageOuPath="${{ secrets.AD_OU }}"
+        parameters: ./workload/bicep/parameters/deploy-baseline-parameters-arpah.json deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} imageGallerySubscriptionId=${{ secrets.IMAGE_GALLERY_SUB_ID }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU }}" storageOuPath="${{ secrets.AD_OU }}" storageFilePrivateEndpointStaticIp="${{ secrets.STORAGEFILEPRIVATEENDPOINTSTATICIP }}" storageFilePrivateEndpointStaticIpRemote="${{ secrets.STORAGEFILEPRIVATEENDPOINTSTATICIPREMOTE }}" securityPrincipalId="${{ secrets.SECURITY_PRINCIPAL_ID }}" securityPrincipalName="${{ secrets.SECURITY_PRINCIPAL_NAME }}"
         failOnStdErr: false
     
+    # - name: Update networking in ${{ github.event.inputs.environment }} environment
+    #   uses: azure/arm-deploy@v2
+    #   with:
+    #     scope: subscription
+    #     subscriptionId: ${{ secrets.AZURE_SUB_ID }}
+    #     region: eastus2
+    #     #deploymentMode: 'Validate'
+    #     template: ./workload/bicep/update-networking-arpah.bicep
+    #     parameters: ./workload/bicep/parameters/update-networking-parameters-arpah.json deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }}"
+    #     failOnStdErr: true
+
     - name: Update AVD Application Group Display Name in the ${{ github.event.inputs.environment }} environment
       uses: azure/powershell@v2
       env:
         ResourceGroupName: 'avd-nih-arpah-${{ github.event.inputs.environment }}-use2-service-objects'
         ApplicationGroupName: 'vdag-desktop-app1-${{ github.event.inputs.environment }}-use2-001'
         Name: 'SessionDesktop'
-        FriendlyName: 'Windows 11 Desktop'
+        FriendlyName: 'ARPA-H Windows Desktop'
       with:
-        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName ${{ env.ResourceGroupName }} -ApplicationGroupName  ${{ env.ApplicationGroupName }} -Name  ${{ env.Name }} -FriendlyName  ${{ env.FriendlyName }}
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName ${{ env.ResourceGroupName }} -ApplicationGroupName  ${{ env.ApplicationGroupName }} -Name  ${{ env.Name }} -FriendlyName  '${{ env.FriendlyName }}'
         azPSVersion: "latest"
         errorActionPreference: continue

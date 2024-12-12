@@ -12,7 +12,7 @@
             "value": true
         },
         "avdSessionHostCustomNamePrefix": {
-            "value": "arpahavdn"
+            "value": "arpahavd"
         },
         "avdSessionHostLocation": {
             "value": "eastus2"
@@ -27,7 +27,7 @@
             "value": "<<subscriptionId>>"
         },
         "avdApplicationGroupCustomFriendlyName": {
-            "value": "Windows 11 Desktop"
+            "value": "ARPA-H Windows Desktop"
         },
         "deployPrivateEndpointKeyvaultStorage": {
             "value": true
@@ -48,7 +48,7 @@
             "value": false
         },            
         "securityPrincipalId": {
-            "value": "a3da91b9-5696-4712-8857-7d23bedd65dd"
+            "value": ""
         },        
         "securityPrincipalName": {
             "value": ""
@@ -84,7 +84,7 @@
             "value": true
         },
         "avdHostPoolRdpProperties": {
-            "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2"
+            "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;enablerdsaadauth:i:1"
         },
         "avdDeployScalingPlan": {
             "value": true
@@ -141,7 +141,7 @@
             "value": true
         },
         "avdDeploySessionHostsCount": {
-            "value": 1
+            "value": 3
         },
         "avdSessionHostCountIndex": {
             "value": 0
@@ -163,7 +163,7 @@
             "value": "Premium"
         },
         "avdSessionHostsSize": {
-            "value": "Standard_D4ads_v5"
+            "value": "Standard_E4s_v5"
         },
         "avdSessionHostDiskType": {
             "value": "Premium_LRS"
@@ -184,10 +184,13 @@
             "value": true
         },
         "useSharedImage": {
-            "value": false
+            "value": true
         },
-        "avdImageTemplateDefinitionId": {
-            "value": ""
+        "imageGallerySubscriptionId": {
+            "value": "<<subscriptionId>>"
+        },
+        "goldenImageId": {
+            "value": "GoldenImageAVDArpaH/versions/latest"
         },
         "storageOuPath": {
             "value": ""
@@ -220,9 +223,9 @@
             "value": false
         },
         "storageFilePrivateEndpointStaticIp": {
-            "value": "10.178.8.136"
+            "value": ""
         },
-        "vnetResourceGroupName": {
+        "storageFilePrivateEndpointStaticIpRemote": {
             "value": ""
         }
     }
