@@ -83,6 +83,10 @@ Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https
 | Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md#optional-custom-image-build-deployment) |
 | Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/customimage) |
 
+### Specialized AVD use cases
+
+- [Secure enclaves for research, such as AI](https://github.com/Azure/HubAndSpokeResearchEnclave)
+
 ## Architectural Diagram
 
 ![Azure Virtual Desktop accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline-architecture.png)
