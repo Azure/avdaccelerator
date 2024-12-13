@@ -55,6 +55,12 @@ Deploy-Baseline.ps1
 workload/bicep/parameters/deploy-baseline-parameters-MSA.json
 
 *.bicepparam
+**/.bicepparam
 # local test files
 localTest
 
+#MAC
+# Local History for Visual Studio Code
+**/.DS_Store
+.history/.DS_Store
+.DS_Store
