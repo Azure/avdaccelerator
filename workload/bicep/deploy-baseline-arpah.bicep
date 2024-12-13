@@ -148,6 +148,9 @@ param deployDDoSNetworkProtection bool = false
 @sys.description('Deploy private endpoints for key vault and storage. (Default: true)')
 param deployPrivateEndpointKeyvaultStorage bool = false
 
+@sys.description('Deploys the private link for AVD. Requires resource provider registration or re-registration. (Default: false)')
+param deployAvdPrivateLinkService bool = false
+
 @sys.description('Create new  Azure private DNS zones for private endpoints. (Default: true)')
 param createPrivateDnsZones bool = false
 
@@ -1112,7 +1115,8 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         createVnet: createAvdVnet
         deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) ? true : false
         existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
-        createPrivateDnsZones: deployPrivateEndpointKeyvaultStorage ? createPrivateDnsZones : false
+        //createPrivateDnsZones: deployPrivateEndpointKeyvaultStorage ? createPrivateDnsZones : false
+        createPrivateDnsZones: (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService) ? createPrivateDnsZones : false
         applicationSecurityGroupName: varApplicationSecurityGroupName
         computeObjectsRgName: varComputeObjectsRgName
         networkObjectsRgName: varNetworkObjectsRgName
@@ -1129,10 +1133,12 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
         createVnetPeering: varCreateVnetPeering
         deployDDoSNetworkProtection: deployDDoSNetworkProtection
         ddosProtectionPlanName: varDDosProtectionPlanName
-        deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
+        //deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage == true) ? true : false //adding logic that will be used when also including AVD control plane PEs
+        deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService) ? true : false //adding logic that will be used when also including AVD control plane PEs
         vNetworkGatewayOnHub: vNetworkGatewayOnHub
         existingHubVnetResourceId: existingHubVnetResourceId
-        sessionHostLocation: avdSessionHostLocation
+        //sessionHostLocation: avdSessionHostLocation
+        deployAvdPrivateLinkService: deployAvdPrivateLinkService
         vnetAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
         vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
         workloadSubsId: avdWorkloadSubsId
@@ -1225,36 +1231,35 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
     scope: subscription(avdWorkloadSubsId)
     name: 'Zero-Trust-${time}'
     params: {
-        location: avdSessionHostLocation
-        subscriptionId: avdWorkloadSubsId
-        diskZeroTrust: diskZeroTrust
-        serviceObjectsRgName: varServiceObjectsRgName
-        computeObjectsRgName: varComputeObjectsRgName
-        //managedIdentityName: varZtManagedIdentityName
-        vaultSku: varWrklKeyVaultSku
-        diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
-        diskEncryptionKeyExpirationInEpoch: varDiskEncryptionKeyExpirationInEpoch
-        diskEncryptionSetName: varDiskEncryptionSetName
-        ztKvName: varZtKvName
-        ztKvPrivateEndpointName: varZtKvPrivateEndpointName
-        privateEndpointsubnetResourceId: createAvdVnet 
-            ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' 
-            : existingVnetPrivateEndpointSubnetResourceId
-        deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
-        keyVaultprivateDNSResourceId: createPrivateDnsZones 
-            ? networking.outputs.KeyVaultDnsZoneResourceId 
-            : avdVnetPrivateDnsZoneKeyvaultId
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-        enableKvPurgeProtection: enableKvPurgeProtection
-        kvTags: varZtKeyvaultTag
+      location: avdSessionHostLocation
+      subscriptionId: avdWorkloadSubsId
+      diskZeroTrust: diskZeroTrust
+      serviceObjectsRgName: varServiceObjectsRgName
+      computeObjectsRgName: varComputeObjectsRgName
+      vaultSku: varWrklKeyVaultSku
+      diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
+      diskEncryptionKeyExpirationInEpoch: varDiskEncryptionKeyExpirationInEpoch
+      diskEncryptionSetName: varDiskEncryptionSetName
+      ztKvName: varZtKvName
+      ztKvPrivateEndpointName: varZtKvPrivateEndpointName
+      privateEndpointsubnetResourceId: createAvdVnet
+        ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+        : existingVnetPrivateEndpointSubnetResourceId
+      deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
+      keyVaultprivateDNSResourceId: createPrivateDnsZones
+        ? networking.outputs.keyVaultDnsZoneResourceId
+        : avdVnetPrivateDnsZoneKeyvaultId
+      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+      enableKvPurgeProtection: enableKvPurgeProtection
+      kvTags: varZtKeyvaultTag
     }
     dependsOn: [
-        baselineResourceGroups
-        baselineStorageResourceGroup
-        monitoringDiagnosticSettings
-        identity
+      baselineResourceGroups
+      baselineStorageResourceGroup
+      monitoringDiagnosticSettings
+      identity
     ]
-}
+  }
 
 // Key vault
 module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
@@ -1276,8 +1281,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
             ipRules: []
           }
         : {}
-      privateEndpoints: deployPrivateEndpointKeyvaultStorage
-        ? [
+        privateEndpoints: deployPrivateEndpointKeyvaultStorage? [
             {
               name: varWrklKvPrivateEndpointName
               subnetResourceId: createAvdVnet
@@ -1285,13 +1289,12 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
                 : existingVnetPrivateEndpointSubnetResourceId
               customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
               service: 'vault'
-              privateDnsZoneGroup: {
-                privateDNSResourceIds: [
-                  createPrivateDnsZones ? networking.outputs.KeyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
-                ]
-              }
+              privateDnsZoneGroupName: createPrivateDnsZones ? split(networking.outputs.keyVaultDnsZoneResourceId, '/')[8] : split(avdVnetPrivateDnsZoneKeyvaultId, '/')[8]
+              privateDnsZoneResourceIds: [
+                  createPrivateDnsZones ? networking.outputs.keyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
+              ]
             }
-          ]
+        ]
         : []
       secrets: (avdIdentityServiceProvider != 'EntraID')
         ? [
@@ -1444,54 +1447,54 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep'
 module msixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateMsixDeployment) {
     name: 'Storage-MSIX-${time}'
     params: {
-        storagePurpose: 'msix'
-        vmLocalUserName: avdVmLocalUserName
-        fileShareName: varMsixFileShareName
-        fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
-        storageSku: varMsixStorageSku
-        fileShareQuotaSize: msixFileShareQuotaSize
-        storageAccountFqdn: varMsixStorageFqdn
-        storageAccountName: varMsixStorageName
-        storageToDomainScript: varStorageToDomainScript
-        storageToDomainScriptUri: varStorageToDomainScriptUri
-        identityServiceProvider: avdIdentityServiceProvider
-        dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
-        storageCustomOuPath: varStorageCustomOuPath
-        managementVmName: varManagementVmName
-        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
-        ouStgPath: varOuStgPath
-        managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
-        securityPrincipalName: !empty(securityPrincipalName) ? securityPrincipalName : ''
-        domainJoinUserName: avdDomainJoinUserName
-        wrklKvName: varWrklKvName
-        serviceObjectsRgName: varServiceObjectsRgName
-        identityDomainName: identityDomainName
-        identityDomainGuid: identityDomainGuid
-        sessionHostLocation: avdSessionHostLocation
-        storageObjectsRgName: varStorageObjectsRgName
-        privateEndpointSubnetId: createAvdVnet 
-            ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' 
-            : existingVnetPrivateEndpointSubnetResourceId
-        vnetPrivateDnsZoneFilesId: createPrivateDnsZones 
-            ? networking.outputs.azureFilesDnsZoneResourceId 
-            : avdVnetPrivateDnsZoneFilesId
-        workloadSubsId: avdWorkloadSubsId
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-        alaWorkspaceResourceId: avdDeployMonitoring 
-            ? (deployAlaWorkspace 
-                ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId 
-                : alaExistingWorkspaceResourceId) 
-            : ''
+      storagePurpose: 'msix'
+      vmLocalUserName: avdVmLocalUserName
+      fileShareName: varMsixFileShareName
+      fileShareMultichannel: (msixStoragePerformance == 'Premium') ? true : false
+      storageSku: varMsixStorageSku
+      fileShareQuotaSize: msixFileShareQuotaSize
+      storageAccountFqdn: varMsixStorageFqdn
+      storageAccountName: varMsixStorageName
+      storageToDomainScript: varStorageToDomainScript
+      storageToDomainScriptUri: varStorageToDomainScriptUri
+      identityServiceProvider: avdIdentityServiceProvider
+      dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+      storageCustomOuPath: varStorageCustomOuPath
+      managementVmName: varManagementVmName
+      deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+      ouStgPath: varOuStgPath
+      managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
+      securityPrincipalName: !empty(securityPrincipalName) ? securityPrincipalName : ''
+      domainJoinUserName: avdDomainJoinUserName
+      wrklKvName: varWrklKvName
+      serviceObjectsRgName: varServiceObjectsRgName
+      identityDomainName: identityDomainName
+      identityDomainGuid: identityDomainGuid
+      location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+      storageObjectsRgName: varStorageObjectsRgName
+      privateEndpointSubnetId: createAvdVnet
+        ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+        : existingVnetPrivateEndpointSubnetResourceId
+      vnetPrivateDnsZoneFilesId: createPrivateDnsZones
+        ? networking.outputs.azureFilesDnsZoneResourceId
+        : avdVnetPrivateDnsZoneFilesId
+      workloadSubsId: avdWorkloadSubsId
+      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+      alaWorkspaceResourceId: avdDeployMonitoring
+        ? (deployAlaWorkspace
+            ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+            : alaExistingWorkspaceResourceId)
+        : ''
     }
     dependsOn: [
-        fslogixAzureFilesStorage
-        baselineStorageResourceGroup
-        networking
-        wrklKeyVault
-        managementVm
-        monitoringDiagnosticSettings
+      fslogixAzureFilesStorage
+      baselineStorageResourceGroup
+      networking
+      wrklKeyVault
+      managementVm
+      monitoringDiagnosticSettings
     ]
-}
+  }
 
 // VMSS Flex
 module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' =  if (avdDeploySessionHosts) {
