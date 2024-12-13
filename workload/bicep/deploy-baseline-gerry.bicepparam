@@ -1,5 +1,5 @@
 using './deploy-baseline.bicep'
-param deploymentPrefix = 'g017'
+param deploymentPrefix = 'g018'
 param deploymentEnvironment = 'Dev'
 param avdSessionHostLocation = 'eastus2'
 param avdManagementPlaneLocation = 'eastus2'
