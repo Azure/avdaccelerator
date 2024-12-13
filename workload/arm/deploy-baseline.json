@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7170506782003855335"
+      "templateHash": "1679080074858979324"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -32824,7 +32824,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "16948281966398873853"
+              "templateHash": "6770038964767794784"
             }
           },
           "parameters": {
@@ -33156,9 +33156,7 @@
                   "vmSize": {
                     "value": "[parameters('vmSize')]"
                   },
-                  "securityType": {
-                    "value": "[parameters('securityType')]"
-                  },
+                  "securityType": "[if(equals(parameters('securityType'), 'Standard'), createObject('value', ''), createObject('value', parameters('securityType')))]",
                   "secureBootEnabled": {
                     "value": "[parameters('secureBootEnabled')]"
                   },
