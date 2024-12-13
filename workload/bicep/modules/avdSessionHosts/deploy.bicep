@@ -209,7 +209,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: vmSize
-        securityType: securityType
+        securityType: (securityType == 'Standard') ? '' : securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
         imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
