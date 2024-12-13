@@ -329,38 +329,38 @@
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Deploy Microsoft Defender for Cloud and enable security monitoring for your platform and resources",
                                     "defaultValue": true,
-                                    "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components, and will enable Microsoft Defender for Cloud plans on all subscriptions in the Azure Landing Zone. If 'Yes' is selected when also adding a subscription for management, ARM will deploy resources and enable them for continuous compliance."
+                                    "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components"
                                 },
                                 {
                                     "name": "enableAscForServers",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "Enable Microsoft Defender for Cloud for servers",
+                                    "label": "Enable Microsoft Defender for Servers",
                                     "defaultValue": true,
-                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.",
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
                                     "name": "enableAscForStorage",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "Enable Microsoft Defender for Cloud for Storage",
+                                    "label": "Enable Microsoft Defender for Storage",
                                     "defaultValue": true,
-                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.",
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
                                     "name": "enableAscForKeyVault",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "Enable Microsoft Defender for Cloud for Key Vault",
+                                    "label": "Enable Microsoft Defender for Key Vault",
                                     "defaultValue": true,
-                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Key Vault.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Key Vault",
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
                                     "name": "enableAscForArm",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "label": "Enable Microsoft Defender for Cloud for Azure Resource Manager",
+                                    "label": "Enable Microsoft Defender for Azure Resource Manager",
                                     "defaultValue": true,
-                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Resource Manager.<br>Uses the custom initiative <a href=\"https://www.azadvertizer.net/azpolicyinitiativesadvertizer/Deploy-MDFC-Config.html\">Deploy Microsoft Defender for Cloud configuration</a>.",
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Resource Manager.",
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 }
                             ]
