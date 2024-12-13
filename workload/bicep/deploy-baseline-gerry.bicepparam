@@ -1,5 +1,5 @@
 using './deploy-baseline.bicep'
-param deploymentPrefix = 'g014'
+param deploymentPrefix = 'g017'
 param deploymentEnvironment = 'Dev'
 param avdSessionHostLocation = 'eastus2'
 param avdManagementPlaneLocation = 'eastus2'
@@ -44,9 +44,10 @@ param managementVmOsImage = 'winServer_2022_Datacenter_smalldisk_g2'
 
 
 param createAvdFslogixDeployment = false
+param avdDeployScalingPlan=false
 
 param deployDefender = true
-param emailContactAsc = 'admin@MngEnvMCAP887462.onmicrosoft.com'
+
 param enableAscForServers = true
 param enableAscForStorage = true
 param enableAscForKeyVault = true

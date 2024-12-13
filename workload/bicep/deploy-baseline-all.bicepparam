@@ -120,7 +120,6 @@ param enableTelemetry = true
 param enableKvPurgeProtection = true
 param deployAntiMalwareExt = true
 param deployDefender = true
-param emailContactAsc = ''
 param enableAscForServers = true
 param enableAscForStorage = true
 param enableAscForKeyVault = true

@@ -517,9 +517,6 @@ param deployAntiMalwareExt bool = true
 @sys.description('Enable Microsoft Defender on the subscription. (Default: true)')
 param deployDefender bool = true
 
-@sys.description('Required if MS Defender is enabled. Email contact for Microsoft Defender.')
-param emailContactAsc string = ''
-
 @sys.description('Enable Microsoft Defender for servers. (Default: true)')
 param enableAscForServers bool = true
 
