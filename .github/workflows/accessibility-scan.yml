@@ -1,0 +1,24 @@
+# This workflow uses actions to scan for accessibility
+name: Accessibility Scan
+
+on: [push, pull_request]
+
+jobs:
+  accessibility:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - name: Install dependencies
+      run: npm install
+    - name: Run axe-core
+      run: npx axe . --save --dir ./axe-reports
+    - name: Upload axe-core report
+      uses: actions/upload-artifact@v2
+      with:
+        name: axe-report
+        path: ./axe-reports

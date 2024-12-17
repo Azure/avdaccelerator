@@ -1,0 +1,24 @@
+# This workflow uses actions to scan for compliance
+name: Trivy Scan
+
+on: [push, pull_request]
+
+jobs:
+  trivy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
+    - name: Build Docker image
+      run: docker build -t my-app .
+    - name: Run Trivy vulnerability scanner
+      uses: aquasecurity/trivy-action@master
+      with:
+        image-ref: my-app
+    - name: Upload Trivy report
+      uses: actions/upload-artifact@v2
+      with:
+        name: trivy-report
+        path: ./trivy-reports
