@@ -107,7 +107,7 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varCreateAvdStaicRoute = true
+var varCreateAvdStaticRoute = true
 var varExistingAvdVnetSubId = !createVnet ? split(existingAvdSubnetResourceId, '/')[2] : ''
 var varExistingAvdVnetSubRgName = !createVnet ? split(existingAvdSubnetResourceId, '/')[4] : ''
 var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/')[8] : ''
@@ -490,7 +490,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
     name: avdRouteTableName
     location: location
     tags: tags
-    routes: varCreateAvdStaicRoute ? varStaticRoutes : []
+    routes: varCreateAvdStaticRoute ? varStaticRoutes : []
   }
   dependsOn: []
 }
