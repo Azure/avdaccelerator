@@ -103,6 +103,9 @@ param alaWorkspaceResourceId string
 @sys.description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
+@sys.description('Additional customer-provided static routes to be added to the route tables.')
+param customStaticRoutes array = []
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -118,7 +121,7 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
   ? [
       {
         workspaceResourceId: alaWorkspaceResourceId
-        logCategoriesAndGroups: [] 
+        logCategoriesAndGroups: []
       }
     ]
   : []
@@ -153,7 +156,7 @@ var varWindowsActivationKMSPrefixesNsg = (varAzureCloudName == 'AzureCloud')
             ]
           : []
 // https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/windows/custom-routes-enable-kms-activation#solution
-var varStaticRoutes = (varAzureCloudName == 'AzureCloud')
+var varDefaultStaticRoutes = (varAzureCloudName == 'AzureCloud')
   ? [
       {
         name: 'AVDServiceTraffic'
@@ -283,6 +286,9 @@ var varStaticRoutes = (varAzureCloudName == 'AzureCloud')
               }
             ]
           : []
+
+var staticRoutes = union(varDefaultStaticRoutes, customStaticRoutes)
+
 var privateDnsZoneNames = {
   AutomationAgentService: 'privatelink.agentsvc.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
   Automation: 'privatelink.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
@@ -490,7 +496,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
     name: avdRouteTableName
     location: location
     tags: tags
-    routes: varCreateAvdStaicRoute ? varStaticRoutes : []
+    routes: varCreateAvdStaicRoute ? staticRoutes : []
   }
   dependsOn: []
 }
@@ -619,24 +625,24 @@ module privateDnsZoneKeyVault '../../../../avm/1.0.0/res/network/private-dns-zon
 
 // Private DNS zones AVD
 module privateDnsZoneAVDConnection '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && deployAvdPrivateLinkService) {
-    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-    name: 'Private-DNS-AVD-Connection-${time}'
-    params: {
-        name: privateDnsZoneNames.AVDFeedConnections
-        virtualNetworkLinks: varVirtualNetworkLinks
-        tags: tags
-    }
+  scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+  name: 'Private-DNS-AVD-Connection-${time}'
+  params: {
+    name: privateDnsZoneNames.AVDFeedConnections
+    virtualNetworkLinks: varVirtualNetworkLinks
+    tags: tags
+  }
 }
 
 // Private DNS zones AVD Discovery
 module privateDnsZoneAVDDiscovery '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && deployAvdPrivateLinkService) {
-    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
-    name: 'Private-DNS-AVD-Discovery-${time}'
-    params: {
-        name: privateDnsZoneNames.AVDDiscovery
-        virtualNetworkLinks: varVirtualNetworkLinks
-        tags: tags
-    }
+  scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+  name: 'Private-DNS-AVD-Discovery-${time}'
+  params: {
+    name: privateDnsZoneNames.AVDDiscovery
+    virtualNetworkLinks: varVirtualNetworkLinks
+    tags: tags
+  }
 }
 // =========== //
 // Outputs //
@@ -645,5 +651,9 @@ output applicationSecurityGroupResourceId string = deployAsg ? applicationSecuri
 output virtualNetworkResourceId string = createVnet ? virtualNetwork.outputs.resourceId : ''
 output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAzureFiles.outputs.resourceId : ''
 output keyVaultDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneKeyVault.outputs.resourceId : ''
-output avdDnsConnectionZoneResourceId string = (createPrivateDnsZones && deployAvdPrivateLinkService) ? privateDnsZoneAVDConnection.outputs.resourceId : ''
-output avdDnsDiscoveryZoneResourceId string = (createPrivateDnsZones && deployAvdPrivateLinkService) ? privateDnsZoneAVDDiscovery.outputs.resourceId : ''
+output avdDnsConnectionZoneResourceId string = (createPrivateDnsZones && deployAvdPrivateLinkService)
+  ? privateDnsZoneAVDConnection.outputs.resourceId
+  : ''
+output avdDnsDiscoveryZoneResourceId string = (createPrivateDnsZones && deployAvdPrivateLinkService)
+  ? privateDnsZoneAVDDiscovery.outputs.resourceId
+  : ''
