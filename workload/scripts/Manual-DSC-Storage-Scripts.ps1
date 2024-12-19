@@ -65,12 +65,21 @@ param (
 )
 
 if ($IdentityServiceProvider -ne 'EntraID') {
-        $Member = Get-LocalGroupMember -Group "Administrators" -Member $AdminUserName -ErrorAction SilentlyContinue
+        # The $AdminUserName might be in an unusual format like "DOMAIN\UPN" instead of "DOMAIN\UserName"
+        # If that happens, Add-LocalGroupMember succeeds, but Get-LocalGroupMember fails
+        [string]$CheckAdminUserName = $AdminUserName
+        If ($CheckAdminUserName -match '^(?<domain>[^\\]+)\\(?<user>.+)@.+$') {
+                $CheckAdminUserName = "$($Matches['domain'])\\$($Matches['user'])"
+        }
+        $Member = Get-LocalGroupMember -Group "Administrators" -Member $CheckAdminUserName -ErrorAction SilentlyContinue
 
         if (! $Member) {
-                Write-Host "Add domain join account as local Administrator"
+                Write-Host "Add domain join account '$AdminUserName' as local Administrator"
                 Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
                 Write-Host "Domain join account added to local Administrators group"
+        }
+        else {
+                Write-Host "Domain join account '$AdminUserName' already in local Administrators group"
         }
 }
 else {
