@@ -68,9 +68,12 @@ if ($IdentityServiceProvider -ne 'EntraID') {
         $Member = Get-LocalGroupMember -Group "Administrators" -Member $AdminUserName -ErrorAction SilentlyContinue
 
         if (! $Member) {
-                Write-Host "Add domain join account as local Administrator"
+                Write-Host "Add domain join account '$AdminUserName' as local Administrator"
                 Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
                 Write-Host "Domain join account added to local Administrators group"
+        }
+        else {
+                Write-Host "Domain join account '$AdminUserName' already in local Administrators group"
         }
 }
 else {
