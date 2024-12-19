@@ -65,14 +65,18 @@ param (
 )
 
 if ($IdentityServiceProvider -ne 'EntraID') {
-        # The $AdminUserName might be in an unusual format like "DOMAIN\UPN" instead of "DOMAIN\UserName"
+        # The $AdminUserName might be in UPN format instead of NTLM format
         # If that happens, Add-LocalGroupMember succeeds, but Get-LocalGroupMember fails
         [string]$CheckAdminUserName = $AdminUserName
-        If ($CheckAdminUserName -match '^(?<domain>[^\\]+)\\(?<user>.+)@.+$') {
-                $CheckAdminUserName = "$($Matches['domain'])\\$($Matches['user'])"
+        If ($CheckAdminUserName -match '^(?<user>.+)@.+$') {
+                # Convert the username to check in NTLM format
+                $CheckAdminUserName = "$((Get-WmiObject Win32_NTDomain).DomainName)\\$($Matches['user'])"
         }
+
+        # Check if the domain join account is already in the local Administrators group
         $Member = Get-LocalGroupMember -Group "Administrators" -Member $CheckAdminUserName -ErrorAction SilentlyContinue
 
+        # If the domain join account is not in the local Administrators group
         if (! $Member) {
                 Write-Host "Add domain join account '$AdminUserName' as local Administrator"
                 Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
