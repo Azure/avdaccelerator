@@ -70,7 +70,7 @@ if ($IdentityServiceProvider -ne 'EntraID') {
         [string]$CheckAdminUserName = $AdminUserName
         If ($CheckAdminUserName -match '^(?<user>.+)@.+$') {
                 # Convert the username to check in NTLM format
-                $CheckAdminUserName = "$((Get-WmiObject Win32_NTDomain).DomainName)\\$($Matches['user'])"
+                $CheckAdminUserName = "$((Get-WmiObject Win32_NTDomain).DomainName)\$($Matches['user'])".Trim()
         }
 
         # Check if the domain join account is already in the local Administrators group
