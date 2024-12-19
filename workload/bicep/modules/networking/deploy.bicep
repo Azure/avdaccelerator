@@ -287,7 +287,7 @@ var varDefaultStaticRoutes = (varAzureCloudName == 'AzureCloud')
             ]
           : []
 
-var staticRoutes = union(varDefaultStaticRoutes, customStaticRoutes)
+var varStaticRoutes = union(varDefaultStaticRoutes, customStaticRoutes)
 
 var privateDnsZoneNames = {
   AutomationAgentService: 'privatelink.agentsvc.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
@@ -496,7 +496,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
     name: avdRouteTableName
     location: location
     tags: tags
-    routes: varCreateAvdStaicRoute ? staticRoutes : []
+    routes: varCreateAvdStaicRoute ? varStaticRoutes : []
   }
   dependsOn: []
 }
