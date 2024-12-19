@@ -64,28 +64,32 @@ param (
         [string] $StoragePurpose
 )
 
-Write-Host "Add domain join account as local administrator"
 if ($IdentityServiceProvider -ne 'EntraID') {
-        Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
-        Write-Host "Domain join account added to local administrators group"
+        $Member = Get-LocalGroupMember -Group "Administrators" -Member $AdminUserName -ErrorAction SilentlyContinue
+
+        if (! $Member) {
+                Write-Host "Add domain join account as local Administrator"
+                Add-LocalGroupMember -Group "Administrators" -Member $AdminUserName
+                Write-Host "Domain join account added to local Administrators group"
+        }
 }
 else {
-        Write-Host "Using EntraID, no domain join account to add to local administrators group"
+        Write-Host "Using EntraID, no domain join account to add to local Administrators group"
 }
 
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"
-$DscArhive = "DSCStorageScripts.zip"
+$DscArchive = "DSCStorageScripts.zip"
 $appName = 'DSCStorageScripts-' + $StoragePurpose
 $drive = 'C:\Packages'
 New-Item -Path $drive -Name $appName -ItemType Directory -ErrorAction SilentlyContinue
 
-Write-Host "Setting DSC local path to $LocalPath"
 $LocalPath = $drive + '\DSCStorageScripts-' + $StoragePurpose
-$OutputPath = $LocalPath + '\' + $DscArhive
+Write-Host "Setting DSC local path to $LocalPath"
+$OutputPath = $LocalPath + '\' + $DscArchive
 Invoke-WebRequest -Uri $DscPath -OutFile $OutputPath
 
 Write-Host "Expanding the archive $DscArchive" 
-Expand-Archive -LiteralPath $OutputPath -DestinationPath $Localpath -Force -Verbose
+Expand-Archive -LiteralPath $OutputPath -DestinationPath $LocalPath -Force -Verbose
 
 Set-Location -Path $LocalPath
 
@@ -115,10 +119,9 @@ function Set-EscapeCharacters {
 }
 $AdminUserPasswordEscaped = Set-EscapeCharacters $AdminUserPassword
 
-
 $DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -Verbose"
 
-Write-Host "Executing the commmand $DscCompileCommand" 
+Write-Host "Executing the command $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
 
 $MofFolder = 'DomainJoinFileShare'
