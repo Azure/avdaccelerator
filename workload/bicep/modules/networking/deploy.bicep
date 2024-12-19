@@ -110,7 +110,7 @@ param customStaticRoutes array = []
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varCreateAvdStaicRoute = true
+var varCreateAvdStaticRoute = true
 var varExistingAvdVnetSubId = !createVnet ? split(existingAvdSubnetResourceId, '/')[2] : ''
 var varExistingAvdVnetSubRgName = !createVnet ? split(existingAvdSubnetResourceId, '/')[4] : ''
 var varExistingAvdVnetName = !createVnet ? split(existingAvdSubnetResourceId, '/')[8] : ''
@@ -496,7 +496,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
     name: avdRouteTableName
     location: location
     tags: tags
-    routes: varCreateAvdStaicRoute ? varStaticRoutes : []
+    routes: varCreateAvdStaticRoute ? varStaticRoutes : []
   }
   dependsOn: []
 }
@@ -561,18 +561,18 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
             addressPrefix: vnetAvdSubnetAddressPrefix
             privateEndpointNetworkPolicies: 'Disabled'
             privateLinkServiceNetworkPolicies: 'Enabled'
-            networkSecurityGroupId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
-            routeTableId: createVnet ? routeTableAvd.outputs.resourceId : ''
+            networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
+            routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
           }
           {
             name: vnetPrivateEndpointSubnetName
             addressPrefix: vnetPrivateEndpointSubnetAddressPrefix
             privateEndpointNetworkPolicies: 'Disabled'
             privateLinkServiceNetworkPolicies: 'Enabled'
-            networkSecurityGroupId: (createVnet && deployPrivateEndpointSubnet)
+            networkSecurityGroupResourceId: (createVnet && deployPrivateEndpointSubnet)
               ? networksecurityGroupPrivateEndpoint.outputs.resourceId
               : ''
-            routeTableId: (createVnet && deployPrivateEndpointSubnet)
+            routeTableResourceId: (createVnet && deployPrivateEndpointSubnet)
               ? routeTablePrivateEndpoint.outputs.resourceId
               : ''
           }
@@ -583,8 +583,8 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
             addressPrefix: vnetAvdSubnetAddressPrefix
             privateEndpointNetworkPolicies: 'Disabled'
             privateLinkServiceNetworkPolicies: 'Enabled'
-            networkSecurityGroupId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
-            routeTableId: createVnet ? routeTableAvd.outputs.resourceId : ''
+            networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
+            routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
           }
         ]
     ddosProtectionPlanResourceId: deployDDoSNetworkProtection ? ddosProtectionPlan.outputs.resourceId : ''
