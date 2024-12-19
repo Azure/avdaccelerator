@@ -103,6 +103,9 @@ param alaWorkspaceResourceId string
 @sys.description('Do not modify, used to set unique value for resource deployment')
 param time string = utcNow()
 
+@sys.description('Additional customer-provided static routes to be added to the route tables.')
+param customStaticRoutes array = []
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -153,7 +156,7 @@ var varWindowsActivationKMSPrefixesNsg = (varAzureCloudName == 'AzureCloud')
             ]
           : []
 // https://learn.microsoft.com/en-us/troubleshoot/azure/virtual-machines/windows/custom-routes-enable-kms-activation#solution
-var varStaticRoutes = (varAzureCloudName == 'AzureCloud')
+var varDefaultStaticRoutes = (varAzureCloudName == 'AzureCloud')
   ? [
       {
         name: 'AVDServiceTraffic'
@@ -283,6 +286,9 @@ var varStaticRoutes = (varAzureCloudName == 'AzureCloud')
               }
             ]
           : []
+
+var varStaticRoutes = union(varDefaultStaticRoutes, customStaticRoutes)
+
 var privateDnsZoneNames = {
   AutomationAgentService: 'privatelink.agentsvc.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
   Automation: 'privatelink.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
