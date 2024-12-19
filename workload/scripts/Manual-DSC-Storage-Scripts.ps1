@@ -74,6 +74,7 @@ if ($IdentityServiceProvider -ne 'EntraID') {
         }
 
         # Check if the domain join account is already in the local Administrators group
+        Write-Host "Checking if domain join account '$CheckAdminUserName' ('$AdminUserName') is in local Administrators group"
         $Member = Get-LocalGroupMember -Group "Administrators" -Member $CheckAdminUserName -ErrorAction SilentlyContinue
 
         # If the domain join account is not in the local Administrators group
