@@ -144,7 +144,7 @@ Write-Host "Generated MOF files here: $MofPath"
 
 Write-Host "Applying MOF files. DSC configuration"
 Set-WSManQuickConfig -Force -Verbose
-Start-DscConfiguration -Path $MofPath -Wait -Verbose -force
+Start-DscConfiguration -Path $MofPath -Wait -Verbose -Force
 
 Write-Host "DSC extension run clean up"
 Remove-Item -Path $MofPath -Force -Recurse
