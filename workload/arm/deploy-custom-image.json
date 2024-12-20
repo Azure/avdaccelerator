@@ -2276,10 +2276,7 @@
                         "privacyStatementUri": "[parameters('privacyStatementUri')]",
                         "releaseNoteUri": "[parameters('releaseNoteUri')]",
                         "supportedOSType": "[parameters('supportedOSType')]"
-                      },
-                      "dependsOn": [
-                        "gallery"
-                      ]
+                      }
                     },
                     "application_roleAssignments": {
                       "copy": {
@@ -2782,10 +2779,7 @@
                         "disallowed": {
                           "diskTypes": "[parameters('excludedDiskTypes')]"
                         }
-                      },
-                      "dependsOn": [
-                        "gallery"
-                      ]
+                      }
                     },
                     "image_roleAssignments": {
                       "copy": {
@@ -3292,10 +3286,7 @@
                 "disallowed": {
                   "diskTypes": "[parameters('excludedDiskTypes')]"
                 }
-              },
-              "dependsOn": [
-                "gallery"
-              ]
+              }
             },
             "image_roleAssignments": {
               "copy": {
@@ -4442,11 +4433,7 @@
                           "id": "[parameters('storageAccountResourceId')]",
                           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2022-09-01').keys[0].value]"
                         }
-                      },
-                      "dependsOn": [
-                        "storageAccount",
-                        "workspace"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -5307,10 +5294,7 @@
               "apiVersion": "2023-02-01",
               "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-              "dependsOn": [
-                "cMKKeyVault"
-              ]
+              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
             },
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
@@ -5366,8 +5350,8 @@
                 "disableLocalAuth": "[parameters('disableLocalAuth')]"
               },
               "dependsOn": [
-                "cMKKeyVault",
-                "cMKUserAssignedIdentity"
+                "cMKKeyVault::cMKKey",
+                "cMKKeyVault"
               ]
             },
             "automationAccount_lock": {
@@ -5550,10 +5534,7 @@
                         "password": "[parameters('credentials')[copyIndex()].password]",
                         "userName": "[parameters('credentials')[copyIndex()].userName]",
                         "description": "[coalesce(tryGet(parameters('credentials')[copyIndex()], 'description'), '')]"
-                      },
-                      "dependsOn": [
-                        "automationAccount"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -5697,10 +5678,7 @@
                           "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
                           "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
                         }
-                      },
-                      "dependsOn": [
-                        "automationAccount"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -6081,11 +6059,7 @@
                         "runbookType": "[parameters('type')]",
                         "description": "[parameters('description')]",
                         "publishContentLink": "[if(not(empty(parameters('uri'))), if(empty(parameters('uri')), null(), createObject('uri', if(not(empty(parameters('uri'))), if(empty(parameters('scriptStorageAccountResourceId')), parameters('uri'), format('{0}?{1}', parameters('uri'), listAccountSas(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('scriptStorageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('scriptStorageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('scriptStorageAccountResourceId'), 'dummyVault'), '/'))), '2021-04-01', variables('accountSasProperties')).accountSasToken)), null()), 'version', if(not(empty(parameters('version'))), parameters('version'), null()))), null())]"
-                      },
-                      "dependsOn": [
-                        "automationAccount",
-                        "storageAccount"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -6456,10 +6430,7 @@
                       "properties": {
                         "resourceId": "[parameters('resourceId')]",
                         "writeAccessResourceId": "[if(empty(parameters('writeAccessResourceId')), null(), parameters('writeAccessResourceId'))]"
-                      },
-                      "dependsOn": [
-                        "workspace"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -7938,10 +7909,7 @@
                   "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
                   "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
                 }
-              },
-              "dependsOn": [
-                "automationAccount"
-              ]
+              }
             }
           },
           "outputs": {
