@@ -93,7 +93,7 @@ param domainJoinPasswordSecretName string = 'domainJoinUserPassword'
 @sys.description('Enables accelerated Networking on the session hosts. (Default: true)')
 param enableAcceleratedNetworking bool = true
 
-@sys.description('FSLogix storage resource ID. (Default: )')
+@sys.description('FSLogix storage account name. (Default: )')
 param fslogixStorageAccountName string = ''
 
 @sys.description('FSLogix file share name. (Default: )')
@@ -160,6 +160,8 @@ param sessionHostOuPath string = ''
   'win11_22h2_office'
   'win11_23h2'
   'win11_23h2_office'
+  'win11_24h2'
+  'win11_24h2_office'
 ])
 @sys.description('AVD OS image SKU. (Default: win11-23h2)')
 param osImage string = 'win11_23h2'
@@ -200,6 +202,12 @@ param opsTeamTag string = 'workload-admins@Contoso.com'
 
 @sys.description('Organizational owner of the AVD deployment. (Default: workload-owner@Contoso.com)')
 param ownerTag string = 'workload-owner@Contoso.com'
+
+@sys.description('Data collection rule ID.')
+param dataCollectionRuleId string
+
+@sys.description('Deploys anti malware extension on session hosts. (Default: true)')
+param deployAntiMalwareExt bool = true
 
 // =========== //
 // Variable declaration //
@@ -312,11 +320,11 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
       systemAssigned: true
   }: null
     encryptionAtHost: diskZeroTrust
-    virtualMachineScaleSetResourceId: virtualMachineScaleSetResourceId
+    virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
     osType: 'Windows'
     licenseType: 'Windows_Client'
     vmSize: vmSize
-    securityType: securityType
+    securityType: (securityType == 'Standard') ? '' : securityType
     secureBootEnabled: secureBootEnabled
     vTpmEnabled: vTpmEnabled
     imageReference: useSharedImage ? json('{\'id\': \'${customImageDefinitionId}\'}') : varMarketPlaceGalleryWindows[osImage]
@@ -377,7 +385,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 }]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'SH-Antimal-${i - 1}-${time}'
   params: {
@@ -435,6 +443,22 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
     alaWorkspace
   ]
 }]
+
+// Data collection rule association
+module dataCollectionRuleAssociation '../..//modules/avdSessionHosts/.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
+  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
+  name: 'DCR-Asso-${i - 1}-${time}'
+  params: {
+      virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+      dataCollectionRuleId: dataCollectionRuleId
+  }
+  dependsOn: [
+      monitoring
+      sessionHostsAntimalwareExtension
+      alaWorkspace
+  ]
+}]
+
 
 // Apply AVD session host configurations
 module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureSessionHost.bicep' = [for i in range(1, count): {

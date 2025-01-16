@@ -180,7 +180,7 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Version",
                                     "filter": true,
-                                    "defaultValue": "Windows 11 23H2 (Gen2)",
+                                    "defaultValue": "Windows 11 23H2",
                                     "toolTip": "Select the operating system version for the source image.",
                                     "constraints": {
                                         "required": true,
@@ -194,20 +194,28 @@
                                                 "value": "win10_22h2_office_g2"
                                             },
                                             {
-                                                "label": "Windows 11 22H2 (Gen2)",
+                                                "label": "Windows 11 22H2",
                                                 "value": "win11_22h2"
                                             },
                                             {
-                                                "label": "Windows 11 22H2 - Office 365 (Gen2)",
+                                                "label": "Windows 11 22H2 - Office 365",
                                                 "value": "win11_22h2_office"
                                             },
                                             {
-                                                "label": "Windows 11 23H2 (Gen2)",
+                                                "label": "Windows 11 23H2",
                                                 "value": "win11_23h2"
                                             },
                                             {
-                                                "label": "Windows 11 23H2 - Office 365 (Gen2)",
+                                                "label": "Windows 11 23H2 - Office 365",
                                                 "value": "win11_23h2_office"
+                                            },
+                                            {
+                                                "label": "Windows 11 24H2",
+                                                "value": "win11_24h2"
+                                            },
+                                            {
+                                                "label": "Windows 11 24H2 - Office 365",
+                                                "value": "win11_24h2_office"
                                             }
                                         ]
                                     }

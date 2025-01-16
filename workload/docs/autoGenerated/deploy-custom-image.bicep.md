@@ -315,7 +315,7 @@ AVD OS image source. (Default: win11-22h2)
 
 - Default value: `win11_22h2`
 
-- Allowed values: `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_22h2`, `win11_22h2_office`, `win11_23h2`, `win11_23h2_office`
+- Allowed values: `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_22h2`, `win11_22h2_office`, `win11_23h2`, `win11_23h2_office`, `win11_24h2`, `win11_24h2_office`
 
 ### operationsTeamTag
 

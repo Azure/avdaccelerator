@@ -11,7 +11,7 @@ resource "azurerm_monitor_action_group" "ag" {
   resource_group_name = azurerm_resource_group.rg_shared_name.name
   short_name          = "avdactgrp" #  short_name to be in the range (1 - 12)
   email_receiver {
-    name          = "sendtoavdadmin"
+    name          = "sendto'avdadmin'"
     email_address = var.email_address
   }
 }

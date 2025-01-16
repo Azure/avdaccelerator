@@ -63,7 +63,7 @@ $ErrorActionPreference = "Stop"
 
 . (Join-Path $ScriptPath "Logger.ps1")
 
-if ($IdentityServiceProvider -ne 'AAD') {
+if ($IdentityServiceProvider -ne 'EntraID') {
 	Write-Log "Forcing group policy updates"
 	gpupdate /force /wait:0
 
@@ -118,19 +118,12 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 	Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
 	if ( $CustomOuPath -eq 'true') {
 		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
-		
-		# JWI: added log path for join-azstorageaccount
-		$Path = 'C:\Windows\Temp\JoinAzStorageAccount.log'
-		if (!(Test-Path -Path $Path)) {
-				New-Item -Path 'C:\' -Name 'JoinAzStorageAccount.log' | Out-Null
-		}
-
-		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject -Verbose | Out-File -Path $Path
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
 	}
  else {
 		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
-		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -EncryptionType 'AES256' -OverwriteExistingADObject #-SamAccountName $SamAccountName
+		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
 	}
 }
@@ -178,7 +171,7 @@ Try {
 	icacls ${DriveLetter}: /remove "BUILTIN\Users"
 	Write-Log "ACLs set"
 	#AVD group permissions
-	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'AAD') {
+	if ($SecurityPrincipalName -eq 'none' -or $IdentityServiceProvider -eq 'EntraID') {
 		Write-Log "AD group not provided or using Microsoft Entra ID joined session hosts, ACLs for AD group not set"
 	}
 	else {

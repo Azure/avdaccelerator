@@ -121,6 +121,9 @@
         }, 
         "osImage": {
             "value": "win11_23h2"
+        },
+        "deployAntiMalwareExt": {
+            "value": true
         }
     }
 }

@@ -67,6 +67,9 @@ param deployDDoSNetworkProtection bool
 @sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
 param deployPrivateEndpointSubnet bool
 
+@sys.description('Optional. Deploys private endpoints for the AVD Private Link Service. (Default: false)')
+param deployAvdPrivateLinkService bool
+
 @sys.description('AVD VNet address prefixes.')
 param vnetAddressPrefixes string
 
@@ -88,8 +91,8 @@ param dnsServers array
 @sys.description('Optional. Use Azure private DNS zones for private endpoints.')
 param createPrivateDnsZones bool
 
-@sys.description('Location where to deploy compute services.')
-param sessionHostLocation string = deployment().location
+@sys.description('Location where to deploy resources.')
+param location string = deployment().location
 
 @sys.description('Tags to be applied to resources')
 param tags object
@@ -115,6 +118,7 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
   ? [
       {
         workspaceResourceId: alaWorkspaceResourceId
+        logCategoriesAndGroups: [] 
       }
     ]
   : []
@@ -160,9 +164,17 @@ var varStaticRoutes = (varAzureCloudName == 'AzureCloud')
         }
       }
       {
-        name: 'AVDStunTurnTraffic'
+        name: 'AVDStunInfraTurnRelayTraffic'
         properties: {
           addressPrefix: '20.202.0.0/16'
+          hasBgpOverride: true
+          nextHopType: 'Internet'
+        }
+      }
+      {
+        name: 'AVDTurnRelayTraffic'
+        properties: {
+          addressPrefix: '51.5.0.0/16'
           hasBgpOverride: true
           nextHopType: 'Internet'
         }
@@ -309,7 +321,7 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
   name: 'NSG-AVD-${time}'
   params: {
     name: avdNetworksecurityGroupName
-    location: sessionHostLocation
+    location: location
     tags: tags
     diagnosticSettings: varDiagnosticSettings
     securityRules: [
@@ -411,6 +423,34 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
           sourceAddressPrefix: 'VirtualNetwork'
         }
       }
+      {
+        name: 'RDPShortpathTurnStun'
+        properties: {
+          priority: 160
+          access: 'Allow'
+          description: 'Session host traffic to RDP shortpath STUN/TURN'
+          destinationAddressPrefix: '20.202.0.0/16'
+          direction: 'Outbound'
+          sourcePortRange: '*'
+          destinationPortRange: '3478'
+          protocol: 'Udp'
+          sourceAddressPrefix: 'VirtualNetwork'
+        }
+      }
+      {
+        name: 'RDPShortpathTurnRelay'
+        properties: {
+          priority: 170
+          access: 'Allow'
+          description: 'Session host traffic to RDP shortpath STUN/TURN'
+          destinationAddressPrefix: '51.5.0.0/16'
+          direction: 'Outbound'
+          sourcePortRange: '*'
+          destinationPortRange: '3478'
+          protocol: 'Udp'
+          sourceAddressPrefix: 'VirtualNetwork'
+        }
+      }
     ]
   }
   dependsOn: []
@@ -422,7 +462,7 @@ module networksecurityGroupPrivateEndpoint '../../../../avm/1.0.0/res/network/ne
   name: 'NSG-Private-Endpoint-${time}'
   params: {
     name: privateEndpointNetworksecurityGroupName
-    location: sessionHostLocation
+    location: location
     tags: tags
     diagnosticSettings: varDiagnosticSettings
     securityRules: []
@@ -436,7 +476,7 @@ module applicationSecurityGroup '../../../../avm/1.0.0/res/network/application-s
   name: 'ASG-${time}'
   params: {
     name: applicationSecurityGroupName
-    location: sessionHostLocation
+    location: location
     tags: tags
   }
   dependsOn: []
@@ -448,7 +488,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
   name: 'Route-Table-AVD-${time}'
   params: {
     name: avdRouteTableName
-    location: sessionHostLocation
+    location: location
     tags: tags
     routes: varCreateAvdStaicRoute ? varStaticRoutes : []
   }
@@ -461,7 +501,7 @@ module routeTablePrivateEndpoint '../../../../avm/1.0.0/res/network/route-table/
   name: 'Route-Table-PE-${time}'
   params: {
     name: privateEndpointRouteTableName
-    location: sessionHostLocation
+    location: location
     tags: tags
     routes: []
   }
@@ -474,7 +514,7 @@ module ddosProtectionPlan '../../../../avm/1.0.0/res/network/ddos-protection-pla
   name: 'DDoS-Protection-Plan-${time}'
   params: {
     name: ddosProtectionPlanName
-    location: sessionHostLocation
+    location: location
   }
   dependsOn: []
 }
@@ -485,7 +525,7 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
   name: 'vNet-${time}'
   params: {
     name: vnetName
-    location: sessionHostLocation
+    location: location
     addressPrefixes: array(vnetAddressPrefixes)
     dnsServers: dnsServers
     peerings: createVnetPeering
@@ -577,10 +617,33 @@ module privateDnsZoneKeyVault '../../../../avm/1.0.0/res/network/private-dns-zon
   }
 }
 
+// Private DNS zones AVD
+module privateDnsZoneAVDConnection '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && deployAvdPrivateLinkService) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'Private-DNS-AVD-Connection-${time}'
+    params: {
+        name: privateDnsZoneNames.AVDFeedConnections
+        virtualNetworkLinks: varVirtualNetworkLinks
+        tags: tags
+    }
+}
+
+// Private DNS zones AVD Discovery
+module privateDnsZoneAVDDiscovery '../../../../avm/1.0.0/res/network/private-dns-zone/main.bicep' = if (createPrivateDnsZones && deployAvdPrivateLinkService) {
+    scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+    name: 'Private-DNS-AVD-Discovery-${time}'
+    params: {
+        name: privateDnsZoneNames.AVDDiscovery
+        virtualNetworkLinks: varVirtualNetworkLinks
+        tags: tags
+    }
+}
 // =========== //
 // Outputs //
 // =========== //
 output applicationSecurityGroupResourceId string = deployAsg ? applicationSecurityGroup.outputs.resourceId : ''
 output virtualNetworkResourceId string = createVnet ? virtualNetwork.outputs.resourceId : ''
 output azureFilesDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneAzureFiles.outputs.resourceId : ''
-output KeyVaultDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneKeyVault.outputs.resourceId : ''
+output keyVaultDnsZoneResourceId string = createPrivateDnsZones ? privateDnsZoneKeyVault.outputs.resourceId : ''
+output avdDnsConnectionZoneResourceId string = (createPrivateDnsZones && deployAvdPrivateLinkService) ? privateDnsZoneAVDConnection.outputs.resourceId : ''
+output avdDnsDiscoveryZoneResourceId string = (createPrivateDnsZones && deployAvdPrivateLinkService) ? privateDnsZoneAVDDiscovery.outputs.resourceId : ''

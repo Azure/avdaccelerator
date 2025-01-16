@@ -56,33 +56,6 @@ $Entry = '[' + $Timestamp + '] [' + $Type + '] ' + $Message
 $Entry | Out-File -FilePath $Path -Append
 }
 
-function Write-TimestampedMessage {
-param(
-        [string]$Message,
-        [string]$Type="INFO"
-)
-$timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-Write-Host "$timestamp - $Message"
-}
-
-function Get-WebFile {
-param (
-        [string]$FileName,  # The name of the file to save
-        [string]$URL        # The URL to download the file from
-)
-
-Write-TimestampedMessage "Downloading $FileName from $URL"
-
-try {
-    Invoke-WebRequest -Uri $URL -OutFile $FileName
-    Write-TimestampedMessage "Downloaded $FileName successfully."
-}
-catch {
-    Write-TimestampedMessage "Failed to download $FileName from $URL. Error: $_"
-    throw "Download failed for $FileName."
-}
-}
-
 function Get-WebFile {
 param(
         [parameter(Mandatory)]
@@ -102,48 +75,7 @@ do {
 until((Test-Path $FileName) -or $Counter -eq 9)
 }
 
-function Disable-BoxDriveStartup {
-Write-TimestampedMessage "Disabling Box Drive from running at startup"
-    
-$regContent = @"
-Windows Registry Editor Version 5.00
-
-[HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Run]
-"Box"=-
-"@
-
-    $regFilePath = "$env:TEMP\remove_box.reg"
-    Set-Content -Path $regFilePath -Value $regContent
-    Start-Process regedit.exe -ArgumentList "/s $regFilePath" -Wait
-    Remove-Item -Path $regFilePath
-
-    Write-TimestampedMessage "Box Drive startup entry removed successfully"
-}
-
-function Install-Font {
-        param (
-            [string]$fontFile
-        )
-        
-        $FONTS_FOLDER = "C:\Windows\Fonts"
-        $FONTS_REG_KEY = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts"
-        
-        $fontName = [System.IO.Path]::GetFileNameWithoutExtension($fontFile)
-        $fontExtension = [System.IO.Path]::GetExtension($fontFile)
-        
-        # Copy the font to the Fonts folder
-        Copy-Item $fontFile $FONTS_FOLDER
-    
-        # Add the font to the registry
-        $regName = "$fontName (TrueType)"
-        $regValue = [System.IO.Path]::GetFileName($fontFile)
-        New-ItemProperty -Path $FONTS_REG_KEY -Name $regName -Value $regValue -PropertyType String -Force
-        
-        Write-Log -Message "Installed font: $fontName" -Type 'INFO'
-    }    
-
 $ErrorActionPreference = 'Stop'
-$ProgressPreference = 'SilentlyContinue'
 
 try {
 
@@ -151,40 +83,77 @@ try {
         #  Run the Virtual Desktop Optimization Tool (VDOT)
         ##############################################################
         # https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool
-        {
-                # Download VDOT
-                $URL = 'https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip'
-                $ZIP = 'VDOT.zip'
-                Invoke-WebRequest -Uri $URL -OutFile $ZIP
+        # Download VDOT
+        # $URL = 'https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip'
+        # $ZIP = 'VDOT.zip'
+        # Get-WebFile -FileName $ZIP -URL $URL
 
-                # Extract VDOT from ZIP archive
-                Expand-Archive -LiteralPath $ZIP -Force
+        # # Extract VDOT from ZIP archive
+        # Expand-Archive -LiteralPath $ZIP -Force
 
-                # Fix to disable AppX Packages
-                # As of 2/8/22, all AppX Packages are enabled by default
-                $Files = (Get-ChildItem -Path .\VDOT\Virtual-Desktop-Optimization-Tool-main -File -Recurse -Filter "AppxPackages.json").FullName
-                foreach ($File in $Files) {
-                        $Content = Get-Content -Path $File
-                        $Settings = $Content | ConvertFrom-Json
-                        $NewSettings = @()
-                        foreach ($Setting in $Settings) {
-                                $NewSettings += [pscustomobject][ordered]@{
-                                        AppxPackage = $Setting.AppxPackage
-                                        VDIState    = 'Disabled'
-                                        URL         = $Setting.URL
-                                        Description = $Setting.Description
-                                }
-                        }
+        # # Fix to disable AppX Packages
+        # # As of 2/8/22, all AppX Packages are enabled by default
+        # $Files = (Get-ChildItem -Path .\VDOT\Virtual-Desktop-Optimization-Tool-main -File -Recurse -Filter "AppxPackages.json").FullName
+        # foreach ($File in $Files) {
+        #         $Content = Get-Content -Path $File
+        #         $Settings = $Content | ConvertFrom-Json
+        #         $NewSettings = @()
+        #         foreach ($Setting in $Settings) {
+        #                 #Adds Exception to keep Windows ScreenSketch
+        #                 If ($Setting.AppxPackage -eq "Microsoft.ScreenSketch") {
+        #                         $NewSettings += [pscustomobject][ordered]@{
+        #                                 AppxPackage = $Setting.AppxPackage
+        #                                 VDIState    = 'Unchanged'
+        #                                 URL         = $Setting.URL
+        #                                 Description = $Setting.Description
+        #                         }
+        #                 }
+        #                 #Adds Exception to keep Windows Calculator
+        #                 ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsCalculator") {
+        #                         $NewSettings += [pscustomobject][ordered]@{
+        #                                 AppxPackage = $Setting.AppxPackage
+        #                                 VDIState    = 'Unchanged'
+        #                                 URL         = $Setting.URL
+        #                                 Description = $Setting.Description
+        #                         }
+        #                 }
+        #                 #Adds Exception to keep Windows Notepad
+        #                 ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsNotepad") {
+        #                         $NewSettings += [pscustomobject][ordered]@{
+        #                                 AppxPackage = $Setting.AppxPackage
+        #                                 VDIState    = 'Unchanged'
+        #                                 URL         = $Setting.URL
+        #                                 Description = $Setting.Description
+        #                         }
+        #                 }
+        #                 #Adds Exception to keep Windows Terminal
+        #                 ElseIf ($Setting.AppxPackage -eq "Microsoft.WindowsTerminal") {
+        #                         $NewSettings += [pscustomobject][ordered]@{
+        #                                 AppxPackage = $Setting.AppxPackage
+        #                                 VDIState    = 'Unchanged'
+        #                                 URL         = $Setting.URL
+        #                                 Description = $Setting.Description
+        #                         }
+        #                 }
+        #                 #Removes all other AppxPackages not listed above
+        #                 Else {
+        #                         $NewSettings += [pscustomobject][ordered]@{
+        #                                 AppxPackage = $Setting.AppxPackage
+        #                                 VDIState    = 'Disabled'
+        #                                 URL         = $Setting.URL
+        #                                 Description = $Setting.Description
+        #                         }
+        #                 }
+        #         }
 
-                        $JSON = $NewSettings | ConvertTo-Json
-                        $JSON | Out-File -FilePath $File -Force
-                }
+        #         $JSON = $NewSettings | ConvertTo-Json
+        #         $JSON | Out-File -FilePath $File -Force
+        # }
 
-                # Run VDOT
-                & .\VDOT\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1 -Optimizations 'All' -AdvancedOptimizations 'Edge', 'RemoveLegacyIE' -AcceptEULA
+        # # Run VDOT
+        # & .\VDOT\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1 -Optimizations 'AppxPackages', 'Autologgers', 'DefaultUserSettings', 'LocalPolicy', 'NetworkOptimizations', 'ScheduledTasks', 'Services', 'WindowsMediaPlayer' -AdvancedOptimizations 'Edge', 'RemoveLegacyIE' -AcceptEULA
 
-                Write-Log -Message 'Optimized the operating system using VDOT' -Type 'INFO'
-        }    
+        # Write-Log -Message 'Optimized the operating system using VDOT' -Type 'INFO'
 
         ##############################################################
         #  Add Recommended AVD Settings
@@ -491,8 +460,8 @@ try {
         if ($IdentityServiceProvider -eq "EntraID" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
                 Start-Process -FilePath 'shutdown' -ArgumentList '/r /t 30'
         }
-        }
-        catch {
-        Write-Log -Message $_ -Type 'ERROR'
-        throw
-        }
+}
+catch {
+Write-Log -Message $_ -Type 'ERROR'
+throw
+}

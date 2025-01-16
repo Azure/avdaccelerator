@@ -29,8 +29,8 @@ param fileShareName string
 @sys.description('Private endpoint subnet ID.')
 param privateEndpointSubnetId string
 
-@sys.description('Location where to deploy compute services.')
-param sessionHostLocation string
+@sys.description('Location where to deploy resources.')
+param location string
 
 @sys.description('File share SMB multichannel.')
 param fileShareMultichannel bool
@@ -114,6 +114,7 @@ var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -Storage
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
     {
         workspaceResourceId: alaWorkspaceResourceId
+        logCategoriesAndGroups: [] 
     }
 ]: []
 // =========== //
@@ -132,7 +133,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
     name: 'Storage-${storagePurpose}-${time}'
     params: {
         name: storageAccountName
-        location: sessionHostLocation
+        location: location
         skuName: storageSku
         allowBlobPublicAccess: false
         publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
@@ -190,7 +191,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
-        location: sessionHostLocation
+        location: location
         virtualMachineName: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
