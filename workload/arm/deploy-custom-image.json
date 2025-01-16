@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "11005118672465324060"
+      "templateHash": "8280825469777706940"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -843,19 +843,10 @@
     "varResourceGroupName": "[if(parameters('customNaming'), parameters('resourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('varNamingStandard')))]",
     "varRoles": "[union(variables('varVirtualNetworkJoinRole'), variables('varImageTemplateBuildAutomation'), variables('varImageTemplateContributorRole'))]",
     "varScreenCaptureProtectionCustomizer": "[if(parameters('screenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'screenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-ScreenCaptureProtection.ps1', variables('varBaseScriptUri')))), createArray())]",
-    "varScriptCustomizers": "[union(variables('varRdpShortPathCustomizer'), variables('varScreenCaptureProtectionCustomizer'), variables('varVdotCustomizer'))]",
+    "varScriptCustomizers": "[union(variables('varRdpShortPathCustomizer'), variables('varScreenCaptureProtectionCustomizer'))]",
     "varTelemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('deploymentLocation'))]",
     "varTimeZone": "[variables('varLocations')[variables('varLocation')].timeZone]",
     "varUserAssignedManagedIdentityName": "[if(parameters('customNaming'), parameters('userAssignedManagedIdentityCustomName'), format('id-aib-{0}', variables('varNamingStandard')))]",
-    "varVdotCustomizer": [
-      {
-        "type": "PowerShell",
-        "name": "VirtualDesktopOptimizationTool",
-        "runElevated": true,
-        "runAsSystem": true,
-        "scriptUri": "[format('{0}scripts/Set-VirtualDesktopOptimizations.ps1', variables('varBaseScriptUri'))]"
-      }
-    ],
     "varVirtualNetworkJoinRoleName": "Virtual Network Join",
     "varVirtualNetworkJoinRole": "[if(parameters('useExistingVirtualNetwork'), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', variables('varVirtualNetworkJoinRoleName'), 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
     "varVmSize": "Standard_D4s_v3"

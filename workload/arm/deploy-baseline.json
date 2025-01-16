@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.32.4.45862",
-      "templateHash": "8055374530470870110"
+      "version": "0.30.23.60470",
+      "templateHash": "7166903205795463106"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -987,6 +987,13 @@
       "defaultValue": true,
       "metadata": {
         "description": "Deploys anti malware extension on session hosts. (Default: true)"
+      }
+    },
+    "customStaticRoutes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Additional customer-provided static routes to be added to the route tables."
       }
     }
   },
@@ -4178,7 +4185,10 @@
             "value": "[variables('varDnsServers')]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
-          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
+          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
+          "customStaticRoutes": {
+            "value": "[parameters('customStaticRoutes')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -4186,8 +4196,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.32.4.45862",
-              "templateHash": "15720107074941355953"
+              "version": "0.30.23.60470",
+              "templateHash": "2084797982642051770"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -4388,18 +4398,26 @@
               "metadata": {
                 "description": "Do not modify, used to set unique value for resource deployment"
               }
+            },
+            "customStaticRoutes": {
+              "type": "array",
+              "defaultValue": [],
+              "metadata": {
+                "description": "Additional customer-provided static routes to be added to the route tables."
+              }
             }
           },
           "variables": {
             "varAzureCloudName": "[environment().name]",
-            "varCreateAvdStaicRoute": true,
+            "varCreateAvdStaticRoute": true,
             "varExistingAvdVnetSubId": "[if(not(parameters('createVnet')), split(parameters('existingAvdSubnetResourceId'), '/')[2], '')]",
             "varExistingAvdVnetSubRgName": "[if(not(parameters('createVnet')), split(parameters('existingAvdSubnetResourceId'), '/')[4], '')]",
             "varExistingAvdVnetName": "[if(not(parameters('createVnet')), split(parameters('existingAvdSubnetResourceId'), '/')[8], '')]",
             "varExistingAvdVnetResourceId": "[if(not(parameters('createVnet')), format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Network/virtualNetworks/{2}', variables('varExistingAvdVnetSubId'), variables('varExistingAvdVnetSubRgName'), variables('varExistingAvdVnetName')), '')]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]",
             "varWindowsActivationKMSPrefixesNsg": "[if(equals(variables('varAzureCloudName'), 'AzureCloud'), createArray('20.118.99.224', '40.83.235.53', '23.102.135.246'), if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), createArray('23.97.0.13', '52.126.105.2'), if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), createArray('159.27.28.100', '163.228.64.161', '42.159.7.249'), createArray())))]",
-            "varStaticRoutes": "[if(equals(variables('varAzureCloudName'), 'AzureCloud'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunInfraTurnRelayTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDTurnRelayTraffic', 'properties', createObject('addressPrefix', '51.5.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '20.118.99.224/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '40.83.235.53/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS02', 'properties', createObject('addressPrefix', '23.102.135.246/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '23.97.0.13/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '52.126.105.2/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '159.27.28.100/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '163.228.64.161/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS02', 'properties', createObject('addressPrefix', '42.159.7.249/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), createArray())))]",
+            "varDefaultStaticRoutes": "[if(equals(variables('varAzureCloudName'), 'AzureCloud'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunInfraTurnRelayTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDTurnRelayTraffic', 'properties', createObject('addressPrefix', '51.5.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '20.118.99.224/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '40.83.235.53/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS02', 'properties', createObject('addressPrefix', '23.102.135.246/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), if(equals(variables('varAzureCloudName'), 'AzureUSGovernment'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '23.97.0.13/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '52.126.105.2/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), createArray(createObject('name', 'AVDServiceTraffic', 'properties', createObject('addressPrefix', 'WindowsVirtualDesktop', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'AVDStunTurnTraffic', 'properties', createObject('addressPrefix', '20.202.0.0/16', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS', 'properties', createObject('addressPrefix', '159.27.28.100/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS01', 'properties', createObject('addressPrefix', '163.228.64.161/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet')), createObject('name', 'DirectRouteToKMS02', 'properties', createObject('addressPrefix', '42.159.7.249/32', 'hasBgpOverride', true(), 'nextHopType', 'Internet'))), createArray())))]",
+            "varStaticRoutes": "[union(variables('varDefaultStaticRoutes'), parameters('customStaticRoutes'))]",
             "privateDnsZoneNames": {
               "AutomationAgentService": "[format('privatelink.agentsvc.azure-automation.{0}', variables('privateDnsZoneSuffixes_AzureAutomation')[environment().name])]",
               "Automation": "[format('privatelink.azure-automation.{0}', variables('privateDnsZoneSuffixes_AzureAutomation')[environment().name])]",
@@ -5816,7 +5834,7 @@
                   "tags": {
                     "value": "[parameters('tags')]"
                   },
-                  "routes": "[if(variables('varCreateAvdStaicRoute'), createObject('value', variables('varStaticRoutes')), createObject('value', createArray()))]"
+                  "routes": "[if(variables('varCreateAvdStaticRoute'), createObject('value', variables('varStaticRoutes')), createObject('value', createArray()))]"
                 },
                 "template": {
                   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -6359,7 +6377,7 @@
                     "value": "[parameters('dnsServers')]"
                   },
                   "peerings": "[if(parameters('createVnetPeering'), createObject('value', createArray(createObject('remoteVirtualNetworkId', parameters('existingHubVnetResourceId'), 'name', parameters('vnetPeeringName'), 'allowForwardedTraffic', true(), 'allowGatewayTransit', false(), 'allowVirtualNetworkAccess', true(), 'doNotVerifyRemoteGateways', true(), 'useRemoteGateways', if(parameters('vNetworkGatewayOnHub'), true(), false()), 'remotePeeringEnabled', true(), 'remotePeeringName', parameters('remoteVnetPeeringName'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowGatewayTransit', if(parameters('vNetworkGatewayOnHub'), true(), false()), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringDoNotVerifyRemoteGateways', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', createArray()))]",
-                  "subnets": "[if(parameters('deployPrivateEndpointSubnet'), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')), createObject('name', parameters('vnetPrivateEndpointSubnetName'), 'addressPrefix', parameters('vnetPrivateEndpointSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-Private-Endpoint-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-PE-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))))]",
+                  "subnets": "[if(parameters('deployPrivateEndpointSubnet'), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')), createObject('name', parameters('vnetPrivateEndpointSubnetName'), 'addressPrefix', parameters('vnetPrivateEndpointSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-Private-Endpoint-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-PE-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))))]",
                   "ddosProtectionPlanResourceId": "[if(parameters('deployDDoSNetworkProtection'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('DDoS-Protection-Plan-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
                   "tags": {
                     "value": "[parameters('tags')]"
