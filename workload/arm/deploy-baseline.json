@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.30.23.60470",
-      "templateHash": "7166903205795463106"
+      "version": "0.32.4.45862",
+      "templateHash": "3380933009008368627"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -989,6 +989,13 @@
         "description": "Deploys anti malware extension on session hosts. (Default: true)"
       }
     },
+    "customStaticRoutes": {
+      "type": "array",
+      "defaultValue": [],
+      "metadata": {
+        "description": "Additional customer-provided static routes to be added to the route tables."
+      }
+    },
     "deployDefender": {
       "type": "bool",
       "defaultValue": true,
@@ -996,39 +1003,32 @@
         "description": "Enable Microsoft Defender on the subscription. (Default: true)"
       }
     },
-    "enableAscForServers": {
+    "enableDefForServers": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Enable Microsoft Defender for servers. (Default: true)"
       }
     },
-    "enableAscForStorage": {
+    "enableDefForStorage": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Enable Microsoft Defender for storage. (Default: true)"
       }
     },
-    "enableAscForKeyVault": {
+    "enableDefForKeyVault": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Enable Microsoft Defender for Key Vault. (Default: true)"
       }
     },
-    "enableAscForArm": {
+    "enableDefForArm": {
       "type": "bool",
       "defaultValue": true,
       "metadata": {
         "description": "Enable Microsoft Defender for Azure Resource Manager. (Default: true)"
-      }
-    },
-    "customStaticRoutes": {
-      "type": "array",
-      "defaultValue": [],
-      "metadata": {
-        "description": "Additional customer-provided static routes to be added to the route tables."
       }
     }
   },
@@ -4231,8 +4231,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.30.23.60470",
-              "templateHash": "2084797982642051770"
+              "version": "0.32.4.45862",
+              "templateHash": "2750035370057583180"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -32777,7 +32777,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "3633058617397027227"
+              "templateHash": "12722928182354787818"
             }
           },
           "parameters": {
@@ -33053,47 +33053,9 @@
                 "description": "Deploys anti malware extension on session hosts."
               }
             },
-            "deployDefender": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Enable Microsoft Defender on the subscription. (Default: true)"
-              }
-            },
-            "enableAscForServers": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Enable Microsoft Defender for servers. (Default: true)"
-              }
-            },
-            "enableAscForStorage": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Enable Microsoft Defender for storage. (Default: true)"
-              }
-            },
-            "enableAscForKeyVault": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Enable Microsoft Defender for Key Vault. (Default: true)"
-              }
-            },
-            "enableAscForArm": {
-              "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Enable Microsoft Defender for Azure Resource Manager. (Default: true)"
-              }
-            },
             "enableAscForCspm": {
               "type": "bool",
-              "defaultValue": true,
-              "metadata": {
-                "description": "Enable Microsoft Defender for Cloud Security Posture Management. (Default: true)"
-              }
+              "defaultValue": true
             }
           },
           "variables": {
@@ -38183,17 +38145,17 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "enableAscForServers": {
-            "value": "[parameters('enableAscForServers')]"
+          "enableDefForServers": {
+            "value": "[parameters('enableDefForServers')]"
           },
-          "enableAscForStorage": {
-            "value": "[parameters('enableAscForStorage')]"
+          "enableDefForStorage": {
+            "value": "[parameters('enableDefForStorage')]"
           },
-          "enableAscForKeyVault": {
-            "value": "[parameters('enableAscForKeyVault')]"
+          "enableDefForKeyVault": {
+            "value": "[parameters('enableDefForKeyVault')]"
           },
-          "enableAscForArm": {
-            "value": "[parameters('enableAscForArm')]"
+          "enableDefForArm": {
+            "value": "[parameters('enableDefForArm')]"
           }
         },
         "template": {
@@ -38203,7 +38165,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "13695623142931367089"
+              "templateHash": "3656581186862952949"
             }
           },
           "parameters": {
@@ -38297,28 +38259,28 @@
                 "description": "Select a Defender for Resource Manager plan."
               }
             },
-            "enableAscForServers": {
+            "enableDefForServers": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
                 "description": "Enable or disable the \"Configure Azure Defender for servers to be enabled\" policy."
               }
             },
-            "enableAscForStorage": {
+            "enableDefForStorage": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
                 "description": "Enable or disable the \"Configure Microsoft Defender for Storage to be enabled\" policy."
               }
             },
-            "enableAscForKeyVault": {
+            "enableDefForKeyVault": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
                 "description": "Enable or disable the \"Configure Microsoft Defender for Key Vault plan\" policy."
               }
             },
-            "enableAscForArm": {
+            "enableDefForArm": {
               "type": "bool",
               "defaultValue": false,
               "metadata": {
@@ -38339,7 +38301,7 @@
                   "category": "[parameters('initiativeCategory')]",
                   "version": "1.0.0"
                 },
-                "policyDefinitions": "[concat(createArray(createObject('policyDefinitionReferenceId', 'EnsureContactEmail', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '4f4f78b8-e367-4b10-a341-d9a4ad5cf1c7'), 'parameters', createObject('effect', createObject('value', 'AuditIfNotExists')))), if(parameters('enableAscForServers'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForServers', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '8e86a5b6-b9bd-49d1-8e21-4bb8a0862222'), 'parameters', createObject('effect', createObject('value', parameters('effect'))))), createArray()), if(parameters('enableAscForStorage'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForStorage', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', 'cfdc5972-75b3-4418-8ae1-7f5c36839390'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'isOnUploadMalwareScanningEnabled', createObject('value', parameters('isOnUploadMalwareScanningEnabled')), 'capGBPerMonthPerStorageAccount', createObject('value', parameters('capGBPerMonthPerStorageAccount')), 'isSensitiveDataDiscoveryEnabled', createObject('value', parameters('isSensitiveDataDiscoveryEnabled'))))), createArray()), if(parameters('enableAscForKeyVault'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForKeyVault', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '1f725891-01c0-420a-9059-4fa46cb770b7'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'subPlan', createObject('value', parameters('keyVaultSubPlan'))))), createArray()), if(parameters('enableAscForArm'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForARM', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', 'b7021b2b-08fd-4dc0-9de7-3c6ece09faf9'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'subPlan', createObject('value', parameters('resourceManagerSubPlan'))))), createArray()))]"
+                "policyDefinitions": "[concat(createArray(createObject('policyDefinitionReferenceId', 'EnsureContactEmail', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '4f4f78b8-e367-4b10-a341-d9a4ad5cf1c7'), 'parameters', createObject('effect', createObject('value', 'AuditIfNotExists')))), if(parameters('enableDefForServers'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForServers', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '8e86a5b6-b9bd-49d1-8e21-4bb8a0862222'), 'parameters', createObject('effect', createObject('value', parameters('effect'))))), createArray()), if(parameters('enableDefForStorage'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForStorage', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', 'cfdc5972-75b3-4418-8ae1-7f5c36839390'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'isOnUploadMalwareScanningEnabled', createObject('value', parameters('isOnUploadMalwareScanningEnabled')), 'capGBPerMonthPerStorageAccount', createObject('value', parameters('capGBPerMonthPerStorageAccount')), 'isSensitiveDataDiscoveryEnabled', createObject('value', parameters('isSensitiveDataDiscoveryEnabled'))))), createArray()), if(parameters('enableDefForKeyVault'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForKeyVault', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '1f725891-01c0-420a-9059-4fa46cb770b7'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'subPlan', createObject('value', parameters('keyVaultSubPlan'))))), createArray()), if(parameters('enableDefForArm'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForARM', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', 'b7021b2b-08fd-4dc0-9de7-3c6ece09faf9'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'subPlan', createObject('value', parameters('resourceManagerSubPlan'))))), createArray()))]"
               }
             }
           ]

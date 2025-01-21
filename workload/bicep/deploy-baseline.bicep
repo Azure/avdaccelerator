@@ -521,16 +521,16 @@ param customStaticRoutes array = []
 param deployDefender bool = true
 
 @sys.description('Enable Microsoft Defender for servers. (Default: true)')
-param enableAscForServers bool = true
+param enableDefForServers bool = true
 
 @sys.description('Enable Microsoft Defender for storage. (Default: true)')
-param enableAscForStorage bool = true
+param enableDefForStorage bool = true
 
 @sys.description('Enable Microsoft Defender for Key Vault. (Default: true)')
-param enableAscForKeyVault bool = true
+param enableDefForKeyVault bool = true
 
 @sys.description('Enable Microsoft Defender for Azure Resource Manager. (Default: true)')
-param enableAscForArm bool = true
+param enableDefForArm bool = true
 
 // =========== //
 // Variable declaration //
@@ -1632,10 +1632,10 @@ module defenderPolicySet './modules/azurePolicies/defenderSubscription.bicep' = 
   scope: subscription('${avdWorkloadSubsId}')
   name: 'Defender-Policies-${time}'
   params: {
-    enableAscForServers: enableAscForServers
-    enableAscForStorage: enableAscForStorage
-    enableAscForKeyVault: enableAscForKeyVault
-    enableAscForArm: enableAscForArm
+    enableDefForServers: enableDefForServers
+    enableDefForStorage: enableDefForStorage
+    enableDefForKeyVault: enableDefForKeyVault
+    enableDefForArm: enableDefForArm
   }
   dependsOn: [
     sessionHosts

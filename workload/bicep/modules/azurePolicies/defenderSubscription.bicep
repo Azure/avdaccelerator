@@ -57,16 +57,16 @@ param resourceManagerSubPlan string = 'PerApiCall'
 // Variables for enabling policies selectively //
 // =========== //
 @description('Enable or disable the "Configure Azure Defender for servers to be enabled" policy.')
-param enableAscForServers bool = false
+param enableDefForServers bool = false
 
 @description('Enable or disable the "Configure Microsoft Defender for Storage to be enabled" policy.')
-param enableAscForStorage bool = false
+param enableDefForStorage bool = false
 
 @description('Enable or disable the "Configure Microsoft Defender for Key Vault plan" policy.')
-param enableAscForKeyVault bool = false
+param enableDefForKeyVault bool = false
 
 @description('Enable or disable the "Configure Azure Defender for Resource Manager to be enabled" policy.')
-param enableAscForArm bool = false
+param enableDefForArm bool = false
 
 // =========== //
 // Deployments //
@@ -93,7 +93,7 @@ resource initiative 'Microsoft.Authorization/policySetDefinitions@2023-04-01' = 
           }
         }
       ],
-      enableAscForServers
+      enableDefForServers
         ? [
             {
               policyDefinitionReferenceId: 'DefenderForServers'
@@ -109,7 +109,7 @@ resource initiative 'Microsoft.Authorization/policySetDefinitions@2023-04-01' = 
             }
           ]
         : [],
-      enableAscForStorage
+      enableDefForStorage
         ? [
             {
               policyDefinitionReferenceId: 'DefenderForStorage'
@@ -134,7 +134,7 @@ resource initiative 'Microsoft.Authorization/policySetDefinitions@2023-04-01' = 
             }
           ]
         : [],
-      enableAscForKeyVault
+      enableDefForKeyVault
         ? [
             {
               policyDefinitionReferenceId: 'DefenderForKeyVault'
@@ -153,7 +153,7 @@ resource initiative 'Microsoft.Authorization/policySetDefinitions@2023-04-01' = 
             }
           ]
         : [],
-        enableAscForArm ? [
+        enableDefForArm ? [
           {
             policyDefinitionReferenceId: 'DefenderForARM'
             policyDefinitionId: tenantResourceId(

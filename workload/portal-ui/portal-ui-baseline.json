@@ -325,14 +325,14 @@
                             "label": "Select which Microsoft Defender for Cloud solutions you will enable.",
                             "elements": [
                                 {
-                                    "name": "enableAsc",
+                                    "name": "enableDef",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Deploy Microsoft Defender for Cloud and enable security monitoring for your platform and resources",
                                     "defaultValue": true,
                                     "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components"
                                 },
                                 {
-                                    "name": "enableAscForServers",
+                                    "name": "enableDefForServers",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Servers",
                                     "defaultValue": true,
@@ -340,7 +340,7 @@
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
-                                    "name": "enableAscForStorage",
+                                    "name": "enableDefForStorage",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Storage",
                                     "defaultValue": true,
@@ -348,7 +348,7 @@
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
-                                    "name": "enableAscForKeyVault",
+                                    "name": "enableDefForKeyVault",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Key Vault",
                                     "defaultValue": true,
@@ -356,7 +356,7 @@
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
                                 },
                                 {
-                                    "name": "enableAscForArm",
+                                    "name": "enableDefForArm",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Azure Resource Manager",
                                     "defaultValue": true,
@@ -2609,11 +2609,11 @@
                 "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
                 "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]",
                 
-                "enableAsc": "[steps('identity').identiyEnableDefOptions.enableAsc]",
-                "enableAscForServers": "[steps('identity').identiyEnableDefOptions.enableAscForServers]",
-                "enableAscForStorage": "[steps('identity').identiyEnableDefOptions.enableAscForStorage]",
-                "enableAscForKeyVault": "[steps('identity').identiyEnableDefOptions.enableAscForKeyVault]",
-                "enableAscForArm": "[steps('identity').identiyEnableDefOptions.enableAscForArm]"
+                "enableDef": "[steps('identity').identiyEnableDefOptions.enableAsc]",
+                "enableDefForServers": "[steps('identity').identiyEnableDefOptions.enableDefForServers]",
+                "enableDefForStorage": "[steps('identity').identiyEnableDefOptions.enableDefForStorage]",
+                "enableDefForKeyVault": "[steps('identity').identiyEnableDefOptions.enableDefForKeyVault]",
+                "enableDefForArm": "[steps('identity').identiyEnableDefOptions.enableDefForArm]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
