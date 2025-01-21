@@ -139,8 +139,6 @@ param dataCollectionRuleId string
 @sys.description('Deploys anti malware extension on session hosts.')
 param deployAntiMalwareExt bool
 
-param enableAscForCspm bool = true
-
 // =========== //
 // Variable declaration //
 // =========== //
