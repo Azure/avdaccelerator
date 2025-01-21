@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "3380933009008368627"
+      "templateHash": "11499334929568659446"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -32777,7 +32777,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.32.4.45862",
-              "templateHash": "12722928182354787818"
+              "templateHash": "18315988187779289577"
             }
           },
           "parameters": {
@@ -33052,10 +33052,6 @@
               "metadata": {
                 "description": "Deploys anti malware extension on session hosts."
               }
-            },
-            "enableAscForCspm": {
-              "type": "bool",
-              "defaultValue": true
             }
           },
           "variables": {
