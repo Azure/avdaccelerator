@@ -107,7 +107,7 @@ param hostPoolPublicNetworkAccess string = 'Enabled'
 ])
 @sys.description('Default to Enabled. Enables or Disables public network access on the workspace.')
 param workspacePublicNetworkAccess string = 'Enabled'
-  
+
 @allowed([
   'Automatic'
   'Direct'
@@ -510,6 +510,9 @@ param enableKvPurgeProtection bool = true
 
 @sys.description('Deploys anti malware extension on session hosts. (Default: true)')
 param deployAntiMalwareExt bool = true
+
+@sys.description('Additional customer-provided static routes to be added to the route tables.')
+param customStaticRoutes array = []
 
 //
 // Parameters for Microsoft Defender
@@ -1111,7 +1114,9 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     createVnet: createAvdVnet
     deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateMsixDeployment) ? true : false
     existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
-    createPrivateDnsZones: (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService) ? createPrivateDnsZones : false
+    createPrivateDnsZones: (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService)
+      ? createPrivateDnsZones
+      : false
     applicationSecurityGroupName: varApplicationSecurityGroupName
     computeObjectsRgName: varComputeObjectsRgName
     networkObjectsRgName: varNetworkObjectsRgName
@@ -1143,6 +1148,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
           ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
           : alaExistingWorkspaceResourceId)
       : ''
+    customStaticRoutes: customStaticRoutes
   }
   dependsOn: [
     baselineNetworkResourceGroup
@@ -1192,9 +1198,19 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     deployAvdPrivateLinkService: deployAvdPrivateLinkService
     hostPoolPublicNetworkAccess: hostPoolPublicNetworkAccess
     workspacePublicNetworkAccess: workspacePublicNetworkAccess
-    privateEndpointSubnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}' : existingVnetPrivateEndpointSubnetResourceId
-    avdVnetPrivateDnsZoneDiscoveryResourceId: deployAvdPrivateLinkService ? (createPrivateDnsZones ? networking.outputs.avdDnsDiscoveryZoneResourceId : avdVnetPrivateDnsZoneDiscoveryResourceId) : ''
-    avdVnetPrivateDnsZoneConnectionResourceId: deployAvdPrivateLinkService ? (createPrivateDnsZones ? networking.outputs.avdDnsConnectionZoneResourceId : avdVnetPrivateDnsZoneConnectionResourceId) : ''
+    privateEndpointSubnetResourceId: createAvdVnet
+      ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+      : existingVnetPrivateEndpointSubnetResourceId
+    avdVnetPrivateDnsZoneDiscoveryResourceId: deployAvdPrivateLinkService
+      ? (createPrivateDnsZones
+          ? networking.outputs.avdDnsDiscoveryZoneResourceId
+          : avdVnetPrivateDnsZoneDiscoveryResourceId)
+      : ''
+    avdVnetPrivateDnsZoneConnectionResourceId: deployAvdPrivateLinkService
+      ? (createPrivateDnsZones
+          ? networking.outputs.avdDnsConnectionZoneResourceId
+          : avdVnetPrivateDnsZoneConnectionResourceId)
+      : ''
     privateEndpointConnectionName: varPrivateEndPointConnectionName
     privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
     privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
@@ -1287,7 +1303,8 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
           ipRules: []
         }
       : {}
-    privateEndpoints: deployPrivateEndpointKeyvaultStorage? [
+    privateEndpoints: deployPrivateEndpointKeyvaultStorage
+      ? [
           {
             name: varWrklKvPrivateEndpointName
             subnetResourceId: createAvdVnet
@@ -1295,12 +1312,14 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
               : existingVnetPrivateEndpointSubnetResourceId
             customNetworkInterfaceName: 'nic-01-${varWrklKvPrivateEndpointName}'
             service: 'vault'
-            privateDnsZoneGroupName: createPrivateDnsZones ? split(networking.outputs.keyVaultDnsZoneResourceId, '/')[8] : split(avdVnetPrivateDnsZoneKeyvaultId, '/')[8]
+            privateDnsZoneGroupName: createPrivateDnsZones
+              ? split(networking.outputs.keyVaultDnsZoneResourceId, '/')[8]
+              : split(avdVnetPrivateDnsZoneKeyvaultId, '/')[8]
             privateDnsZoneResourceIds: [
-                createPrivateDnsZones ? networking.outputs.keyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
+              createPrivateDnsZones ? networking.outputs.keyVaultDnsZoneResourceId : avdVnetPrivateDnsZoneKeyvaultId
             ]
           }
-      ]
+        ]
       : []
     secrets: (avdIdentityServiceProvider != 'EntraID')
       ? [

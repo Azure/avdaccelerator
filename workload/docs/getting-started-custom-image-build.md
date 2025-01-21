@@ -1,20 +1,19 @@
 # Getting Started - Custom Image Build Deployment
 
-Welcome to the Custom Image Build Deployment guide! This guide will walk you through the process of deploying a custom image build solution for your Azure Virtual Desktop environment. By following these steps, you'll be able to create and deploy optimized and customized images for use with Azure Virtual Desktop. 
+Welcome to the Custom Image Build Deployment guide! This guide will walk you through the process of deploying a custom image build solution for your Azure Virtual Desktop environment. By following these steps, you'll be able to create and deploy optimized and customized images for use with Azure Virtual Desktop.
 
 ## Prerequisites
 
 Before you begin the deployment process, please ensure that you have met the following prerequisites:
 
-- <b>Subscription Requirements </b>: 
+- **Subscription Requirements**:
   - Access to the Azure Virtual Desktop shared services Azure subscription with owner permissions.
   - The Microsoft.VirtualMachineImages resource provider must be registered in the subscription to be used for deployment.
-- <b>ALZ Architecture Deployment</b>: It is recommended (though not mandatory) to have already deployed an ALZ architecture using the template reference implementation available. You can find more information on deploying the ALZ architecture in your own environment at [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale)
-- <b>Disable Private Endpoint Network Policies</b>: If you are using an existing virtual network,ensure that the private endpoint or private link services network policies are disabled. The deployment process will fail if these policies are enabled. You can find instructions on how to disable these policies in the following articles: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy) and [Disable network policies for Private Link](https://learn.microsoft.com/azure/private-link/disable-private-link-service-network-policy).
-- <b>URL Access for Virtual Network Subnet</b>: The virtual network subnet used for deployment needs access to the following URLs:
-  - https://raw.githubusercontent.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/main/Windows_VDOT.ps1
-  - https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip
-
+- **ALZ Architecture Deployment**: It is recommended (though not mandatory) to have already deployed an ALZ architecture using the template reference implementation available. You can find more information on deploying the ALZ architecture in your own environment at [Deploying Enterprise-Scale Architecture in your own environment](https://github.com/Azure/Enterprise-Scale)
+- **Disable Private Endpoint Network Policies**: If you are using an existing virtual network,ensure that the private endpoint or private link services network policies are disabled. The deployment process will fail if these policies are enabled. You can find instructions on how to disable these policies in the following articles: [Disable private endpoint network policy](https://docs.microsoft.com/azure/private-link/disable-private-endpoint-network-policy) and [Disable network policies for Private Link](https://learn.microsoft.com/azure/private-link/disable-private-link-service-network-policy).
+- **URL Access for Virtual Network Subnet**: The virtual network subnet used for deployment needs access to the following URLs:
+  - [https://raw.githubusercontent.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/main/Windows_VDOT.ps1](https://raw.githubusercontent.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/main/Windows_VDOT.ps1)
+  - [https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/archive/refs/heads/main.zip)
 
 ## Planning
 
@@ -37,7 +36,7 @@ The templates and scripts need to be executed from an execution environment. Her
 | Deployment Type | Link |
 |:--|:--|
 | Azure portal UI | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/?feature.deployapiver=2022-12-01#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
-| Command line (Bicep/ARM) | [![Powershell/Azure CLI](./icons/powershell.png)](./workload/bicep/readme.md#optional-custom-image-build-deployment) |
+| Command line (Bicep/ARM) | [![Powershell/Azure CLI](./icons/powershell.png)](../bicep/readme.md#optional-custom-image-build-deployment) |
 | Terraform | [![Terraform](./icons/terraform.png)](./workload/terraform/customimage) |
 
 ## What will be deployed

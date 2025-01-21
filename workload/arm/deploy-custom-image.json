@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "15063748513915342818"
+      "version": "0.32.4.45862",
+      "templateHash": "8280825469777706940"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -222,7 +222,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "The image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\r\nmost demanding network workloads on supported VM types.\r\n"
+        "description": "The image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the\nmost demanding network workloads on supported VM types.\n"
       }
     },
     "imageDefinitionHibernateSupported": {
@@ -843,19 +843,10 @@
     "varResourceGroupName": "[if(parameters('customNaming'), parameters('resourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('varNamingStandard')))]",
     "varRoles": "[union(variables('varVirtualNetworkJoinRole'), variables('varImageTemplateBuildAutomation'), variables('varImageTemplateContributorRole'))]",
     "varScreenCaptureProtectionCustomizer": "[if(parameters('screenCaptureProtection'), createArray(createObject('type', 'PowerShell', 'name', 'screenCaptureProtection', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-ScreenCaptureProtection.ps1', variables('varBaseScriptUri')))), createArray())]",
-    "varScriptCustomizers": "[union(variables('varRdpShortPathCustomizer'), variables('varScreenCaptureProtectionCustomizer'), variables('varVdotCustomizer'))]",
+    "varScriptCustomizers": "[union(variables('varRdpShortPathCustomizer'), variables('varScreenCaptureProtectionCustomizer'))]",
     "varTelemetryId": "[format('pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-{0}', parameters('deploymentLocation'))]",
     "varTimeZone": "[variables('varLocations')[variables('varLocation')].timeZone]",
     "varUserAssignedManagedIdentityName": "[if(parameters('customNaming'), parameters('userAssignedManagedIdentityCustomName'), format('id-aib-{0}', variables('varNamingStandard')))]",
-    "varVdotCustomizer": [
-      {
-        "type": "PowerShell",
-        "name": "VirtualDesktopOptimizationTool",
-        "runElevated": true,
-        "runAsSystem": true,
-        "scriptUri": "[format('{0}scripts/Set-VirtualDesktopOptimizations.ps1', variables('varBaseScriptUri'))]"
-      }
-    ],
     "varVirtualNetworkJoinRoleName": "Virtual Network Join",
     "varVirtualNetworkJoinRole": "[if(parameters('useExistingVirtualNetwork'), createArray(createObject('resourceGroup', split(parameters('existingVirtualNetworkResourceId'), '/')[4], 'name', variables('varVirtualNetworkJoinRoleName'), 'description', 'Allow resources to join a subnet', 'actions', createArray('Microsoft.Network/virtualNetworks/read', 'Microsoft.Network/virtualNetworks/subnets/read', 'Microsoft.Network/virtualNetworks/subnets/join/action'))), createArray())]",
     "varVmSize": "Standard_D4s_v3"
@@ -903,8 +894,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "10947076114802729857"
+              "version": "0.32.4.45862",
+              "templateHash": "2997718652572802150"
             },
             "name": "Resource Groups",
             "description": "This module deploys a Resource Group.",
@@ -1036,8 +1027,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4347443152026017494"
+              "version": "0.32.4.45862",
+              "templateHash": "18377214292539099814"
             }
           },
           "parameters": {
@@ -1171,8 +1162,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "15471634163586951656"
+              "version": "0.32.4.45862",
+              "templateHash": "9800876540676001554"
             },
             "name": "User Assigned Identities",
             "description": "This module deploys a User Assigned Identity.",
@@ -1425,8 +1416,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "8632123358833248130"
+              "version": "0.32.4.45862",
+              "templateHash": "6548182237058026465"
             },
             "name": "Role Assignments (Resource Group scope)",
             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -1597,8 +1588,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "8632123358833248130"
+              "version": "0.32.4.45862",
+              "templateHash": "6548182237058026465"
             },
             "name": "Role Assignments (Resource Group scope)",
             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -1769,8 +1760,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "3107782125864811908"
+              "version": "0.32.4.45862",
+              "templateHash": "767607799676016995"
             },
             "name": "Azure Compute Galleries",
             "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -2083,8 +2074,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "4565230592976142558"
+                      "version": "0.32.4.45862",
+                      "templateHash": "10144839515674727775"
                     },
                     "name": "Compute Galleries Applications",
                     "description": "This module deploys an Azure Compute Gallery Application.",
@@ -2276,10 +2267,7 @@
                         "privacyStatementUri": "[parameters('privacyStatementUri')]",
                         "releaseNoteUri": "[parameters('releaseNoteUri')]",
                         "supportedOSType": "[parameters('supportedOSType')]"
-                      },
-                      "dependsOn": [
-                        "gallery"
-                      ]
+                      }
                     },
                     "application_roleAssignments": {
                       "copy": {
@@ -2440,8 +2428,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "1237717735391200924"
+                      "version": "0.32.4.45862",
+                      "templateHash": "11413741938827176545"
                     },
                     "name": "Compute Galleries Image Definitions",
                     "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -2619,7 +2607,7 @@
                         "V2"
                       ],
                       "metadata": {
-                        "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n- If this value is not specified, then it is determined by the securityType parameter.\r\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
+                        "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
                       }
                     },
                     "securityType": {
@@ -2646,7 +2634,7 @@
                       "type": "bool",
                       "defaultValue": true,
                       "metadata": {
-                        "description": "Optional. Specify if the image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\r\n"
+                        "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
                       }
                     },
                     "description": {
@@ -2782,10 +2770,7 @@
                         "disallowed": {
                           "diskTypes": "[parameters('excludedDiskTypes')]"
                         }
-                      },
-                      "dependsOn": [
-                        "gallery"
-                      ]
+                      }
                     },
                     "image_roleAssignments": {
                       "copy": {
@@ -2950,8 +2935,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "1237717735391200924"
+              "version": "0.32.4.45862",
+              "templateHash": "11413741938827176545"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -3129,7 +3114,7 @@
                 "V2"
               ],
               "metadata": {
-                "description": "Optional. The hypervisor generation of the Virtual Machine.\r\n- If this value is not specified, then it is determined by the securityType parameter.\r\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\r\n"
+                "description": "Optional. The hypervisor generation of the Virtual Machine.\n- If this value is not specified, then it is determined by the securityType parameter.\n- If the securityType parameter is specified, then the value of hyperVGeneration will be V2, else V1.\n"
               }
             },
             "securityType": {
@@ -3156,7 +3141,7 @@
               "type": "bool",
               "defaultValue": true,
               "metadata": {
-                "description": "Optional. Specify if the image supports accelerated networking.\r\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\r\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\r\n"
+                "description": "Optional. Specify if the image supports accelerated networking.\nAccelerated networking enables single root I/O virtualization (SR-IOV) to a VM, greatly improving its networking performance.\nThis high-performance path bypasses the host from the data path, which reduces latency, jitter, and CPU utilization for the most demanding network workloads on supported VM types.\n"
               }
             },
             "description": {
@@ -3292,10 +3277,7 @@
                 "disallowed": {
                   "diskTypes": "[parameters('excludedDiskTypes')]"
                 }
-              },
-              "dependsOn": [
-                "gallery"
-              ]
+              }
             },
             "image_roleAssignments": {
               "copy": {
@@ -3417,8 +3399,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "8288982078451228700"
+              "version": "0.32.4.45862",
+              "templateHash": "2647588914323323261"
             },
             "name": "Virtual Machine Image Templates",
             "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
@@ -4135,8 +4117,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4503325036957359192"
+              "version": "0.32.4.45862",
+              "templateHash": "3083170160174738636"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace.",
@@ -4368,8 +4350,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "1745671120474305926"
+                      "version": "0.32.4.45862",
+                      "templateHash": "12329258505555524534"
                     },
                     "name": "Log Analytics Workspace Storage Insight Configs",
                     "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -4442,11 +4424,7 @@
                           "id": "[parameters('storageAccountResourceId')]",
                           "key": "[listKeys(resourceId('Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2022-09-01').keys[0].value]"
                         }
-                      },
-                      "dependsOn": [
-                        "storageAccount",
-                        "workspace"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -4617,8 +4595,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "17582798944003531307"
+              "version": "0.32.4.45862",
+              "templateHash": "15856342842826356274"
             },
             "name": "Automation Accounts",
             "description": "This module deploys an Azure Automation Account.",
@@ -5307,10 +5285,7 @@
               "apiVersion": "2023-02-01",
               "subscriptionId": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '//'), '/')[2]]",
               "resourceGroup": "[split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), '////'), '/')[4]]",
-              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]",
-              "dependsOn": [
-                "cMKKeyVault"
-              ]
+              "name": "[format('{0}/{1}', last(split(coalesce(tryGet(parameters('customerManagedKey'), 'keyVaultResourceId'), 'dummyVault'), '/')), coalesce(tryGet(parameters('customerManagedKey'), 'keyName'), 'dummyKey'))]"
             },
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
@@ -5366,8 +5341,8 @@
                 "disableLocalAuth": "[parameters('disableLocalAuth')]"
               },
               "dependsOn": [
-                "cMKKeyVault",
-                "cMKUserAssignedIdentity"
+                "cMKKeyVault::cMKKey",
+                "cMKKeyVault"
               ]
             },
             "automationAccount_lock": {
@@ -5472,8 +5447,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "10580987489047715400"
+                      "version": "0.32.4.45862",
+                      "templateHash": "7887936383291613293"
                     },
                     "name": "Automation Account Credential",
                     "description": "This module deploys Azure Automation Account Credential.",
@@ -5550,10 +5525,7 @@
                         "password": "[parameters('credentials')[copyIndex()].password]",
                         "userName": "[parameters('credentials')[copyIndex()].userName]",
                         "description": "[coalesce(tryGet(parameters('credentials')[copyIndex()], 'description'), '')]"
-                      },
-                      "dependsOn": [
-                        "automationAccount"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -5631,8 +5603,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "14556422655915492083"
+                      "version": "0.32.4.45862",
+                      "templateHash": "11043846710506937492"
                     },
                     "name": "Automation Account Modules",
                     "description": "This module deploys an Azure Automation Account Module.",
@@ -5697,10 +5669,7 @@
                           "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
                           "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
                         }
-                      },
-                      "dependsOn": [
-                        "automationAccount"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -5773,8 +5742,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "6299933839999486418"
+                      "version": "0.32.4.45862",
+                      "templateHash": "2769963466163535886"
                     },
                     "name": "Automation Account Schedules",
                     "description": "This module deploys an Azure Automation Account Schedule.",
@@ -5952,8 +5921,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "11653746330709835761"
+                      "version": "0.32.4.45862",
+                      "templateHash": "10628373878524632674"
                     },
                     "name": "Automation Account Runbooks",
                     "description": "This module deploys an Azure Automation Account Runbook.",
@@ -6081,11 +6050,7 @@
                         "runbookType": "[parameters('type')]",
                         "description": "[parameters('description')]",
                         "publishContentLink": "[if(not(empty(parameters('uri'))), if(empty(parameters('uri')), null(), createObject('uri', if(not(empty(parameters('uri'))), if(empty(parameters('scriptStorageAccountResourceId')), parameters('uri'), format('{0}?{1}', parameters('uri'), listAccountSas(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(coalesce(parameters('scriptStorageAccountResourceId'), '//'), '/')[2], split(coalesce(parameters('scriptStorageAccountResourceId'), '////'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(coalesce(parameters('scriptStorageAccountResourceId'), 'dummyVault'), '/'))), '2021-04-01', variables('accountSasProperties')).accountSasToken)), null()), 'version', if(not(empty(parameters('version'))), parameters('version'), null()))), null())]"
-                      },
-                      "dependsOn": [
-                        "automationAccount",
-                        "storageAccount"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -6156,8 +6121,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "10826746631810286901"
+                      "version": "0.32.4.45862",
+                      "templateHash": "17724956402217558185"
                     },
                     "name": "Automation Account Job Schedules",
                     "description": "This module deploys an Azure Automation Account Job Schedule.",
@@ -6284,8 +6249,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "13284693609482301780"
+                      "version": "0.32.4.45862",
+                      "templateHash": "995071399213667449"
                     },
                     "name": "Automation Account Variables",
                     "description": "This module deploys an Azure Automation Account Variable.",
@@ -6399,8 +6364,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "12032441371027552374"
+                      "version": "0.32.4.45862",
+                      "templateHash": "17097798234862446049"
                     },
                     "name": "Log Analytics Workspace Linked Services",
                     "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -6456,10 +6421,7 @@
                       "properties": {
                         "resourceId": "[parameters('resourceId')]",
                         "writeAccessResourceId": "[if(empty(parameters('writeAccessResourceId')), null(), parameters('writeAccessResourceId'))]"
-                      },
-                      "dependsOn": [
-                        "workspace"
-                      ]
+                      }
                     }
                   },
                   "outputs": {
@@ -6718,8 +6680,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.29.47.4906",
-                      "templateHash": "752305553206238634"
+                      "version": "0.32.4.45862",
+                      "templateHash": "13977107975362188587"
                     },
                     "name": "Automation Account Software Update Configurations",
                     "description": "This module deploys an Azure Automation Account Software Update Configuration.",
@@ -7872,8 +7834,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "14556422655915492083"
+              "version": "0.32.4.45862",
+              "templateHash": "11043846710506937492"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module.",
@@ -7938,10 +7900,7 @@
                   "uri": "[if(not(equals(parameters('version'), 'latest')), format('{0}/{1}/{2}', parameters('uri'), parameters('name'), parameters('version')), format('{0}/{1}', parameters('uri'), parameters('name')))]",
                   "version": "[if(not(equals(parameters('version'), 'latest')), parameters('version'), null())]"
                 }
-              },
-              "dependsOn": [
-                "automationAccount"
-              ]
+              }
             }
           },
           "outputs": {
@@ -8023,8 +7982,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "4372086538108810751"
+              "version": "0.32.4.45862",
+              "templateHash": "585773104499839924"
             },
             "name": "Action Groups",
             "description": "This module deploys an Action Group.",
@@ -8393,8 +8352,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7555294736600820033"
+              "version": "0.32.4.45862",
+              "templateHash": "16700458498164414655"
             },
             "name": "Scheduled Query Rules",
             "description": "This module deploys a Scheduled Query Rule.",
