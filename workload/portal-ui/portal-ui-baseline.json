@@ -337,7 +337,7 @@
                                     "label": "Enable Microsoft Defender for Servers",
                                     "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.",
-                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
                                 },
                                 {
                                     "name": "enableDefForStorage",
@@ -345,7 +345,7 @@
                                     "label": "Enable Microsoft Defender for Storage",
                                     "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.",
-                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
                                 },
                                 {
                                     "name": "enableDefForKeyVault",
@@ -353,7 +353,7 @@
                                     "label": "Enable Microsoft Defender for Key Vault",
                                     "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Key Vault",
-                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
                                 },
                                 {
                                     "name": "enableDefForArm",
@@ -361,7 +361,7 @@
                                     "label": "Enable Microsoft Defender for Azure Resource Manager",
                                     "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Resource Manager.",
-                                    "visible": "[steps('identity').identiyEnableDefOptions.enableAsc]"
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
                                 }
                             ]
                         }
@@ -2609,7 +2609,7 @@
                 "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
                 "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]",
                 
-                "enableDef": "[steps('identity').identiyEnableDefOptions.enableAsc]",
+                "enableDef": "[steps('identity').identiyEnableDefOptions.enableDef]",
                 "enableDefForServers": "[steps('identity').identiyEnableDefOptions.enableDefForServers]",
                 "enableDefForStorage": "[steps('identity').identiyEnableDefOptions.enableDefForStorage]",
                 "enableDefForKeyVault": "[steps('identity').identiyEnableDefOptions.enableDefForKeyVault]",
