@@ -182,9 +182,20 @@
                                 {
                                     "name": "identityDomainName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "AD Domain name",
-                                    "visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS'))]",
-                                    "toolTip": "The full qualified domain name of the ADDS or EntraDS domain, this information is used for VMs and storage accounts domain join. It is additionally used to set NTFS permissions when deploying/configuring FSLogix",
+                                    "label": "Domain name",
+                                    "visible": true,
+                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Entra ID + FSLogix deployments, because identities need to be hybrid for storage authenctication to be supported.",
+                                    "placeholder": "Example: contoso.com",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "identityDomainGuid",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Domain GUID",
+                                    "visible": "[(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
+                                    "toolTip": "GUID for the on-premises domain controller.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
@@ -2460,7 +2471,17 @@
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "identityDomainName": "[if(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('identity').identityDomainInformation.identityDomainName, 'none')]",
+
+
+
+
+                "identityDomainName": "[if(notempty(steps('identity').identityDomainInformation.identityDomainName), steps('identity').identityDomainInformation.identityDomainName, 'none')]",
+                "identityDomainGuid": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityDomainGuid, '')]",
+                
+                
+                
+                
+                
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",

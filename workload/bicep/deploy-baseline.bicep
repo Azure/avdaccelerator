@@ -65,7 +65,7 @@ param securityPrincipalName string = ''
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainName string = 'none'
 
-@sys.description('AD domain GUID. (Default: "")')
+@sys.description('GUID of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainGuid string = ''
 
 @sys.description('AVD session host domain join user principal name. (Default: none)')

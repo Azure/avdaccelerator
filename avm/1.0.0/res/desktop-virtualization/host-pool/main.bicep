@@ -176,14 +176,15 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-08-08-preview' = {
   name: name
   location: location
   tags: tags
   properties: {
     friendlyName: friendlyName
     description: description
-    hostPoolType: hostPoolType
+    hostPoolType: 'pooled'
+    
     publicNetworkAccess: publicNetworkAccess
     customRdpProperty: customRdpProperty
     personalDesktopAssignmentType: any(personalDesktopAssignmentType)
@@ -204,6 +205,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
     ssoClientId: ssoClientId
     ssoClientSecretKeyVaultPath: ssoClientSecretKeyVaultPath
     ssoSecretType: ssoSecretType
+
   }
 }
 
