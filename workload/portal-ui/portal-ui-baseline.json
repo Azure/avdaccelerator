@@ -194,11 +194,11 @@
                                     "name": "identityDomainGuid",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Domain GUID",
-                                    "visible": "[(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                                     "toolTip": "GUID for the on-premises domain controller.",
-                                    "placeholder": "Example: contoso.com",
+                                    "placeholder": "Example: A1B2C3D4-E5F6-7890-1234-56789ABCDEF0",
                                     "constraints": {
-                                        "required": true
+                                        "required": false
                                     }
                                 }
                             ]
