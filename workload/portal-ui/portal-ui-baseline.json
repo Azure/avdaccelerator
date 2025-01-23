@@ -2475,7 +2475,7 @@
 
 
 
-                "identityDomainName": "[if(notempty(steps('identity').identityDomainInformation.identityDomainName), steps('identity').identityDomainInformation.identityDomainName, 'none')]",
+                "identityDomainName": "[steps('identity').identityDomainInformation.identityDomainName]",
                 "identityDomainGuid": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityDomainGuid, '')]",
                 
                 
