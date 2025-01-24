@@ -183,7 +183,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   properties: {
     friendlyName: friendlyName
     description: description
-    hostPoolType: 'pooled'
+    hostPoolType: hostPoolType
     
     publicNetworkAccess: publicNetworkAccess
     customRdpProperty: customRdpProperty
