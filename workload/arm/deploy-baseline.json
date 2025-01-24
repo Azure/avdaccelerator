@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.30.23.60470",
-      "templateHash": "7166903205795463106"
+      "templateHash": "8394596456483183477"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -124,7 +124,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "AD domain GUID. (Default: \"\")"
+        "description": "GUID of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
       }
     },
     "avdDomainJoinUserName": {
@@ -370,11 +370,11 @@
         "description": "Deploy Fslogix setup. (Default: true)"
       }
     },
-    "createMsixDeployment": {
+    "createAppAttachDeployment": {
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Deploy MSIX App Attach setup. (Default: false)"
+        "description": "Deploy App Attach setup. (Default: false)"
       }
     },
     "fslogixFileShareQuotaSize": {
@@ -384,11 +384,11 @@
         "description": "Fslogix file share size. (Default: 1)"
       }
     },
-    "msixFileShareQuotaSize": {
+    "appAttachFileShareQuotaSize": {
       "type": "int",
       "defaultValue": 1,
       "metadata": {
-        "description": "MSIX file share size. (Default: 1)"
+        "description": "App Attach file share size. (Default: 1)"
       }
     },
     "avdDeploySessionHosts": {
@@ -495,7 +495,7 @@
         "description": "Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)"
       }
     },
-    "msixStoragePerformance": {
+    "appAttachStoragePerformance": {
       "type": "string",
       "defaultValue": "Premium",
       "allowedValues": [
@@ -503,7 +503,7 @@
         "Premium"
       ],
       "metadata": {
-        "description": "Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)"
+        "description": "Storage account SKU for App Attach storage. Recommended tier is Premium. (Default: Premium)"
       }
     },
     "diskZeroTrust": {
@@ -808,7 +808,7 @@
       "defaultValue": "st",
       "maxLength": 2,
       "metadata": {
-        "description": "AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)"
+        "description": "AVD FSLogix and App Attach storage account prefix custom name. (Default: st)"
       }
     },
     "fslogixFileShareCustomName": {
@@ -818,11 +818,11 @@
         "description": "FSLogix file share name. (Default: fslogix-pc-app1-dev-001)"
       }
     },
-    "msixFileShareCustomName": {
+    "appAttachFileShareCustomName": {
       "type": "string",
-      "defaultValue": "msix-app1-dev-use2-001",
+      "defaultValue": "appa-app1-dev-use2-001",
       "metadata": {
-        "description": "MSIX file share name. (Default: msix-app1-dev-001)"
+        "description": "App Attach file share name. (Default: appa-app1-dev-001)"
       }
     },
     "avdWrklKvPrefixCustomName": {
@@ -1396,7 +1396,7 @@
     "varApplicationGroupName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomName'), format('vdag-{0}-{1}-001', variables('varHostPoolPreferredAppGroupType'), variables('varManagementPlaneNamingStandard')))]",
     "varApplicationGroupFriendlyName": "[if(parameters('avdUseCustomNaming'), parameters('avdApplicationGroupCustomFriendlyName'), format('{0} {1} {2} {3} 001', variables('varHostPoolPreferredAppGroupType'), parameters('deploymentPrefix'), parameters('deploymentEnvironment'), parameters('avdManagementPlaneLocation')))]",
     "varDeployScalingPlan": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('avdDeployScalingPlan'))]",
-    "varCreateMsixDeployment": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('createMsixDeployment'))]",
+    "varCreateMsixDeployment": "[if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), false(), parameters('createAppAttachDeployment'))]",
     "varScalingPlanName": "[if(parameters('avdUseCustomNaming'), parameters('avdScalingPlanCustomName'), format('vdscaling-{0}-001', variables('varManagementPlaneNamingStandard')))]",
     "varPrivateEndPointConnectionName": "[format('pe-{0}-connection', variables('varHostPoolName'))]",
     "varPrivateEndPointDiscoveryName": "[format('pe-{0}-discovery', variables('varWorkSpaceName'))]",
@@ -1411,7 +1411,7 @@
     "varVmssFlexNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('vmssFlexCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('vmss-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
     "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
-    "varMsixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('msixFileShareCustomName'), format('msix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
+    "varMsixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('appAttachFileShareCustomName'), format('appa-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}fsl{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stfsl{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
     "varFslogixStorageFqdn": "[if(parameters('createAvdFslogixDeployment'), format('{0}.file.{1}', variables('varFslogixStorageName'), environment().suffixes.storage), '')]",
     "varMsixStorageFqdn": "[format('{0}.file.{1}', variables('varMsixStorageName'), environment().suffixes.storage)]",
@@ -1428,7 +1428,7 @@
     "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateMsixDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
-    "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('msixStoragePerformance')), format('{0}_LRS', parameters('msixStoragePerformance')))]",
+    "varMsixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('appAttachStoragePerformance')), format('{0}_LRS', parameters('appAttachStoragePerformance')))]",
     "varMaxSessionHostsPerTemplate": 10,
     "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
@@ -2155,7 +2155,7 @@
           "dataCollectionRulesName": {
             "value": "[variables('varDataCollectionRulesName')]"
           },
-          "storageObjectsRgName": "[if(or(parameters('createAvdFslogixDeployment'), parameters('createMsixDeployment')), createObject('value', variables('varStorageObjectsRgName')), createObject('value', ''))]",
+          "storageObjectsRgName": "[if(or(parameters('createAvdFslogixDeployment'), parameters('createAppAttachDeployment')), createObject('value', variables('varStorageObjectsRgName')), createObject('value', ''))]",
           "networkObjectsRgName": "[if(parameters('createAvdVnet'), createObject('value', variables('varNetworkObjectsRgName')), createObject('value', ''))]",
           "monitoringRgName": {
             "value": "[variables('varMonitoringRgName')]"
@@ -8698,7 +8698,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.30.23.60470",
-              "templateHash": "4295985344228543488"
+              "templateHash": "15124641765882144201"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -9044,7 +9044,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.30.23.60470",
-                      "templateHash": "4697786867177911469"
+                      "templateHash": "7369506413076375709"
                     },
                     "name": "Azure Virtual Desktop Host Pool",
                     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -9567,7 +9567,7 @@
                       "properties": {
                         "friendlyName": "[parameters('friendlyName')]",
                         "description": "[parameters('description')]",
-                        "hostPoolType": "[parameters('hostPoolType')]",
+                        "hostPoolType": "pooled",
                         "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
                         "customRdpProperty": "[parameters('customRdpProperty')]",
                         "personalDesktopAssignmentType": "[parameters('personalDesktopAssignmentType')]",
@@ -29633,7 +29633,7 @@
       "condition": "[variables('varCreateMsixDeployment')]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('Storage-MSIX-{0}', parameters('time'))]",
+      "name": "[format('Storage-AppA-{0}', parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -29642,7 +29642,7 @@
         "mode": "Incremental",
         "parameters": {
           "storagePurpose": {
-            "value": "msix"
+            "value": "AppAttach"
           },
           "vmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"
@@ -29650,12 +29650,12 @@
           "fileShareName": {
             "value": "[variables('varMsixFileShareName')]"
           },
-          "fileShareMultichannel": "[if(equals(parameters('msixStoragePerformance'), 'Premium'), createObject('value', true()), createObject('value', false()))]",
+          "fileShareMultichannel": "[if(equals(parameters('appAttachStoragePerformance'), 'Premium'), createObject('value', true()), createObject('value', false()))]",
           "storageSku": {
             "value": "[variables('varMsixStorageSku')]"
           },
           "fileShareQuotaSize": {
-            "value": "[parameters('msixFileShareQuotaSize')]"
+            "value": "[parameters('appAttachFileShareQuotaSize')]"
           },
           "storageAccountFqdn": {
             "value": "[variables('varMsixStorageFqdn')]"
