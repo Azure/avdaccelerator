@@ -55,16 +55,16 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 - [x] Private endpoint considerations for Azure Files and Key Vault private endpoints name resolution:
   - Scenario 1:
     - Specs: creating a new Azure Virtual Desktop vNet, using custom DNS servers and existing Azure private DNS Zones.
-    - Existing private DNS zones MUST be linked to the vNet where the custom DNS servers are connected, this is needed for the end-to-end setup of FSLogix and MSIX App Attach file shares to be successful. The DNS resolution requests will be sent to the custom DNS servers and its vNet is the one that needs to resolve private endpoint DNS records.
+    - Existing private DNS zones MUST be linked to the vNet where the custom DNS servers are connected, this is needed for the end-to-end setup of FSLogix and App Attach file shares to be successful. The DNS resolution requests will be sent to the custom DNS servers and its vNet is the one that needs to resolve private endpoint DNS records.
   - Scenario 2:
     - Specs: using private endpoints, creating a new Azure Virtual Desktop vNet and new private DNS zones.
-    - Custom DNS servers may NOT be used in the new vNet as this will cause FSLogix and/or MSIX App Attach file shares deployments to fail. This happens because the private DNS zones will be linked to the newly created vNet and only this vNet will be able to resolve the private endpoints DNS records. When using custom DNS servers, existing Private DNS zones link to the vNet wher custom DNS server are connected will need to be used.
+    - Custom DNS servers may NOT be used in the new vNet as this will cause FSLogix and/or App Attach file shares deployments to fail. This happens because the private DNS zones will be linked to the newly created vNet and only this vNet will be able to resolve the private endpoints DNS records. When using custom DNS servers, existing Private DNS zones link to the vNet wher custom DNS server are connected will need to be used.
   - Scenario 3:
     - Specs: using existing Azure Virtual Desktop vNet, and creating new private DNS zones.
-    - Custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. This scenario is only recommended when using Microsoft Entra ID as identity service provider.
+    - Custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. This scenario is only recommended when using Microsoft Entra ID as identity service provider.
   - Scenario 4:
     - Specs: using private endpoints and an existing Azure Virtual Desktop vNet with custom DNS servers configured.
-    - Existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or MSIX App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.
+    - Existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.
     
   **Important**: for all scenatios that use custom DNS servers, conditional forwarding rules MUST be configured to send to Azure (168.63.129.16) the DNS requests targeting file.core.windows.net and vaultcore.azure.net name spaces.
 - [x] Required private DNS zone name spaces:

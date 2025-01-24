@@ -39,7 +39,7 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `osdisk-{nn}-vm{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}{nnnn}` | Disk | OS disk attached to session hosts. |
 | `nic-{nn}-vm{deploymentPrefix}{DeploymentEnvironment-d/t/p}{AzureRegionAcronym}{nnnn}` | Network Interface | NEtwork interface attached to session hosts. |
 
-### Storage naming (FSLogix & MSIX App Attach)
+### Storage naming (FSLogix & App Attach)
 
 | Resource Name | Resource Type | Description |
 |:--|:--|:--|
@@ -48,9 +48,9 @@ The naming of resources is hard coded in the templates but can also be modified 
 | `stfsl{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}` | Storage account | FSLogix file shares. |
 | `pe-stfsl{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}-file` | Private endpoint | Private endpoint attached to FSLogix storage account files service. |
 | `nic-{nn}-pe-stfsl{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}-file` | Network Interface | Network interface attached to FSLogix storage account's private endpoint. |
-| `stmsx{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}` | Storage account | MSIX App Attach file shares. |
-| `pe-stmsx{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}-file` | Private endpoint | Private endpoint attached to MSIX App Attach storage account files service. |
-| `nic-{nn}-pe-stmsx{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}-file` | Network Interface | Network interface attached to MSIX App Attach storage account's private endpoint. |
+| `stmsx{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}` | Storage account | App Attach file shares. |
+| `pe-stmsx{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}-file` | Private endpoint | Private endpoint attached to App Attach storage account files service. |
+| `nic-{nn}-pe-stmsx{deploymentPrefix}{DeploymentEnvironment-d/t/p}{uniqueString}-file` | Network Interface | Network interface attached to App Attach storage account's private endpoint. |
 
 ### Network naming
 

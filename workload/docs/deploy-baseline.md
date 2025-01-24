@@ -55,9 +55,9 @@
   - **FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
   - **FSLogix Azure Files share Performance** - Select the desired performance.
   - **FSLogix file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
-  - **MSIX App Attach**: Deploys MSIX App Attach container for MSIX app packages.
-  - **MSIX App Attach Azure Files share Performance** - Select the desired performance.
-  - **MSIX App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
+  - **App Attach**: Deploys App Attach container for App Attach app packages.
+  - **App Attach Azure Files share Performance** - Select the desired performance.
+  - **App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
 - **Network connectivity** blade
   - **Virtual Network** - Select if creating "New"" or use "Existing" virtual network.
     - **New** - Select if you want to create a new VNet to be used for Azure Virtual Desktop.

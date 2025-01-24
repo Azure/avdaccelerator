@@ -96,13 +96,13 @@
         "subscriptionName": ""
       },
       "metadata": {
-        "description": "Virtual Network to attach MSIX Tools VM to."
+        "description": "Virtual Network to attach App Attach Tools VM to."
       }
     },
     "SubnetName": {
       "type": "string",
       "metadata": {
-        "description": "Subnet to use for MSIX VM Tools VM."
+        "description": "Subnet to use for App Attach VM Tools VM."
       }
     }
   },

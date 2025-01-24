@@ -46,9 +46,9 @@ avdVnetPrivateDnsZoneFilesId | No       | Use existing Azure private DNS zone fo
 avdVnetPrivateDnsZoneKeyvaultId | No       | Use existing Azure private DNS zone for key vault privatelink.vaultcore.azure.net or privatelink.vaultcore.usgovcloudapi.net. (Default: "")
 vNetworkGatewayOnHub | No       | Does the hub contains a virtual network gateway. (Default: false)
 createAvdFslogixDeployment | No       | Deploy Fslogix setup. (Default: true)
-createMsixDeployment | No       | Deploy MSIX App Attach setup. (Default: false)
+createAppAttachDeployment | No       | Deploy App Attach setup. (Default: false)
 fslogixFileShareQuotaSize | No       | Fslogix file share size. (Default: 1)
-msixFileShareQuotaSize | No       | MSIX file share size. (Default: 1)
+appAttachFileShareQuotaSize | No       | App Attach file share size. (Default: 1)
 avdDeploySessionHosts | No       | Deploy new session hosts. (Default: true)
 deployGpuPolicies | No       | Deploy VM GPU extension policies. (Default: false)
 avdDeployMonitoring | No       | Deploy AVD monitoring resources and setings. (Default: false)
@@ -63,7 +63,7 @@ zoneRedundantStorage | No       | When true, Zone Redundant Storage (ZRS) is use
 avsetFaultDomainCount | No       | Sets the number of fault domains for the availability set. (Default: 2)
 avsetUpdateDomainCount | No       | Sets the number of update domains for the availability set. (Default: 5)
 fslogixStoragePerformance | No       | Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)
-msixStoragePerformance | No       | Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)
+appAttachStoragePerformance | No       | Storage account SKU for App Attach storage. Recommended tier is Premium. (Default: Premium)
 diskZeroTrust  | No       | Enables a zero trust configuration on the session host disks. (Default: false)
 avdSessionHostsSize | No       | Session host VM size. (Default: Standard_D4ads_v5)
 avdSessionHostDiskType | No       | OS disk type for session host. (Default: Premium_LRS)
@@ -100,9 +100,9 @@ avdApplicationGroupCustomName | No       | AVD desktop application group custom 
 avdApplicationGroupCustomFriendlyName | No       | AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)
 avdSessionHostCustomNamePrefix | No       | AVD session host prefix custom name. (Default: vmapp1duse2)
 avsetCustomNamePrefix | No       | AVD availability set custom name. (Default: avail)
-storageAccountPrefixCustomName | No       | AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)
+storageAccountPrefixCustomName | No       | AVD FSLogix and App Attach storage account prefix custom name. (Default: st)
 fslogixFileShareCustomName | No       | FSLogix file share name. (Default: fslogix-pc-app1-dev-001)
-msixFileShareCustomName | No       | MSIX file share name. (Default: msix-app1-dev-001)
+appAttach | No       | App Attach file share name. (Default: appa-app1-dev-001)
 avdWrklKvPrefixCustomName | No       | AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)
 ztDiskEncryptionSetCustomNamePrefix | No       | AVD disk encryption set custom name. (Default: des-zt)
 ztManagedIdentityCustomName | No       | AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)
@@ -427,11 +427,11 @@ Deploy Fslogix setup. (Default: true)
 
 - Default value: `True`
 
-### createMsixDeployment
+### createAppAttachDeployment
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Deploy MSIX App Attach setup. (Default: false)
+Deploy App Attach setup. (Default: false)
 
 - Default value: `False`
 
@@ -443,11 +443,11 @@ Fslogix file share size. (Default: 1)
 
 - Default value: `1`
 
-### msixFileShareQuotaSize
+### appAttachFileShareQuotaSize
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-MSIX file share size. (Default: 1)
+App Attach file share size. (Default: 1)
 
 - Default value: `1`
 
@@ -563,7 +563,7 @@ Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: P
 
 - Allowed values: `Standard`, `Premium`
 
-### msixStoragePerformance
+### appAttachStoragePerformance
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
@@ -880,13 +880,13 @@ FSLogix file share name. (Default: fslogix-pc-app1-dev-001)
 
 - Default value: `fslogix-pc-app1-dev-use2-001`
 
-### msixFileShareCustomName
+### appAttachFileShareCustomName
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-MSIX file share name. (Default: msix-app1-dev-001)
+App Attach file share name. (Default: appa-app1-dev-001)
 
-- Default value: `msix-app1-dev-use2-001`
+- Default value: `appa-app1-dev-use2-001`
 
 ### avdWrklKvPrefixCustomName
 
@@ -1194,7 +1194,7 @@ Enable purge protection for the keyvaults. (Default: true)
         "fslogixFileShareQuotaSize": {
             "value": 1
         },
-        "msixFileShareQuotaSize": {
+        "appAttachFileShareQuotaSize": {
             "value": 1
         },
         "avdDeploySessionHosts": {
@@ -1239,7 +1239,7 @@ Enable purge protection for the keyvaults. (Default: true)
         "fslogixStoragePerformance": {
             "value": "Premium"
         },
-        "msixStoragePerformance": {
+        "appAttachStoragePerformance": {
             "value": "Premium"
         },
         "diskZeroTrust": {
@@ -1356,8 +1356,8 @@ Enable purge protection for the keyvaults. (Default: true)
         "fslogixFileShareCustomName": {
             "value": "fslogix-pc-app1-dev-use2-001"
         },
-        "msixFileShareCustomName": {
-            "value": "msix-app1-dev-use2-001"
+        "appAttachFileShareCustomName": {
+            "value": "appa-app1-dev-use2-001"
         },
         "avdWrklKvPrefixCustomName": {
             "value": "kv-sec"
