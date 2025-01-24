@@ -567,7 +567,7 @@ Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: P
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-Storage account SKU for MSIX storage. Recommended tier is Premium. (Default: Premium)
+Storage account SKU for App Attach storage. Recommended tier is Premium. (Default: Premium)
 
 - Default value: `Premium`
 
@@ -868,7 +868,7 @@ AVD availability set custom name. (Default: avail)
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)
+AVD FSLogix and App Attach storage account prefix custom name. (Default: st)
 
 - Default value: `st`
 
@@ -1188,7 +1188,7 @@ Enable purge protection for the keyvaults. (Default: true)
         "createAvdFslogixDeployment": {
             "value": true
         },
-        "createMsixDeployment": {
+        "createAppAttachDeployment": {
             "value": false
         },
         "fslogixFileShareQuotaSize": {

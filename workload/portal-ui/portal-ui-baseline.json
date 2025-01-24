@@ -1037,7 +1037,7 @@
                                     "toolTip": "Deploys App Attach containers and permissions setup."
                                 },
                                 {
-                                    "name": "msixStorageAccountSku",
+                                    "name": "appAttachStorageAccountSku",
                                     "type": "Microsoft.Common.DropDown",
                                     "visible": "[and(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
                                     "label": "File share performance",
@@ -1061,7 +1061,7 @@
                                     }
                                 },
                                 {
-                                    "name": "sessionHostsMsixFileShareQuota",
+                                    "name": "sessionHostsAppAttachFileShareQuota",
                                     "type": "Microsoft.Common.Slider",
                                     "visible": "[and(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
                                     "label": "File share size",
@@ -1076,7 +1076,7 @@
                                     }
                                 },
                                 {
-                                    "name": "MsixStorageInfo",
+                                    "name": "appAttachStorageInfo",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[contains(steps('basics').resourceScope.location.name, 'china')]",
                                     "options": {
@@ -1983,7 +1983,7 @@
                                     }
                                 },
                                 {
-                                    "name": "msixFileShareCustomName",
+                                    "name": "appAttachFileShareCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "App Attach container file share",
                                     "visible": "[steps('storage').storageAppAttach.appAttachStorageDeployment]",
@@ -2537,9 +2537,9 @@
                 "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
-                "createMsixDeployment": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageAppAttach.appAttachStorageDeployment), false)]",
-                "msixStoragePerformance": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.msixStorageAccountSku, 'Premium')]",
-                "msixFileShareQuotaSize": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.sessionHostsMsixFileShareQuota, 1 )]",
+                "createAppAttachDeployment": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageAppAttach.appAttachStorageDeployment), false)]",
+                "appAttachStoragePerformance": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.appAttachStorageAccountSku, 'Premium')]",
+                "appAttachFileShareQuotaSize": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.sessionHostsAppAttachFileShareQuota, 1 )]",
                 "storageOuPath": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting, '')]",
                 "avdUseCustomNaming": "[steps('resourceNaming').resourceNamingSelection]",
                 "avdServiceObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.serviceObjectsRgCustomName, 'no')]",
@@ -2565,7 +2565,7 @@
                 "vmssFlexCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.vmssCustomNamePrefix, 'no')]",
                 "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'no')]",
                 "fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, 'no')]",
-                "msixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.msixFileShareCustomName, 'no')]",
+                "appAttachFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.appAttachFileShareCustomName, 'no')]",
                 "avdWrklKvPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workloadKvCustomName, 'no')]",
                 "createResourceTags": "[steps('resourceTagging').resourceTaggingSelection]",
                 "workloadNameTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadName, 'no')]",
