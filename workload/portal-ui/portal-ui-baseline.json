@@ -200,6 +200,16 @@
                                     "constraints": {
                                         "required": false
                                     }
+                                },
+                                {
+                                    "name": "identityDomainEntraIdInfoBox",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
+                                    "options": {
+                                        "text": "AD domain name and GUID are required to configure directory and file level permissions through Windows File explorer. You can get this information from your domain admin or from an on-premises AD-joined client. If you prefer the LZA deployment to configure using icacls, GUID information is not required.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable?tabs=azure-portal%2Cintune#configure-directory-and-file-level-permissions",
+                                        "style": "Info"
+                                    }
                                 }
                             ]
                         },
