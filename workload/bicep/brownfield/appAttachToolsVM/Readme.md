@@ -1,4 +1,4 @@
-# Deploy Azure VM with MSIX App Attach Tools
+# Deploy Azure VM with App Attach Tools
 This deployment will create a VM from the Microsoft Gallery and configure and install software for use when creating MSIX App attach images.
 - MSIX App Attach Store App
 - MSIX Manager command line tool

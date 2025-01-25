@@ -5,7 +5,7 @@ resource "azurerm_resource_group" "rg_storage" {
 }
 
 resource "azurerm_user_assigned_identity" "mi" {
-  name                = "id-avd-msixapp-eus-${var.prefix}"
+  name                = "id-avd-appa-eus-${var.prefix}"
   resource_group_name = azurerm_resource_group.rg_storage.name
   location            = azurerm_resource_group.rg_storage.location
 }
@@ -29,7 +29,7 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_storage_share" "FSShare" {
-  name             = "msixapp"
+  name             = "AppAttach"
   quota            = "100"
   enabled_protocol = "SMB"
 

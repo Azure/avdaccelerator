@@ -10,11 +10,15 @@
   - **Prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
   - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
-  - **Identity Service Provider** - Identity service provider (AD DS, Entra DS, Microsoft Entra ID) that already exists and will be used for Azure Virtual Desktop.
-    - Microsoft Entra ID.
-    - Active Directory (AD DS).
-    - Microsoft Entra Domain Services.
-  - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
+  - **Domain to join**
+    - **Identity Service Provider** - Identity service provider (AD DS, Entra DS, Microsoft Entra ID) that already exists and will be used for Azure Virtual Desktop.
+      - Microsoft Entra ID.
+      - Active Directory (AD DS).
+      - Microsoft Entra Domain Services.
+      - **Intune enrollment** - If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box.
+      - **Domain name** - The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Entra ID + FSLogix deployments, because identities need to be hybrid for storage authenctication to be supported.
+      - **Domain GUID** - GUID for the on-premises domain controller.
+    - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
     - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using Microsoft Entra ID as the identity provider.
     - Note: when using Microsoft Entra ID as the identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
   - **When selecting AD DS or Microsoft Entra DS:**
@@ -49,15 +53,14 @@
   - **OS version or image** - Choose the OS version or desired image from the Azure compute gallery.
 - **Storage** blade
   - **General Settings**:
-    - **AD Domain name**: The full qualified domain name of the on-premises domain where the hybrid identities originated from, this information is used for Azure files authentication setup, Example: contoso.com.
     - **Custom OU Path (Optional)**: specify an OU path to create domain storage objects.
     - **Zone redundant storage**: Select to replicate storage across availability zones or only use local redundancy.
   - **FSLogix profile management**: Deploys FSLogix containers and session host setup for user's profiles.
   - **FSLogix Azure Files share Performance** - Select the desired performance.
   - **FSLogix file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
-  - **MSIX App Attach**: Deploys MSIX App Attach container for MSIX app packages.
-  - **MSIX App Attach Azure Files share Performance** - Select the desired performance.
-  - **MSIX App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
+  - **App Attach**: Deploys App Attach container for App Attach app packages.
+  - **App Attach Azure Files share Performance** - Select the desired performance.
+  - **App Attach file share size** Choose the desired size in 100GB increments. Minimum size is 100GB.
 - **Network connectivity** blade
   - **Virtual Network** - Select if creating "New"" or use "Existing" virtual network.
     - **New** - Select if you want to create a new VNet to be used for Azure Virtual Desktop.
