@@ -140,7 +140,6 @@ Configuration DomainJoinFileShare
 
     $secStringPassword = ConvertTo-SecureString $AdminUserPassword -AsPlainText -Force
     $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $secStringPassword)
-    # $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $AdminUserPassword)
 
     $ErrorActionPreference = 'Stop'
     
