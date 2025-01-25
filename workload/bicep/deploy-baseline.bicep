@@ -528,11 +528,9 @@ var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase
 var varManagementPlaneLocationAcronym = varLocations[varManagementPlaneLocationLowercase].acronym
 var varLocations = loadJsonContent('../variables/locations.json')
 var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
-var varTimeZoneManagementPlane = varLocations[varManagementPlaneLocationLowercase].timeZone
 var varManagementPlaneNamingStandard = '${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
 var varComputeStorageResourcesNamingStandard = '${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}'
 var varDiskEncryptionSetName = avdUseCustomNaming ? '${ztDiskEncryptionSetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}-001': 'des-zt-${varComputeStorageResourcesNamingStandard}-001'
-var varZtManagedIdentityName = avdUseCustomNaming ? '${ztManagedIdentityCustomName}-${varComputeStorageResourcesNamingStandard}-001' : 'id-zt-${varComputeStorageResourcesNamingStandard}-001'
 var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
 var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
 var varServiceObjectsRgName = avdUseCustomNaming ? avdServiceObjectsRgCustomName : 'rg-avd-${varManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
@@ -1062,7 +1060,6 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
   }
   dependsOn: [
     baselineNetworkResourceGroup
-    monitoringDiagnosticSettings
     baselineResourceGroups
   ]
 }
@@ -1128,8 +1125,6 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
   dependsOn: [
     baselineResourceGroups
     identity
-    monitoringDiagnosticSettings
-    wrklKeyVault
   ]
 }
 
@@ -1188,7 +1183,6 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
   dependsOn: [
     baselineResourceGroups
     baselineStorageResourceGroup
-    monitoringDiagnosticSettings
     identity
   ]
 }
@@ -1321,7 +1315,6 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
   }
   dependsOn: [
     baselineStorageResourceGroup
-    networking
     wrklKeyVault
   ]
 }
@@ -1372,10 +1365,8 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
   }
   dependsOn: [
     baselineStorageResourceGroup
-    networking
     wrklKeyVault
-    managementVm
-    monitoringDiagnosticSettings
+    // managementVm
   ]
 }
 
@@ -1426,10 +1417,8 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
   dependsOn: [
     fslogixAzureFilesStorage
     baselineStorageResourceGroup
-    networking
     wrklKeyVault
-    managementVm
-    monitoringDiagnosticSettings
+    // managementVm
   ]
 }
 
@@ -1517,9 +1506,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
     dependsOn: [
       fslogixAzureFilesStorage
       baselineResourceGroups
-      networking
       wrklKeyVault
-      monitoringDiagnosticSettings
       vmScaleSetFlex
       managementPLane
     ]

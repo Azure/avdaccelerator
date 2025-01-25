@@ -66,7 +66,7 @@ param
 	
     [Parameter(Mandatory = $true)]
     [ValidateNotNullOrEmpty()]
-    [SecureString] $AdminUserPassword
+    [string] $AdminUserPassword
 )
 
 
@@ -132,15 +132,15 @@ Configuration DomainJoinFileShare
 	
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [SecureString] $AdminUserPassword
+        [string] $AdminUserPassword
     )
     
     # Import the module that contains the File resource.
     Import-DscResource -ModuleName PsDesiredStateConfiguration
 
-    #$secStringPassword = ConvertTo-SecureString $AdminUserPassword #-AsPlainText -Force
-    #$AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $secStringPassword)
-    $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $AdminUserPassword)
+    $secStringPassword = ConvertTo-SecureString $AdminUserPassword #-AsPlainText -Force
+    $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $secStringPassword)
+    # $AdminCred = New-Object System.Management.Automation.PSCredential ($AdminUserName, $AdminUserPassword)
 
     $ErrorActionPreference = 'Stop'
     
