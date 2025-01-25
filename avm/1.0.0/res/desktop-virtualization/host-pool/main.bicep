@@ -184,7 +184,6 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
     friendlyName: friendlyName
     description: description
     hostPoolType: hostPoolType
-    
     publicNetworkAccess: publicNetworkAccess
     customRdpProperty: customRdpProperty
     personalDesktopAssignmentType: any(personalDesktopAssignmentType)
