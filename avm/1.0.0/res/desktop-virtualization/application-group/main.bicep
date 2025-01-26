@@ -87,11 +87,13 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' existing = {
+//resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' existing = {
+  resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-08-08-preview' existing = {
   name: hostpoolName
 }
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' = {
+//resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03' = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-08-08-preview' = {
   name: name
   location: location
   tags: tags

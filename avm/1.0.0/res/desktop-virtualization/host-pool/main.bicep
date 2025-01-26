@@ -176,7 +176,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
+//resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-08-08-preview' = {
   name: name
   location: location
   tags: tags

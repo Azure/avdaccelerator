@@ -82,7 +82,8 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource workspace 'Microsoft.DesktopVirtualization/workspaces@2023-11-01-preview' = {
+//resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-04-03' = {
+resource workspace 'Microsoft.DesktopVirtualization/workspaces@2024-08-08-preview' = {
   name: name
   location: location
   tags: tags
