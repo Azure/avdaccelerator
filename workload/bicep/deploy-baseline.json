@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "11237969383703609482"
+      "templateHash": "18244288022135057478"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -8677,7 +8677,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "14116595785188420902"
+              "templateHash": "11985264300279942705"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -9023,7 +9023,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "5269306202719581474"
+                      "templateHash": "1974125114955690447"
                     },
                     "name": "Azure Virtual Desktop Host Pool",
                     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -9539,7 +9539,7 @@
                     },
                     "hostPool": {
                       "type": "Microsoft.DesktopVirtualization/hostPools",
-                      "apiVersion": "2024-08-08-preview",
+                      "apiVersion": "2024-04-08-preview",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -10544,7 +10544,7 @@
                       "metadata": {
                         "description": "The location of the host pool."
                       },
-                      "value": "[reference('hostPool', '2024-08-08-preview', 'full').location]"
+                      "value": "[reference('hostPool', '2024-04-08-preview', 'full').location]"
                     },
                     "keyVaultTokenSecretResourceId": {
                       "type": "string",
@@ -10605,7 +10605,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "13971909897095152206"
+                      "templateHash": "14213682580568647702"
                     },
                     "name": "Azure Virtual Desktop Application Group",
                     "description": "This module deploys an Azure Virtual Desktop Application Group.",
@@ -10903,12 +10903,12 @@
                     "appGroup_hostpool": {
                       "existing": true,
                       "type": "Microsoft.DesktopVirtualization/hostPools",
-                      "apiVersion": "2024-08-08-preview",
+                      "apiVersion": "2024-04-08-preview",
                       "name": "[parameters('hostpoolName')]"
                     },
                     "appGroup": {
                       "type": "Microsoft.DesktopVirtualization/applicationGroups",
-                      "apiVersion": "2024-08-08-preview",
+                      "apiVersion": "2024-04-08-preview",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -11011,7 +11011,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.13.18514",
-                              "templateHash": "11593088293409547693"
+                              "templateHash": "12429020349302903087"
                             },
                             "name": "Azure Virtual Desktop Application Group Application",
                             "description": "This module deploys an Azure Virtual Desktop Application Group Application.",
@@ -11093,7 +11093,7 @@
                           "resources": [
                             {
                               "type": "Microsoft.DesktopVirtualization/applicationGroups/applications",
-                              "apiVersion": "2024-08-08-preview",
+                              "apiVersion": "2024-04-08-preview",
                               "name": "[format('{0}/{1}', parameters('applicationGroupName'), parameters('name'))]",
                               "properties": {
                                 "description": "[parameters('description')]",
@@ -11164,7 +11164,7 @@
                       "metadata": {
                         "description": "The location of the scaling plan."
                       },
-                      "value": "[reference('appGroup', '2024-08-08-preview', 'full').location]"
+                      "value": "[reference('appGroup', '2024-04-08-preview', 'full').location]"
                     }
                   }
                 }
@@ -11216,7 +11216,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "1102900538986486439"
+                      "templateHash": "7426845977522939193"
                     },
                     "name": "Workspace",
                     "description": "This module deploys an Azure Virtual Desktop Workspace.",
@@ -11567,7 +11567,7 @@
                     },
                     "workspace": {
                       "type": "Microsoft.DesktopVirtualization/workspaces",
-                      "apiVersion": "2024-08-08-preview",
+                      "apiVersion": "2024-04-08-preview",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -12287,7 +12287,7 @@
                       "metadata": {
                         "description": "The location of the workspace."
                       },
-                      "value": "[reference('workspace', '2024-08-08-preview', 'full').location]"
+                      "value": "[reference('workspace', '2024-04-08-preview', 'full').location]"
                     }
                   }
                 }
@@ -12351,7 +12351,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "5150283221909523259"
+                      "templateHash": "15669160169651640727"
                     },
                     "name": "Azure Virtual Desktop Scaling Plan",
                     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -12546,7 +12546,7 @@
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2024-11-01",
+                      "apiVersion": "2023-07-01",
                       "name": "[format('46d3xbcp.res.desktopvirtualization-scalingplan.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
@@ -12565,7 +12565,7 @@
                     },
                     "scalingPlan": {
                       "type": "Microsoft.DesktopVirtualization/scalingPlans",
-                      "apiVersion": "2024-08-08-preview",
+                      "apiVersion": "2024-04-08-preview",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -12586,7 +12586,7 @@
                       },
                       "condition": "[equals(parameters('hostPoolType'), 'Personal')]",
                       "type": "Microsoft.DesktopVirtualization/scalingPlans/personalSchedules",
-                      "apiVersion": "2024-08-08-preview",
+                      "apiVersion": "2024-04-08-preview",
                       "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
                       "properties": "[parameters('schedules')[copyIndex()]]",
                       "dependsOn": [
@@ -12600,7 +12600,7 @@
                       },
                       "condition": "[equals(parameters('hostPoolType'), 'Pooled')]",
                       "type": "Microsoft.DesktopVirtualization/scalingPlans/pooledSchedules",
-                      "apiVersion": "2024-08-08-preview",
+                      "apiVersion": "2024-04-08-preview",
                       "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
                       "properties": "[parameters('schedules')[copyIndex()]]",
                       "dependsOn": [
@@ -12667,7 +12667,7 @@
                       "metadata": {
                         "description": "The location of the Scaling Plan."
                       },
-                      "value": "[reference('scalingPlan', '2024-08-08-preview', 'full').location]"
+                      "value": "[reference('scalingPlan', '2024-04-08-preview', 'full').location]"
                     }
                   }
                 }
