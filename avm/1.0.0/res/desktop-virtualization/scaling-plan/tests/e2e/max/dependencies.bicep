@@ -14,7 +14,7 @@ resource managedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2018-
   location: location
 }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2022-09-09' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview' = {
   name: 'myHostPool'
   location: location
   tags: tags
