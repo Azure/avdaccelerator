@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "6828238975874477858"
+      "templateHash": "1179445004995716419"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -8677,7 +8677,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "11985264300279942705"
+              "templateHash": "10832968390292678257"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -9023,7 +9023,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "1974125114955690447"
+                      "templateHash": "9830359677166168897"
                     },
                     "name": "Azure Virtual Desktop Host Pool",
                     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -9634,7 +9634,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.13.18514",
-                              "templateHash": "2710596301730786329"
+                              "templateHash": "2296735823394017699"
                             },
                             "name": "Key Vault Secrets",
                             "description": "This module deploys a Key Vault Secret.",
@@ -9787,12 +9787,12 @@
                             "keyVault": {
                               "existing": true,
                               "type": "Microsoft.KeyVault/vaults",
-                              "apiVersion": "2024-04-01-preview",
+                              "apiVersion": "2023-07-01",
                               "name": "[parameters('keyVaultName')]"
                             },
                             "secret": {
                               "type": "Microsoft.KeyVault/vaults/secrets",
-                              "apiVersion": "2024-04-01-preview",
+                              "apiVersion": "2023-07-01",
                               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
                               "tags": "[parameters('tags')]",
                               "properties": {
@@ -14254,7 +14254,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "12662763984279142269"
+              "templateHash": "888600418488658828"
             }
           },
           "parameters": {
@@ -15992,7 +15992,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "15778136762447858952"
+                      "templateHash": "8752784192374769479"
                     }
                   },
                   "parameters": {
@@ -16144,7 +16144,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.13.18514",
-                              "templateHash": "17337815387910423036"
+                              "templateHash": "11359615356678017351"
                             },
                             "name": "Key Vaults",
                             "description": "This module deploys a Key Vault.",
@@ -17594,7 +17594,7 @@
                                     "_generator": {
                                       "name": "bicep",
                                       "version": "0.33.13.18514",
-                                      "templateHash": "2710596301730786329"
+                                      "templateHash": "2296735823394017699"
                                     },
                                     "name": "Key Vault Secrets",
                                     "description": "This module deploys a Key Vault Secret.",
@@ -17747,12 +17747,12 @@
                                     "keyVault": {
                                       "existing": true,
                                       "type": "Microsoft.KeyVault/vaults",
-                                      "apiVersion": "2024-04-01-preview",
+                                      "apiVersion": "2023-07-01",
                                       "name": "[parameters('keyVaultName')]"
                                     },
                                     "secret": {
                                       "type": "Microsoft.KeyVault/vaults/secrets",
-                                      "apiVersion": "2024-04-01-preview",
+                                      "apiVersion": "2023-07-01",
                                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
                                       "tags": "[parameters('tags')]",
                                       "properties": {
@@ -19910,7 +19910,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.13.18514",
-              "templateHash": "17337815387910423036"
+              "templateHash": "11359615356678017351"
             },
             "name": "Key Vaults",
             "description": "This module deploys a Key Vault.",
@@ -21360,7 +21360,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.13.18514",
-                      "templateHash": "2710596301730786329"
+                      "templateHash": "2296735823394017699"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret.",
@@ -21513,12 +21513,12 @@
                     "keyVault": {
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2024-04-01-preview",
+                      "apiVersion": "2023-07-01",
                       "name": "[parameters('keyVaultName')]"
                     },
                     "secret": {
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2024-04-01-preview",
+                      "apiVersion": "2023-07-01",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
