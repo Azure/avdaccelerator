@@ -154,7 +154,7 @@ var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
 var varKeyVaultName = split(keyVaultResourceId, '/')[8]
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' =
   if (enableTelemetry) {
     name: take(
       '46d3xbcp.res.desktopvirtualization-hostpool.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
@@ -176,8 +176,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-//resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' = {
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-08-08-preview' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview' = {
   name: name
   location: location
   tags: tags

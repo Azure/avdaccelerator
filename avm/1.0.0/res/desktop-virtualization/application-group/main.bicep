@@ -68,7 +68,7 @@ var builtInRoleNames = {
   'Managed Applications Reader': '/providers/Microsoft.Authorization/roleDefinitions/b9331d33-8a36-4f8c-b097-4f54124fdb44'
 }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource avmTelemetry 'Microsoft.Resources/deployments@2024-11-01' =
   if (enableTelemetry) {
     name: '46d3xbcp.res.desktopvirtualization-appgroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {
@@ -87,13 +87,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-//resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' existing = {
-  resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-08-08-preview' existing = {
+resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview' existing = {
   name: hostpoolName
 }
 
-//resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-03' = {
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-08-08-preview' = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-08-preview' = {
   name: name
   location: location
   tags: tags
