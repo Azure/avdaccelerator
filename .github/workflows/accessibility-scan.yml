@@ -18,8 +18,8 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Install axe-core and http-server
-      run: npm install -g axe-core http-server
+    - name: Install axe-cli and http-server
+      run: npm install -g axe-cli http-server
 
     - name: Start local server
       run: |
@@ -28,12 +28,20 @@ jobs:
     - name: Create axe-reports directory
       run: mkdir -p ./axe-reports
 
-    - name: Run axe-core accessibility scan
-      run: |
-        npx axe-core http://localhost:8080 --output html --output-path ./axe-reports/accessibility-report.html
+    - name: Run axe-cli accessibility scan
+      run: npx axe-cli http://localhost:8080 --output html --output-path ./axe-reports/accessibility-report.html
 
     - name: Verify report creation
       run: |
+        ls -la ./axe-reports/
+        cat ./axe-reports/accessibility-report.html || echo "Report not created"
+
+    - name: Upload axe-core report
+      uses: actions/upload-artifact@v3
+      with:
+        name: axe-report
+        path: ./axe-reports/accessibility-report.html
+
         ls -la ./axe-reports/
         cat ./axe-reports/accessibility-report.html || echo "Report not created"
 
