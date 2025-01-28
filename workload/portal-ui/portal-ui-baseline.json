@@ -182,12 +182,33 @@
                                 {
                                     "name": "identityDomainName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "AD Domain name",
-                                    "visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS'))]",
-                                    "toolTip": "The full qualified domain name of the ADDS or EntraDS domain, this information is used for VMs and storage accounts domain join. It is additionally used to set NTFS permissions when deploying/configuring FSLogix",
+                                    "label": "Domain name",
+                                    "visible": true,
+                                    "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Entra ID + FSLogix deployments, because identities need to be hybrid for storage authenctication to be supported.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
                                         "required": true
+                                    }
+                                },
+                                {
+                                    "name": "identityDomainGuid",
+                                    "type": "Microsoft.Common.TextBox",
+                                    "label": "Domain GUID",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
+                                    "toolTip": "GUID for the on-premises domain controller.",
+                                    "placeholder": "Example: A1B2C3D4-E5F6-7890-1234-56789ABCDEF0",
+                                    "constraints": {
+                                        "required": false
+                                    }
+                                },
+                                {
+                                    "name": "identityDomainEntraIdInfoBox",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
+                                    "options": {
+                                        "text": "FSLogix/App Attach storage: AD domain name and GUID are required to configure directory and file level permissions through Windows File explorer. You can get this information from your domain admin or from an on-premises AD-joined client. If you prefer the LZA deployment to configure using icacls, GUID information is not required.",
+                                        "uri": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable?tabs=azure-portal%2Cintune#configure-directory-and-file-level-permissions",
+                                        "style": "Info"
                                     }
                                 }
                             ]
@@ -905,7 +926,7 @@
                             "name": "storageGeneralSettings",
                             "type": "Microsoft.Common.Section",
                             "label": "General settings:",
-                            "visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment)]",
+                            "visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment)]",
                             "elements": [
                                 {
                                     "name": "identityDomainOuPathStorageExisting",
@@ -1002,27 +1023,27 @@
                             ]
                         },
                         {
-                            "name": "storageMsix",
+                            "name": "storageAppAttach",
                             "type": "Microsoft.Common.Section",
-                            "label": "MSIX App Attach settings:",
+                            "label": "App Attach settings:",
                             "visible": true,
                             "elements": [
                                 {
-                                    "name": "msixDeployment",
+                                    "name": "appAttachStorageDeployment",
                                     "type": "Microsoft.Common.CheckBox",
                                     "visible": "[not(contains(steps('basics').resourceScope.location.name, 'china'))]",
-                                    "label": "Create MSIX App Attach storage",
+                                    "label": "Create App Attach storage",
                                     "defaultValue": false,
-                                    "toolTip": "Deploys MSIX App Attach containers and permissions setup."
+                                    "toolTip": "Deploys App Attach containers and permissions setup."
                                 },
                                 {
-                                    "name": "msixStorageAccountSku",
+                                    "name": "appAttachStorageAccountSku",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[and(equals(steps('storage').storageMsix.msixDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
+                                    "visible": "[and(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
                                     "label": "File share performance",
                                     "filter": true,
                                     "defaultValue": "Premium",
-                                    "toolTip": "Storage account performance for MSIX App Attach storage. Recommended tier is Premium.",
+                                    "toolTip": "Storage account performance for App Attach storage. Recommended tier is Premium.",
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
@@ -1040,9 +1061,9 @@
                                     }
                                 },
                                 {
-                                    "name": "sessionHostsMsixFileShareQuota",
+                                    "name": "sessionHostsAppAttachFileShareQuota",
                                     "type": "Microsoft.Common.Slider",
-                                    "visible": "[and(equals(steps('storage').storageMsix.msixDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
+                                    "visible": "[and(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
                                     "label": "File share size",
                                     "subLabel": "x 100GB",
                                     "toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
@@ -1055,11 +1076,11 @@
                                     }
                                 },
                                 {
-                                    "name": "MsixStorageInfo",
+                                    "name": "appAttachStorageInfo",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[contains(steps('basics').resourceScope.location.name, 'china')]",
                                     "options": {
-                                        "text": "Msix App Attach is currently NOT SUPPORTED in Azure China Cloud",
+                                        "text": "App Attach is currently NOT SUPPORTED in Azure China Cloud",
                                         "style": "Warning"
                                     }
                                 }
@@ -1376,7 +1397,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
                             "options": {
-                                "text": "When using private endpoints, creating a new Azure Virtual Desktop vNet, and providing custom DNS servers, existing Azure private DNS Zones MUST be linked to the vNet where the custom DNS servers are located, this is needed for the end-to-end setup of FSLogix and MSIX App Attach file shares to be successful. The DNS resolution requests will be sent to the custom DNS servers and its vNet is the one that needs to resolve private endpoint DNS records.",
+                                "text": "When using private endpoints, creating a new Azure Virtual Desktop vNet, and providing custom DNS servers, existing Azure private DNS Zones MUST be linked to the vNet where the custom DNS servers are located, this is needed for the end-to-end setup of FSLogix and App Attach file shares to be successful. The DNS resolution requests will be sent to the custom DNS servers and its vNet is the one that needs to resolve private endpoint DNS records.",
                                 "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
@@ -1386,7 +1407,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
-                                "text": "When using private endpoints and creating a new Azure Virtual Desktop vNet and new private DNS zones, custom DNS servers may NOT be used in the new vNet as this will cause FSLogix and/or MSIX App Attach file shares deployments to fail. This happens because the private DNS zones will be linked to the newly created vNet and only this vNet will be able to resolve the private endpoints DNS records.",
+                                "text": "When using private endpoints and creating a new Azure Virtual Desktop vNet and new private DNS zones, custom DNS servers may NOT be used in the new vNet as this will cause FSLogix and/or App Attach file shares deployments to fail. This happens because the private DNS zones will be linked to the newly created vNet and only this vNet will be able to resolve the private endpoints DNS records.",
                                 "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
@@ -1396,7 +1417,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)), equals(steps('network').virtualNetworkPrivateDnsZone, false))]",
                             "options": {
-                                "text": "When using private endpoints and an existing Azure Virtual Desktop vNet with custom DNS servers configured, existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or MSIX App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.",
+                                "text": "When using private endpoints and an existing Azure Virtual Desktop vNet with custom DNS servers configured, existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.",
                                 "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
@@ -1406,7 +1427,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
-                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
+                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
                                 "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
@@ -1416,7 +1437,7 @@
                             "type": "Microsoft.Common.InfoBox",
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, true))]",
                             "options": {
-                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/MSIX App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
+                                "text": "When using private endpoints, an existing Azure Virtual Desktop vNet, and creating new private DNS zones, custom DNS servers may NOT be used (unless they are connected to the same vNet used for the Azure Virtual Desktop deployment) in order for FSlogix/App Attach deployment to be successful, given that the private DNS zone will be linked to the existing vNet and this will be the only network able to resolve private endpoint DNS records. <br/> ***Note: selected options (existing vNet and create DNS zones) are only recommended when using Microsoft Entra ID as identity service provider.",
                                 "uri": "https://learn.microsoft.com/azure/private-link/private-endpoint-dns",
                                 "style": "Warning"
                             }
@@ -1447,7 +1468,7 @@
                                 {
                                     "name": "virtualNetworkPrivateDnsZoneFilesSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[and(steps('network').deployPrivateEndpointKeyvaultStorage, not(steps('network').virtualNetworkPrivateDnsZone), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment, true))]",
+                                    "visible": "[and(steps('network').deployPrivateEndpointKeyvaultStorage, not(steps('network').virtualNetworkPrivateDnsZone), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment, true))]",
                                     "label": "Azure files",
                                     "resourceType": "Microsoft.Network/privateDnsZones",
                                     "constraints": {
@@ -1907,9 +1928,9 @@
                                 {
                                     "name": "resourceNamingStorageInfo2",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[not(steps('storage').storageMsix.msixDeployment)]",
+                                    "visible": "[not(steps('storage').storageAppAttach.appAttachStorageDeployment)]",
                                     "options": {
-                                        "text": "Current deployment configuration is not creating storage resources for MSIX App Attach.",
+                                        "text": "Current deployment configuration is not creating storage resources for App Attach.",
                                         "style": "Info"
                                     }
                                 },
@@ -1926,7 +1947,7 @@
                                     "name": "storageObjectsRgCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
-                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true))]",
                                     "toolTip": "Azure Virtual Desktop storage resources (Storage account, file shares, files private endpoints, temporary domain join VM) resource group custom name.",
                                     "placeholder": "Example: rg-avd-app1-dev-use2-storage",
                                     "constraints": {
@@ -1939,7 +1960,7 @@
                                     "name": "storageAccountPrefixCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Storage account prefix",
-                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageMsix.msixDeployment, true))]",
+                                    "visible": "[or(equals(steps('storage').storageFslogix.fslogixDeployment, true), equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true))]",
                                     "toolTip": "Azure Virtual Desktop storage account prefix custom name.",
                                     "placeholder": "Example: st",
                                     "constraints": {
@@ -1962,12 +1983,12 @@
                                     }
                                 },
                                 {
-                                    "name": "msixFileShareCustomName",
+                                    "name": "appAttachFileShareCustomName",
                                     "type": "Microsoft.Common.TextBox",
-                                    "label": "MSIX App Attach container file share",
-                                    "visible": "[steps('storage').storageMsix.msixDeployment]",
-                                    "toolTip": "Azure Virtual Desktop MSIX App Attach storage account container file share prefix custom name.",
-                                    "placeholder": "Example: msix-app1-dev-use2-001",
+                                    "label": "App Attach container file share",
+                                    "visible": "[steps('storage').storageAppAttach.appAttachStorageDeployment]",
+                                    "toolTip": "Azure Virtual Desktop App Attach storage account container file share prefix custom name.",
+                                    "placeholder": "Example: appa-app1-dev-use2-001",
                                     "constraints": {
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,64}$",
@@ -2460,7 +2481,17 @@
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-                "identityDomainName": "[if(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('identity').identityDomainInformation.identityDomainName, 'none')]",
+
+
+
+
+                "identityDomainName": "[steps('identity').identityDomainInformation.identityDomainName]",
+                "identityDomainGuid": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityDomainGuid, '')]",
+                
+                
+                
+                
+                
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
@@ -2481,7 +2512,7 @@
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "availabilityZonesCompute": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
                 "deployVmssFlex": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettingsVmss, false)]",
-                "zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
+                "zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
                 "avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_23h2')]",
@@ -2506,10 +2537,10 @@
                 "createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
-                "createMsixDeployment": "[if(equals(steps('storage').storageMsix.msixDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageMsix.msixDeployment), false)]",
-                "msixStoragePerformance": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.msixStorageAccountSku, 'Premium')]",
-                "msixFileShareQuotaSize": "[if(equals(steps('storage').storageMsix.msixDeployment, true), steps('storage').storageMsix.sessionHostsMsixFileShareQuota, 1 )]",
-                "storageOuPath": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageMsix.msixDeployment), steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting, '')]",
+                "createAppAttachDeployment": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageAppAttach.appAttachStorageDeployment), false)]",
+                "appAttachStoragePerformance": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.appAttachStorageAccountSku, 'Premium')]",
+                "appAttachFileShareQuotaSize": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.sessionHostsAppAttachFileShareQuota, 1 )]",
+                "storageOuPath": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting, '')]",
                 "avdUseCustomNaming": "[steps('resourceNaming').resourceNamingSelection]",
                 "avdServiceObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.serviceObjectsRgCustomName, 'no')]",
                 "avdNetworkObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.networkObjectsRgCustomName, 'no')]",
@@ -2534,7 +2565,7 @@
                 "vmssFlexCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.vmssCustomNamePrefix, 'no')]",
                 "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'no')]",
                 "fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, 'no')]",
-                "msixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.msixFileShareCustomName, 'no')]",
+                "appAttachFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.appAttachFileShareCustomName, 'no')]",
                 "avdWrklKvPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workloadKvCustomName, 'no')]",
                 "createResourceTags": "[steps('resourceTagging').resourceTaggingSelection]",
                 "workloadNameTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadName, 'no')]",

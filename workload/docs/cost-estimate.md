@@ -18,7 +18,7 @@ Azure Virtual Desktop resources and dependent services for establishing the base
   - Associated Desktop Application Group for personal
   - Associated Desktop Application Group and Remote Application Group for pooled
 - Azure Files Storage with FSLogix share, RBAC role assignment and private endpoint **
-- Azure Files Storage with MSIX App Attach share, RBAC role assignment and private endpoint **
+- Azure Files Storage with App Attach share, RBAC role assignment and private endpoint **
 - Application Security group
 - Key Vault and private endpoint
 
