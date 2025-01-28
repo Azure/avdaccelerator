@@ -28,8 +28,14 @@ jobs:
     - name: Run axe-cli accessibility scan
       run: npx axe-cli http://localhost:8080 --output html --output-path ./axe-reports/accessibility-report.html
 
+    - name: Check if report is created
+      run: |
+        ls -la ./axe-reports/
+        cat ./axe-reports/accessibility-report.html
+
     - name: Upload axe-core report
       uses: actions/upload-artifact@v3
       with:
         name: axe-report
         path: ./axe-reports/accessibility-report.html
+
