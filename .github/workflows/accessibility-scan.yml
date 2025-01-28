@@ -25,6 +25,9 @@ jobs:
       run: |
         nohup http-server ./ &
 
+    - name: Create axe-reports directory
+      run: mkdir -p ./axe-reports
+
     - name: Run axe-cli accessibility scan
       run: npx axe-cli http://localhost:8080 --output html --output-path ./axe-reports/accessibility-report.html
 
@@ -38,4 +41,3 @@ jobs:
       with:
         name: axe-report
         path: ./axe-reports/accessibility-report.html
-
