@@ -33,15 +33,11 @@ jobs:
 
     - name: Verify report creation
       run: |
-        ls -la ./axe-reports/
-        cat ./axe-reports/accessibility-report.html || echo "Report not created"
-
-    - name: Upload axe-core report
-      uses: actions/upload-artifact@v3
-      with:
-        name: axe-report
-        path: ./axe-reports/accessibility-report.html
-                cat ./axe-reports/accessibility-report.html || echo "Report not created"
+        if [ -f ./axe-reports/accessibility-report.html ]; then
+          cat ./axe-reports/accessibility-report.html
+        else
+          echo "Report not created"
+        fi
 
     - name: Upload axe-core report
       uses: actions/upload-artifact@v3
