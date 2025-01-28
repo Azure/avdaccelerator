@@ -31,10 +31,10 @@ jobs:
     - name: Create axe-reports directory
       run: mkdir -p ./axe-reports
 
-    - name: Run axe-cli accessibility scan without output path
+    - name: Run axe-cli accessibility scan and save to file
       run: |
-        npx axe-cli http://localhost:8080
-        echo "Report should be generated in the default location."
+        npx axe-cli http://localhost:8080 --output html --output-path ./axe-reports/accessibility-report.html
+        echo "Report saved to ./axe-reports/accessibility-report.html"
 
     - name: Verify report creation
       run: |
@@ -50,4 +50,3 @@ jobs:
       with:
         name: axe-report
         path: ./axe-reports/accessibility-report.html
-
