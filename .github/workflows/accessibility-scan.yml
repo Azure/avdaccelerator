@@ -9,16 +9,21 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
+
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
         node-version: '14'
+
     - name: Install dependencies
       run: npm install
+
     - name: Install axe-core
       run: npm install axe-core --save-dev
+
     - name: Run axe-core
       run: npx axe . --save --dir ./axe-reports
+
     - name: Upload axe-core report
       uses: actions/upload-artifact@v3
       with:
