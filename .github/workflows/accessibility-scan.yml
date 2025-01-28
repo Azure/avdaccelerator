@@ -18,11 +18,15 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Install axe-cli globally
-      run: npm install -g axe-cli
+    - name: Install axe-cli and http-server
+      run: npm install -g axe-cli http-server
+
+    - name: Start local server
+      run: |
+        nohup http-server ./ &
 
     - name: Run axe-cli accessibility scan
-      run: npx axe ./ --output html --output-path ./axe-reports/accessibility-report.html
+      run: npx axe-cli http://localhost:8080 --output html --output-path ./axe-reports/accessibility-report.html
 
     - name: Upload axe-core report
       uses: actions/upload-artifact@v3
