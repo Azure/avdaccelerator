@@ -76,6 +76,43 @@ param hostPoolType string
 ])
 param preferredAppGroupType string = 'Desktop'
 
+@sys.description('Deploys the AVD Private Link Service.')
+param deployAvdPrivateLinkService bool
+
+@sys.description('Name of the Private Endpoint for the Connection')
+param privateEndpointConnectionName string
+
+@sys.description('Name of the Private Endpoint for the Discovery')
+param privateEndpointDiscoveryName string
+
+@sys.description('Name of the Private Endpoint for the Workspace')
+param privateEndpointWorkspaceName string
+
+@sys.description('The subnet resource ID that the private endpoint should be deployed in.')
+param privateEndpointSubnetResourceId string
+
+@sys.description('The ResourceID of the AVD Private DNS Zone for Connection. (privatelink.wvd.azure.com)')
+param avdVnetPrivateDnsZoneConnectionResourceId string
+
+@sys.description('The ResourceID of the AVD Private DNS Zone for Discovery. (privatelink-global.wvd.azure.com)')
+param avdVnetPrivateDnsZoneDiscoveryResourceId string
+
+@allowed([
+  'Disabled' // Blocks public access and requires both clients and session hosts to use the private endpoints
+  'Enabled' // Allow clients and session hosts to communicate over the public network
+  'EnabledForClientsOnly' // Allows only clients to access AVD over public network
+  'EnabledForSessionHostsOnly' // Allows only the session hosts to communicate over the public network
+])
+@sys.description('Enables or Disables public network access on the host pool. (Default: EnabledForClientsOnly.)')
+param hostPoolPublicNetworkAccess string = 'EnabledForClientsOnly'
+
+@allowed([
+  'Disabled'
+  'Enabled'
+])
+@sys.description('Default to Enabled. Enables or Disables public network access on the workspace.')
+param workspacePublicNetworkAccess string = 'Enabled'
+
 @allowed([
   'Automatic'
   'Direct'
@@ -254,6 +291,16 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     personalDesktopAssignmentType: personalAssignType
     keyVaultResourceId: keyVaultResourceId
     tags: tags
+    publicNetworkAccess: deployAvdPrivateLinkService ? hostPoolPublicNetworkAccess : null
+    privateEndpoints: deployAvdPrivateLinkService ? [
+      {
+        name: privateEndpointConnectionName
+        subnetResourceId: privateEndpointSubnetResourceId
+        privateDnsZoneResourceIds: [
+          avdVnetPrivateDnsZoneConnectionResourceId
+        ]
+      }
+    ]: []
     diagnosticSettings: varDiagnosticSettings
     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
         maintenanceWindows: hostPoolAgentUpdateSchedule
@@ -281,6 +328,16 @@ module hostPoolRemoteApps '../../../../avm/1.0.0/res/desktop-virtualization/host
     personalDesktopAssignmentType: personalAssignType
     keyVaultResourceId: keyVaultResourceId
     tags: tags
+    publicNetworkAccess: deployAvdPrivateLinkService ? hostPoolPublicNetworkAccess : null
+    privateEndpoints: deployAvdPrivateLinkService ? [
+      {
+        name: privateEndpointConnectionName
+        subnetResourceId: privateEndpointSubnetResourceId
+        privateDnsZoneResourceIds: [
+          avdVnetPrivateDnsZoneConnectionResourceId
+        ]
+      }
+    ]: []
     diagnosticSettings: varDiagnosticSettings
     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
         maintenanceWindows: hostPoolAgentUpdateSchedule
@@ -354,6 +411,25 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
         '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${remoteAppApplicationGroupName}'
       ]
       tags: tags
+      publicNetworkAccess: deployAvdPrivateLinkService ? workspacePublicNetworkAccess : null
+      privateEndpoints: deployAvdPrivateLinkService ? [
+        {
+          name: privateEndpointWorkspaceName
+          subnetResourceId: privateEndpointSubnetResourceId
+          service: 'feed'
+          privateDnsZoneResourceIds: [
+            avdVnetPrivateDnsZoneConnectionResourceId
+          ]
+        }
+        {
+          name: privateEndpointDiscoveryName
+          subnetResourceId: privateEndpointSubnetResourceId
+          service: 'global'
+          privateDnsZoneResourceIds: [
+            avdVnetPrivateDnsZoneDiscoveryResourceId
+          ]
+        }
+      ]: []
       diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [

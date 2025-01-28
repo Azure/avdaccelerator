@@ -93,6 +93,22 @@ param avdHostPoolType string = 'Pooled'
 param hostPoolPreferredAppGroupType string = 'Desktop'
 
 @allowed([
+    'Disabled' // Blocks public access and requires both clients and session hosts to use the private endpoints
+    'Enabled' // Allow clients and session hosts to communicate over the public network
+    'EnabledForClientsOnly' // Allows only clients to access AVD over public network
+    'EnabledForSessionHostsOnly' // Allows only the session hosts to communicate over the public network
+  ])
+@sys.description('Enables or Disables public network access on the host pool. (Default: Enabled.)')
+param hostPoolPublicNetworkAccess string = 'Enabled'
+
+@allowed([
+'Disabled'
+'Enabled'
+])
+@sys.description('Default to Enabled. Enables or Disables public network access on the workspace.')
+param workspacePublicNetworkAccess string = 'Enabled'
+
+@allowed([
     'Automatic'
     'Direct'
 ])
@@ -153,6 +169,12 @@ param deployAvdPrivateLinkService bool = false
 
 @sys.description('Create new  Azure private DNS zones for private endpoints. (Default: true)')
 param createPrivateDnsZones bool = false
+
+@sys.description('The ResourceID of the AVD Private DNS Zone for Connection. (privatelink.wvd.azure.com). Only required if createPrivateDNSZones is set to false.')
+param avdVnetPrivateDnsZoneConnectionResourceId string = ''
+
+@sys.description('The ResourceID of the AVD Private DNS Zone for Discovery. (privatelink-global.wvd.azure.com). Only required if createPrivateDNSZones is set to false.')
+param avdVnetPrivateDnsZoneDiscoveryResourceId string = ''
 
 @sys.description('Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: "")')
 param avdVnetPrivateDnsZoneFilesId string = ''
@@ -590,6 +612,9 @@ var varCreateAppAttachDeployment = (varAzureCloudName == 'AzureChinaCloud') ? fa
 var varScalingPlanName = avdUseCustomNaming 
     ? avdScalingPlanCustomName 
     : 'vdscaling-${varManagementPlaneNamingStandard}-001'
+var varPrivateEndPointConnectionName = 'pe-${varHostPoolName}-connection'
+var varPrivateEndPointDiscoveryName = 'pe-${varWorkSpaceName}-discovery'
+var varPrivateEndPointWorkspaceName = 'pe-${varWorkSpaceName}-global'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
@@ -1156,6 +1181,69 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     ]
 }
 
+// module managementPLaneHOLDER './modules/avdManagementPlane/deploy.bicep' = {
+//     name: 'AVD-MGMT-Plane-${time}'
+//     params: {
+//       applicationGroupName: varApplicationGroupName
+//       applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
+//       workSpaceName: varWorkSpaceName
+//       osImage: avdOsImage
+//       keyVaultResourceId: wrklKeyVault.outputs.resourceId
+//       workSpaceFriendlyName: varWorkSpaceFriendlyName
+//       computeTimeZone: varTimeZoneSessionHosts
+//       hostPoolName: varHostPoolName
+//       hostPoolFriendlyName: varHostFriendlyName
+//       hostPoolRdpProperties: avdHostPoolRdpProperties
+//       hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
+//       hostPoolType: avdHostPoolType
+//       preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
+//       deployScalingPlan: varDeployScalingPlan
+//       scalingPlanExclusionTag: varScalingPlanExclusionTag
+//       scalingPlanSchedules: (avdHostPoolType == 'Pooled')
+//         ? varPooledScalingPlanSchedules
+//         : varPersonalScalingPlanSchedules
+//       scalingPlanName: varScalingPlanName
+//       hostPoolMaxSessions: hostPoolMaxSessions
+//       personalAssignType: avdPersonalAssignType
+//       managementPlaneLocation: avdManagementPlaneLocation
+//       serviceObjectsRgName: varServiceObjectsRgName
+//       startVmOnConnect: avdStartVmOnConnect
+//       subscriptionId: avdWorkloadSubsId
+//       identityServiceProvider: avdIdentityServiceProvider
+//       securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
+//       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//       alaWorkspaceResourceId: avdDeployMonitoring
+//         ? (deployAlaWorkspace
+//             ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+//             : alaExistingWorkspaceResourceId)
+//         : ''
+//       hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
+//       deployAvdPrivateLinkService: deployAvdPrivateLinkService
+//       hostPoolPublicNetworkAccess: hostPoolPublicNetworkAccess
+//       workspacePublicNetworkAccess: workspacePublicNetworkAccess
+//       privateEndpointSubnetResourceId: createAvdVnet
+//         ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+//         : existingVnetPrivateEndpointSubnetResourceId
+//       avdVnetPrivateDnsZoneDiscoveryResourceId: deployAvdPrivateLinkService
+//         ? (createPrivateDnsZones
+//             ? networking.outputs.avdDnsDiscoveryZoneResourceId
+//             : avdVnetPrivateDnsZoneDiscoveryResourceId)
+//         : ''
+//       avdVnetPrivateDnsZoneConnectionResourceId: deployAvdPrivateLinkService
+//         ? (createPrivateDnsZones
+//             ? networking.outputs.avdDnsConnectionZoneResourceId
+//             : avdVnetPrivateDnsZoneConnectionResourceId)
+//         : ''
+//       privateEndpointConnectionName: varPrivateEndPointConnectionName
+//       privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
+//       privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
+//     }
+//     dependsOn: [
+//       baselineResourceGroups
+//       identity
+//     ]
+//   }
+
 module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
     name: 'AVD-MGMT-Plane-${time}'
     params: {
@@ -1190,15 +1278,78 @@ module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
             ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
             : alaExistingWorkspaceResourceId)
         : ''
-            hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
-        }
+        hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
+        deployAvdPrivateLinkService: deployAvdPrivateLinkService
+        hostPoolPublicNetworkAccess: hostPoolPublicNetworkAccess
+        workspacePublicNetworkAccess: workspacePublicNetworkAccess
+        privateEndpointSubnetResourceId: createAvdVnet
+            ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+            : existingVnetPrivateEndpointSubnetResourceId
+        avdVnetPrivateDnsZoneDiscoveryResourceId: deployAvdPrivateLinkService
+            ? (createPrivateDnsZones
+                ? networking.outputs.avdDnsDiscoveryZoneResourceId
+                : avdVnetPrivateDnsZoneDiscoveryResourceId)
+            : ''
+        avdVnetPrivateDnsZoneConnectionResourceId: deployAvdPrivateLinkService
+            ? (createPrivateDnsZones
+                ? networking.outputs.avdDnsConnectionZoneResourceId
+                : avdVnetPrivateDnsZoneConnectionResourceId)
+            : ''
+        privateEndpointConnectionName: varPrivateEndPointConnectionName
+        privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
+        privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
+    }
     dependsOn: [
         baselineResourceGroups
         identity
-        monitoringDiagnosticSettings
-        wrklKeyVault
+        // monitoringDiagnosticSettings
+        // wrklKeyVault
     ]
 }
+
+// module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
+//     name: 'AVD-MGMT-Plane-${time}'
+//     params: {
+//         applicationGroupName: varApplicationGroupName
+//         applicationGroupFriendlyNameDesktop: varApplicationGroupFriendlyName
+//         workSpaceName: varWorkSpaceName
+//         osImage: avdOsImage
+//         keyVaultResourceId: wrklKeyVault.outputs.resourceId
+//         workSpaceFriendlyName: varWorkSpaceFriendlyName
+//         computeTimeZone: varTimeZoneSessionHosts
+//         hostPoolName: varHostPoolName
+//         hostPoolFriendlyName: varHostFriendlyName
+//         hostPoolRdpProperties: avdHostPoolRdpProperties
+//         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
+//         hostPoolType: avdHostPoolType
+//         preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
+//         deployScalingPlan: varDeployScalingPlan
+//         scalingPlanExclusionTag: varScalingPlanExclusionTag
+//         scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
+//         scalingPlanName: varScalingPlanName
+//         hostPoolMaxSessions: hostPoolMaxSessions
+//         personalAssignType: avdPersonalAssignType
+//         managementPlaneLocation: avdManagementPlaneLocation
+//         serviceObjectsRgName: varServiceObjectsRgName
+//         startVmOnConnect: avdStartVmOnConnect
+//         subscriptionId: avdWorkloadSubsId
+//         identityServiceProvider: avdIdentityServiceProvider
+//         securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
+//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//         alaWorkspaceResourceId: avdDeployMonitoring
+//         ? (deployAlaWorkspace
+//             ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+//             : alaExistingWorkspaceResourceId)
+//         : ''
+//             hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
+//         }
+//     dependsOn: [
+//         baselineResourceGroups
+//         identity
+//         monitoringDiagnosticSettings
+//         wrklKeyVault
+//     ]
+// }
 
 // Identity: managed identities and role assignments
 module identity './modules/identity/deploy.bicep' = {
