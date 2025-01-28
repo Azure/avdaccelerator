@@ -29,6 +29,9 @@ param fileShareName string
 @sys.description('Private endpoint subnet ID.')
 param privateEndpointSubnetId string
 
+@sys.description('VMs subnet ID.')
+param vmsSubnetId string
+
 @sys.description('Location where to deploy resources.')
 param location string
 
@@ -152,7 +155,17 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
             defaultAction: 'Deny'
             virtualNetworkRules: []
             ipRules: []
-        } : {}
+        }: {
+            bypass: 'AzureServices'
+            defaultAction: 'Deny'
+            virtualNetworkRules: [
+                {
+                    id: vmsSubnetId
+                    action: 'Allow'
+                }
+            ]
+            ipRules: []
+        }
         fileServices: {
             shares: [
                 {

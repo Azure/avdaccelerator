@@ -131,7 +131,7 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 if ($StoragePurpose -eq 'fslogix') {
 	$DriveLetter = 'Y'
 }
-if ($StoragePurpose -eq 'msix') {
+if ($StoragePurpose -eq 'AppAttach') {
 	$DriveLetter = 'X'
 }
 Write-Log "Mounting $StoragePurpose storage account on Drive $DriveLetter"

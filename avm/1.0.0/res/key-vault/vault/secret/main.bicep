@@ -65,11 +65,11 @@ var builtInRoleNames = {
   )
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: keyVaultName
 }
 
-resource secret 'Microsoft.KeyVault/vaults/secrets@2022-07-01' = {
+resource secret 'Microsoft.KeyVault/vaults/secrets@2023-07-01' = {
   name: name
   parent: keyVault
   tags: tags
