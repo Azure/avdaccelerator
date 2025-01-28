@@ -41,9 +41,7 @@ jobs:
       with:
         name: axe-report
         path: ./axe-reports/accessibility-report.html
-
-        ls -la ./axe-reports/
-        cat ./axe-reports/accessibility-report.html || echo "Report not created"
+                cat ./axe-reports/accessibility-report.html || echo "Report not created"
 
     - name: Upload axe-core report
       uses: actions/upload-artifact@v3
