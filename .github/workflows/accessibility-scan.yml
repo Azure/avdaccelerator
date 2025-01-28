@@ -15,6 +15,8 @@ jobs:
         node-version: '14'
     - name: Install dependencies
       run: npm install
+    - name: Install axe-core
+      run: npm install axe-core --save-dev
     - name: Run axe-core
       run: npx axe . --save --dir ./axe-reports
     - name: Upload axe-core report
