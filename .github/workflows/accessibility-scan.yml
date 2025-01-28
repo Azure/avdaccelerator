@@ -34,16 +34,14 @@ jobs:
     - name: Run axe-cli accessibility scan and save to file
       run: |
         npx axe-cli http://localhost:8080 --output html --output-path ./axe-reports/accessibility-report.html
-        echo "Report saved to ./axe-reports/accessibility-report.html"
+        echo "Report should be saved to ./axe-reports/accessibility-report.html"
 
-    - name: Verify report creation
+    - name: Check if the report is created and list the directory contents
       run: |
+        echo "Listing contents of axe-reports directory:"
         ls -la ./axe-reports/
-        if [ -f ./axe-reports/accessibility-report.html ]; then
-          cat ./axe-reports/accessibility-report.html
-        else
-          echo "Report not created"
-        fi
+        echo "Attempting to read the report content:"
+        cat ./axe-reports/accessibility-report.html || echo "Report not found"
 
     - name: Upload axe-core report
       uses: actions/upload-artifact@v3
