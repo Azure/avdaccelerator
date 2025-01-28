@@ -18,14 +18,12 @@ jobs:
     - name: Install dependencies
       run: npm install
 
-    - name: Install axe-core
-      run: npm install axe-core --save-dev
-
-    - name: Run axe-core
-      run: npx axe . --save --dir ./axe-reports
+    - name: Run axe-core accessibility scan
+      run: |
+        npx axe-core ./ --output html --output-path ./axe-reports/accessibility-report.html
 
     - name: Upload axe-core report
       uses: actions/upload-artifact@v3
       with:
         name: axe-report
-        path: ./axe-reports
+        path: ./axe-reports/accessibility-report.html
