@@ -187,11 +187,11 @@
                                     "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Entra ID + FSLogix deployments, because identities need to be hybrid for storage authenctication to be supported.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
-                                        "required": true
+                                        "required": "[if(not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')), true, false)]"
                                     }
                                 },
                                 {
-                                    "name": "identityDomainGuid",
+                                    "name": "identityDomainInfo",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Domain GUID",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
@@ -206,7 +206,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                                     "options": {
-                                        "text": "FSLogix/App Attach storage: AD domain name and GUID are required to configure directory and file level permissions through Windows File explorer. You can get this information from your domain admin or from an on-premises AD-joined client. If you prefer the LZA deployment to configure using icacls, GUID information is not required.",
+                                        "text": "EntraID + FSLogix: to configure directory and file level permissions through Windows File explorer, you also need to specify domain name and domain GUID for your on-premises AD. You can get this information from your domain admin or from an on-premises AD-joined client. If you prefer to configure using icacls, this information is not required.",
                                         "uri": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable?tabs=azure-portal%2Cintune#configure-directory-and-file-level-permissions",
                                         "style": "Info"
                                     }
@@ -2481,17 +2481,8 @@
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-
-
-
-
                 "identityDomainName": "[steps('identity').identityDomainInformation.identityDomainName]",
-                "identityDomainGuid": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityDomainGuid, '')]",
-                
-                
-                
-                
-                
+                "identityDomainGuid": "[steps('identity').identityDomainInformation.identityDomainGuid]",
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
