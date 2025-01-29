@@ -191,7 +191,7 @@
                                     }
                                 },
                                 {
-                                    "name": "identityDomainInfo",
+                                    "name": "identityDomainGuid",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Domain GUID",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
