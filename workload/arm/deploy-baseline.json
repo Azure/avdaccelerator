@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.13.18514",
-      "templateHash": "1179445004995716419"
+      "templateHash": "12853624226032542248"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -29542,6 +29542,7 @@
       "dependsOn": [
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Storage-RG-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-MGMT-VM-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]"
@@ -32498,6 +32499,7 @@
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Storage-RG-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-MGMT-VM-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]"
