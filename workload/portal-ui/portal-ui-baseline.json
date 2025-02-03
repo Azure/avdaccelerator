@@ -343,7 +343,7 @@
                             "name": "identiyEnableDefOptions",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Microsoft Defender for Cloud options:",
+                            "label": "Microsoft Defender for Cloud solutions you will enable.",
                             "elements": [
                                 {
                                     "name": "enableDef",
