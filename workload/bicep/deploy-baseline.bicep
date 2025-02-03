@@ -514,6 +514,24 @@ param deployAntiMalwareExt bool = true
 @sys.description('Additional customer-provided static routes to be added to the route tables.')
 param customStaticRoutes array = []
 
+//
+// Parameters for Microsoft Defender
+//
+@sys.description('Enable Microsoft Defender on the subscription. (Default: true)')
+param deployDefender bool = true
+
+@sys.description('Enable Microsoft Defender for servers. (Default: true)')
+param enableDefForServers bool = true
+
+@sys.description('Enable Microsoft Defender for storage. (Default: true)')
+param enableDefForStorage bool = true
+
+@sys.description('Enable Microsoft Defender for Key Vault. (Default: true)')
+param enableDefForKeyVault bool = true
+
+@sys.description('Enable Microsoft Defender for Azure Resource Manager. (Default: true)')
+param enableDefForArm bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -1521,6 +1539,20 @@ module gpuPolicies './modules/azurePolicies/gpuExtensionsSubscriptions.bicep' = 
     computeObjectsRgName: varComputeObjectsRgName
     location: avdSessionHostLocation
     subscriptionId: avdWorkloadSubsId
+  }
+  dependsOn: [
+    sessionHosts
+  ]
+}
+
+module defenderPolicySet './modules/azurePolicies/defenderSubscription.bicep' = if (deployDefender) {
+  scope: subscription('${avdWorkloadSubsId}')
+  name: 'Defender-Policies-${time}'
+  params: {
+    enableDefForServers: enableDefForServers
+    enableDefForStorage: enableDefForStorage
+    enableDefForKeyVault: enableDefForKeyVault
+    enableDefForArm: enableDefForArm
   }
   dependsOn: [
     sessionHosts

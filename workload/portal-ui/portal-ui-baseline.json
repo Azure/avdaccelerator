@@ -338,6 +338,53 @@
                                     "osPlatform": "Windows"
                                 }
                             ]
+                        },
+                        {
+                            "name": "identiyEnableDefOptions",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Select which Microsoft Defender for Cloud solutions you will enable.",
+                            "elements": [
+                                {
+                                    "name": "enableDef",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Deploy Microsoft Defender for Cloud and enable security monitoring for your platform and resources",
+                                    "defaultValue": true,
+                                    "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components"
+                                },
+                                {
+                                    "name": "enableDefForServers",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Enable Microsoft Defender for Servers",
+                                    "defaultValue": true,
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
+                                },
+                                {
+                                    "name": "enableDefForStorage",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Enable Microsoft Defender for Storage",
+                                    "defaultValue": true,
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
+                                },
+                                {
+                                    "name": "enableDefForKeyVault",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Enable Microsoft Defender for Key Vault",
+                                    "defaultValue": true,
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Key Vault",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
+                                },
+                                {
+                                    "name": "enableDefForArm",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Enable Microsoft Defender for Azure Resource Manager",
+                                    "defaultValue": true,
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Resource Manager.",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -666,7 +713,7 @@
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
                                         "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
-                                    }                              
+                                    }
                                 },
                                 {
                                     "name": "sessionHostSizeInfobox",
@@ -1199,7 +1246,7 @@
                             },
                             "scope": {
                                 "location": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]"
-                            }   
+                            }
                         },
                         {
                             "name": "avdSubnetApi",
@@ -2582,7 +2629,13 @@
                 "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
                 "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
                 "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
-                "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]"
+                "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]",
+                
+                "enableDef": "[steps('identity').identiyEnableDefOptions.enableDef]",
+                "enableDefForServers": "[steps('identity').identiyEnableDefOptions.enableDefForServers]",
+                "enableDefForStorage": "[steps('identity').identiyEnableDefOptions.enableDefForStorage]",
+                "enableDefForKeyVault": "[steps('identity').identiyEnableDefOptions.enableDefForKeyVault]",
+                "enableDefForArm": "[steps('identity').identiyEnableDefOptions.enableDefForArm]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",
