@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "13359509182894624824"
+      "templateHash": "18244379325960342173"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1005,30 +1005,30 @@
     },
     "enableDefForServers": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Enable Microsoft Defender for servers. (Default: false)"
+        "description": "Enable Microsoft Defender for servers. (Default: true)"
       }
     },
     "enableDefForStorage": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Enable Microsoft Defender for storage. (Default: false)"
+        "description": "Enable Microsoft Defender for storage. (Default: true)"
       }
     },
     "enableDefForKeyVault": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Enable Microsoft Defender for Key Vault. (Default: false)"
+        "description": "Enable Microsoft Defender for Key Vault. (Default: true)"
       }
     },
     "enableDefForArm": {
       "type": "bool",
-      "defaultValue": false,
+      "defaultValue": true,
       "metadata": {
-        "description": "Enable Microsoft Defender for Azure Resource Manager. (Default: false)"
+        "description": "Enable Microsoft Defender for Azure Resource Manager. (Default: true)"
       }
     }
   },

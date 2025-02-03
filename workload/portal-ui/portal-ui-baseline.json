@@ -356,7 +356,7 @@
                                     "name": "enableDefForServers",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Servers",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.",
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
                                 },
@@ -364,7 +364,7 @@
                                     "name": "enableDefForStorage",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Storage",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.",
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
                                 },
@@ -372,7 +372,7 @@
                                     "name": "enableDefForKeyVault",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Key Vault",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Key Vault",
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
                                 },
@@ -380,7 +380,7 @@
                                     "name": "enableDefForArm",
                                     "type": "Microsoft.Common.CheckBox",
                                     "label": "Enable Microsoft Defender for Azure Resource Manager",
-                                    "defaultValue": false,
+                                    "defaultValue": true,
                                     "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Resource Manager.",
                                     "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
                                 }
