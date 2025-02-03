@@ -517,20 +517,20 @@ param customStaticRoutes array = []
 //
 // Parameters for Microsoft Defender
 //
-@sys.description('Enable Microsoft Defender on the subscription. (Default: true)')
-param deployDefender bool = true
+@sys.description('Enable Microsoft Defender on the subscription. (Default: false)')
+param deployDefender bool = false
 
-@sys.description('Enable Microsoft Defender for servers. (Default: true)')
-param enableDefForServers bool = true
+@sys.description('Enable Microsoft Defender for servers. (Default: false)')
+param enableDefForServers bool = false
 
-@sys.description('Enable Microsoft Defender for storage. (Default: true)')
-param enableDefForStorage bool = true
+@sys.description('Enable Microsoft Defender for storage. (Default: false)')
+param enableDefForStorage bool = false
 
-@sys.description('Enable Microsoft Defender for Key Vault. (Default: true)')
-param enableDefForKeyVault bool = true
+@sys.description('Enable Microsoft Defender for Key Vault. (Default: false)')
+param enableDefForKeyVault bool = false
 
-@sys.description('Enable Microsoft Defender for Azure Resource Manager. (Default: true)')
-param enableDefForArm bool = true
+@sys.description('Enable Microsoft Defender for Azure Resource Manager. (Default: false)')
+param enableDefForArm bool = false
 
 // =========== //
 // Variable declaration //
