@@ -1384,7 +1384,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
   dependsOn: [
     baselineStorageResourceGroup
     wrklKeyVault
-    // managementVm
+    managementVm
   ]
 }
 
@@ -1436,7 +1436,7 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
     fslogixAzureFilesStorage
     baselineStorageResourceGroup
     wrklKeyVault
-    // managementVm
+    managementVm
   ]
 }
 
