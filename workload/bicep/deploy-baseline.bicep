@@ -146,14 +146,14 @@ param existingVnetPrivateEndpointSubnetResourceId string = ''
 @sys.description('Existing hub virtual network for perring. (Default: "")')
 param existingHubVnetResourceId string = ''
 
-@sys.description('AVD virtual network address prefixes. (Default: 10.10.0.0/23)')
-param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
+@sys.description('AVD virtual network address prefixes. (Default: 10.10.0.0/16)')
+param avdVnetworkAddressPrefixes string = '10.10.0.0/16'
 
-@sys.description('AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)')
-param vNetworkAvdSubnetAddressPrefix string = '10.10.0.0/24'
+@sys.description('AVD virtual network subnet address prefix. (Default: 10.10.1.0/24)')
+param vNetworkAvdSubnetAddressPrefix string = '10.10.1.0/24'
 
-@sys.description('private endpoints virtual network subnet address prefix. (Default: 10.10.1.0/27)')
-param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
+@sys.description('private endpoints virtual network subnet address prefix. (Default: 10.10.2.0/27)')
+param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.2.0/27'
 
 @sys.description('custom DNS servers IPs. (Default: "")')
 param customDnsIps string = ''
@@ -926,7 +926,7 @@ var varZtKeyvaultTag = {
 }
 //
 var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
-var verResourceGroups = [
+var varResourceGroups = [
   {
     purpose: 'Service-Objects'
     name: varServiceObjectsRgName
@@ -981,7 +981,7 @@ module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-grou
 
 // Compute, service objects
 module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
-  for resourceGroup in verResourceGroups: {
+  for resourceGroup in varResourceGroups: {
     scope: subscription(avdWorkloadSubsId)
     name: '${resourceGroup.purpose}-${time}'
     params: {

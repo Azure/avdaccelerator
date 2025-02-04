@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "18244379325960342173"
+      "templateHash": "12832927688343584926"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -274,23 +274,23 @@
     },
     "avdVnetworkAddressPrefixes": {
       "type": "string",
-      "defaultValue": "10.10.0.0/23",
+      "defaultValue": "10.10.0.0/16",
       "metadata": {
-        "description": "AVD virtual network address prefixes. (Default: 10.10.0.0/23)"
+        "description": "AVD virtual network address prefixes. (Default: 10.10.0.0/16)"
       }
     },
     "vNetworkAvdSubnetAddressPrefix": {
       "type": "string",
-      "defaultValue": "10.10.0.0/24",
+      "defaultValue": "10.10.1.0/24",
       "metadata": {
-        "description": "AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)"
+        "description": "AVD virtual network subnet address prefix. (Default: 10.10.1.0/24)"
       }
     },
     "vNetworkPrivateEndpointSubnetAddressPrefix": {
       "type": "string",
-      "defaultValue": "10.10.1.0/27",
+      "defaultValue": "10.10.2.0/27",
       "metadata": {
-        "description": "private endpoints virtual network subnet address prefix. (Default: 10.10.1.0/27)"
+        "description": "private endpoints virtual network subnet address prefix. (Default: 10.10.2.0/27)"
       }
     },
     "customDnsIps": {
@@ -1751,7 +1751,7 @@
       "Purpose": "Disk encryption keys for zero trust"
     },
     "varTelemetryId": "[format('pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-{0}', parameters('avdManagementPlaneLocation'))]",
-    "verResourceGroups": [
+    "varResourceGroups": [
       {
         "purpose": "Service-Objects",
         "name": "[variables('varServiceObjectsRgName')]",
@@ -1911,11 +1911,11 @@
     {
       "copy": {
         "name": "baselineResourceGroups",
-        "count": "[length(variables('verResourceGroups'))]"
+        "count": "[length(variables('varResourceGroups'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}', variables('verResourceGroups')[copyIndex()].purpose, parameters('time'))]",
+      "name": "[format('{0}-{1}', variables('varResourceGroups')[copyIndex()].purpose, parameters('time'))]",
       "subscriptionId": "[parameters('avdWorkloadSubsId')]",
       "location": "[deployment().location]",
       "properties": {
@@ -1925,16 +1925,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('verResourceGroups')[copyIndex()].name]"
+            "value": "[variables('varResourceGroups')[copyIndex()].name]"
           },
           "location": {
-            "value": "[variables('verResourceGroups')[copyIndex()].location]"
+            "value": "[variables('varResourceGroups')[copyIndex()].location]"
           },
           "enableTelemetry": {
-            "value": "[variables('verResourceGroups')[copyIndex()].enableDefaultTelemetry]"
+            "value": "[variables('varResourceGroups')[copyIndex()].enableDefaultTelemetry]"
           },
           "tags": {
-            "value": "[variables('verResourceGroups')[copyIndex()].tags]"
+            "value": "[variables('varResourceGroups')[copyIndex()].tags]"
           }
         },
         "template": {
