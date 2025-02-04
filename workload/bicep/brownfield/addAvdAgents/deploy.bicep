@@ -11,7 +11,7 @@ param computeSubscriptionId string
 param computeRgResourceGroupName string
 
 @sys.description('The name of the VM where the AVD agents will be installed. (Default: )')
-param sessionHostName string
+param vmName string
 
 @sys.description('AVD Host Pool resource ID. (Default: )')
 param hostPoolResourceId string
@@ -80,12 +80,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 }
 
 // Apply AVD session host configurations
-module sessionHostConfiguration './.bicep/configureSessionHost.bicep' = {
+module sessionHostConfiguration './modules/configureSessionHost.bicep' = {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
-  name: 'AVD-Agents-${sessionHostName}-${time}'
+  name: 'AVD-Agents-${vmName}-${time}'
   params: {
     location: location
-    name: sessionHostName
+    name: vmName
     hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript
