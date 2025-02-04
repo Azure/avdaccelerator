@@ -16,8 +16,8 @@ param vmName string
 @sys.description('AVD Host Pool resource ID. (Default: )')
 param hostPoolResourceId string
 
-@sys.description('Location where to deploy compute services. (Default: )')
-param location string
+@sys.description('Region of the VM to configure. (Default: )')
+param vmLocation string
 
 @sys.description('Resource ID of keyvault that contains credentials. (Default: )')
 param keyVaultResourceId string
@@ -84,7 +84,7 @@ module sessionHostConfiguration './modules/configureSessionHost.bicep' = {
   scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
   name: 'AVD-Agents-${vmName}-${time}'
   params: {
-    location: location
+    location: vmLocation
     name: vmName
     hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
     baseScriptUri: varSessionHostConfigurationScriptUri
