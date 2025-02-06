@@ -1,46 +1,36 @@
-# Deploy New Session Hosts
+# Deploy AVD agents to VM
 
-This solution will deploy new session hosts to an existing host pool.
+This solution will deploy the AVD agents to a VM.
 
 ## Requirements
 
 - Permissions: below are the minimum required permissions to deploy this solution
-  - User Access Administrator on the target Subscription
-  - Desktop Virtualization Host Pool Contributor on the resource group containing the target host pool
+  - Virtual machine contributor
+  - Desktop Virtualization Host Pool Contributor
+  - Key Vault Contributor
 - Resources: this solution assumes the following items already exists:
-  - Resource group where session hosts will be deployed (created by AVD LZA baseline)
-  - Host pool with an active registration token (created by AVD LZA baseline)
-  - Key vault with the following secrets (created by AVD LZA baseline):
-    - VM local admin user password
-    - Domain join account password
-    - Disk encrpyption key (when enabling zero trust for session hosts)
-  - Virtual network for session hosts (created by AVD LZA baseline)
-  - Optional: application security group for session hosts (created by AVD LZA baseline)
-  - Storage account and file share configured for fslogix (created by AVD LZA baseline)
-  - Optional: log analytics workspace configured with Azure Virtual Desktop insights settings (created by AVD LZA baseline)
-  - Optional: VMSS flex for the session hosts (created by AVD LZA baseline)
+  - Virtual Machine
+  - Key Vault
+  - Host pool
 
 ## Deployment Options
 
 ### Azure portal UI
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployNewSessionHostsToHostPools.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiNewSessionHosts.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/?feature.deployapiver=2022-12-01#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployNewSessionHostsToHostPools.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiNewSessionHosts.json)
+[![Deploy to Azure (under construction)]()
 
 ### PowerShell
 
 ```powershell
-New-AzDeployment `
+New-AzSubscriptionDeployment `
     -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/deployNewSessionHostsToHostPools.json' `
-    -computeSubscriptionId '<Subscription ID>' `
-    -computeRgResourceGroupName '<AVD pool compute resource group>' `
-    -countIndex '<Current count of session hosts in the host pool>' `
-    -count '<Number of new session hosts to deploy>' `
-    -hostPoolResourceId '<Existing host pool resource ID>' `
-    -subnetResourceId '<Resource ID of subnet to use for the new session hosts>' `
-    -location '<Azure region to deploy new session hosts to>' `
-    -vmLocalUserName '<Local admin user name>' `
-    -keyVaultResourceId '<Resource ID of the key vault that contains the local admin password secret>' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/addAvdAgents/deploy.bicep' `
+    -computeSubscriptionId '<ID of the subscription where the VM was created>' `
+    -computeRgResourceGroupName '<Resource group name where the VM was created>' `
+    -vmLocation '<VM location>' `
+    -vmName '<VM name>' `
+    -hostPoolResourceId '<resource ID of the host pool to which the VM will be registered>' `
+    -keyVaultResourceId '<resource ID of the key vault where the host pool registration token will be stored>' `
     -Verbose
 
 
@@ -51,16 +41,12 @@ New-AzDeployment `
 ```azurecli
 az deployment sub create \
     --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/deployNewSessionHostsToHostPools.json' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/addAvdAgents/deploy.bicep' \
     --parameters \
-        computeSubscriptionId '<Subscription ID>' \
-        computeRgResourceGroupName '<AVD pool compute resource group>' \
-        countIndex '<Current count of session hosts in the host pool>' \
-        count '<Number of new session hosts to deploy>' \
-        hostPoolResourceId '<Existing host pool resource ID>' \
-        subnetResourceId '<Resource ID of subnet to use for the new session hosts>' \
-        location '<Azure region to deploy new session hosts to>' \
-        vmLocalUserName '<Local admin user name>' \
-        keyVaultResourceId '<Resource ID of the key vault that contains the local admin password secret>' \
-        HostPoolResourceId '<Resource ID for the target host pool>'
+        computeSubscriptionId '<ID of the subscription where the VM was created>' \
+        computeRgResourceGroupName '<Resource group name where the VM was created>' \
+        vmLocation '<VM location>' \
+        vmName '<VM name>' \
+        hostPoolResourceId '<resource ID of the host pool to which the VM will be registered>' \
+        keyVaultResourceId '<resource ID of the key vault where the host pool registration token will be stored>'
 ```
