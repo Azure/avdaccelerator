@@ -43,7 +43,7 @@ param count int
 @sys.description('The session host number to begin with for the deployment.')
 param countIndex int
 
-@sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true).')
 param useAvailabilityZones bool
 
 // @sys.description('VMSS flex name.')

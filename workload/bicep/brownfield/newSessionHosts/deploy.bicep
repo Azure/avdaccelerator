@@ -115,7 +115,7 @@ param location string
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
 param sessionHostCustomNamePrefix string = 'vmapp1duse2'
 
-@sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: true)')
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)')
 param useAvailabilityZones bool = true
 
 @sys.description('The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
