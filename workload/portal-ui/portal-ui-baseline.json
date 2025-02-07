@@ -640,15 +640,7 @@
                                     "visible": true,
                                     "label": "Availability zones",
                                     "defaultValue": true,
-                                    "toolTip": "Distribute compute resources across availability zones using multi zone VMSS Flex with 1 fault domain (when VMSS Flex is enabled). If 'No' is selected then a VMSS Flex will be created to host the VMs at a regional level but distributing across multiple fault domains."
-                                },
-                                {
-                                    "name": "sessionHostsAvailabilitySettingsVmss",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "visible": true,
-                                    "label": "VMSS Flex",
-                                    "defaultValue": true,
-                                    "toolTip": "Deploy and associate session hosts with a Virtual Machine Scale Set (VMSS) with Flex orchestration to distribute session hosts across fault domains."
+                                    "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then the VMs will be deployed at a regional level."
                                 },
                                 {
                                     "name": "sessionHostsRegion",
@@ -1909,7 +1901,7 @@
                                     "name": "computeObjectsRgCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
-                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks, VMSS) resource group custom name.",
+                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks) resource group custom name.",
                                     "placeholder": "Example: rg-avd-app1-dev-use2-pool-compute",
                                     "constraints": {
                                         "required": true,
@@ -1940,19 +1932,6 @@
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,11}$",
                                         "validationMessage": "Value must be 1-11 characters."
-                                    }
-                                },
-                                {
-                                    "name": "vmssCustomNamePrefix",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "VMSS Flex prefix",
-                                    "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings)]",
-                                    "toolTip": "Azure Virtual Desktop VMSS Flex custom name.",
-                                    "placeholder": "Example: avail",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,9}$",
-                                        "validationMessage": "Value must be 1-9 characters."
                                     }
                                 }
                             ]
@@ -2549,7 +2528,6 @@
                 "avdDeployScalingPlan": "[if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "availabilityZonesCompute": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
-                "deployVmssFlex": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettingsVmss, false)]",
                 "zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
@@ -2600,7 +2578,6 @@
                 "avdApplicationGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomName, 'no')]",
                 "avdApplicationGroupCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyName, 'no')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, 'no')]",
-                "vmssFlexCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.vmssCustomNamePrefix, 'no')]",
                 "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'no')]",
                 "fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, 'no')]",
                 "appAttachFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.appAttachFileShareCustomName, 'no')]",

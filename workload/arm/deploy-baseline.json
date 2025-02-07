@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "12832927688343584926"
+      "templateHash": "3282208684113992366"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -460,7 +460,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)"
+        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)"
       }
     },
     "zoneRedundantStorage": {
@@ -468,20 +468,6 @@
       "defaultValue": false,
       "metadata": {
         "description": "When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)"
-      }
-    },
-    "deployVmssFlex": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)"
-      }
-    },
-    "vmssFlatformFaultDomainCount": {
-      "type": "int",
-      "defaultValue": 2,
-      "metadata": {
-        "description": "Sets the number of fault domains for the availability set. (Default: 2)"
       }
     },
     "fslogixStoragePerformance": {
@@ -793,14 +779,6 @@
       "maxLength": 11,
       "metadata": {
         "description": "AVD session host prefix custom name. (Default: vmapp1duse2)"
-      }
-    },
-    "vmssFlexCustomNamePrefix": {
-      "type": "string",
-      "defaultValue": "vmss",
-      "maxLength": 9,
-      "metadata": {
-        "description": "AVD VMSS Flex custom name. (Default: vmss)"
       }
     },
     "storageAccountPrefixCustomName": {
@@ -1441,7 +1419,6 @@
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
     "varWrklKeyVaultSku": "[if(or(equals(variables('varAzureCloudName'), 'AzureCloud'), equals(variables('varAzureCloudName'), 'AzureUSGovernment')), 'premium', if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), 'standard', null()))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
-    "varVmssFlexNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('vmssFlexCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('vmss-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
     "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varAppAttachFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('appAttachFileShareCustomName'), format('appa-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
@@ -1466,10 +1443,6 @@
     "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varSessionHostBatchCount": "[if(greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0), add(variables('varMaxSessionHostsDivisionValue'), 1), variables('varMaxSessionHostsDivisionValue'))]",
-    "varMaxVmssFlexMembersCount": 999,
-    "varDivisionVmssFlexValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxVmssFlexMembersCount'))]",
-    "varDivisionAvsetRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxVmssFlexMembersCount'))]",
-    "varVmssFlexCount": "[if(greater(variables('varDivisionAvsetRemainderValue'), 0), add(variables('varDivisionVmssFlexValue'), 1), variables('varDivisionVmssFlexValue'))]",
     "varHostPoolAgentUpdateSchedule": [
       {
         "dayOfWeek": "Tuesday",
@@ -32541,114 +32514,6 @@
       ]
     },
     {
-      "condition": "[and(parameters('avdDeploySessionHosts'), parameters('deployVmssFlex'))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('AVD-VMSS-Flex-{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeObjectsRgName'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "namePrefix": {
-            "value": "[variables('varVmssFlexNamePrefix')]"
-          },
-          "location": {
-            "value": "[parameters('avdSessionHostLocation')]"
-          },
-          "count": {
-            "value": "[variables('varVmssFlexCount')]"
-          },
-          "platformFaultDomainCount": {
-            "value": "[parameters('vmssFlatformFaultDomainCount')]"
-          },
-          "useAvailabilityZones": {
-            "value": "[parameters('availabilityZonesCompute')]"
-          },
-          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "9319266898330285140"
-            },
-            "name": "AVD Accelerator - VMSS Flex",
-            "description": "Deploys a VMSS Flex without VM profile",
-            "owner": "Azure/avdaccelerator"
-          },
-          "parameters": {
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "Location where to deploy compute services."
-              }
-            },
-            "namePrefix": {
-              "type": "string",
-              "metadata": {
-                "description": "Availablity Set name."
-              }
-            },
-            "platformFaultDomainCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Platform Fault Domain count."
-              }
-            },
-            "count": {
-              "type": "int",
-              "metadata": {
-                "description": "VMSS Flex count."
-              }
-            },
-            "useAvailabilityZones": {
-              "type": "bool",
-              "metadata": {
-                "description": "Use availability zones."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "metadata": {
-                "description": "Tags to be applied to resources"
-              }
-            }
-          },
-          "resources": [
-            {
-              "copy": {
-                "name": "vmssFlex",
-                "count": "[length(range(1, parameters('count')))]"
-              },
-              "type": "Microsoft.Compute/virtualMachineScaleSets",
-              "apiVersion": "2024-03-01",
-              "name": "[format('{0}-{1}', parameters('namePrefix'), padLeft(range(1, parameters('count'))[copyIndex()], 3, '0'))]",
-              "location": "[parameters('location')]",
-              "zones": "[if(parameters('useAvailabilityZones'), createArray('1', '2', '3'), null())]",
-              "properties": {
-                "orchestrationMode": "Flexible",
-                "zoneBalance": "[if(parameters('useAvailabilityZones'), true(), false())]",
-                "platformFaultDomainCount": "[if(parameters('useAvailabilityZones'), 1, parameters('platformFaultDomainCount'))]",
-                "singlePlacementGroup": false
-              },
-              "tags": "[parameters('tags')]"
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "baselineResourceGroups",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
-      ]
-    },
-    {
       "copy": {
         "name": "sessionHosts",
         "count": "[length(range(1, variables('varSessionHostBatchCount')))]",
@@ -32676,15 +32541,6 @@
           },
           "createIntuneEnrollment": {
             "value": "[parameters('createIntuneEnrollment')]"
-          },
-          "maxVmssFlexMembersCount": {
-            "value": "[variables('varMaxVmssFlexMembersCount')]"
-          },
-          "vmssFlexNamePrefix": {
-            "value": "[variables('varVmssFlexNamePrefix')]"
-          },
-          "useVmssFlex": {
-            "value": "[parameters('deployVmssFlex')]"
           },
           "batchId": {
             "value": "[sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1)]"
@@ -32788,7 +32644,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "15943059215919558738"
+              "templateHash": "16593509271852742672"
             }
           },
           "parameters": {
@@ -32852,18 +32708,6 @@
                 "description": "Quantity of session hosts to deploy."
               }
             },
-            "useVmssFlex": {
-              "type": "bool",
-              "metadata": {
-                "description": "Associate VMs with VMSS Flex group."
-              }
-            },
-            "maxVmssFlexMembersCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Max VMs per availability set."
-              }
-            },
             "countIndex": {
               "type": "int",
               "metadata": {
@@ -32873,13 +32717,7 @@
             "useAvailabilityZones": {
               "type": "bool",
               "metadata": {
-                "description": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
-              }
-            },
-            "vmssFlexNamePrefix": {
-              "type": "string",
-              "metadata": {
-                "description": "VMSS flex name."
+                "description": "When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)."
               }
             },
             "identityServiceProvider": {
@@ -33110,7 +32948,6 @@
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
                   },
-                  "virtualMachineScaleSetResourceId": "[if(parameters('useVmssFlex'), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/virtualMachineScaleSets/{2}-{3}', parameters('subscriptionId'), parameters('computeObjectsRgName'), parameters('vmssFlexNamePrefix'), padLeft(add(1, div(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('maxVmssFlexMembersCount'))), 3, '0'))), createObject('value', ''))]",
                   "osType": {
                     "value": "Windows"
                   },
@@ -37477,7 +37314,6 @@
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('AVD-MGMT-Plane-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varComputeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-VMSS-Flex-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]",
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Zero-Trust-{0}', parameters('time')))]"
       ]

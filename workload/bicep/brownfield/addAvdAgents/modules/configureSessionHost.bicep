@@ -18,12 +18,11 @@ param scriptName string
 @secure()
 param hostPoolToken string
 
-param IdentityServiceProvider string = 'ADDS'
-
 // =========== //
 // Variable declaration //
 // =========== //
-var varScriptArguments = '-AmdVmSize $false -IdentityServiceProvider ${IdentityServiceProvider} -Fslogix $false -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize $false -verbose'
+var varIdentityServiceProvider = 'null'
+var varScriptArguments = '-AmdVmSize $false -IdentityServiceProvider ${varIdentityServiceProvider} -Fslogix $false -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize $false -verbose'
 
 // =========== //
 // Deployments //

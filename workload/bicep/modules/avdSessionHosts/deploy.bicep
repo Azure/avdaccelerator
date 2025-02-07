@@ -34,20 +34,20 @@ param subscriptionId string
 @sys.description('Quantity of session hosts to deploy.')
 param count int
 
-@sys.description('Associate VMs with VMSS Flex group.')
-param useVmssFlex bool
+// @sys.description('Associate VMs with VMSS Flex group.')
+// param useVmssFlex bool
 
-@sys.description('Max VMs per availability set.')
-param maxVmssFlexMembersCount int
+// @sys.description('Max VMs per availability set.')
+// param maxVmssFlexMembersCount int
 
 @sys.description('The session host number to begin with for the deployment.')
 param countIndex int
 
-@sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true).')
 param useAvailabilityZones bool
 
-@sys.description('VMSS flex name.')
-param vmssFlexNamePrefix string
+// @sys.description('VMSS flex name.')
+// param vmssFlexNamePrefix string
 
 @sys.description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
@@ -184,7 +184,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
             systemAssigned: true
         }: null
         encryptionAtHost: encryptionAtHost
-        virtualMachineScaleSetResourceId: useVmssFlex ? '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}': ''
+        //virtualMachineScaleSetResourceId: useVmssFlex ? '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}': ''
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: vmSize

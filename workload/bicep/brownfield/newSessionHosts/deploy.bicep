@@ -13,8 +13,8 @@ param applicationNameTag string = 'Contoso-App'
 @sys.description('Application Security Group (ASG) for the session hosts. (Default: "")')
 param asgResourceId string = ''
 
-@sys.description('VMSS flex resource ID. (Default: "")')
-param virtualMachineScaleSetResourceId string = ''
+// @sys.description('VMSS flex resource ID. (Default: "")')
+// param virtualMachineScaleSetResourceId string = ''
 
 @sys.description('Source custom image ID. (Default: "")')
 param customImageDefinitionId string = ''
@@ -115,7 +115,7 @@ param location string
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
 param sessionHostCustomNamePrefix string = 'vmapp1duse2'
 
-@sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: true)')
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)')
 param useAvailabilityZones bool = true
 
 @sys.description('The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
@@ -320,7 +320,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
       systemAssigned: true
   }: null
     encryptionAtHost: diskZeroTrust
-    virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
+    //virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
     osType: 'Windows'
     licenseType: 'Windows_Client'
     vmSize: vmSize

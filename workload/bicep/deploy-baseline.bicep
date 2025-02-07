@@ -226,17 +226,17 @@ param avdDeploySessionHostsCount int = 1
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
 param avdSessionHostCountIndex int = 0
 
-@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)')
 param availabilityZonesCompute bool = true
 
 @sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
 param zoneRedundantStorage bool = false
 
-@sys.description('Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)')
-param deployVmssFlex bool = true
+// @sys.description('Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)')
+// param deployVmssFlex bool = true
 
-@sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
-param vmssFlatformFaultDomainCount int = 2
+// @sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
+// param vmssFlatformFaultDomainCount int = 2
 
 @allowed([
   'Standard'
@@ -402,9 +402,9 @@ param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - Dev - Ea
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
 param avdSessionHostCustomNamePrefix string = 'vmapp1duse2'
 
-@maxLength(9)
-@sys.description('AVD VMSS Flex custom name. (Default: vmss)')
-param vmssFlexCustomNamePrefix string = 'vmss'
+// @maxLength(9)
+// @sys.description('AVD VMSS Flex custom name. (Default: vmss)')
+// param vmssFlexCustomNamePrefix string = 'vmss'
 
 @maxLength(2)
 @sys.description('AVD FSLogix and App Attach storage account prefix custom name. (Default: st)')
@@ -588,7 +588,7 @@ var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComp
 var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
 var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment') ? 'premium' : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
-var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
+//var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
 var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varAppAttachFileShareName = avdUseCustomNaming ? appAttachFileShareCustomName : 'appa-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
@@ -625,10 +625,10 @@ var varMaxSessionHostsPerTemplate = 10
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
 var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
-var varMaxVmssFlexMembersCount = 999
-var varDivisionVmssFlexValue = avdDeploySessionHostsCount / varMaxVmssFlexMembersCount
-var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxVmssFlexMembersCount
-var varVmssFlexCount = varDivisionAvsetRemainderValue > 0 ? varDivisionVmssFlexValue + 1 : varDivisionVmssFlexValue
+// var varMaxVmssFlexMembersCount = 999
+// var varDivisionVmssFlexValue = avdDeploySessionHostsCount / varMaxVmssFlexMembersCount
+// var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxVmssFlexMembersCount
+// var varVmssFlexCount = varDivisionAvsetRemainderValue > 0 ? varDivisionVmssFlexValue + 1 : varDivisionVmssFlexValue
 var varHostPoolAgentUpdateSchedule = [
   {
     dayOfWeek: 'Tuesday'
@@ -1441,22 +1441,22 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
 }
 
 // VMSS Flex
-module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = if (avdDeploySessionHosts && deployVmssFlex) {
-  name: 'AVD-VMSS-Flex-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
-  params: {
-    namePrefix: varVmssFlexNamePrefix
-    location: avdSessionHostLocation
-    count: varVmssFlexCount
-    platformFaultDomainCount: vmssFlatformFaultDomainCount
-    useAvailabilityZones: availabilityZonesCompute
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-  }
-  dependsOn: [
-    baselineResourceGroups
-    monitoringDiagnosticSettings
-  ]
-}
+// module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = if (avdDeploySessionHosts && deployVmssFlex) {
+//   name: 'AVD-VMSS-Flex-${time}'
+//   scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
+//   params: {
+//     namePrefix: varVmssFlexNamePrefix
+//     location: avdSessionHostLocation
+//     count: varVmssFlexCount
+//     platformFaultDomainCount: vmssFlatformFaultDomainCount
+//     useAvailabilityZones: availabilityZonesCompute
+//     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//   }
+//   dependsOn: [
+//     baselineResourceGroups
+//     monitoringDiagnosticSettings
+//   ]
+// }
 
 // Session hosts
 @batchSize(3)
@@ -1471,9 +1471,9 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
         : ''
       identityServiceProvider: avdIdentityServiceProvider
       createIntuneEnrollment: createIntuneEnrollment
-      maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
-      vmssFlexNamePrefix: varVmssFlexNamePrefix
-      useVmssFlex: deployVmssFlex
+      // maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
+      // vmssFlexNamePrefix: varVmssFlexNamePrefix
+      //useVmssFlex: deployVmssFlex
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
@@ -1525,7 +1525,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       fslogixAzureFilesStorage
       baselineResourceGroups
       wrklKeyVault
-      vmScaleSetFlex
+      //vmScaleSetFlex
       managementPLane
     ]
   }

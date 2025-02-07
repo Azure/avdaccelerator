@@ -209,9 +209,6 @@
         "deployGpuPolicies": {
             "value": false
         },
-        "deployVmssFlex": {
-            "value": true
-        },
         "deployAntiMalwareExt": {
             "value": true
         }

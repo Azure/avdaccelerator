@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5329968786039512480"
+      "templateHash": "5147644066952840608"
     }
   },
   "parameters": {
@@ -1708,7 +1708,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "909547921079816535"
+              "templateHash": "12732844867802063090"
             }
           },
           "parameters": {
@@ -1741,14 +1741,11 @@
               "metadata": {
                 "description": "AVD Host Pool registration token"
               }
-            },
-            "IdentityServiceProvider": {
-              "type": "string",
-              "defaultValue": "ADDS"
             }
           },
           "variables": {
-            "varScriptArguments": "[format('-AmdVmSize $false -IdentityServiceProvider {0} -Fslogix $false -HostPoolRegistrationToken {1} -NvidiaVmSize $false -verbose', parameters('IdentityServiceProvider'), parameters('hostPoolToken'))]"
+            "varIdentityServiceProvider": "null",
+            "varScriptArguments": "[format('-AmdVmSize $false -IdentityServiceProvider {0} -Fslogix $false -HostPoolRegistrationToken {1} -NvidiaVmSize $false -verbose', variables('varIdentityServiceProvider'), parameters('hostPoolToken'))]"
           },
           "resources": [
             {
