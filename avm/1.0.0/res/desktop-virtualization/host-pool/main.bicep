@@ -192,6 +192,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview'
     loadBalancerType: loadBalancerType
     startVMOnConnect: startVMOnConnect
     validationEnvironment: validationEnvironment
+    sessionHostManagementType: 'Automatic'
     registrationInfo: {
       expirationTime: dateTimeAdd(baseTime, tokenValidityLength)
       token: null
@@ -204,6 +205,60 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview'
     ssoClientId: ssoClientId
     ssoClientSecretKeyVaultPath: ssoClientSecretKeyVaultPath
     ssoSecretType: ssoSecretType
+  }
+}
+
+resource sessionHostManagements 'Microsoft.DesktopVirtualization/hostPools/sessionHostManagements@2024-04-08-preview' = {
+  name: name
+  properties: {
+    'scheduledDateTime': parameters('defaultTimestamp'),
+    'provisioning': null,
+    'scheduledDateTimeZone': parameters('defaultTimeZone'),
+    'update': {
+        'deleteOriginalVm': false,
+        'maxVmsRemoved': 1,
+        'logOffDelayMinutes': 2,
+        'logOffMessage': 'You will be signed out'
+    }
+  }
+}
+
+resource sessionHostConfigurations 'Microsoft.DesktopVirtualization/hostPools/sessionHostConfigurations@2024-04-08-preview' = {
+  name: name
+  "vmResourceGroup": "[parameters('vmResourceGroup')]",
+  "vmSizeId": "[parameters('vmSize')]",
+  "diskInfo": {
+      "type": "[parameters('vmDiskType')]"
+  },
+  "customConfigurationScriptUrl": "[if(empty(parameters('customConfigurationScriptUrl')), null(), parameters('customConfigurationScriptUrl'))]",
+  "imageInfo": {
+      "type": "[if(equals(parameters('vmImageType'), 'Gallery'), 'Marketplace', 'Custom')]",
+      "marketPlaceInfo": "[if(equals(parameters('vmImageType'), 'Gallery'), variables('sessionHostConfigurationImageMarketplaceInfoProps'), null())]",
+      "customInfo": "[if(equals(parameters('vmImageType'), 'CustomImage'), variables('sessionHostConfigurationImageCustomInfoProps'), null())]"
+  },
+  "domainInfo": {
+      "joinType": "[if(parameters('aadJoin'), 'AzureActiveDirectory', 'ActiveDirectory')]",
+      "activeDirectoryInfo": "[if(not(parameters('aadJoin')), reference(concat('KeyVaultSecretRetrieval-', parameters('deploymentId'))).outputs.sessionHostConfigurationDomainActiveDirectoryInfoProps.value, null())]",
+      "azureActiveDirectoryInfo": "[if(parameters('aadJoin'), variables('sessionHostConfigurationDomainAzureActiveDirectoryInfoProps'), null())]"
+  },
+  "vmTags": "[if(empty(parameters('virtualMachineTags')), null(), parameters('virtualMachineTags'))]",
+  "vmLocation": "[parameters('vmLocation')]",
+  "vmNamePrefix": "[parameters('vmNamePrefix')]",
+  "availabilityZones": "[if(empty(parameters('availabilityZones')), null(), parameters('availabilityZones'))]",
+  "networkInfo": {
+      "subnetId": "[variables('subnet-id')]",
+      "securityGroupId": "[if(parameters('createNetworkSecurityGroup'), resourceId('Microsoft.Network/networkSecurityGroups', variables('newNetworkSecurityGroupName')), if(empty(parameters('networkSecurityGroupId')), null(), parameters('networkSecurityGroupId')))]"
+  },
+  "securityInfo": {
+      "type": "[parameters('securityType')]",
+      "secureBootEnabled": "[parameters('secureBoot')]",
+      "vTpmEnabled": "[parameters('vTPM')]"
+  },
+  "vmAdminCredentials": {
+      "usernameKeyVaultSecretUri": "[parameters('vmAdministratorAccountUsernameSecretUri')]",
+      "passwordKeyVaultSecretUri": "[parameters('vmAdministratorAccountPasswordSecretUri')]"
+  },
+  "bootDiagnosticsInfo": "[parameters('bootDiagnostics')]"
   }
 }
 
