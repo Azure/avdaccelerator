@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6062267872456071106"
+      "templateHash": "11439113684403922975"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -470,13 +470,6 @@
         "description": "When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)"
       }
     },
-    "vmssFlatformFaultDomainCount": {
-      "type": "int",
-      "defaultValue": 2,
-      "metadata": {
-        "description": "Sets the number of fault domains for the availability set. (Default: 2)"
-      }
-    },
     "fslogixStoragePerformance": {
       "type": "string",
       "defaultValue": "Premium",
@@ -786,14 +779,6 @@
       "maxLength": 11,
       "metadata": {
         "description": "AVD session host prefix custom name. (Default: vmapp1duse2)"
-      }
-    },
-    "vmssFlexCustomNamePrefix": {
-      "type": "string",
-      "defaultValue": "vmss",
-      "maxLength": 9,
-      "metadata": {
-        "description": "AVD VMSS Flex custom name. (Default: vmss)"
       }
     },
     "storageAccountPrefixCustomName": {
@@ -1434,7 +1419,6 @@
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
     "varWrklKeyVaultSku": "[if(or(equals(variables('varAzureCloudName'), 'AzureCloud'), equals(variables('varAzureCloudName'), 'AzureUSGovernment')), 'premium', if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), 'standard', null()))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
-    "varVmssFlexNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('vmssFlexCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('vmss-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
     "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varAppAttachFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('appAttachFileShareCustomName'), format('appa-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
@@ -1459,10 +1443,6 @@
     "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varSessionHostBatchCount": "[if(greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0), add(variables('varMaxSessionHostsDivisionValue'), 1), variables('varMaxSessionHostsDivisionValue'))]",
-    "varMaxVmssFlexMembersCount": 999,
-    "varDivisionVmssFlexValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxVmssFlexMembersCount'))]",
-    "varDivisionAvsetRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxVmssFlexMembersCount'))]",
-    "varVmssFlexCount": "[if(greater(variables('varDivisionAvsetRemainderValue'), 0), add(variables('varDivisionVmssFlexValue'), 1), variables('varDivisionVmssFlexValue'))]",
     "varHostPoolAgentUpdateSchedule": [
       {
         "dayOfWeek": "Tuesday",
@@ -32562,12 +32542,6 @@
           "createIntuneEnrollment": {
             "value": "[parameters('createIntuneEnrollment')]"
           },
-          "maxVmssFlexMembersCount": {
-            "value": "[variables('varMaxVmssFlexMembersCount')]"
-          },
-          "vmssFlexNamePrefix": {
-            "value": "[variables('varVmssFlexNamePrefix')]"
-          },
           "batchId": {
             "value": "[sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1)]"
           },
@@ -32670,7 +32644,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "14845965215154049021"
+              "templateHash": "14895187347729194947"
             }
           },
           "parameters": {
@@ -32734,12 +32708,6 @@
                 "description": "Quantity of session hosts to deploy."
               }
             },
-            "maxVmssFlexMembersCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Max VMs per availability set."
-              }
-            },
             "countIndex": {
               "type": "int",
               "metadata": {
@@ -32750,12 +32718,6 @@
               "type": "bool",
               "metadata": {
                 "description": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
-              }
-            },
-            "vmssFlexNamePrefix": {
-              "type": "string",
-              "metadata": {
-                "description": "VMSS flex name."
               }
             },
             "identityServiceProvider": {

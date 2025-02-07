@@ -37,8 +37,8 @@ param count int
 // @sys.description('Associate VMs with VMSS Flex group.')
 // param useVmssFlex bool
 
-@sys.description('Max VMs per availability set.')
-param maxVmssFlexMembersCount int
+// @sys.description('Max VMs per availability set.')
+// param maxVmssFlexMembersCount int
 
 @sys.description('The session host number to begin with for the deployment.')
 param countIndex int
@@ -46,8 +46,8 @@ param countIndex int
 @sys.description('Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set.')
 param useAvailabilityZones bool
 
-@sys.description('VMSS flex name.')
-param vmssFlexNamePrefix string
+// @sys.description('VMSS flex name.')
+// param vmssFlexNamePrefix string
 
 @sys.description('The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string

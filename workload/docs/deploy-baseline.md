@@ -50,8 +50,7 @@
   - **Deploy sessions hosts** - You can choose to not deploy session hosts just the Azure Virtual Desktop service objects.
   - **Session host region** - Provide the region to where you want to deploy the session hosts. This defaults to the Management Plane region but can be changed.
   - **Session hosts OU path (Optional)** - Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU. If left empty the computer account will be created in the default Computers OU. Example: OU=avd,DC=contoso,DC=com.
-  - **Availability zones** - If you uncheck the checkbox, VMs will be deployed regionally and will be associated with a regional VMSS Flex (if VMSS is enabled). If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones and will also associate the VMs with a VMSS Flex group created to use multiple availability zones.
-  - **VMSS Flex** - If you uncheck the checkbox, no VMSS Flex will be created. If you select the checkbox, the accelerator will deploy a VMSS Flex and VMs will be associated with it.
+  - **Availability zones** - If you uncheck the checkbox, VMs will be deployed regionally. If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones.
   - **VM size** -  Select the SKU size for the session hosts.
   - **VM count** - Select the number of session hosts to deploy.
   - **OS disk type** - Select the OS Disk SKU type. Premium is recommended for performance and a higher SLA.
