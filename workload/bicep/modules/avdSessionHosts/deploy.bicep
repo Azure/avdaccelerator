@@ -34,8 +34,8 @@ param subscriptionId string
 @sys.description('Quantity of session hosts to deploy.')
 param count int
 
-@sys.description('Associate VMs with VMSS Flex group.')
-param useVmssFlex bool
+// @sys.description('Associate VMs with VMSS Flex group.')
+// param useVmssFlex bool
 
 @sys.description('Max VMs per availability set.')
 param maxVmssFlexMembersCount int
@@ -184,7 +184,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
             systemAssigned: true
         }: null
         encryptionAtHost: encryptionAtHost
-        virtualMachineScaleSetResourceId: useVmssFlex ? '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}': ''
+        //virtualMachineScaleSetResourceId: useVmssFlex ? '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}': ''
         osType: 'Windows'
         licenseType: 'Windows_Client'
         vmSize: vmSize

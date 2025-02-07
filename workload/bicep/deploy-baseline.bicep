@@ -232,8 +232,8 @@ param availabilityZonesCompute bool = true
 @sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
 param zoneRedundantStorage bool = false
 
-@sys.description('Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)')
-param deployVmssFlex bool = true
+// @sys.description('Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)')
+// param deployVmssFlex bool = true
 
 @sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
 param vmssFlatformFaultDomainCount int = 2
@@ -1441,22 +1441,22 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
 }
 
 // VMSS Flex
-module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = if (avdDeploySessionHosts && deployVmssFlex) {
-  name: 'AVD-VMSS-Flex-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
-  params: {
-    namePrefix: varVmssFlexNamePrefix
-    location: avdSessionHostLocation
-    count: varVmssFlexCount
-    platformFaultDomainCount: vmssFlatformFaultDomainCount
-    useAvailabilityZones: availabilityZonesCompute
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-  }
-  dependsOn: [
-    baselineResourceGroups
-    monitoringDiagnosticSettings
-  ]
-}
+// module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = if (avdDeploySessionHosts && deployVmssFlex) {
+//   name: 'AVD-VMSS-Flex-${time}'
+//   scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
+//   params: {
+//     namePrefix: varVmssFlexNamePrefix
+//     location: avdSessionHostLocation
+//     count: varVmssFlexCount
+//     platformFaultDomainCount: vmssFlatformFaultDomainCount
+//     useAvailabilityZones: availabilityZonesCompute
+//     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//   }
+//   dependsOn: [
+//     baselineResourceGroups
+//     monitoringDiagnosticSettings
+//   ]
+// }
 
 // Session hosts
 @batchSize(3)
@@ -1473,7 +1473,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       createIntuneEnrollment: createIntuneEnrollment
       maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
       vmssFlexNamePrefix: varVmssFlexNamePrefix
-      useVmssFlex: deployVmssFlex
+      //useVmssFlex: deployVmssFlex
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
@@ -1525,7 +1525,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       fslogixAzureFilesStorage
       baselineResourceGroups
       wrklKeyVault
-      vmScaleSetFlex
+      //vmScaleSetFlex
       managementPLane
     ]
   }

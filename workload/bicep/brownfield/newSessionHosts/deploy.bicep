@@ -13,8 +13,8 @@ param applicationNameTag string = 'Contoso-App'
 @sys.description('Application Security Group (ASG) for the session hosts. (Default: "")')
 param asgResourceId string = ''
 
-@sys.description('VMSS flex resource ID. (Default: "")')
-param virtualMachineScaleSetResourceId string = ''
+// @sys.description('VMSS flex resource ID. (Default: "")')
+// param virtualMachineScaleSetResourceId string = ''
 
 @sys.description('Source custom image ID. (Default: "")')
 param customImageDefinitionId string = ''
@@ -320,7 +320,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
       systemAssigned: true
   }: null
     encryptionAtHost: diskZeroTrust
-    virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
+    //virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
     osType: 'Windows'
     licenseType: 'Windows_Client'
     vmSize: vmSize
