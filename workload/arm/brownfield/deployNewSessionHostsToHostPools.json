@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "388757958303271059"
+      "templateHash": "9306833565688201881"
     }
   },
   "parameters": {
@@ -239,7 +239,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set. (Default: true)"
+        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)"
       }
     },
     "identityServiceProvider": {

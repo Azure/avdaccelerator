@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11439113684403922975"
+      "templateHash": "3282208684113992366"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -460,7 +460,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)"
+        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)"
       }
     },
     "zoneRedundantStorage": {
@@ -32644,7 +32644,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "14895187347729194947"
+              "templateHash": "16593509271852742672"
             }
           },
           "parameters": {
@@ -32717,7 +32717,7 @@
             "useAvailabilityZones": {
               "type": "bool",
               "metadata": {
-                "description": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
+                "description": "When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)."
               }
             },
             "identityServiceProvider": {
