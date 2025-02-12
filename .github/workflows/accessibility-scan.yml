@@ -13,7 +13,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'  # Upgraded to Node.js 16 to fix syntax errors
+        node-version: '16'
 
     - name: Install dependencies
       run: npm install
@@ -21,22 +21,30 @@ jobs:
     - name: Install @axe-core/cli and http-server
       run: npm install -g @axe-core/cli http-server
 
-    - name: Install matching ChromeDriver version
-      run: npx browser-driver-manager install chrome || echo "Skipping if failed"
+    - name: Install ChromeDriver
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y google-chrome-stable chromedriver
 
     - name: Start local server
       run: |
         nohup http-server ./ &
+
     - name: Wait for the server to start
-      run: sleep 5  # Wait for 5 seconds to ensure server is ready
+      run: sleep 5  # Ensures server is ready before scanning
 
     - name: Create axe-reports directory
       run: mkdir -p ./axe-reports
 
+    - name: Restart Chrome to prevent conflicts
+      run: |
+        pkill -x chrome || echo "No existing Chrome instances running"
+        google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 &
+
     - name: Run axe-core accessibility scan and save results as JSON
       run: |
         npx @axe-core/cli http://localhost:8080 \
-        --chrome-options="--no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/chrome-profile" \
+        --chrome-options="--no-sandbox --disable-dev-shm-usage" \
         --save ./axe-reports/accessibility-report.json
         echo "Results saved to ./axe-reports/accessibility-report.json"
 
