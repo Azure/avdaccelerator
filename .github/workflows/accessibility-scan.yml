@@ -1,19 +1,24 @@
-# This workflow uses actions to scan for accessibility
 name: Accessibility Scan
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   accessibility:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: Checkout AVD Accelerator Repo
       uses: actions/checkout@v3
 
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '18'
 
     - name: Install dependencies
       run: npm install
@@ -21,39 +26,25 @@ jobs:
     - name: Install @axe-core/cli and http-server
       run: npm install -g @axe-core/cli http-server
 
-    - name: Install Chrome and ChromeDriver
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y wget unzip
-        wget -O /tmp/chromedriver.zip https://storage.googleapis.com/chrome-for-testing-public/133.0.5735.90/linux64/chromedriver-linux64.zip
-        unzip /tmp/chromedriver.zip -d /tmp/
-        sudo mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
-        sudo chmod +x /usr/local/bin/chromedriver
-        echo "ChromeDriver installed at $(which chromedriver)"
-
     - name: Start local server
       run: |
-        nohup http-server ./ &
-    - name: Wait for the server to start
-      run: sleep 5  # Wait for 5 seconds to ensure server is ready
+        nohup http-server ./ -p 8080 &
+        sleep 5  # Give server time to start
 
     - name: Create axe-reports directory
       run: mkdir -p ./axe-reports
 
-    - name: Run axe-core accessibility scan and save results as JSON
+    - name: Run axe-core accessibility scan and save results
       run: |
-        npx @axe-core/cli http://localhost:8080 --chromedriver-path /usr/local/bin/chromedriver --save ./axe-reports/accessibility-report.json
-        echo "Results saved to ./axe-reports/accessibility-report.json"
+        npx @axe-core/cli http://localhost:8080 --chromedriver-path $(which chromedriver) --save ./axe-reports/accessibility-report.json
 
     - name: Verify if the report is created
       run: |
-        echo "Listing contents of the axe-reports directory:"
         ls -la ./axe-reports/
-        echo "Attempting to read the report content:"
         cat ./axe-reports/accessibility-report.json || echo "Report not created"
 
     - name: Upload axe-core report
       uses: actions/upload-artifact@v4
       with:
-        name: axe-report
+        name: axe-accessibility-report
         path: ./axe-reports/accessibility-report.json
