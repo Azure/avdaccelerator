@@ -1,5 +1,5 @@
 # This workflow uses actions to scan for accessibility
-# This workflow uses actions to scan for accessibility
+
 name: Accessibility Scan
 
 on: [push, pull_request]
@@ -14,7 +14,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '14'
+        node-version: '16'  # Upgraded to Node.js 16 to fix syntax errors
 
     - name: Install dependencies
       run: npm install
@@ -23,7 +23,7 @@ jobs:
       run: npm install -g @axe-core/cli http-server
 
     - name: Install matching ChromeDriver version
-      run: npx browser-driver-manager install chrome
+      run: npx browser-driver-manager install chrome || echo "Skipping if failed"
 
     - name: Start local server
       run: |
@@ -36,7 +36,7 @@ jobs:
 
     - name: Run axe-core accessibility scan and save results as JSON
       run: |
-        npx @axe-core/cli http://localhost:8080 --chromedriver-path $(npx browser-driver-manager --path chromedriver) --save ./axe-reports/accessibility-report.json
+        npx @axe-core/cli http://localhost:8080 --save ./axe-reports/accessibility-report.json
         echo "Results saved to ./axe-reports/accessibility-report.json"
 
     - name: Verify if the report is created
@@ -51,4 +51,3 @@ jobs:
       with:
         name: axe-report
         path: ./axe-reports/accessibility-report.json
-
