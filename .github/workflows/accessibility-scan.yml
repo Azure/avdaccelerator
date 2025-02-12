@@ -13,7 +13,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: '16'
+        node-version: '14'
 
     - name: Install dependencies
       run: npm install
@@ -21,31 +21,28 @@ jobs:
     - name: Install @axe-core/cli and http-server
       run: npm install -g @axe-core/cli http-server
 
-    - name: Install ChromeDriver
+    - name: Install Chrome and ChromeDriver
       run: |
         sudo apt-get update
-        sudo apt-get install -y google-chrome-stable chromedriver
+        sudo apt-get install -y wget unzip
+        wget -O /tmp/chromedriver.zip https://storage.googleapis.com/chrome-for-testing-public/133.0.5735.90/linux64/chromedriver-linux64.zip
+        unzip /tmp/chromedriver.zip -d /tmp/
+        sudo mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+        sudo chmod +x /usr/local/bin/chromedriver
+        echo "ChromeDriver installed at $(which chromedriver)"
 
     - name: Start local server
       run: |
         nohup http-server ./ &
-
     - name: Wait for the server to start
-      run: sleep 5  # Ensures server is ready before scanning
+      run: sleep 5  # Wait for 5 seconds to ensure server is ready
 
     - name: Create axe-reports directory
       run: mkdir -p ./axe-reports
 
-    - name: Restart Chrome to prevent conflicts
-      run: |
-        pkill -x chrome || echo "No existing Chrome instances running"
-        google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 &
-
     - name: Run axe-core accessibility scan and save results as JSON
       run: |
-        npx @axe-core/cli http://localhost:8080 \
-        --chrome-options="--no-sandbox --disable-dev-shm-usage" \
-        --save ./axe-reports/accessibility-report.json
+        npx @axe-core/cli http://localhost:8080 --chromedriver-path /usr/local/bin/chromedriver --save ./axe-reports/accessibility-report.json
         echo "Results saved to ./axe-reports/accessibility-report.json"
 
     - name: Verify if the report is created
