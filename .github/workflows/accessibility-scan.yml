@@ -1,5 +1,4 @@
 # This workflow uses actions to scan for accessibility
-
 name: Accessibility Scan
 
 on: [push, pull_request]
@@ -36,7 +35,9 @@ jobs:
 
     - name: Run axe-core accessibility scan and save results as JSON
       run: |
-        npx @axe-core/cli http://localhost:8080 --save ./axe-reports/accessibility-report.json
+        npx @axe-core/cli http://localhost:8080 \
+        --chrome-options="--no-sandbox --disable-dev-shm-usage --user-data-dir=/tmp/chrome-profile" \
+        --save ./axe-reports/accessibility-report.json
         echo "Results saved to ./axe-reports/accessibility-report.json"
 
     - name: Verify if the report is created
