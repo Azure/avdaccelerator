@@ -1,4 +1,5 @@
 # This workflow uses actions to scan for accessibility
+# This workflow uses actions to scan for accessibility
 name: Accessibility Scan
 
 on: [push, pull_request]
@@ -21,10 +22,12 @@ jobs:
     - name: Install @axe-core/cli and http-server
       run: npm install -g @axe-core/cli http-server
 
+    - name: Install matching ChromeDriver version
+      run: npx browser-driver-manager install chrome
+
     - name: Start local server
       run: |
         nohup http-server ./ &
-
     - name: Wait for the server to start
       run: sleep 5  # Wait for 5 seconds to ensure server is ready
 
@@ -33,7 +36,7 @@ jobs:
 
     - name: Run axe-core accessibility scan and save results as JSON
       run: |
-        npx @axe-core/cli http://localhost:8080 --save ./axe-reports/accessibility-report.json
+        npx @axe-core/cli http://localhost:8080 --chromedriver-path $(npx browser-driver-manager --path chromedriver) --save ./axe-reports/accessibility-report.json
         echo "Results saved to ./axe-reports/accessibility-report.json"
 
     - name: Verify if the report is created
