@@ -31,9 +31,6 @@ param keyVaultprivateDNSResourceId string
 @sys.description('This value is used to set the expiration date on the disk encryption key.')
 param diskEncryptionKeyExpirationInDays int
 
-@sys.description('This value is used to set the expiration date on the disk encryption key.')
-param diskEncryptionKeyExpirationInEpoch int
-
 @sys.description('Encryption set name')
 param diskEncryptionSetName string
 
@@ -101,7 +98,6 @@ module ztKeyVaultKey '../../../../../avm/1.0.0/res/key-vault/vault/key/main.bice
     name: 'ZT-KeyVaultKey-${time}'
     params: {
         attributesEnabled: true
-        attributesExp: diskEncryptionKeyExpirationInEpoch
         keySize: 4096
         keyVaultName: ztKeyVault.outputs.name
         kty: 'RSA'

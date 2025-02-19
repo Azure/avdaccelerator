@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "3282208684113992366"
+      "templateHash": "4958873004827480878"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1435,7 +1435,6 @@
     "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
-    "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateAppAttachDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varAppAttachStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('appAttachStoragePerformance')), format('{0}_LRS', parameters('appAttachStoragePerformance')))]",
@@ -14230,9 +14229,6 @@
           "diskEncryptionKeyExpirationInDays": {
             "value": "[parameters('diskEncryptionKeyExpirationInDays')]"
           },
-          "diskEncryptionKeyExpirationInEpoch": {
-            "value": "[variables('varDiskEncryptionKeyExpirationInEpoch')]"
-          },
           "diskEncryptionSetName": {
             "value": "[variables('varDiskEncryptionSetName')]"
           },
@@ -14262,7 +14258,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10703368545591314389"
+              "templateHash": "8370040284189693367"
             }
           },
           "parameters": {
@@ -14297,12 +14293,6 @@
               }
             },
             "diskEncryptionKeyExpirationInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "This value is used to set the expiration date on the disk encryption key."
-              }
-            },
-            "diskEncryptionKeyExpirationInEpoch": {
               "type": "int",
               "metadata": {
                 "description": "This value is used to set the expiration date on the disk encryption key."
@@ -15980,9 +15970,6 @@
                   "diskEncryptionKeyExpirationInDays": {
                     "value": "[parameters('diskEncryptionKeyExpirationInDays')]"
                   },
-                  "diskEncryptionKeyExpirationInEpoch": {
-                    "value": "[parameters('diskEncryptionKeyExpirationInEpoch')]"
-                  },
                   "diskEncryptionSetName": {
                     "value": "[parameters('diskEncryptionSetName')]"
                   },
@@ -16000,7 +15987,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "9820967518177630734"
+                      "templateHash": "14616528108278942259"
                     }
                   },
                   "parameters": {
@@ -16053,12 +16040,6 @@
                       }
                     },
                     "diskEncryptionKeyExpirationInDays": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "This value is used to set the expiration date on the disk encryption key."
-                      }
-                    },
-                    "diskEncryptionKeyExpirationInEpoch": {
                       "type": "int",
                       "metadata": {
                         "description": "This value is used to set the expiration date on the disk encryption key."
@@ -18878,9 +18859,6 @@
                         "parameters": {
                           "attributesEnabled": {
                             "value": true
-                          },
-                          "attributesExp": {
-                            "value": "[parameters('diskEncryptionKeyExpirationInEpoch')]"
                           },
                           "keySize": {
                             "value": 4096

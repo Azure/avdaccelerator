@@ -22,9 +22,6 @@ param computeObjectsRgName string
 @sys.description('This value is used to set the expiration date on the disk encryption key.')
 param diskEncryptionKeyExpirationInDays int
 
-@sys.description('This value is used to set the expiration date on the disk encryption key.')
-param diskEncryptionKeyExpirationInEpoch int
-
 @sys.description('Deploy private endpoints for key vault and storage.')
 param deployPrivateEndpointKeyvaultStorage bool
 
@@ -213,9 +210,6 @@ module ztRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/e147488a-f6f5-4113-8e2d-b22465e65bf6' //'Key Vault Crypto Service Encryption User'
         principalType: ''
     }
-    dependsOn: [
-        ztKeyVault
-    ]
 }
 
 // Zero trust key vault.
@@ -233,7 +227,6 @@ module ztKeyVault './.bicep/zeroTrustKeyVault.bicep' = if (diskZeroTrust) {
         privateEndpointsubnetResourceId: privateEndpointsubnetResourceId
         keyVaultprivateDNSResourceId: keyVaultprivateDNSResourceId
         diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
-        diskEncryptionKeyExpirationInEpoch: diskEncryptionKeyExpirationInEpoch
         diskEncryptionSetName: diskEncryptionSetName
 //        ztManagedIdentityResourceId: diskZeroTrust ? ztManagedIdentity.outputs.resourceId : ''
         tags: union(tags, kvTags)
