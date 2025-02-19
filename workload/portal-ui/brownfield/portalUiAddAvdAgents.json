@@ -7,6 +7,33 @@
             "title": "Azure Virtual Desktop LZA: Deploy New Session Hosts",
             "steps": [
                 {
+                    "name": "basics",
+                    "label": "Deployment Basics",
+                    "elements": [
+                        {
+                            "name": "resourceScope",
+                            "type": "Microsoft.Common.ResourceScope",
+                            "location": {
+                                "resourceTypes": [
+                                    "Microsoft.Compute/virtualMachines"
+                                ]
+                            }
+                        },                        
+                        {
+                            "name": "infoResourceGroupNaming",
+                            "type": "Microsoft.Common.TextBlock",
+                            "visible": true,
+                            "options": {
+                                "text": "Azure Virtual Desktop Landing Zones will create the resource group hierarchy under the subscriptions with the prefix provided in this step.",
+                                "link": {
+                                    "label": "Learn more",
+                                    "uri": "https://docs.microsoft.com/azure/cloud-adoption-framework/ready/enterprise-scale/management-group-and-subscription-organization"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
                     "name": "managementPlane",
                     "label": "AVD Management plane",
                     "elements": [
@@ -24,6 +51,11 @@
                                     "resourceType": "Microsoft.DesktopVirtualization/hostpools",
                                     "constraints": {
                                         "required": true
+                                    },
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics"
+                                        }
                                     }
                                 },
                                 {
@@ -43,6 +75,11 @@
                                     "resourceType": "Microsoft.KeyVault/vaults",
                                     "constraints": {
                                         "required": true
+                                    },
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics"
+                                        }
                                     }
                                 }
                             ]
@@ -67,6 +104,11 @@
                                     "resourceType": "Microsoft.Compute/virtualMachines",
                                     "constraints": {
                                         "required": true
+                                    },
+                                    "options": {
+                                        "filter": {
+                                            "subscription": "onBasics"
+                                        }
                                     }
                                 }
                             ]
@@ -81,7 +123,10 @@
                 "vmLocation": "[steps('virtualMachine').virtualMachineSettings.virtualMachineSelector.location]",
                 "hostPoolResourceId": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
                 "keyVaultResourceId": "[steps('managementPlane').managementPlaneSettings.keyvaultSelector.id]"
-            }
+            },
+            "kind": "ResourceGroup",
+            "location": "[steps('basics').resourceScope.location.name]",
+            "resourceGroupId": "[steps('basics').resourceScope.resourceGroup.id]"
         }
     }
 }
