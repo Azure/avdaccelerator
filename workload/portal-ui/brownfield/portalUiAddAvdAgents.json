@@ -81,8 +81,7 @@
                 "vmLocation": "[steps('virtualMachine').virtualMachineSettings.virtualMachineSelector.location]",
                 "hostPoolResourceId": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
                 "keyVaultResourceId": "[steps('managementPlane').managementPlaneSettings.keyvaultSelector.id]"
-            },
-            "kind": "ResourceGroup"
+            }
         }
     }
 }
