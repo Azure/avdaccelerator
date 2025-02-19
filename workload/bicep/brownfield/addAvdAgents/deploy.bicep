@@ -4,14 +4,8 @@ targetScope = 'resourceGroup'
 // Parameters //
 // ========== //
 
-@sys.description('Subscription ID where to deploy session hosts. (Default: )')
-param computeSubscriptionId string
-
-@sys.description('Resource Group name where to deploy session hosts. (Default: )')
-param computeRgResourceGroupName string
-
-@sys.description('The name of the VM where the AVD agents will be installed. (Default: )')
-param vmName string
+@sys.description('Virtual machine resource ID. (Default: )')
+param vmResourceId string
 
 @sys.description('AVD Host Pool resource ID. (Default: )')
 param hostPoolResourceId string
@@ -33,6 +27,9 @@ var varHostpoolRgName = split(hostPoolResourceId, '/')[4]
 var varHostPoolName = split(hostPoolResourceId, '/')[8]
 var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
+var varVmName = split(vmResourceId, '/')[8]
+var varVmSubId = split(vmResourceId, '/')[2]
+var varVmRgName = split(vmResourceId, '/')[4]
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
@@ -81,11 +78,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 
 // Apply AVD session host configurations
 module sessionHostConfiguration './modules/configureSessionHost.bicep' = {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
-  name: 'AVD-Agents-${vmName}-${time}'
+  scope: resourceGroup('${varVmSubId}', '${varVmRgName}')
+  name: 'AVD-Agents-${varVmName}-${time}'
   params: {
     location: vmLocation
-    name: vmName
+    name: varVmName
     hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
     baseScriptUri: varSessionHostConfigurationScriptUri
     scriptName: varSessionHostConfigurationScript

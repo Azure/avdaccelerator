@@ -1,0 +1,88 @@
+{
+    "$schema": "<relative path to createFormUI.schema.json>",
+    "view": {
+        "kind": "Form",
+        "properties": {
+            "isWizard": false,
+            "title": "Azure Virtual Desktop LZA: Deploy New Session Hosts",
+            "steps": [
+                {
+                    "name": "managementPlane",
+                    "label": "AVD Management plane",
+                    "elements": [
+                        {
+                            "name": "managementPlaneSettings",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Settings:",
+                            "elements": [
+                                {
+                                    "name": "hostPoolSelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Host pool",
+                                    "toolTip": "Select host pool where to add new session hosts.",
+                                    "resourceType": "Microsoft.DesktopVirtualization/hostpools",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "hostPoolSelectorWarning",
+                                    "type": "Microsoft.Common.InfoBox",
+                                    "options": {
+                                        "text": "When you add session hosts to a host pool, first you'll need to generate a registration key. A registration key needs to be generated per host pool and it authorizes session hosts to join that host pool. It's only valid for the duration you specify. If an existing registration key has expired, you can also use these steps to generate a new key.",
+                                        "uri": "https://learn.microsoft.com/azure/virtual-desktop/add-session-hosts-host-pool?tabs=portal%2Cgui#generate-a-registration-key",
+                                        "style": "Warning"
+                                    }
+                                },
+                                {
+                                    "name": "keyvaultSelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Key Vault",
+                                    "toolTip": "Select the Key Vault that will be used to store the host pool registration token.",
+                                    "resourceType": "Microsoft.KeyVault/vaults",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                },                
+                {
+                    "name": "virtualMachine",
+                    "label": "Virtual Machine",
+                    "elements": [
+                        {
+                            "name": "virtualMachineSettings",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Settings:",
+                            "elements": [
+                                {
+                                    "name": "virtualMachineSelector",
+                                    "type": "Microsoft.Solutions.ResourceSelector",
+                                    "label": "Virtual Machine",
+                                    "toolTip": "Select the VM to which AVD agents will be added.",
+                                    "resourceType": "Microsoft.Compute/virtualMachines",
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "outputs": {
+            "parameters": {
+                "vmResourceId": "[steps('virtualMachine').virtualMachineSettings.virtualMachineSelector.id]",
+                "vmLocation": "[steps('virtualMachine').virtualMachineSettings.virtualMachineSelector.location]",
+                "hostPoolResourceId": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
+                "keyVaultResourceId": "[steps('managementPlane').managementPlaneSettings.keyvaultSelector.id]"
+            },
+            "kind": "ResourceGroup"
+        }
+    }
+}
