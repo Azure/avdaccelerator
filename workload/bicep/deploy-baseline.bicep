@@ -188,6 +188,13 @@ param vNetworkGatewayOnHub bool = false
 @sys.description('Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool = true
 
+@allowed([
+  'ANF' // Azure NetApp Files
+  'AzureFiles'
+])
+@sys.description('Type of storage service to deploy for FSLogix. (Default: AzureFiles)')
+param fslogixStorageType string = 'AzureFiles'
+
 @sys.description('Deploy App Attach setup. (Default: false)')
 param createAppAttachDeployment bool = false
 
@@ -241,15 +248,17 @@ param zoneRedundantStorage bool = false
 @allowed([
   'Standard'
   'Premium'
+  'Ultra'
 ])
-@sys.description('Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)')
+@sys.description('SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)')
 param fslogixStoragePerformance string = 'Premium'
 
 @allowed([
   'Standard'
   'Premium'
+  'Ultra'
 ])
-@sys.description('Storage account SKU for App Attach storage. Recommended tier is Premium. (Default: Premium)')
+@sys.description('SKU for App Attach storage. Recommended tier is Premium. (Default: Premium)')
 param appAttachStoragePerformance string = 'Premium'
 
 @sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
@@ -409,6 +418,9 @@ param avdSessionHostCustomNamePrefix string = 'vmapp1duse2'
 @maxLength(2)
 @sys.description('AVD FSLogix and App Attach storage account prefix custom name. (Default: st)')
 param storageAccountPrefixCustomName string = 'st'
+
+@sys.description('AVD FSLogix and App Attach storage account prefix custom name. (Default: st)')
+param anfPrefixCustomName string = 'anf'
 
 @sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
 param fslogixFileShareCustomName string = 'fslogix-pc-app1-dev-use2-001'
