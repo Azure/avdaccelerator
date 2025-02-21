@@ -25,15 +25,12 @@ As of today, we have a first reference implementation scenario that is one of th
 
 ## Getting Started
 
-## Azure Virtual Desktop - LZA Baseline
+## Windows 365 - LZA Baseline
 
-[Getting Started](/workload/docs/getting-started-baseline.md) deploying Azure Virtual Desktop (AVD) resources and dependent services for establishing the baseline
+[Getting Started](/workload/docs/getting-started-baseline.md) deploying Windows 365 (Cloud PC) resources and dependent services for establishing the baseline
 
-- Azure Virtual Desktop resources: workspace, two (2) application groups, scaling plan and a host pool
-- [Optional]: new virtual network (VNet) with NSGs, ASG and route tables
-- Azure Files with Integration to the identity service
-- Key vault
-- Session Hosts
+- A new virtual network (VNet) with NSGs, ASG and route tables
+- [Optional] a peering with the Hub virtual network
 
 | Deployment Type | Link |
 |:--|:--|
