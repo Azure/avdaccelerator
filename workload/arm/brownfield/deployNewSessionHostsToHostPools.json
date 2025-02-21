@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9306833565688201881"
+      "templateHash": "9967224325465818994"
     }
   },
   "parameters": {
@@ -2458,6 +2458,7 @@
             "value": {
               "createOption": "FromImage",
               "deleteOption": "Delete",
+              "caching": "ReadWrite",
               "managedDisk": "[variables('varManagedDisk')]"
             }
           },

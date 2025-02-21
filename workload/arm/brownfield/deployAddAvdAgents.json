@@ -5,26 +5,14 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5147644066952840608"
+      "templateHash": "9834251975006014320"
     }
   },
   "parameters": {
-    "computeSubscriptionId": {
+    "vmResourceId": {
       "type": "string",
       "metadata": {
-        "description": "Subscription ID where to deploy session hosts. (Default: )"
-      }
-    },
-    "computeRgResourceGroupName": {
-      "type": "string",
-      "metadata": {
-        "description": "Resource Group name where to deploy session hosts. (Default: )"
-      }
-    },
-    "vmName": {
-      "type": "string",
-      "metadata": {
-        "description": "The name of the VM where the AVD agents will be installed. (Default: )"
+        "description": "Virtual machine resource ID. (Default: )"
       }
     },
     "hostPoolResourceId": {
@@ -59,6 +47,9 @@
     "varHostPoolName": "[split(parameters('hostPoolResourceId'), '/')[8]]",
     "varKeyVaultSubId": "[split(parameters('keyVaultResourceId'), '/')[2]]",
     "varKeyVaultRgName": "[split(parameters('keyVaultResourceId'), '/')[4]]",
+    "varVmName": "[split(parameters('vmResourceId'), '/')[8]]",
+    "varVmSubId": "[split(parameters('vmResourceId'), '/')[2]]",
+    "varVmRgName": "[split(parameters('vmResourceId'), '/')[4]]",
     "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1"
@@ -1671,9 +1662,9 @@
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('AVD-Agents-{0}-{1}', parameters('vmName'), parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('computeSubscriptionId'))]",
-      "resourceGroup": "[format('{0}', parameters('computeRgResourceGroupName'))]",
+      "name": "[format('AVD-Agents-{0}-{1}', variables('varVmName'), parameters('time'))]",
+      "subscriptionId": "[format('{0}', variables('varVmSubId'))]",
+      "resourceGroup": "[format('{0}', variables('varVmRgName'))]",
       "properties": {
         "expressionEvaluationOptions": {
           "scope": "inner"
@@ -1684,7 +1675,7 @@
             "value": "[parameters('vmLocation')]"
           },
           "name": {
-            "value": "[parameters('vmName')]"
+            "value": "[variables('varVmName')]"
           },
           "hostPoolToken": {
             "reference": {

@@ -17,7 +17,7 @@ This solution will deploy the AVD agents to a VM.
 
 ### Azure portal UI
 
-[![Deploy to Azure (under construction)]()
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAddAvdAgents.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAddAvdAgents.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/?feature.deployapiver=2022-12-01#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fbrownfield%2FdeployAddAvdAgents.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fbrownfield%2FportalUiAddAvdAgents.json)
 
 ### PowerShell
 
@@ -25,10 +25,8 @@ This solution will deploy the AVD agents to a VM.
 New-AzSubscriptionDeployment `
     -Location '<Azure location>' `
     -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/addAvdAgents/deploy.bicep' `
-    -computeSubscriptionId '<ID of the subscription where the VM was created>' `
-    -computeRgResourceGroupName '<Resource group name where the VM was created>' `
     -vmLocation '<VM location>' `
-    -vmName '<VM name>' `
+    -vmResourceId '<resource ID of the VM where the AVD agents will be installed>' `
     -hostPoolResourceId '<resource ID of the host pool to which the VM will be registered>' `
     -keyVaultResourceId '<resource ID of the key vault where the host pool registration token will be stored>' `
     -Verbose
@@ -43,10 +41,8 @@ az deployment sub create \
     --location '<Azure location>' \
     --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/addAvdAgents/deploy.bicep' \
     --parameters \
-        computeSubscriptionId '<ID of the subscription where the VM was created>' \
-        computeRgResourceGroupName '<Resource group name where the VM was created>' \
         vmLocation '<VM location>' \
-        vmName '<VM name>' \
+        vmResourceId '<resource ID of the VM where the AVD agents will be installed>' \
         hostPoolResourceId '<resource ID of the host pool to which the VM will be registered>' \
         keyVaultResourceId '<resource ID of the key vault where the host pool registration token will be stored>'
 ```

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4958873004827480878"
+      "templateHash": "5003960196162257854"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -22693,7 +22693,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "4158990381758564962"
+              "templateHash": "145165832351743331"
             }
           },
           "parameters": {
@@ -22910,6 +22910,7 @@
                     "value": {
                       "createOption": "FromImage",
                       "deleteOption": "Delete",
+                      "caching": "ReadWrite",
                       "managedDisk": "[variables('varManagedDisk')]"
                     }
                   },
@@ -32622,7 +32623,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "16593509271852742672"
+              "templateHash": "18304255021868622646"
             }
           },
           "parameters": {
@@ -32886,11 +32887,13 @@
             "varOsDiskProperties": {
               "createOption": "FromImage",
               "deleteOption": "Delete",
+              "caching": "ReadWrite",
               "managedDisk": "[variables('varManagedDisk')]"
             },
             "varCustomOsDiskProperties": {
               "createOption": "FromImage",
               "deleteOption": "Delete",
+              "caching": "ReadWrite",
               "managedDisk": "[variables('varManagedDisk')]",
               "diskSizeGB": "[if(not(empty(parameters('customOsDiskSizeGB'))), parameters('customOsDiskSizeGB'), null())]"
             }
