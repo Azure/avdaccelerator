@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5003960196162257854"
+      "templateHash": "4667874415365759690"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -99,18 +99,11 @@
         "description": "Required, Eronll session hosts on Intune. (Default: false)"
       }
     },
-    "securityPrincipalId": {
-      "type": "string",
-      "defaultValue": "",
+    "avdSecurityGroups": {
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
-        "description": "Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
-      }
-    },
-    "securityPrincipalName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
+        "description": "Optional. Identity ID(s) to grant RBAC role to access AVD application group and NTFS permissions. (Default: [])"
       }
     },
     "identityDomainName": {
@@ -1738,7 +1731,9 @@
         "enableDefaultTelemetry": false,
         "tags": "[if(parameters('createResourceTags'), union(variables('varAllComputeStorageTags'), variables('varAvdDefaultTags')), union(variables('varAvdDefaultTags'), variables('varAllComputeStorageTags')))]"
       }
-    ]
+    ],
+    "varSecurityPrincipalId": "[if(not(empty(parameters('avdSecurityGroups'))), parameters('avdSecurityGroups')[0].objectId, '')]",
+    "varSecurityPrincipalName": "[if(not(empty(parameters('avdSecurityGroups'))), parameters('avdSecurityGroups')[0].displayName, '')]"
   },
   "resources": [
     {
@@ -8649,7 +8644,9 @@
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "securityPrincipalId": "[if(not(empty(parameters('securityPrincipalId'))), createObject('value', parameters('securityPrincipalId')), createObject('value', ''))]",
+          "securityPrincipalId": {
+            "value": "[variables('varSecurityPrincipalId')]"
+          },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
           "hostPoolAgentUpdateSchedule": {
@@ -12738,7 +12735,9 @@
           "createStorageDeployment": {
             "value": "[variables('varCreateStorageDeployment')]"
           },
-          "securityPrincipalId": "[if(not(empty(parameters('securityPrincipalId'))), createObject('value', parameters('securityPrincipalId')), createObject('value', ''))]",
+          "securityPrincipalId": {
+            "value": "[variables('varSecurityPrincipalId')]"
+          },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
         },
         "template": {
@@ -26638,7 +26637,9 @@
             "value": "[variables('varOuStgPath')]"
           },
           "managedIdentityClientId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
-          "securityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), createObject('value', parameters('securityPrincipalName')), createObject('value', ''))]",
+          "securityPrincipalName": {
+            "value": "[variables('varSecurityPrincipalName')]"
+          },
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
           },
@@ -29594,7 +29595,9 @@
             "value": "[variables('varOuStgPath')]"
           },
           "managedIdentityClientId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
-          "securityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), createObject('value', parameters('securityPrincipalName')), createObject('value', ''))]",
+          "securityPrincipalName": {
+            "value": "[variables('varSecurityPrincipalName')]"
+          },
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
           },
