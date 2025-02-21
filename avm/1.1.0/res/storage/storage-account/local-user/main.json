@@ -1,0 +1,167 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "languageVersion": "2.0",
+  "contentVersion": "1.0.0.0",
+  "metadata": {
+    "_generator": {
+      "name": "bicep",
+      "version": "0.33.13.18514",
+      "templateHash": "2528560857012083896"
+    },
+    "name": "Storage Account Local Users",
+    "description": "This module deploys a Storage Account Local User, which is used for SFTP authentication."
+  },
+  "definitions": {
+    "sshAuthorizedKeyType": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "nullable": true,
+          "metadata": {
+            "description": "Optional. Description used to store the function/usage of the key."
+          }
+        },
+        "key": {
+          "type": "securestring",
+          "metadata": {
+            "description": "Required. SSH public key base64 encoded. The format should be: '{keyType} {keyData}', e.g. ssh-rsa AAAABBBB."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    },
+    "permissionScopeType": {
+      "type": "object",
+      "properties": {
+        "permissions": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The permissions for the local user. Possible values include: Read (r), Write (w), Delete (d), List (l), and Create (c)."
+          }
+        },
+        "resourceName": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The name of resource, normally the container name or the file share name, used by the local user."
+          }
+        },
+        "service": {
+          "type": "string",
+          "metadata": {
+            "description": "Required. The service used by the local user, e.g. blob, file."
+          }
+        }
+      },
+      "metadata": {
+        "__bicep_export!": true
+      }
+    }
+  },
+  "parameters": {
+    "storageAccountName": {
+      "type": "string",
+      "maxLength": 24,
+      "metadata": {
+        "description": "Conditional. The name of the parent Storage Account. Required if the template is used in a standalone deployment."
+      }
+    },
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "Required. The name of the local user used for SFTP Authentication."
+      }
+    },
+    "hasSharedKey": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Optional. Indicates whether shared key exists. Set it to false to remove existing shared key."
+      }
+    },
+    "hasSshKey": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Indicates whether SSH key exists. Set it to false to remove existing SSH key."
+      }
+    },
+    "hasSshPassword": {
+      "type": "bool",
+      "metadata": {
+        "description": "Required. Indicates whether SSH password exists. Set it to false to remove existing SSH password."
+      }
+    },
+    "homeDirectory": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Optional. The local user home directory."
+      }
+    },
+    "permissionScopes": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/permissionScopeType"
+      },
+      "metadata": {
+        "description": "Required. The permission scopes of the local user."
+      }
+    },
+    "sshAuthorizedKeys": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/sshAuthorizedKeyType"
+      },
+      "nullable": true,
+      "metadata": {
+        "description": "Optional. The local user SSH authorized keys for SFTP."
+      }
+    }
+  },
+  "resources": {
+    "storageAccount": {
+      "existing": true,
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2023-04-01",
+      "name": "[parameters('storageAccountName')]"
+    },
+    "localUsers": {
+      "type": "Microsoft.Storage/storageAccounts/localUsers",
+      "apiVersion": "2023-04-01",
+      "name": "[format('{0}/{1}', parameters('storageAccountName'), parameters('name'))]",
+      "properties": {
+        "hasSharedKey": "[parameters('hasSharedKey')]",
+        "hasSshKey": "[parameters('hasSshKey')]",
+        "hasSshPassword": "[parameters('hasSshPassword')]",
+        "homeDirectory": "[parameters('homeDirectory')]",
+        "permissionScopes": "[parameters('permissionScopes')]",
+        "sshAuthorizedKeys": "[parameters('sshAuthorizedKeys')]"
+      }
+    }
+  },
+  "outputs": {
+    "name": {
+      "type": "string",
+      "metadata": {
+        "description": "The name of the deployed local user."
+      },
+      "value": "[parameters('name')]"
+    },
+    "resourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource group of the deployed local user."
+      },
+      "value": "[resourceGroup().name]"
+    },
+    "resourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "The resource ID of the deployed local user."
+      },
+      "value": "[resourceId('Microsoft.Storage/storageAccounts/localUsers', parameters('storageAccountName'), parameters('name'))]"
+    }
+  }
+}

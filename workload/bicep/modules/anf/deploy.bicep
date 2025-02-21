@@ -29,7 +29,6 @@ param anfCapacityPoolName string
 @sys.description('ANF volume name.')
 param anfVolumeName string
 
-
 @sys.description('ANF subnet ID.')
 param anfSubnetId string
 
@@ -48,11 +47,11 @@ param domainJoinUserName string
 @sys.description('AVD session host local admin credentials.')
 param vmLocalUserName string
 
-@sys.description('Azure Files storage account SKU.')
+@sys.description('ANF SKU.')
 param anfSku string
 
-@sys.description('*Azure File share quota')
-param fileShareQuotaSize int
+@sys.description('ANF capacity pool and volume quota size.')
+param volumeQuotaSize int
 
 @sys.description('Use Azure private DNS zones for private endpoints.')
 param vnetPrivateDnsZoneFilesId string
@@ -125,9 +124,20 @@ module azureNetAppFiles '../../../../avm/1.0.0/res/net-app/net-app-account/main.
         domainJoinOU: ouStgPath
         capacityPools:[
             {
-                name: 'pool1'
-                size: 4
-                serviceLevel: 'Standard'
+                name: anfCapacityPoolName
+                size: volumeQuotaSize
+                serviceLevel: anfSku
+                volumes: [
+                    {
+                        name: anfVolumeName
+                        usageThreshold
+                        protocolTypes: [
+                            'SMB'
+                        ]
+                        encryptionType: 'Single'
+                        subnetResourceId: anfSubnetId
+                    }
+                ]
             }
         ]
         tags: tags
