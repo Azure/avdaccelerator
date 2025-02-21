@@ -44,9 +44,9 @@ If you are having deployment challenges, refer to the [LZA baseline troubleshoot
 
 ## Architectural Diagram
 
-![Azure Virtual Desktop accelerator diagram](./workload/docs/diagrams/avd-accelerator-baseline-architecture.png)
+![W365 accelerator diagram](./workload/docs/diagrams/w365-accelerator-baseline-architecture.png)
 
-_Download a [Visio file](./workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx) of this architecture._
+_Download a [Visio file](./workload/docs/diagrams/w365-accelerator-baseline-architecture.vsdx) of this architecture._
 
 ## Contributing
 
