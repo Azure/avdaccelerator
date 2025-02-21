@@ -1,5 +1,5 @@
 {
-    "$schema": "<relative path to createFormUI.schema.json>",
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
     "view": {
         "kind": "Form",
         "properties": {
@@ -220,49 +220,55 @@
                             "label": "Azure Virtual Desktop access assignment",
                             "elements": [
                                 {
-                                    "name": "groupsApi",
-                                    "type": "Microsoft.Solutions.GraphApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "/v1.0/groups?$top=999"
+                                    "name": "groupPickerBlade",
+                                    "type": "Microsoft.Solutions.BladeInvokeControl",
+                                    "openBladeStatus": "[steps('identity').identityAvdAccess.groupSelector.changing]",
+                                    "bladeReference": {
+                                        "name": "ObjectPickerBlade",
+                                        "extension": "Microsoft_AAD_IAM",
+                                        "parameters": {
+                                            "queries": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'DS'), 4194304, 32)]",
+                                            "disablers": 4,
+                                            "bladeSubtitle": "Pick the groups to assign",
+                                            "additionalQueriesOnSearch": 0,
+                                            "advancedQueryOptions": {
+                                                "suggestedObjectsOptions": {}
+                                            },
+                                            "selectionMaximum": 1,
+                                            "selectionMinimum": 1,
+                                            "bladeTitle": "Select Groups",
+                                            "informationHeader": {
+                                                "informationText": "Select the groups to assign to the desktop application group",
+                                                "informationLink": ""
+                                            },
+                                            "inviteEnabled": true,
+                                            "searchBoxLabel": "Search for a group",
+                                            "searchBoxPlaceHolderText": "Enter a string in the group name",
+                                            "searchBoxTooltip": "This is the tooltip",
+                                            "searchGridNoRowsMessage": "No groups found",
+                                            "selectButtonText": "Select Groups",
+                                            "selectedGridLabel": "Selected User Groups",
+                                            "selectedGridNoRowsMessage": "You must select at least one group"
+                                        },
+                                        "inFullScreen": false
+                                    },
+                                    "transforms": {
+                                        "selection": "selectedObjects|[*].{displayName:displayName, objectId:id}"
                                     }
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroupDropDown",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": "[not(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox)]",
-                                    "label": "Groups",
-                                    "defaultValue": "",
-                                    "filter": true,
-                                    "toolTip": "Select the desired group to give access to Azure Virtual Desktop resources and if applicable to FSLogix file share",
-                                    "multiselect": false,
-                                    "constraints": {
-                                        "allowedValues": "[map(steps('identity').identityAvdAccess.groupsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\": {\"name\":\"', item.displayName, '\",\"id\":\"', item.id, '\"}}')))]"
-                                    }
-                                },
-                                {
-                                    "name": "identityAvdUserAccessGroupCheckBox",
-                                    "type": "Microsoft.Common.CheckBox",
+                                    "name": "groupSelector",
+                                    "type": "Microsoft.Common.Selector",
+                                    "label": "Select User Groups",
+                                    "keyPath": "displayName",
+                                    "descriptionKeyPath": "id",
+                                    "value": "[steps('identity').identityAvdAccess.groupPickerBlade.transformed.selection]",
                                     "visible": true,
-                                    "label": "Provide group details",
-                                    "defaultValue": false,
-                                    "toolTip": "When the desired group is not listed in the drop down, selecting this box will allow for entering the group's ObjectID and name. this information will be used to setup AVD access and FSLogix's file share NTFS permissions."
-                                },
-                                {
-                                    "name": "identityAvdUserAccessGroupTextBox1",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox]",
-                                    "label": "Name",
-                                    "toolTip": "Group name to be granted access to Azure Virtual Desktop published items and FSLogix NTFS permissions.",
-                                    "placeholder": "Example: AVD-users"
-                                },
-                                {
-                                    "name": "identityAvdUserAccessGroupTextBox2",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox]",
-                                    "label": "Object ID",
-                                    "toolTip": "Group objectID to be granted access to Azure Virtual Desktop published items and FSLogix NTFS permissions.",
-                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                                    "barColor": "[if(empty(steps('identity').identityAvdAccess.groupPickerBlade), '#FF0000', '#7fba00')]",
+                                    "constraints": {
+                                        "required": true
+                                    },
+                                    "link": "[if(empty(steps('identity').identityAvdAccess.groupPickerBlade), 'Select groups', 'Re-select groups')]"
                                 }
                             ]
                         },
@@ -427,7 +433,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": true,
                                     "options": {
-                                        "icon": "Warning",
+                                        "style": "Warning",
                                         "text": "Host pool type can not be changed after deployment.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/environment-setup"
                                     }
@@ -1535,7 +1541,6 @@
                                     }
                                 },
                                 {
-                            
                                     "name": "virtualNetworkPrivateDnsZoneAvdConnectionSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
                                     "visible": "[and(steps('network').deployAvdPrivateLinkService, not(steps('network').virtualNetworkPrivateDnsZone))]",
@@ -2509,6 +2514,7 @@
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
                 "identityDomainName": "[if(equals(steps('identity').identityDomainInformation.identityDomainName, ''), 'none', steps('identity').identityDomainInformation.identityDomainName)]",
                 "identityDomainGuid": "[steps('identity').identityDomainInformation.identityDomainGuid]",
+                "avdSecurityGroups": "[steps('identity').identityAvdAccess.groupPickerBlade.transformed.selection]",
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
@@ -2594,8 +2600,6 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "securityPrincipalId": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox2, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.id)]",
-                "securityPrincipalName": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox1, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.name)]",
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
                 "deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",
