@@ -14,8 +14,8 @@ param workloadSubsId string
 @sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
 
-@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
-param identityServiceProvider string
+// @sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
+// param identityServiceProvider string
 
 @sys.description('Resource Group Name for management VM.')
 param serviceObjectsRgName string
@@ -32,6 +32,9 @@ param anfVolumeName string
 @sys.description('ANF subnet ID.')
 param anfSubnetId string
 
+@sys.description('DNS servers IPs.')
+param dnsServers string
+
 @sys.description('Location where to deploy resources.')
 param location string
 
@@ -44,32 +47,29 @@ param wrklKvName string
 @sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
-@sys.description('AVD session host local admin credentials.')
-param vmLocalUserName string
+// @sys.description('AVD session host local admin credentials.')
+// param vmLocalUserName string
 
 @sys.description('ANF SKU.')
 param anfSku string
 
-@sys.description('ANF capacity pool and volume quota size.')
-param volumeQuotaSize int
+@sys.description('ANF capacity pool size in TiBs.')
+param capacityPoolSize int = 4
 
-@sys.description('Use Azure private DNS zones for private endpoints.')
-param vnetPrivateDnsZoneFilesId string
+@sys.description('ANF volume quota size in GiBs.')
+param volumeSize int
 
-@sys.description('Script name for adding storage account to Active Directory.')
-param storageToDomainScript string
+// @sys.description('Script name for adding storage account to Active Directory.')
+// param storageToDomainScript string
 
-@sys.description('URI for the script for adding the storage account to Active Directory.')
-param storageToDomainScriptUri string
+// @sys.description('URI for the script for adding the storage account to Active Directory.')
+// param storageToDomainScriptUri string
 
 @sys.description('Tags to be applied to resources')
 param tags object
 
-@sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
-param managementVmName string
-
-@sys.description('Log analytics workspace for diagnostic logs.')
-param alaWorkspaceResourceId string
+// @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
+// param managementVmName string
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -78,27 +78,27 @@ param time string = utcNow()
 param storagePurpose string
 
 //parameters for domain join
-@sys.description('Sets location of DSC Agent.')
-param dscAgentPackageLocation string
+// @sys.description('Sets location of DSC Agent.')
+// param dscAgentPackageLocation string
 
-@sys.description('Custom OU path for storage.')
-param storageCustomOuPath string
+// @sys.description('Custom OU path for storage.')
+// param storageCustomOuPath string
 
 @sys.description('OU Storage Path')
-param ouStgPath string
+param ouStgPath string = ''
 
-@sys.description('Managed Identity Client ID')
-param managedIdentityClientId string
+// @sys.description('Managed Identity Client ID')
+// param managedIdentityClientId string
 
-@sys.description('storage account FDQN.')
-param storageAccountFqdn string
+// @sys.description('storage account FDQN.')
+// param storageAccountFqdn string
 
 // =========== //
 // Variable declaration //
 // =========== //
-var varAzureCloudName = environment().name
-var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
+// var varAzureCloudName = environment().name
+// var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
+//var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
 // =========== //
 // Deployments //
 // =========== //
@@ -110,32 +110,35 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Provision the Azure NetApp Files.
-module azureNetAppFiles '../../../../avm/1.0.0/res/net-app/net-app-account/main.bicep' = {
+module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
     name: 'Storage-${storagePurpose}-${time}'
     params: {
         name: anfAccountName
         location: location
         domainName: identityDomainName
-        dnsServers: ***************
-        smbServerNamePrefix: ***************
+        dnsServers: dnsServers
+        //smbServerNamePrefix: ***************
         domainJoinUser: domainJoinUserName
         domainJoinPassword: avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
         domainJoinOU: ouStgPath
         capacityPools:[
             {
                 name: anfCapacityPoolName
-                size: volumeQuotaSize
+                size: capacityPoolSize * 1099511627776 // Convert TiBs to bytes 
                 serviceLevel: anfSku
+                encryptionType: 'Single'
                 volumes: [
                     {
                         name: anfVolumeName
-                        usageThreshold
+                        usageThreshold: volumeSize * 1073741824 // Convert GiBs to bytes
                         protocolTypes: [
                             'SMB'
                         ]
-                        encryptionType: 'Single'
+                        creationToken: anfVolumeName
                         subnetResourceId: anfSubnetId
+                        //securityStyle: 'ntfs'
+                        smbContinuouslyAvailable: true
                     }
                 ]
             }
@@ -143,3 +146,20 @@ module azureNetAppFiles '../../../../avm/1.0.0/res/net-app/net-app-account/main.
         tags: tags
     }
 }
+
+// // Custom Extension call in on the DSC script to set NTFS permissions. 
+// module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
+//     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+//     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
+//     params: {
+//         location: location
+//         virtualMachineName: managementVmName
+//         file: storageToDomainScript
+//         scriptArguments: varStorageToDomainScriptArgs
+//         adminUserPassword: (identityServiceProvider == 'EntraID') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : 
+//         baseScriptUri: storageToDomainScriptUri
+//     }
+//     dependsOn: [
+//         storageAndFile
+//     ]
+// }
