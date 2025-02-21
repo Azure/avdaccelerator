@@ -50,8 +50,8 @@ param domainJoinUserName string
 // @sys.description('AVD session host local admin credentials.')
 // param vmLocalUserName string
 
-@sys.description('ANF SKU.')
-param anfSku string
+@sys.description('ANF performance tier.')
+param anfPerformance string
 
 @sys.description('ANF capacity pool size in TiBs.')
 param capacityPoolSize int = 4
@@ -118,6 +118,9 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
         location: location
         domainName: identityDomainName
         dnsServers: dnsServers
+        // smbServerNamePrefix: ************
+        // aesEncryption: *************
+        // customerManagedKey: *************
         //smbServerNamePrefix: ***************
         domainJoinUser: domainJoinUserName
         domainJoinPassword: avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
@@ -126,7 +129,7 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
             {
                 name: anfCapacityPoolName
                 size: capacityPoolSize * 1099511627776 // Convert TiBs to bytes 
-                serviceLevel: anfSku
+                serviceLevel: anfPerformance
                 encryptionType: 'Single'
                 volumes: [
                     {
