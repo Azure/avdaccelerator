@@ -1294,7 +1294,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
 }
 
 // Management VM deployment
-module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (createAvdFslogixDeployment || varCreateAppAttachDeployment) {
+module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (avdIdentityServiceProvider != 'EntraId' && (createAvdFslogixDeployment || varCreateAppAttachDeployment)) {
   name: 'Storage-MGMT-VM-${time}'
   params: {
     diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
