@@ -20,7 +20,7 @@
         "avdWorkloadSubsId": {
             "value": "<<subscriptionId>>"
         },
-        "avdEnterpriseAppObjectId": {
+        "avdServicePrincipalObjectId": {
             "value": false
         },
         "avdVmLocalUserName": {

@@ -19,7 +19,7 @@ param computeObjectsRgName string
 param storageObjectsRgName string
 
 @sys.description('Azure Virtual Desktop enterprise application object ID.')
-param avdEnterpriseObjectId string
+param avdServicePrincipalObjectId string
 
 @sys.description('Configure start VM on connect.')
 param enableStartVmOnConnect bool
@@ -103,24 +103,24 @@ module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-a
 }
 
 // Start VM on connect role assignments
-module startVMonConnectRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan && !empty(avdEnterpriseObjectId)) {
+module startVMonConnectRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (enableStartVmOnConnect && !deployScalingPlan && !empty(avdServicePrincipalObjectId)) {
   name: 'StartOnCon-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnContributorRole.id}'
-    principalId: avdEnterpriseObjectId
+    principalId: avdServicePrincipalObjectId
     resourceGroupName: computeAndServiceObjectsRg.rgName
     principalType: 'ServicePrincipal'
   }
 }]
 
 // Scaling plan role assignments
-module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdEnterpriseObjectId)) {
+module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for computeAndServiceObjectsRg in computeAndServiceObjectsRgs: if (deployScalingPlan && !empty(avdServicePrincipalObjectId)) {
   name: 'ScalingPlan-RolAssign-${computeAndServiceObjectsRg.name}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeAndServiceObjectsRg.rgName}')
   params: {
     roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varDesktopVirtualizationPowerOnOffContributorRole.id}'
-    principalId: avdEnterpriseObjectId
+    principalId: avdServicePrincipalObjectId
     resourceGroupName: computeAndServiceObjectsRg.rgName
     subscriptionId: subscriptionId
     principalType: 'ServicePrincipal'

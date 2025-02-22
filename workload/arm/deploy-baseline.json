@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15622610627031505164"
+      "templateHash": "171294855897520130"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -61,14 +61,14 @@
         "description": "AVD workload subscription ID, multiple subscriptions scenario. (Default: \"\")"
       }
     },
-    "avdEnterpriseAppObjectId": {
+    "avdServicePrincipalObjectId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Azure Virtual Desktop Enterprise Application object ID. (Default: \"\")"
       }
     },
-    "avdArmEnterpriseAppObjectId": {
+    "avdArmServicePrincipalObjectId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -12725,7 +12725,7 @@
           "storageObjectsRgName": {
             "value": "[variables('varStorageObjectsRgName')]"
           },
-          "avdEnterpriseObjectId": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', parameters('avdEnterpriseAppObjectId')), createObject('value', ''))]",
+          "avdServicePrincipalObjectId": "[if(not(empty(parameters('avdServicePrincipalObjectId'))), createObject('value', parameters('avdServicePrincipalObjectId')), createObject('value', ''))]",
           "deployScalingPlan": {
             "value": "[variables('varDeployScalingPlan')]"
           },
@@ -12753,7 +12753,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "11088509491555545989"
+              "templateHash": "6777197815584621044"
             }
           },
           "parameters": {
@@ -12787,7 +12787,7 @@
                 "description": "Resource Group Name for Azure Files."
               }
             },
-            "avdEnterpriseObjectId": {
+            "avdServicePrincipalObjectId": {
               "type": "string",
               "metadata": {
                 "description": "Azure Virtual Desktop enterprise application object ID."
@@ -13138,7 +13138,7 @@
                 "name": "startVMonConnectRoleAssignCompute",
                 "count": "[length(variables('computeAndServiceObjectsRgs'))]"
               },
-              "condition": "[and(and(parameters('enableStartVmOnConnect'), not(parameters('deployScalingPlan'))), not(empty(parameters('avdEnterpriseObjectId'))))]",
+              "condition": "[and(and(parameters('enableStartVmOnConnect'), not(parameters('deployScalingPlan'))), not(empty(parameters('avdServicePrincipalObjectId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('StartOnCon-RolAssign-{0}-{1}', variables('computeAndServiceObjectsRgs')[copyIndex()].name, parameters('time'))]",
@@ -13154,7 +13154,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('varDesktopVirtualizationPowerOnContributorRole').id)]"
                   },
                   "principalId": {
-                    "value": "[parameters('avdEnterpriseObjectId')]"
+                    "value": "[parameters('avdServicePrincipalObjectId')]"
                   },
                   "resourceGroupName": {
                     "value": "[variables('computeAndServiceObjectsRgs')[copyIndex()].rgName]"
@@ -13313,7 +13313,7 @@
                 "name": "scalingPlanRoleAssignCompute",
                 "count": "[length(variables('computeAndServiceObjectsRgs'))]"
               },
-              "condition": "[and(parameters('deployScalingPlan'), not(empty(parameters('avdEnterpriseObjectId'))))]",
+              "condition": "[and(parameters('deployScalingPlan'), not(empty(parameters('avdServicePrincipalObjectId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('ScalingPlan-RolAssign-{0}-{1}', variables('computeAndServiceObjectsRgs')[copyIndex()].name, parameters('time'))]",
@@ -13329,7 +13329,7 @@
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('varDesktopVirtualizationPowerOnOffContributorRole').id)]"
                   },
                   "principalId": {
-                    "value": "[parameters('avdEnterpriseObjectId')]"
+                    "value": "[parameters('avdServicePrincipalObjectId')]"
                   },
                   "resourceGroupName": {
                     "value": "[variables('computeAndServiceObjectsRgs')[copyIndex()].rgName]"
@@ -26680,21 +26680,21 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8947737717274796015"
+              "templateHash": "14661350412155033698"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
-            "avdEnterpriseAppObjectId": {
+            "avdServicePrincipalObjectId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
                 "description": "Azure Virtual Desktop service principal Id"
               }
             },
-            "avdArmEnterpriseAppObjectId": {
+            "avdArmServicePrincipalObjectId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
@@ -26899,11 +26899,11 @@
             "principals": [
               {
                 "name": "AVD",
-                "id": "[parameters('avdEnterpriseAppObjectId')]"
+                "id": "[parameters('avdServicePrincipalObjectId')]"
               },
               {
                 "name": "AVD ARM",
-                "id": "[parameters('avdArmEnterpriseAppObjectId')]"
+                "id": "[parameters('avdArmServicePrincipalObjectId')]"
               }
             ],
             "varAzureCloudName": "[environment().name]",
@@ -29756,11 +29756,11 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "avdEnterpriseAppObjectId": {
-            "value": "[parameters('avdEnterpriseAppObjectId')]"
+          "avdServicePrincipalObjectId": {
+            "value": "[parameters('avdServicePrincipalObjectId')]"
           },
-          "avdArmEnterpriseAppObjectId": {
-            "value": "[parameters('avdArmEnterpriseAppObjectId')]"
+          "avdArmServicePrincipalObjectId": {
+            "value": "[parameters('avdArmServicePrincipalObjectId')]"
           },
           "storagePurpose": {
             "value": "AppAttach"
@@ -29847,21 +29847,21 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8947737717274796015"
+              "templateHash": "14661350412155033698"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
-            "avdEnterpriseAppObjectId": {
+            "avdServicePrincipalObjectId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
                 "description": "Azure Virtual Desktop service principal Id"
               }
             },
-            "avdArmEnterpriseAppObjectId": {
+            "avdArmServicePrincipalObjectId": {
               "type": "string",
               "defaultValue": "",
               "metadata": {
@@ -30066,11 +30066,11 @@
             "principals": [
               {
                 "name": "AVD",
-                "id": "[parameters('avdEnterpriseAppObjectId')]"
+                "id": "[parameters('avdServicePrincipalObjectId')]"
               },
               {
                 "name": "AVD ARM",
-                "id": "[parameters('avdArmEnterpriseAppObjectId')]"
+                "id": "[parameters('avdArmServicePrincipalObjectId')]"
               }
             ],
             "varAzureCloudName": "[environment().name]",

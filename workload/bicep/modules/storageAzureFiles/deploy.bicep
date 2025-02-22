@@ -9,10 +9,10 @@ targetScope = 'subscription'
 // ========== //
 
 @sys.description('Azure Virtual Desktop service principal Id')
-param avdEnterpriseAppObjectId string = ''
+param avdServicePrincipalObjectId string = ''
 
 @sys.description('Azure Virtual Desktop ARM service principal Id')
-param avdArmEnterpriseAppObjectId string = ''
+param avdArmServicePrincipalObjectId string = ''
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
@@ -118,11 +118,11 @@ param storageAccountFqdn string
 var principals = [
     { 
         name: 'AVD'
-        id: avdEnterpriseAppObjectId
+        id: avdServicePrincipalObjectId
     }
     { 
         name: 'AVD ARM'
-        id: avdArmEnterpriseAppObjectId
+        id: avdArmServicePrincipalObjectId
     }
 ]
 

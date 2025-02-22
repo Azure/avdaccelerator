@@ -36,10 +36,10 @@ param avdManagementPlaneLocation string
 param avdWorkloadSubsId string = ''
 
 @sys.description('Azure Virtual Desktop Enterprise Application object ID. (Default: "")')
-param avdEnterpriseAppObjectId string = ''
+param avdServicePrincipalObjectId string = ''
 
 @sys.description('Azure Virtual Desktop ARM Enterprise Application Object Id. Required for the deployment of App Attach File Share with EntraID identity provider. (Default: "")')
-param avdArmEnterpriseAppObjectId string = ''
+param avdArmServicePrincipalObjectId string = ''
 
 @sys.description('AVD session host local username.')
 param avdVmLocalUserName string
@@ -1152,7 +1152,7 @@ module identity './modules/identity/deploy.bicep' = {
     computeObjectsRgName: varComputeObjectsRgName
     serviceObjectsRgName: varServiceObjectsRgName
     storageObjectsRgName: varStorageObjectsRgName
-    avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
+    avdServicePrincipalObjectId: !empty(avdServicePrincipalObjectId) ? avdServicePrincipalObjectId : ''
     deployScalingPlan: varDeployScalingPlan
     storageManagedIdentityName: varStorageManagedIdentityName
     enableStartVmOnConnect: avdStartVmOnConnect
@@ -1387,8 +1387,8 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
 module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateAppAttachDeployment) {
   name: 'Storage-AppA-${time}'
   params: {
-    avdEnterpriseAppObjectId: avdEnterpriseAppObjectId
-    avdArmEnterpriseAppObjectId: avdArmEnterpriseAppObjectId
+    avdServicePrincipalObjectId: avdServicePrincipalObjectId
+    avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
     storagePurpose: 'AppAttach'
     vmLocalUserName: avdVmLocalUserName
     fileShareName: varAppAttachFileShareName

@@ -18,7 +18,7 @@
                             }
                         },
                         {
-                            "name": "avdEnterpriseApplication",
+                            "name": "avdServicePrincipal",
                             "type": "Microsoft.Solutions.GraphApiControl",
                             "request": {
                                 "method": "GET",
@@ -26,7 +26,7 @@
                             }
                         },
                         {
-                            "name": "avdArmEnterpriseApplication",
+                            "name": "avdArmServicePrincipal",
                             "type": "Microsoft.Solutions.GraphApiControl",
                             "request": {
                                 "method": "GET",
@@ -2485,8 +2485,8 @@
         },
         "outputs": {
             "parameters": {
-                "avdEnterpriseAppObjectId": "[if(not(empty(steps('basics').avdEnterpriseApplication)), first(map(steps('basics').avdEnterpriseApplication.value, (item) => item.id)), 'empty')]",
-                "avdArmEnterpriseAppObjectId": "[if(not(empty(steps('basics').avdArmEnterpriseApplication.value)), first(map(steps('basics').avdArmEnterpriseApplication.value, (item) => item.id)), 'empty')]",
+                "avdServicePrincipalObjectId": "[first(map(steps('basics').avdServicePrincipal.value, (item) => item.id))]",
+                "avdArmServicePrincipalObjectId": "[first(map(steps('basics').avdArmServicePrincipal.value, (item) => item.id))]",
                 "deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
                 "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",

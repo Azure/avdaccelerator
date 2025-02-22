@@ -24,7 +24,7 @@ az deployment create \
   --parameters avdDomainJoinUserPassword=<DomainJoinUserPassword \
   --parameters existingHubVnetResourceId=<hubVnetResourceId>  \
   --parameters customDnsIps=<customDNSservers>  \
-  --parameters avdEnterpriseAppObjectId=<wvdAppObjectId> \
+  --parameters avdServicePrincipalObjectId=<wvdAppObjectId> \
   --parameters avdVnetPrivateDnsZone=true \
   --parameters avdVnetPrivateDnsZoneFilesId="<PrivateDnsZoneFilesId>" \
   --parameters avdVnetPrivateDnsZoneKeyvaultId="<PrivateDnsZoneKeyvaultId>" \
@@ -51,7 +51,7 @@ New-AzSubscriptionDeployment `
   -avdDomainJoinUserPassword $avdDomainJoinUserPassword `
   -existingHubVnetResourceId "<hubVnetResourceId>"  `
   -customDnsIps "<customDNSservers>"  `
-  -avdEnterpriseAppObjectId "<wvdAppObjectId>" `
+  -avdServicePrincipalObjectId "<wvdAppObjectId>" `
   -avdVnetPrivateDnsZone $true `
   -avdVnetPrivateDnsZoneFilesId "<PrivateDnsZoneFilesId>" `
   -avdVnetPrivateDnsZoneKeyvaultId "<PrivateDnsZoneKeyvaultId>" `
