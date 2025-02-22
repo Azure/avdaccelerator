@@ -1089,21 +1089,7 @@
 										"method": "GET",
 										"path": "/v1.0/serviceprincipals?$filter=appId eq '50e95039-b200-4007-bc97-8d5790743a63'"
 									}
-								},
-								{
-									"name": "avdArmObjectId",
-									"type": "Microsoft.Common.TextBox",
-									"label": "AVD Object Id",
-									"placeholder": "",
-									"defaultValue": "",
-									"toolTip": "Search your Entra ID tenant Enterprise Applications for the <b>Azure Virtual Desktop ARM Provider</b> application with <b>Applicaton ID</b> = <b>50e95039-b200-4007-bc97-8d5790743a63</b> and enter the Object Id here.",
-									"constraints": {
-										"required": true,
-										"regex": "^(?!\\d+$)\\w{8}-\\w{4}-\\w{4}-\\w{4}-\\w{12}$",
-										"validationMessage": "A proper GUID must be provided."
-									},
-									"visible": "[and(steps('storage').storageAppAttach.appAttachStorageDeployment, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), empty(steps('storage').storageAppAttach.avdArmServicePrincipalApi))]"
-								},
+								},								
                                 {
                                     "name": "appAttachStorageAccountSku",
                                     "type": "Microsoft.Common.DropDown",
@@ -2562,7 +2548,7 @@
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
                 "createAppAttachDeployment": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageAppAttach.appAttachStorageDeployment), false)]",
-                "avdArmEnterpriseAppObjectId": "[if(and(steps('storage').storageAppAttach.appAttachStorageDeployment, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')), if(empty(steps('storage').storageAppAttach.avdArmServicePrincipalApi), steps('storage').storageAppAttach.avdArmObjectId, first(map(steps('storage').storageAppAttach.avdArmServicePrincipalApi.value, (sp) => sp.id))), '')]",
+                "avdArmEnterpriseAppObjectId": "[if(and(steps('storage').storageAppAttach.appAttachStorageDeployment, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')), first(map(steps('storage').storageAppAttach.avdArmServicePrincipalApi.value, (sp) => sp.id)), '')]",
                 "appAttachStoragePerformance": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.appAttachStorageAccountSku, 'Premium')]",
                 "appAttachFileShareQuotaSize": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.sessionHostsAppAttachFileShareQuota, 1 )]",
                 "storageOuPath": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting, '')]",
