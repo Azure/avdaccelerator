@@ -18,6 +18,22 @@
                             }
                         },
                         {
+                            "name": "avdEnterpriseApplication",
+                            "type": "Microsoft.Solutions.GraphApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"
+                            }
+                        },
+                        {
+                            "name": "avdArmEnterpriseApplication",
+                            "type": "Microsoft.Solutions.GraphApiControl",
+                            "request": {
+                                "method": "GET",
+                                "path": "/v1.0/serviceprincipals?$filter=appId eq '50e95039-b200-4007-bc97-8d5790743a63'"
+                            }
+                        },
+                        {
                             "name": "infoPreReq",
                             "type": "Microsoft.Common.InfoBox",
                             "visible": true,
@@ -144,7 +160,6 @@
                                     "constraints": {
                                         "required": true,
                                         "allowedValues": [
-
                                             {
                                                 "label": "Active Directory (AD DS)",
                                                 "value": "ADDS"
@@ -153,11 +168,11 @@
                                                 "label": "Microsoft Entra Domain Services",
                                                 "value": "EntraDS"
                                             },
-											{
+                                            {
                                                 "label": "Microsoft Entra ID",
                                                 "value": "EntraID"
                                             },
-											{
+                                            {
                                                 "label": "Microsoft Entra ID Kerberos",
                                                 "value": "EntraIDKerberos"
                                             }
@@ -294,7 +309,7 @@
                                     "type": "Microsoft.Common.PasswordBox",
                                     "label": {
                                         "password": "Password",
-										"confirmPassword": "Confirm Password"
+                                        "confirmPassword": "Confirm Password"
                                     },
                                     "toolTip": "Provide password for domain join account.",
                                     "constraints": {
@@ -553,14 +568,6 @@
                                     "toolTip": "If VM is powered off (deallocated), VM will be started automatically once user connects."
                                 },
                                 {
-                                    "name": "avdEnterpriseApplication",
-                                    "type": "Microsoft.Solutions.GraphApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"
-                                    }
-                                },
-                                {
                                     "name": "startVmOnConnectRoleInfo",
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
@@ -693,22 +700,22 @@
                                     "toolTip": "Select the size of the virtual machines. Multi-session hosts should have 4 - 24 vCPUs. Single session host should have 2 or more vCPUs.",
                                     "recommendedSizes": [
                                         "Standard_D4ads_v5",
-										"Standard_D8ads_v5",
-										"Standard_D16ads_v5",
-										"Standard_D32ads_v5",
-										"Standard_D4ds_v4",
-										"Standard_D8ds_v4",
-										"Standard_D16ds_v4",
-										"Standard_D32ds_v4",
-										"Standard_D4s_v3",
-										"Standard_D8s_v3",
-										"Standard_D16s_v3",
-										"Standard_D32s_v3"
-                                    ],                                    
+                                        "Standard_D8ads_v5",
+                                        "Standard_D16ads_v5",
+                                        "Standard_D32ads_v5",
+                                        "Standard_D4ds_v4",
+                                        "Standard_D8ds_v4",
+                                        "Standard_D16ds_v4",
+                                        "Standard_D32ds_v4",
+                                        "Standard_D4s_v3",
+                                        "Standard_D8s_v3",
+                                        "Standard_D16s_v3",
+                                        "Standard_D32s_v3"
+                                    ],
                                     "options": {
                                         "hideDiskTypeFilter": true
                                     },
-                                    "osPlatform": "Windows",                                    
+                                    "osPlatform": "Windows",
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
                                         "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
@@ -1080,16 +1087,7 @@
                                     "visible": "[not(contains(steps('basics').resourceScope.location.name, 'china'))]",
                                     "label": "Create App Attach storage",
                                     "toolTip": "Deploys App Attach containers and permissions setup."
-                                },								
-								{
-									"name": "avdArmEnterpriseApplication",
-									"type": "Microsoft.Solutions.GraphApiControl",
-									"condition": "[and(steps('storage').storageAppAttach.appAttachStorageDeployment, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
-									"request": {
-										"method": "GET",
-										"path": "/v1.0/serviceprincipals?$filter=appId eq '50e95039-b200-4007-bc97-8d5790743a63'"
-									}
-								},								
+                                },
                                 {
                                     "name": "appAttachStorageAccountSku",
                                     "type": "Microsoft.Common.DropDown",
@@ -2486,8 +2484,10 @@
             ]
         },
         "outputs": {
-            "parameters": {				                
-				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
+            "parameters": {
+                "avdEnterpriseAppObjectId": "[if(not(empty(steps('basics').avdEnterpriseApplication)), first(map(steps('basics').avdEnterpriseApplication.value, (item) => item.id)), 'empty')]",
+                "avdArmEnterpriseAppObjectId": "[if(not(empty(steps('basics').avdArmEnterpriseApplication.value)), first(map(steps('basics').avdArmEnterpriseApplication.value, (item) => item.id)), 'empty')]",
+                "deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
                 "deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
                 "diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
                 "avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
@@ -2520,7 +2520,6 @@
                 "avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
                 "avdStartVmOnConnect": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
                 "avdDeployScalingPlan": "[if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
-                "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "availabilityZonesCompute": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
                 "zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
@@ -2548,7 +2547,6 @@
                 "fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
                 "fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
                 "createAppAttachDeployment": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageAppAttach.appAttachStorageDeployment), false)]",
-                "avdArmEnterpriseAppObjectId": "[if(and(steps('storage').storageAppAttach.appAttachStorageDeployment, equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')), first(map(steps('storage').storageAppAttach.avdArmEnterpriseApplication.value, (item) => item.id)), '')]",
                 "appAttachStoragePerformance": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.appAttachStorageAccountSku, 'Premium')]",
                 "appAttachFileShareQuotaSize": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.sessionHostsAppAttachFileShareQuota, 1 )]",
                 "storageOuPath": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting, '')]",
