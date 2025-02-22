@@ -115,17 +115,6 @@ param storageAccountFqdn string
 // Variable declaration //
 // =========== //
 
-var principals = [
-    { 
-        name: 'AVD'
-        id: avdServicePrincipalObjectId
-    }
-    { 
-        name: 'AVD ARM'
-        id: avdArmServicePrincipalObjectId
-    }
-]
-
 var varAzureCloudName = environment().name
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var varSecurityPrincipalName = !empty(securityPrincipalName) ? securityPrincipalName : 'none'
@@ -229,18 +218,6 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
     diagnosticSettings: varDiagnosticSettings
   }
 }
-
-module rbacStorage_avd '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [for principal in principals: if(identityServiceProvider == 'EntraID') {
-  name: 'Storage-RoleAssign-${principal.name}-${storagePurpose}-${time}'
-  scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
-  params: {
-    roleDefinitionIdOrName: 'c12c1c16-33a1-487b-954d-41c89c60f349' // Reader and Data Access
-    principalId: principal.id
-    resourceGroupName: storageObjectsRgName
-    subscriptionId: workloadSubsId
-    principalType: 'ServicePrincipal'
-  }
-}]
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
 module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (identityServiceProvider != 'EntraID') {
