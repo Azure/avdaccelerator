@@ -38,6 +38,9 @@ param avdWorkloadSubsId string = ''
 @sys.description('Azure Virtual Desktop Enterprise Application object ID. (Default: "")')
 param avdEnterpriseAppObjectId string = ''
 
+@sys.description('Azure Virtual Desktop ARM Enterprise Application Object Id. Required for the deployment of App Attach File Share with EntraID identity provider. (Default: "")')
+param avdArmEnterpriseAppObjectId string = ''
+
 @sys.description('AVD session host local username.')
 param avdVmLocalUserName string
 
@@ -46,9 +49,10 @@ param avdVmLocalUserName string
 param avdVmLocalUserPassword string
 
 @allowed([
-  'ADDS' // Active Directory Domain Services
-  'EntraDS' // Microsoft Entra Domain Services
-  'EntraID' // Microsoft Entra ID Join
+  'ADDS' // Active Directory Domain Services, Users and Devices are ADDS.
+  'EntraDS' // Microsoft Entra Domain Services, Users and Devices are EntraDS.
+  'EntraID' // Microsoft Entra ID Join, Users and Devices are EntraID.
+  'EntraIDKerberos' // Microsoft Entra ID Kerberos, Users are Hybrid, Devices are EntraID Joined.
 ])
 @sys.description('Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
@@ -60,17 +64,17 @@ param createIntuneEnrollment bool = false
 param avdSecurityGroups array = []
 
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
-param identityDomainName string = 'none'
+param identityDomainName string = ''
 
 @sys.description('GUID of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainGuid string = ''
 
-@sys.description('AVD session host domain join user principal name. (Default: none)')
-param avdDomainJoinUserName string = 'none'
+@sys.description('AVD session host domain join user principal name. (Default: "")')
+param avdDomainJoinUserName string = ''
 
-@sys.description('AVD session host domain join password. (Default: none)')
+@sys.description('AVD session host domain join password. (Default: "")')
 @secure()
-param avdDomainJoinUserPassword string = 'none'
+param avdDomainJoinUserPassword string = ''
 
 @sys.description('OU path to join AVd VMs. (Default: "")')
 param avdOuPath string = ''
@@ -424,10 +428,6 @@ param avdWrklKvPrefixCustomName string = 'kv-sec'
 @maxLength(6)
 @sys.description('AVD disk encryption set custom name. (Default: des-zt)')
 param ztDiskEncryptionSetCustomNamePrefix string = 'des-zt'
-
-@maxLength(5)
-@sys.description('AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)')
-param ztManagedIdentityCustomName string = 'id-zt'
 
 @maxLength(6)
 @sys.description('AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)')
@@ -1239,7 +1239,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
           }
         ]
       : []
-    secrets: (avdIdentityServiceProvider != 'EntraID')
+    secrets: !contains(avdIdentityServiceProvider, 'EntraID')
       ? [
           {
             name: 'vmLocalUserPassword'
@@ -1290,7 +1290,6 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
   }
   dependsOn: [
     baselineResourceGroups
-    monitoringDiagnosticSettings
   ]
 }
 
@@ -1388,6 +1387,8 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
 module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateAppAttachDeployment) {
   name: 'Storage-AppA-${time}'
   params: {
+    avdEnterpriseAppObjectId: avdEnterpriseAppObjectId
+    avdArmEnterpriseAppObjectId: avdArmEnterpriseAppObjectId
     storagePurpose: 'AppAttach'
     vmLocalUserName: avdVmLocalUserName
     fileShareName: varAppAttachFileShareName
@@ -1466,6 +1467,8 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
         ? '${networking.outputs.applicationSecurityGroupResourceId}'
         : ''
       identityServiceProvider: avdIdentityServiceProvider
+      fslogixStorageAccountResourceId: avdIdentityServiceProvider == 'EntraID' ? fslogixAzureFilesStorage.outputs.storageAccountResourceId : ''
+      hostPoolResourceId: managementPLane.outputs.hostPoolResourceId
       createIntuneEnrollment: createIntuneEnrollment
       // maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
       // vmssFlexNamePrefix: varVmssFlexNamePrefix
@@ -1518,11 +1521,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       deployAntiMalwareExt: deployAntiMalwareExt
     }
     dependsOn: [
-      fslogixAzureFilesStorage
       baselineResourceGroups
-      wrklKeyVault
-      //vmScaleSetFlex
-      managementPLane
     ]
   }
 ]

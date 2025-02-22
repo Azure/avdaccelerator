@@ -23,6 +23,9 @@ param scriptName string
 @sys.description('Deploy FSlogix configuration.')
 param fslogix bool
 
+@sys.description('FSLogix storage account resource ID.')
+param fslogixStorageAccountResourceId string
+
 @sys.description('File share path for FSlogix storage.')
 param fslogixFileShare string
 
@@ -32,16 +35,22 @@ param fslogixStorageFqdn string
 @sys.description('Session host VM size.')
 param vmSize string
 
-@sys.description('AVD Host Pool registration token')
-@secure()
-param hostPoolToken string
+@sys.description('AVD Host Pool Resource Id')
+param hostPoolResourceId string
 
 // =========== //
 // Variable declaration //
 // =========== //
 // var ScreenCaptureProtection = true
 // Additional parameter for screen capture functionallity -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose' powershell script will need to be updated too
-var varScriptArguments = fslogix ? '-IdentityDomainName ${identityDomainName} -AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose' : '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPoolToken} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
+
+var varBaseScriptArguments = '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPool.listRegistrationTokens().value[0].token} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
+var varBaseFSLogixScriptArguments = '-IdentityDomainName ${identityDomainName} -FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn}'
+var varFSLogixScriptArguments = !empty(fslogixStorageAccountResourceId)
+  ? '${varBaseFSLogixScriptArguments} -FslogixStorageAccountKey ${storageAccount.listkeys().keys[0].value}'
+  : '${varBaseFSLogixScriptArguments}'
+var varScriptArguments = fslogix ? '${varBaseScriptArguments} ${varFSLogixScriptArguments}' : varBaseScriptArguments
+
 var varAmdVmSizes = [
   'Standard_NV4as_v4'
   'Standard_NV8as_v4'
@@ -71,6 +80,17 @@ var varNvidiaVmSize = contains(varNvidiaVmSizes, vmSize)
 // =========== //
 // Deployments //
 // =========== //
+
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' existing = {
+  name: last(split(hostPoolResourceId, '/'))
+  scope: resourceGroup(split(hostPoolResourceId, '/')[4])
+}
+
+resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(fslogixStorageAccountResourceId)) {
+  name: last(split(fslogixStorageAccountResourceId, '/'))
+  scope: resourceGroup(split(fslogixStorageAccountResourceId, '/')[4])
+}
+
 resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
   name: '${name}/SessionHostConfig'
   location: location

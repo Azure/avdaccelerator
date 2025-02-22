@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4667874415365759690"
+      "templateHash": "4961300512245694009"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -68,6 +68,13 @@
         "description": "Azure Virtual Desktop Enterprise Application object ID. (Default: \"\")"
       }
     },
+    "avdArmEnterpriseAppObjectId": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Azure Virtual Desktop ARM Enterprise Application Object Id. Required for the deployment of App Attach File Share with EntraID identity provider. (Default: \"\")"
+      }
+    },
     "avdVmLocalUserName": {
       "type": "string",
       "metadata": {
@@ -86,7 +93,8 @@
       "allowedValues": [
         "ADDS",
         "EntraDS",
-        "EntraID"
+        "EntraID",
+        "EntraIDKerberos"
       ],
       "metadata": {
         "description": "Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)"
@@ -108,7 +116,7 @@
     },
     "identityDomainName": {
       "type": "string",
-      "defaultValue": "none",
+      "defaultValue": "",
       "metadata": {
         "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
       }
@@ -122,16 +130,16 @@
     },
     "avdDomainJoinUserName": {
       "type": "string",
-      "defaultValue": "none",
+      "defaultValue": "",
       "metadata": {
-        "description": "AVD session host domain join user principal name. (Default: none)"
+        "description": "AVD session host domain join user principal name. (Default: \"\")"
       }
     },
     "avdDomainJoinUserPassword": {
       "type": "securestring",
-      "defaultValue": "none",
+      "defaultValue": "",
       "metadata": {
-        "description": "AVD session host domain join password. (Default: none)"
+        "description": "AVD session host domain join password. (Default: \"\")"
       }
     },
     "avdOuPath": {
@@ -810,14 +818,6 @@
       "maxLength": 6,
       "metadata": {
         "description": "AVD disk encryption set custom name. (Default: des-zt)"
-      }
-    },
-    "ztManagedIdentityCustomName": {
-      "type": "string",
-      "defaultValue": "id-zt",
-      "maxLength": 5,
-      "metadata": {
-        "description": "AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)"
       }
     },
     "ztKvPrefixCustomName": {
@@ -8681,7 +8681,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "15062162723401490058"
+              "templateHash": "17704751089082058038"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -8957,7 +8957,7 @@
                 "applicationGroupType": "[if(equals(parameters('preferredAppGroupType'), 'Desktop'), 'Desktop', 'RemoteApp')]"
               }
             ],
-            "varHostPoolRdpPropertiesDomainServiceCheck": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('hostPoolRdpProperties')), parameters('hostPoolRdpProperties'))]",
+            "varHostPoolRdpPropertiesDomainServiceCheck": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), format('{0};targetisaadjoined:i:1;enablerdsaadauth:i:1', parameters('hostPoolRdpProperties')), parameters('hostPoolRdpProperties'))]",
             "varRAppApplicationGroupsStandardApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), createArray(createObject('name', 'Task Manager', 'description', 'Task Manager', 'friendlyName', 'Task Manager', 'showInPortal', true(), 'filePath', 'C:\\Windows\\system32\\taskmgr.exe'), createObject('name', 'WordPad', 'description', 'WordPad', 'friendlyName', 'WordPad', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'), createObject('name', 'Microsoft Edge', 'description', 'Microsoft Edge', 'friendlyName', 'Edge', 'showInPortal', true(), 'filePath', 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'), createObject('name', 'Remote Desktop Connection', 'description', 'Remote Desktop Connection', 'friendlyName', 'Remote Desktop', 'showInPortal', true(), 'filePath', 'C:\\WINDOWS\\system32\\mtsc.exe')), createArray())]",
             "varRAppApplicationGroupsOfficeApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), createArray(createObject('name', 'Microsoft Excel', 'description', 'Microsoft Excel', 'friendlyName', 'Excel', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\EXCEL.EXE'), createObject('name', 'Microsoft PowerPoint', 'description', 'Microsoft PowerPoint', 'friendlyName', 'PowerPoint', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\POWERPNT.EXE'), createObject('name', 'Microsoft Word', 'description', 'Microsoft Word', 'friendlyName', 'Word', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\WINWORD.EXE'), createObject('name', 'Microsoft Outlook', 'description', 'Microsoft Word', 'friendlyName', 'Outlook', 'showInPortal', true(), 'filePath', 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE')), createArray())]",
             "varRAppApplicationGroupsApps": "[if(equals(parameters('preferredAppGroupType'), 'RailApplications'), if(contains(parameters('osImage'), 'office'), union(variables('varRAppApplicationGroupsStandardApps'), variables('varRAppApplicationGroupsOfficeApps')), variables('varRAppApplicationGroupsStandardApps')), createArray())]",
@@ -12682,7 +12682,13 @@
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workspace-{0}', parameters('time')))]"
               ]
             }
-          ]
+          ],
+          "outputs": {
+            "hostPoolResourceId": {
+              "type": "string",
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+            }
+          }
         }
       },
       "dependsOn": [
@@ -12747,7 +12753,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "242675397767662822"
+              "templateHash": "11088509491555545989"
             }
           },
           "parameters": {
@@ -13832,7 +13838,7 @@
               }
             },
             {
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalId'))))]",
+              "condition": "[and(contains(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('VM-Login-Comp-{0}-{1}', take(format('{0}', parameters('securityPrincipalId')), 6), parameters('time'))]",
@@ -14004,7 +14010,7 @@
               }
             },
             {
-              "condition": "[and(equals(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalId'))))]",
+              "condition": "[and(contains(parameters('identityServiceProvider'), 'EntraID'), not(empty(parameters('securityPrincipalId'))))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('VM-Login-Serv-{0}-{1}', take(format('{0}', parameters('securityPrincipalId')), 6), parameters('time'))]",
@@ -19884,7 +19890,7 @@
           "publicNetworkAccess": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
           "networkAcls": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
           "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createArray(createObject('name', variables('varWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName')), parameters('existingVnetPrivateEndpointSubnetResourceId')), 'customNetworkInterfaceName', format('nic-01-{0}', variables('varWrklKvPrivateEndpointName')), 'service', 'vault', 'privateDnsZoneGroupName', if(parameters('createPrivateDnsZones'), split(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.keyVaultDnsZoneResourceId.value, '/')[8], split(parameters('avdVnetPrivateDnsZoneKeyvaultId'), '/')[8]), 'privateDnsZoneResourceIds', createArray(if(parameters('createPrivateDnsZones'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.keyVaultDnsZoneResourceId.value, parameters('avdVnetPrivateDnsZoneKeyvaultId')))))), createObject('value', createArray()))]",
-          "secrets": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'EntraID')), createObject('value', createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials'))), createObject('value', createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', 'NoUsername', 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', 'NoPassword', 'contentType', 'Domain join credentials'))))]",
+          "secrets": "[if(not(contains(parameters('avdIdentityServiceProvider'), 'EntraID')), createObject('value', createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials'))), createObject('value', createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', 'NoUsername', 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', 'NoPassword', 'contentType', 'Domain join credentials'))))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'), variables('varWorkloadKeyvaultTag'))), createObject('value', union(variables('varAvdDefaultTags'), variables('varWorkloadKeyvaultTag'))))]"
         },
         "template": {
@@ -22608,7 +22614,6 @@
       },
       "dependsOn": [
         "baselineResourceGroups",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]"
       ]
     },
@@ -22692,7 +22697,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "145165832351743331"
+              "templateHash": "13073563750586099024"
             }
           },
           "parameters": {
@@ -22947,7 +22952,7 @@
                   },
                   "extensionDomainJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), false(), true())]",
+                      "enabled": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), false(), true())]",
                       "settings": {
                         "name": "[parameters('identityDomainName')]",
                         "ouPath": "[if(not(empty(parameters('ouPath'))), parameters('ouPath'), null())]",
@@ -22959,7 +22964,7 @@
                   },
                   "extensionAadJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]"
+                      "enabled": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), true(), false())]"
                     }
                   },
                   "tags": {
@@ -26675,13 +26680,27 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1250311981651125075"
+              "templateHash": "8947737717274796015"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
+            "avdEnterpriseAppObjectId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Azure Virtual Desktop service principal Id"
+              }
+            },
+            "avdArmEnterpriseAppObjectId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Azure Virtual Desktop ARM service principal Id"
+              }
+            },
             "workloadSubsId": {
               "type": "string",
               "metadata": {
@@ -26877,11 +26896,20 @@
             }
           },
           "variables": {
+            "principals": [
+              {
+                "name": "AVD",
+                "id": "[parameters('avdEnterpriseAppObjectId')]"
+              },
+              {
+                "name": "AVD ARM",
+                "id": "[parameters('avdArmEnterpriseAppObjectId')]"
+              }
+            ],
             "varAzureCloudName": "[environment().name]",
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'EntraDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
-            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
+            "varAdminUserName": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]"
           },
@@ -26913,12 +26941,7 @@
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "kind": "[if(or(equals(parameters('storageSku'), 'Premium_LRS'), equals(parameters('storageSku'), 'Premium_ZRS')), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
                   "largeFileSharesState": "[if(or(equals(parameters('storageSku'), 'Standard_LRS'), equals(parameters('storageSku'), 'Standard_ZRS')), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
-                  "azureFilesIdentityBasedAuthentication": {
-                    "value": {
-                      "directoryServiceOptions": "[variables('varDirectoryServiceOptions')]",
-                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
-                    }
-                  },
+                  "azureFilesIdentityBasedAuthentication": "[if(not(equals(parameters('identityServiceProvider'), 'EntraID')), createObject('value', createObject('directoryServiceOptions', if(equals(parameters('identityServiceProvider'), 'EntraDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'EntraIDKerberos'), 'AADKERB', 'none')), 'activeDirectoryProperties', if(equals(parameters('identityServiceProvider'), 'EntraIDKerberos'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject()))), createObject('value', null()))]",
                   "accessTier": {
                     "value": "Hot"
                   },
@@ -29230,6 +29253,185 @@
               }
             },
             {
+              "copy": {
+                "name": "rbacStorage_avd",
+                "count": "[length(variables('principals'))]"
+              },
+              "condition": "[equals(parameters('identityServiceProvider'), 'EntraID')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Storage-RoleAssign-{0}-{1}-{2}', variables('principals')[copyIndex()].name, parameters('storagePurpose'), parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "roleDefinitionIdOrName": {
+                    "value": "c12c1c16-33a1-487b-954d-41c89c60f349"
+                  },
+                  "principalId": {
+                    "value": "[variables('principals')[copyIndex()].id]"
+                  },
+                  "resourceGroupName": {
+                    "value": "[parameters('storageObjectsRgName')]"
+                  },
+                  "subscriptionId": {
+                    "value": "[parameters('workloadSubsId')]"
+                  },
+                  "principalType": {
+                    "value": "ServicePrincipal"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
+                    },
+                    "name": "Role Assignments (Resource Group scope)",
+                    "description": "This module deploys a Role Assignment at a Resource Group scope.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "roleDefinitionIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+                      }
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().name]",
+                      "metadata": {
+                        "description": "Optional. Name of the Resource Group to assign the RBAC role to. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "defaultValue": "[subscription().subscriptionId]",
+                      "metadata": {
+                        "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The description of the role assignment."
+                      }
+                    },
+                    "delegatedManagedIdentityResourceId": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. ID of the delegated managed identity resource."
+                      }
+                    },
+                    "condition": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
+                      }
+                    },
+                    "conditionVersion": {
+                      "type": "string",
+                      "defaultValue": "2.0",
+                      "allowedValues": [
+                        "2.0"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+                      }
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "ServicePrincipal",
+                        "Group",
+                        "User",
+                        "ForeignGroup",
+                        "Device",
+                        ""
+                      ],
+                      "metadata": {
+                        "description": "Optional. The principal type of the assigned principal ID."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    },
+                    "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+                      "properties": {
+                        "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                        "principalId": "[parameters('principalId')]",
+                        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
+                        "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]",
+                        "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
+                        "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The GUID of the Role Assignment."
+                      },
+                      "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Role Assignment."
+                      },
+                      "value": "[resourceId('Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the role assignment was applied at."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "scope": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The scope this Role Assignment applies to."
+                      },
+                      "value": "[resourceGroup().id]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('identityServiceProvider'), 'EntraID'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Add-{0}-Storage-Setup-{1}', parameters('storagePurpose'), parameters('time'))]",
@@ -29253,7 +29455,7 @@
                   "scriptArguments": {
                     "value": "[variables('varStorageToDomainScriptArgs')]"
                   },
-                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
+                  "adminUserPassword": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
                   "baseScriptUri": {
                     "value": "[parameters('storageToDomainScriptUri')]"
                   }
@@ -29524,7 +29726,13 @@
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-{0}-{1}', parameters('storagePurpose'), parameters('time')))]"
               ]
             }
-          ]
+          ],
+          "outputs": {
+            "storageAccountResourceId": {
+              "type": "string",
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-{0}-{1}', parameters('storagePurpose'), parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+            }
+          }
         }
       },
       "dependsOn": [
@@ -29548,6 +29756,12 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "avdEnterpriseAppObjectId": {
+            "value": "[parameters('avdEnterpriseAppObjectId')]"
+          },
+          "avdArmEnterpriseAppObjectId": {
+            "value": "[parameters('avdArmEnterpriseAppObjectId')]"
+          },
           "storagePurpose": {
             "value": "AppAttach"
           },
@@ -29633,13 +29847,27 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1250311981651125075"
+              "templateHash": "8947737717274796015"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
+            "avdEnterpriseAppObjectId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Azure Virtual Desktop service principal Id"
+              }
+            },
+            "avdArmEnterpriseAppObjectId": {
+              "type": "string",
+              "defaultValue": "",
+              "metadata": {
+                "description": "Azure Virtual Desktop ARM service principal Id"
+              }
+            },
             "workloadSubsId": {
               "type": "string",
               "metadata": {
@@ -29835,11 +30063,20 @@
             }
           },
           "variables": {
+            "principals": [
+              {
+                "name": "AVD",
+                "id": "[parameters('avdEnterpriseAppObjectId')]"
+              },
+              {
+                "name": "AVD ARM",
+                "id": "[parameters('avdArmEnterpriseAppObjectId')]"
+              }
+            ],
             "varAzureCloudName": "[environment().name]",
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDirectoryServiceOptions": "[if(equals(parameters('identityServiceProvider'), 'EntraDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'EntraID'), 'AADKERB', 'None'))]",
             "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
-            "varAdminUserName": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
+            "varAdminUserName": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
             "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]"
           },
@@ -29871,12 +30108,7 @@
                   "publicNetworkAccess": "[if(parameters('deployPrivateEndpoint'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
                   "kind": "[if(or(equals(parameters('storageSku'), 'Premium_LRS'), equals(parameters('storageSku'), 'Premium_ZRS')), createObject('value', 'FileStorage'), createObject('value', 'StorageV2'))]",
                   "largeFileSharesState": "[if(or(equals(parameters('storageSku'), 'Standard_LRS'), equals(parameters('storageSku'), 'Standard_ZRS')), createObject('value', 'Enabled'), createObject('value', 'Disabled'))]",
-                  "azureFilesIdentityBasedAuthentication": {
-                    "value": {
-                      "directoryServiceOptions": "[variables('varDirectoryServiceOptions')]",
-                      "activeDirectoryProperties": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject())]"
-                    }
-                  },
+                  "azureFilesIdentityBasedAuthentication": "[if(not(equals(parameters('identityServiceProvider'), 'EntraID')), createObject('value', createObject('directoryServiceOptions', if(equals(parameters('identityServiceProvider'), 'EntraDS'), 'AADDS', if(equals(parameters('identityServiceProvider'), 'EntraIDKerberos'), 'AADKERB', 'none')), 'activeDirectoryProperties', if(equals(parameters('identityServiceProvider'), 'EntraIDKerberos'), createObject('domainGuid', parameters('identityDomainGuid'), 'domainName', parameters('identityDomainName')), createObject()))), createObject('value', null()))]",
                   "accessTier": {
                     "value": "Hot"
                   },
@@ -32188,6 +32420,185 @@
               }
             },
             {
+              "copy": {
+                "name": "rbacStorage_avd",
+                "count": "[length(variables('principals'))]"
+              },
+              "condition": "[equals(parameters('identityServiceProvider'), 'EntraID')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Storage-RoleAssign-{0}-{1}-{2}', variables('principals')[copyIndex()].name, parameters('storagePurpose'), parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "roleDefinitionIdOrName": {
+                    "value": "c12c1c16-33a1-487b-954d-41c89c60f349"
+                  },
+                  "principalId": {
+                    "value": "[variables('principals')[copyIndex()].id]"
+                  },
+                  "resourceGroupName": {
+                    "value": "[parameters('storageObjectsRgName')]"
+                  },
+                  "subscriptionId": {
+                    "value": "[parameters('workloadSubsId')]"
+                  },
+                  "principalType": {
+                    "value": "ServicePrincipal"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
+                    },
+                    "name": "Role Assignments (Resource Group scope)",
+                    "description": "This module deploys a Role Assignment at a Resource Group scope.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "roleDefinitionIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+                      }
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().name]",
+                      "metadata": {
+                        "description": "Optional. Name of the Resource Group to assign the RBAC role to. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "defaultValue": "[subscription().subscriptionId]",
+                      "metadata": {
+                        "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The description of the role assignment."
+                      }
+                    },
+                    "delegatedManagedIdentityResourceId": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. ID of the delegated managed identity resource."
+                      }
+                    },
+                    "condition": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
+                      }
+                    },
+                    "conditionVersion": {
+                      "type": "string",
+                      "defaultValue": "2.0",
+                      "allowedValues": [
+                        "2.0"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+                      }
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "ServicePrincipal",
+                        "Group",
+                        "User",
+                        "ForeignGroup",
+                        "Device",
+                        ""
+                      ],
+                      "metadata": {
+                        "description": "Optional. The principal type of the assigned principal ID."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    },
+                    "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+                      "properties": {
+                        "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                        "principalId": "[parameters('principalId')]",
+                        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
+                        "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]",
+                        "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
+                        "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The GUID of the Role Assignment."
+                      },
+                      "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Role Assignment."
+                      },
+                      "value": "[resourceId('Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the role assignment was applied at."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "scope": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The scope this Role Assignment applies to."
+                      },
+                      "value": "[resourceGroup().id]"
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "condition": "[not(equals(parameters('identityServiceProvider'), 'EntraID'))]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Add-{0}-Storage-Setup-{1}', parameters('storagePurpose'), parameters('time'))]",
@@ -32211,7 +32622,7 @@
                   "scriptArguments": {
                     "value": "[variables('varStorageToDomainScriptArgs')]"
                   },
-                  "adminUserPassword": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
+                  "adminUserPassword": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
                   "baseScriptUri": {
                     "value": "[parameters('storageToDomainScriptUri')]"
                   }
@@ -32482,7 +32893,13 @@
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-{0}-{1}', parameters('storagePurpose'), parameters('time')))]"
               ]
             }
-          ]
+          ],
+          "outputs": {
+            "storageAccountResourceId": {
+              "type": "string",
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('Storage-{0}-{1}', parameters('storagePurpose'), parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+            }
+          }
         }
       },
       "dependsOn": [
@@ -32520,6 +32937,10 @@
           "asgResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), variables('varCreateAppAttachDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
+          },
+          "fslogixStorageAccountResourceId": "[if(equals(parameters('avdIdentityServiceProvider'), 'EntraID'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time'))), '2022-09-01').outputs.storageAccountResourceId.value), createObject('value', ''))]",
+          "hostPoolResourceId": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('AVD-MGMT-Plane-{0}', parameters('time'))), '2022-09-01').outputs.hostPoolResourceId.value]"
           },
           "createIntuneEnrollment": {
             "value": "[parameters('createIntuneEnrollment')]"
@@ -32626,7 +33047,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "18304255021868622646"
+              "templateHash": "1445966829591196900"
             }
           },
           "parameters": {
@@ -32835,6 +33256,18 @@
                 "description": "FSLogix storage account FDQN."
               }
             },
+            "fslogixStorageAccountResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "FSLogix storage account resource ID."
+              }
+            },
+            "hostPoolResourceId": {
+              "type": "string",
+              "metadata": {
+                "description": "Host pool resource ID."
+              }
+            },
             "sessionHostConfigurationScriptUri": {
               "type": "string",
               "metadata": {
@@ -32928,7 +33361,7 @@
                     "value": "[parameters('timeZone')]"
                   },
                   "zone": "[if(parameters('useAvailabilityZones'), createObject('value', add(mod(range(1, parameters('count'))[copyIndex()], 3), 1)), createObject('value', 0))]",
-                  "managedIdentities": "[if(or(equals(parameters('identityServiceProvider'), 'EntraID'), parameters('deployMonitoring')), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
+                  "managedIdentities": "[if(or(contains(parameters('identityServiceProvider'), 'EntraID'), parameters('deployMonitoring')), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
                   },
@@ -32993,7 +33426,7 @@
                   },
                   "extensionAadJoinConfig": {
                     "value": {
-                      "enabled": "[if(equals(parameters('identityServiceProvider'), 'EntraID'), true(), false())]",
+                      "enabled": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), true(), false())]",
                       "settings": "[if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject())]"
                     }
                   },
@@ -37122,13 +37555,8 @@
                   "name": {
                     "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
-                  "hostPoolToken": {
-                    "reference": {
-                      "keyVault": {
-                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
-                      },
-                      "secretName": "hostPoolRegistrationToken"
-                    }
+                  "hostPoolResourceId": {
+                    "value": "[parameters('hostPoolResourceId')]"
                   },
                   "baseScriptUri": {
                     "value": "[parameters('sessionHostConfigurationScriptUri')]"
@@ -37144,6 +37572,9 @@
                   },
                   "vmSize": {
                     "value": "[parameters('vmSize')]"
+                  },
+                  "fslogixStorageAccountResourceId": {
+                    "value": "[parameters('fslogixStorageAccountResourceId')]"
                   },
                   "fslogixFileShare": {
                     "value": "[parameters('fslogixSharePath')]"
@@ -37162,7 +37593,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "6026927917548225141"
+                      "templateHash": "17166089153843038226"
                     }
                   },
                   "parameters": {
@@ -37208,6 +37639,12 @@
                         "description": "Deploy FSlogix configuration."
                       }
                     },
+                    "fslogixStorageAccountResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "FSLogix storage account resource ID."
+                      }
+                    },
                     "fslogixFileShare": {
                       "type": "string",
                       "metadata": {
@@ -37226,15 +37663,15 @@
                         "description": "Session host VM size."
                       }
                     },
-                    "hostPoolToken": {
-                      "type": "securestring",
+                    "hostPoolResourceId": {
+                      "type": "string",
                       "metadata": {
-                        "description": "AVD Host Pool registration token"
+                        "description": "AVD Host Pool Resource Id"
                       }
                     }
                   },
                   "variables": {
-                    "varScriptArguments": "[if(parameters('fslogix'), format('-IdentityDomainName {0} -AmdVmSize {1} -IdentityServiceProvider {2} -Fslogix {3} -FslogixFileShare {4} -FslogixStorageFqdn {5} -HostPoolRegistrationToken {6} -NvidiaVmSize {7} -verbose', parameters('identityDomainName'), variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'), parameters('hostPoolToken'), variables('varNvidiaVmSize')), format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), parameters('hostPoolToken'), variables('varNvidiaVmSize')))]",
+                    "varBaseFSLogixScriptArguments": "[format('-IdentityDomainName {0} -FslogixFileShare {1} -FslogixStorageFqdn {2}', parameters('identityDomainName'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
                       "Standard_NV8as_v4",
@@ -37277,7 +37714,7 @@
                           "fileUris": "[array(parameters('baseScriptUri'))]"
                         },
                         "protectedSettings": {
-                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('scriptName'), variables('varScriptArguments'))]"
+                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('scriptName'), if(parameters('fslogix'), format('{0} {1}', format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2024-04-03').value[0].token, variables('varNvidiaVmSize')), if(not(empty(parameters('fslogixStorageAccountResourceId'))), format('{0} -FslogixStorageAccountKey {1}', variables('varBaseFSLogixScriptArguments'), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('fslogixStorageAccountResourceId'), '/'))), '2023-05-01').keys[0].value), format('{0}', variables('varBaseFSLogixScriptArguments')))), format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2024-04-03').value[0].token, variables('varNvidiaVmSize'))))]"
                         }
                       }
                     }
@@ -37298,7 +37735,6 @@
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('AVD-MGMT-Plane-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]",
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Zero-Trust-{0}', parameters('time')))]"
       ]
     },

@@ -159,7 +159,7 @@ var varApplicationGroups = [
     applicationGroupType: (preferredAppGroupType == 'Desktop') ? 'Desktop' : 'RemoteApp'
   }
 ]
-var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
+var varHostPoolRdpPropertiesDomainServiceCheck = contains(identityServiceProvider, 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
 var varRAppApplicationGroupsStandardApps = (preferredAppGroupType == 'RailApplications') ? [
   {
     name: 'Task Manager'
@@ -357,3 +357,5 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
     workSpace
   ]
 }
+
+output hostPoolResourceId string = hostPool.outputs.resourceId

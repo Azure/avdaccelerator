@@ -138,9 +138,6 @@ module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/rol
     subscriptionId: subscriptionId
     principalType: 'ServicePrincipal'
   }
-  dependsOn: [
-    managedIdentityStorage
-  ]
 }]
 
 // Storage File Data SMB Share Contributor
@@ -157,7 +154,7 @@ module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authoriza
 }
 
 // Virtual machine Microsoft Entra ID access roles on the compute resource group
-module aadIdentityLoginRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
+module aadIdentityLoginRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (contains(identityServiceProvider, 'EntraID') && !empty(securityPrincipalId)) {
   name: 'VM-Login-Comp-${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
   params: {
@@ -170,7 +167,7 @@ module aadIdentityLoginRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-
 }
 
 // Virtual machine Microsoft Entra ID access roles on the service objects resource group
-module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (identityServiceProvider == 'EntraID' && !empty(securityPrincipalId)) {
+module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (contains(identityServiceProvider, 'EntraID') && !empty(securityPrincipalId)) {
   name: 'VM-Login-Serv-${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   params: {
