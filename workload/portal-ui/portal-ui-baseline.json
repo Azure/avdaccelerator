@@ -2733,7 +2733,7 @@
 				"deployAvdPrivateLinkService": "[steps('network').deployAvdPrivateLinkService]",
 				"hostPoolPublicNetworkAccess": "[if(equals(steps('network').deployAvdPrivateLinkService, true), steps('network').hostPoolPrivateEndpointNetworkAccessSelector, 'Enabled')]",
 				"workspacePublicNetworkAccess": "[if(equals(steps('network').deployAvdPrivateLinkService, true), steps('network').workspacePrivateEndpointNetworkAccessSelector, 'Enabled')]",
-				"createPrivateDnsZones": "[steps('network').virtualNetworkPrivateDnsZone]",
+				"createPrivateDnsZones": "[if(or(steps('network').deployPrivateEndpointKeyvaultStorage, steps('network').deployAvdPrivateLinkService), steps('network').virtualNetworkPrivateDnsZone, false)]",
 				"avdVnetPrivateDnsZoneFilesId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.azureFilesPrivateDnsZone, '')]",
 				"avdVnetPrivateDnsZoneKeyvaultId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.azureKeyVaultPrivateDnsZone, '')]",
 				"avdVnetPrivateDnsZoneDiscoveryResourceId": "[if(and(equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.avdDiscoveryPrivateDnsZone, '')]",
