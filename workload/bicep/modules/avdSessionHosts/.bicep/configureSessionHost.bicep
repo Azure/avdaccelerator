@@ -105,7 +105,7 @@ resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09
       fileUris: array(baseScriptUri)
     }
     protectedSettings: {
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${scriptName} ${varScriptArguments}'
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command .\\${scriptName} ${varScriptArguments}'
     }
   }
 }
