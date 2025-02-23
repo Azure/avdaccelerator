@@ -109,7 +109,7 @@ var appAttachEntraIDPrincpals = [
 // =========== //
 
 // Managed identity for fslogix/App Attach
-module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = if (createStorageDeployment) {
+module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = if (createStorageDeployment && identityServiceProvider != 'EntraID') {
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   name: 'MI-Storage-${time}'
   params: {
@@ -150,7 +150,7 @@ module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/rol
 
 // Storage role assignments
 module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [
-  for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment) {
+  for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment && identityServiceProvider != 'EntraID') {
     name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
     scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
     params: {
@@ -164,7 +164,7 @@ module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/rol
 ]
 
 // Storage File Data SMB Share Contributor
-module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (createStorageDeployment && (!empty(securityPrincipalId))) {
+module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (createStorageDeployment && (!empty(securityPrincipalId)) && identityServiceProvider != 'EntraID') {
   name: 'Stora-SmbContri-RolAssign${take('${securityPrincipalId}', 6)}-${time}'
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
@@ -227,7 +227,7 @@ module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authoriza
 // =========== //
 // Outputs //
 // =========== //
-output managedIdentityStorageResourceId string = (createStorageDeployment)
+output managedIdentityStorageResourceId string = (createStorageDeployment && identityServiceProvider != 'EntraID')
   ? managedIdentityStorage.outputs.resourceId
   : ''
-output managedIdentityStorageClientId string = (createStorageDeployment) ? managedIdentityStorage.outputs.clientId : ''
+output managedIdentityStorageClientId string = (createStorageDeployment && identityServiceProvider != 'EntraID') ? managedIdentityStorage.outputs.clientId : ''

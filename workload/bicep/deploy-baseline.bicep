@@ -1322,7 +1322,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     vmLocalUserName: avdVmLocalUserName
     workloadSubsId: avdWorkloadSubsId
     encryptionAtHost: diskZeroTrust
-    storageManagedIdentityResourceId: varCreateStorageDeployment
+    storageManagedIdentityResourceId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
       ? identity.outputs.managedIdentityStorageResourceId
       : ''
     osImage: varMgmtVmSpecs.osImage
@@ -1354,7 +1354,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     managementVmName: varManagementVmName
     deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
     ouStgPath: varOuStgPath
-    managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
+    managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID' ? identity.outputs.managedIdentityStorageClientId : ''
     securityPrincipalName: varSecurityPrincipalName
     domainJoinUserName: avdDomainJoinUserName
     wrklKvName: varWrklKvName
@@ -1405,7 +1405,7 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
     managementVmName: varManagementVmName
     deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
     ouStgPath: varOuStgPath
-    managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
+    managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID' ? identity.outputs.managedIdentityStorageClientId : ''
     securityPrincipalName: varSecurityPrincipalName
     domainJoinUserName: avdDomainJoinUserName
     wrklKvName: varWrklKvName
