@@ -288,7 +288,12 @@ try {
                 $SAFQDN = $FSLogixFileShare.Split('\')[2]
                 $SAName = $SAFQDN.Split('.')[0]
                 Write-Log -Message "Adding Local Storage Account Key for '$SAFQDN' to Credential Manager" -Type 'INFO'
-                Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$SAFQDN /user:localhost\$SAName /pass:$FsLogixStorageAccountKey" -NoNewWindow -Wait
+                $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$SAFQDN /user:localhost\$SAName /pass:$FsLogixStorageAccountKey" -Wait -PassThru
+                If ($CMDKey.ExitCode -ne 0) {
+                        Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$SAFQDN' to Credential Manager" -Type 'ERROR'
+                } Else {
+                        Write-Log -Message "Successfully added Local Storage Account Key for '$SAFQDN' to Credential Manager" -Type 'INFO'
+                }
                 $Settings += @(
                         # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject
                         [PSCustomObject]@{
