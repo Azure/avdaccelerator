@@ -45,10 +45,12 @@ param hostPoolResourceId string
 // Additional parameter for screen capture functionallity -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose' powershell script will need to be updated too
 
 var varBaseScriptArguments = '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPool.listRegistrationTokens().value[0].token} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
-var varBaseFSLogixScriptArguments = '-IdentityDomainName ${identityDomainName} -FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn}'
+var varBaseFSLogixScriptArguments = '-FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn}'
 var varFSLogixScriptArguments = !empty(fslogixStorageAccountResourceId)
   ? '${varBaseFSLogixScriptArguments} -FslogixStorageAccountKey ${storageAccount.listkeys().keys[0].value}'
-  : '${varBaseFSLogixScriptArguments}'
+  : !empty(identityDomainName)
+      ? '${varBaseFSLogixScriptArguments} -IdentityDomainName ${identityDomainName}'
+      : varBaseFSLogixScriptArguments
 var varScriptArguments = fslogix ? '${varBaseScriptArguments} ${varFSLogixScriptArguments}' : varBaseScriptArguments
 
 var varAmdVmSizes = [

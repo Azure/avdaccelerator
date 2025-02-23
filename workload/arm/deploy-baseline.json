@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7119395634672660796"
+      "templateHash": "4266954974957122010"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -32845,7 +32845,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1445966829591196900"
+              "templateHash": "11810009687693628569"
             }
           },
           "parameters": {
@@ -37391,7 +37391,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "17166089153843038226"
+                      "templateHash": "6804073352228851506"
                     }
                   },
                   "parameters": {
@@ -37469,7 +37469,7 @@
                     }
                   },
                   "variables": {
-                    "varBaseFSLogixScriptArguments": "[format('-IdentityDomainName {0} -FslogixFileShare {1} -FslogixStorageFqdn {2}', parameters('identityDomainName'), parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'))]",
+                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare {0} -FslogixStorageFqdn {1}', parameters('fslogixFileShare'), parameters('fslogixStorageFqdn'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
                       "Standard_NV8as_v4",
@@ -37512,7 +37512,7 @@
                           "fileUris": "[array(parameters('baseScriptUri'))]"
                         },
                         "protectedSettings": {
-                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('scriptName'), if(parameters('fslogix'), format('{0} {1}', format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2024-04-03').value[0].token, variables('varNvidiaVmSize')), if(not(empty(parameters('fslogixStorageAccountResourceId'))), format('{0} -FslogixStorageAccountKey {1}', variables('varBaseFSLogixScriptArguments'), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('fslogixStorageAccountResourceId'), '/'))), '2023-05-01').keys[0].value), format('{0}', variables('varBaseFSLogixScriptArguments')))), format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2024-04-03').value[0].token, variables('varNvidiaVmSize'))))]"
+                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1}', parameters('scriptName'), if(parameters('fslogix'), format('{0} {1}', format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2024-04-03').value[0].token, variables('varNvidiaVmSize')), if(not(empty(parameters('fslogixStorageAccountResourceId'))), format('{0} -FslogixStorageAccountKey {1}', variables('varBaseFSLogixScriptArguments'), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('fslogixStorageAccountResourceId'), '/'))), '2023-05-01').keys[0].value), if(not(empty(parameters('identityDomainName'))), format('{0} -IdentityDomainName {1}', variables('varBaseFSLogixScriptArguments'), parameters('identityDomainName')), variables('varBaseFSLogixScriptArguments')))), format('-AmdVmSize {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken {3} -NvidiaVmSize {4} -verbose', variables('varAmdVmSize'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2024-04-03').value[0].token, variables('varNvidiaVmSize'))))]"
                         }
                       }
                     }
