@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5318903379111401798"
+      "templateHash": "7119395634672660796"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -347,7 +347,7 @@
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: \"\")"
+        "description": "Use existing Azure private DNS zone for Azure files. (Default: \"\")"
       }
     },
     "avdVnetPrivateDnsZoneKeyvaultId": {
@@ -26888,27 +26888,13 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "17274888972933861990"
+              "templateHash": "1078178153470490340"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
-            "avdServicePrincipalObjectId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Azure Virtual Desktop service principal Id"
-              }
-            },
-            "avdArmServicePrincipalObjectId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Azure Virtual Desktop ARM service principal Id"
-              }
-            },
             "workloadSubsId": {
               "type": "string",
               "metadata": {
@@ -29776,12 +29762,6 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "avdServicePrincipalObjectId": {
-            "value": "[parameters('avdServicePrincipalObjectId')]"
-          },
-          "avdArmServicePrincipalObjectId": {
-            "value": "[parameters('avdArmServicePrincipalObjectId')]"
-          },
           "storagePurpose": {
             "value": "AppAttach"
           },
@@ -29867,27 +29847,13 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "17274888972933861990"
+              "templateHash": "1078178153470490340"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
-            "avdServicePrincipalObjectId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Azure Virtual Desktop service principal Id"
-              }
-            },
-            "avdArmServicePrincipalObjectId": {
-              "type": "string",
-              "defaultValue": "",
-              "metadata": {
-                "description": "Azure Virtual Desktop ARM service principal Id"
-              }
-            },
             "workloadSubsId": {
               "type": "string",
               "metadata": {

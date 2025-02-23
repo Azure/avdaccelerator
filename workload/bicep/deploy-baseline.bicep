@@ -177,7 +177,7 @@ param avdVnetPrivateDnsZoneConnectionResourceId string = ''
 @sys.description('The ResourceID of the AVD Private DNS Zone for Discovery. (privatelink-global.wvd.azure.com). Only required if createPrivateDNSZones is set to false.')
 param avdVnetPrivateDnsZoneDiscoveryResourceId string = ''
 
-@sys.description('Use existing Azure private DNS zone for Azure files privatelink.file.core.windows.net or privatelink.file.core.usgovcloudapi.net. (Default: "")')
+@sys.description('Use existing Azure private DNS zone for Azure files. (Default: "")')
 param avdVnetPrivateDnsZoneFilesId string = ''
 
 @sys.description('Use existing Azure private DNS zone for key vault privatelink.vaultcore.azure.net or privatelink.vaultcore.usgovcloudapi.net. (Default: "")')
@@ -1389,8 +1389,6 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
 module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateAppAttachDeployment) {
   name: 'Storage-AppA-${time}'
   params: {
-    avdServicePrincipalObjectId: avdServicePrincipalObjectId
-    avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
     storagePurpose: 'AppAttach'
     vmLocalUserName: avdVmLocalUserName
     fileShareName: varAppAttachFileShareName

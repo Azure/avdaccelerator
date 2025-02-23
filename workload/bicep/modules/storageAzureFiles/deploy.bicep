@@ -8,12 +8,6 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@sys.description('Azure Virtual Desktop service principal Id')
-param avdServicePrincipalObjectId string = ''
-
-@sys.description('Azure Virtual Desktop ARM service principal Id')
-param avdArmServicePrincipalObjectId string = ''
-
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
