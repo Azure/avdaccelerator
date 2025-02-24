@@ -93,6 +93,9 @@ param domainJoinPasswordSecretName string = 'domainJoinUserPassword'
 @sys.description('Enables accelerated Networking on the session hosts. (Default: true)')
 param enableAcceleratedNetworking bool = true
 
+@sys.description('The resource ID of the Azure Files storage account. (Default: "")')
+param fslogixStorageAccountResourceId string = ''
+
 @sys.description('FSLogix storage account name. (Default: )')
 param fslogixStorageAccountName string = ''
 
@@ -214,8 +217,12 @@ param deployAntiMalwareExt bool = true
 // =========== //
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
-var varDeploymentEnvironmentComputeStorage = (deploymentEnvironment == 'Dev') ? 'd' : ((deploymentEnvironment == 'Test') ? 't' : ((deploymentEnvironment == 'Prod') ? 'p' : ''))
-var varSessionHostNamePrefix = customNaming ? sessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
+var varDeploymentEnvironmentComputeStorage = (deploymentEnvironment == 'Dev')
+  ? 'd'
+  : ((deploymentEnvironment == 'Test') ? 't' : ((deploymentEnvironment == 'Prod') ? 'p' : ''))
+var varSessionHostNamePrefix = customNaming
+  ? sessionHostCustomNamePrefix
+  : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 var varLocations = loadJsonContent('../../../variables/locations.json')
 var varMarketPlaceGalleryWindows = loadJsonContent('../../../variables/osMarketPlaceImages.json')
 var varTimeZoneSessionHosts = varLocations[varSessionHostLocationLowercase].timeZone
@@ -225,17 +232,22 @@ var varHostpoolRgName = split(hostPoolResourceId, '/')[4]
 var varHostPoolName = split(hostPoolResourceId, '/')[8]
 var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
-var varKeyVaultName = split(keyVaultResourceId, '/')[8]
-var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
-  storageAccountType: diskType
-} : {
-  diskEncryptionSet: {
-    id: diskEncryptionSetResourceId
-  }
-  storageAccountType: diskType
-}
-var varFslogixStorageFqdn = configureFslogix ? '${fslogixStorageAccountName}.file.${environment().suffixes.storage}' : ''
-var varFslogixSharePath = configureFslogix ? '\\\\${fslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}' : ''
+var varManagedDisk = empty(diskEncryptionSetResourceId)
+  ? {
+      storageAccountType: diskType
+    }
+  : {
+      diskEncryptionSet: {
+        id: diskEncryptionSetResourceId
+      }
+      storageAccountType: diskType
+    }
+var varFslogixStorageFqdn = configureFslogix
+  ? '${fslogixStorageAccountName}.file.${environment().suffixes.storage}'
+  : ''
+var varFslogixSharePath = configureFslogix
+  ? '\\\\${fslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}'
+  : ''
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
@@ -245,18 +257,20 @@ var varAvdDefaultTags = {
   ServiceWorkload: 'AVD'
   CreationTimeUTC: time
 }
-var varCustomResourceTags = createResourceTags ? {
-  WorkloadName: workloadNameTag
-  WorkloadType: workloadTypeTag
-  DataClassification: dataClassificationTag
-  Department: departmentTag
-  Criticality: (workloadCriticalityTag == 'Custom') ? workloadCriticalityCustomValueTag : workloadCriticalityTag
-  ApplicationName: applicationNameTag
-  ServiceClass: workloadSlaTag
-  OpsTeam: opsTeamTag
-  Owner: ownerTag
-  CostCenter: costCenterTag
-} : {}
+var varCustomResourceTags = createResourceTags
+  ? {
+      WorkloadName: workloadNameTag
+      WorkloadType: workloadTypeTag
+      DataClassification: dataClassificationTag
+      Department: departmentTag
+      Criticality: (workloadCriticalityTag == 'Custom') ? workloadCriticalityCustomValueTag : workloadCriticalityTag
+      ApplicationName: applicationNameTag
+      ServiceClass: workloadSlaTag
+      OpsTeam: opsTeamTag
+      Owner: ownerTag
+      CostCenter: costCenterTag
+    }
+  : {}
 // =========== //
 // Deployments //
 // =========== //
@@ -276,13 +290,23 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     friendlyName: hostPoolGet.properties.friendlyName
     location: hostPoolGet.location
     keyVaultResourceId: keyVaultResourceId
-    hostPoolType: (hostPoolGet.properties.hostPoolType == 'Personal') ? 'Personal' : (hostPoolGet.properties.hostPoolType == 'Pooled') ? 'Pooled' : null
+    hostPoolType: (hostPoolGet.properties.hostPoolType == 'Personal')
+      ? 'Personal'
+      : (hostPoolGet.properties.hostPoolType == 'Pooled') ? 'Pooled' : null
     startVMOnConnect: hostPoolGet.properties.startVMOnConnect
     customRdpProperty: hostPoolGet.properties.customRdpProperty
-    loadBalancerType: (hostPoolGet.properties.loadBalancerType == 'BreadthFirst') ? 'BreadthFirst' : (hostPoolGet.properties.loadBalancerType == 'DepthFirst') ? 'DepthFirst' : (hostPoolGet.properties.loadBalancerType == 'Persistent') ? 'Persistent': null
+    loadBalancerType: (hostPoolGet.properties.loadBalancerType == 'BreadthFirst')
+      ? 'BreadthFirst'
+      : (hostPoolGet.properties.loadBalancerType == 'DepthFirst')
+          ? 'DepthFirst'
+          : (hostPoolGet.properties.loadBalancerType == 'Persistent') ? 'Persistent' : null
     maxSessionLimit: hostPoolGet.properties.maxSessionLimit
-    preferredAppGroupType: (hostPoolGet.properties.preferredAppGroupType == 'Desktop') ? 'Desktop' : (hostPoolGet.properties.preferredAppGroupType == 'RailApplications') ? 'RailApplications' : null
-    personalDesktopAssignmentType: (hostPoolGet.properties.personalDesktopAssignmentType == 'Automatic') ? 'Automatic' : (hostPoolGet.properties.personalDesktopAssignmentType == 'Direct') ? 'Direct' : null
+    preferredAppGroupType: (hostPoolGet.properties.preferredAppGroupType == 'Desktop')
+      ? 'Desktop'
+      : (hostPoolGet.properties.preferredAppGroupType == 'RailApplications') ? 'RailApplications' : null
+    personalDesktopAssignmentType: (hostPoolGet.properties.personalDesktopAssignmentType == 'Automatic')
+      ? 'Automatic'
+      : (hostPoolGet.properties.personalDesktopAssignmentType == 'Direct') ? 'Direct' : null
     description: hostPoolGet.properties.description
     ssoadfsAuthority: hostPoolGet.properties.ssoadfsAuthority
     ssoClientId: hostPoolGet.properties.ssoClientId
@@ -308,179 +332,202 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 
 // Session hosts
 @batchSize(3)
-module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
-  name: 'SH-${i - 1}-${time}'
-  params: {
-    name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    location: location
-    timeZone: varTimeZoneSessionHosts
-    zone: useAvailabilityZones ? (i % 3 + 1) : 0
-    managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
-      systemAssigned: true
-  }: null
-    encryptionAtHost: diskZeroTrust
-    //virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
-    osType: 'Windows'
-    licenseType: 'Windows_Client'
-    vmSize: vmSize
-    securityType: (securityType == 'Standard') ? '' : securityType
-    secureBootEnabled: secureBootEnabled
-    vTpmEnabled: vTpmEnabled
-    imageReference: useSharedImage ? json('{\'id\': \'${customImageDefinitionId}\'}') : varMarketPlaceGalleryWindows[osImage]
-    osDisk: {
-      createOption: 'FromImage'
-      deleteOption: 'Delete'
-      caching: 'ReadWrite'
-      managedDisk: varManagedDisk
-    }
-    adminUsername: vmLocalUserName
-    adminPassword: keyVault.getSecret(vmLocalAdminPasswordSecretName)
-    nicConfigurations: [
-      {
-        name: 'nic-01-${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [
+  for i in range(1, count): {
+    scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
+    name: 'SH-${i - 1}-${time}'
+    params: {
+      name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+      location: location
+      timeZone: varTimeZoneSessionHosts
+      zone: useAvailabilityZones ? (i % 3 + 1) : 0
+      managedIdentities: contains(identityServiceProvider, 'EntraID') || deployMonitoring
+        ? {
+            systemAssigned: true
+          }
+        : null
+      encryptionAtHost: diskZeroTrust
+      //virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
+      osType: 'Windows'
+      licenseType: 'Windows_Client'
+      vmSize: vmSize
+      securityType: (securityType == 'Standard') ? '' : securityType
+      secureBootEnabled: secureBootEnabled
+      vTpmEnabled: vTpmEnabled
+      imageReference: useSharedImage
+        ? json('{\'id\': \'${customImageDefinitionId}\'}')
+        : varMarketPlaceGalleryWindows[osImage]
+      osDisk: {
+        createOption: 'FromImage'
         deleteOption: 'Delete'
-        enableAcceleratedNetworking: enableAcceleratedNetworking
-        ipConfigurations: !empty(asgResourceId) ? [
-          {
-            name: 'ipconfig01'
-            subnetResourceId: subnetResourceId
-            applicationSecurityGroups: [
-              {
-                id: asgResourceId
-              }
-            ]
-          }
-        ] : [
-          {
-            name: 'ipconfig01'
-            subnetResourceId: subnetResourceId
-          }
-        ]
+        caching: 'ReadWrite'
+        managedDisk: varManagedDisk
       }
+      adminUsername: vmLocalUserName
+      adminPassword: keyVault.getSecret(vmLocalAdminPasswordSecretName)
+      nicConfigurations: [
+        {
+          name: 'nic-01-${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+          deleteOption: 'Delete'
+          enableAcceleratedNetworking: enableAcceleratedNetworking
+          ipConfigurations: !empty(asgResourceId)
+            ? [
+                {
+                  name: 'ipconfig01'
+                  subnetResourceId: subnetResourceId
+                  applicationSecurityGroups: [
+                    {
+                      id: asgResourceId
+                    }
+                  ]
+                }
+              ]
+            : [
+                {
+                  name: 'ipconfig01'
+                  subnetResourceId: subnetResourceId
+                }
+              ]
+        }
+      ]
+      // ADDS or EntraDS domain join.
+      extensionDomainJoinPassword: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'EntraDS')
+        ? keyVault.getSecret(domainJoinPasswordSecretName)
+        : 'domainJoinUserPassword'
+      extensionDomainJoinConfig: {
+        enabled: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'EntraDS') ? true : false
+        settings: {
+          name: identityDomainName
+          ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+          user: domainJoinUserName
+          restart: 'true'
+          options: '3'
+        }
+      }
+      // Microsoft Entra ID Join.
+      extensionAadJoinConfig: {
+        enabled: contains(identityServiceProvider, 'EntraID') ? true : false
+        settings: createIntuneEnrollment
+          ? {
+              mdmId: '0000000a-0000-0000-c000-000000000000'
+            }
+          : {}
+      }
+      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    }
+    dependsOn: [
+      keyVault
     ]
-    // ADDS or EntraDS domain join.
-    extensionDomainJoinPassword: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'EntraDS') ? keyVault.getSecret(domainJoinPasswordSecretName) : 'domainJoinUserPassword'
-    extensionDomainJoinConfig: {
-      enabled: (identityServiceProvider == 'ADDS' || identityServiceProvider == 'EntraDS') ? true : false
-      settings: {
-        name: identityDomainName
-        ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
-        user: domainJoinUserName
-        restart: 'true'
-        options: '3'
-      }
-    }
-    // Microsoft Entra ID Join.
-    extensionAadJoinConfig: {
-      enabled: (identityServiceProvider == 'EntraID') ? true : false
-      settings: createIntuneEnrollment ? {
-        mdmId: '0000000a-0000-0000-c000-000000000000'
-      } : {}
-    }
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
-  dependsOn: [
-    keyVault
-  ]
-}]
+]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
-  name: 'SH-Antimal-${i - 1}-${time}'
-  params: {
-    location: location
-    virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    name: 'MicrosoftAntiMalware'
-    publisher: 'Microsoft.Azure.Security'
-    type: 'IaaSAntimalware'
-    typeHandlerVersion: '1.3'
-    autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: false
-    settings: {
-      AntimalwareEnabled: true
-      RealtimeProtectionEnabled: 'true'
-      ScheduledScanSettings: {
-        isEnabled: 'true'
-        day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
-        time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
-        scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
+  for i in range(1, count): if (deployAntiMalwareExt) {
+    scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
+    name: 'SH-Antimal-${i - 1}-${time}'
+    params: {
+      location: location
+      virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+      name: 'MicrosoftAntiMalware'
+      publisher: 'Microsoft.Azure.Security'
+      type: 'IaaSAntimalware'
+      typeHandlerVersion: '1.3'
+      autoUpgradeMinorVersion: true
+      enableAutomaticUpgrade: false
+      settings: {
+        AntimalwareEnabled: true
+        RealtimeProtectionEnabled: 'true'
+        ScheduledScanSettings: {
+          isEnabled: 'true'
+          day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+          time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+          scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
+        }
+        Exclusions: configureFslogix
+          ? {
+              Extensions: '*.vhd;*.vhdx'
+              Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${varFslogixSharePath}\\*\\*.VHD;${varFslogixSharePath}\\*\\*.VHDX'
+              Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+            }
+          : {}
       }
-      Exclusions: configureFslogix ? {
-        Extensions: '*.vhd;*.vhdx'
-        Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${varFslogixSharePath}\\*\\*.VHD;${varFslogixSharePath}\\*\\*.VHDX'
-        Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-      } : {}
     }
+    dependsOn: [
+      sessionHosts
+    ]
   }
-  dependsOn: [
-    sessionHosts
-  ]
-}]
+]
 
 // Add monitoring extension to session host
-module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
-  name: 'SH-Mon-${i - 1}-${time}'
-  params: {
-    location: location
-    virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    name: 'AzureMonitorWindowsAgent'
-    publisher: 'Microsoft.Azure.Monitor'
-    type: 'AzureMonitorWindowsAgent'
-    typeHandlerVersion: '1.0'
-    autoUpgradeMinorVersion: true
-    enableAutomaticUpgrade: true
-    settings: {
-      workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
-    }
-    protectedSettings: {
+module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
+  for i in range(1, count): if (deployMonitoring) {
+    scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
+    name: 'SH-Mon-${i - 1}-${time}'
+    params: {
+      location: location
+      virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+      name: 'AzureMonitorWindowsAgent'
+      publisher: 'Microsoft.Azure.Monitor'
+      type: 'AzureMonitorWindowsAgent'
+      typeHandlerVersion: '1.0'
+      autoUpgradeMinorVersion: true
+      enableAutomaticUpgrade: true
+      settings: {
+        workspaceId: !empty(alaWorkspaceResourceId)
+          ? alaWorkspace.id
+          : ''
+      }
+      protectedSettings: {
         workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
+      }
     }
+    dependsOn: [
+      sessionHostsAntimalwareExtension
+      alaWorkspace
+    ]
   }
-  dependsOn: [
-    sessionHostsAntimalwareExtension
-    alaWorkspace
-  ]
-}]
+]
 
 // Data collection rule association
-module dataCollectionRuleAssociation '../..//modules/avdSessionHosts/.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
-  name: 'DCR-Asso-${i - 1}-${time}'
-  params: {
+module dataCollectionRuleAssociation '../..//modules/avdSessionHosts/.bicep/dataCollectionRulesAssociation.bicep' = [
+  for i in range(1, count): if (deployMonitoring) {
+    scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
+    name: 'DCR-Asso-${i - 1}-${time}'
+    params: {
       virtualMachineName: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
       dataCollectionRuleId: dataCollectionRuleId
-  }
-  dependsOn: [
+    }
+    dependsOn: [
       monitoring
       sessionHostsAntimalwareExtension
       alaWorkspace
-  ]
-}]
-
+    ]
+  }
+]
 
 // Apply AVD session host configurations
-module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
-  scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
-  name: 'SH-Config-${i}-${time}'
-  params: {
-    location: location
-    name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
-    hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
-    baseScriptUri: varSessionHostConfigurationScriptUri
-    scriptName: varSessionHostConfigurationScript
-    fslogix: configureFslogix
-    identityDomainName: identityDomainName
-    vmSize: vmSize
-    fslogixFileShare: varFslogixSharePath
-    fslogixStorageFqdn: varFslogixStorageFqdn
-    identityServiceProvider: identityServiceProvider
+module sessionHostConfiguration '../../modules/avdSessionHosts/.bicep/configureSessionHost.bicep' = [
+  for i in range(1, count): {
+    scope: resourceGroup('${computeSubscriptionId}', '${computeRgResourceGroupName}')
+    name: 'SH-Config-${i}-${time}'
+    params: {
+      location: location
+      name: '${varSessionHostNamePrefix}${padLeft((i + countIndex), 4, '0')}'
+      fslogixStorageAccountResourceId: configureFslogix && identityServiceProvider == 'EntraID' ? fslogixStorageAccountResourceId : ''
+      hostPoolResourceId: hostPool.outputs.resourceId
+      baseScriptUri: varSessionHostConfigurationScriptUri
+      scriptName: varSessionHostConfigurationScript
+      fslogix: configureFslogix
+      identityDomainName: identityDomainName
+      vmSize: vmSize
+      fslogixFileShare: varFslogixSharePath
+      fslogixStorageFqdn: varFslogixStorageFqdn
+      identityServiceProvider: identityServiceProvider
+    }
+    dependsOn: [
+      sessionHosts
+      monitoring
+    ]
   }
-  dependsOn: [
-    sessionHosts
-    monitoring
-    hostPool
-  ]
-}]
+]

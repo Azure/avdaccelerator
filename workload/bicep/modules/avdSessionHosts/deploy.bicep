@@ -115,6 +115,12 @@ param fslogixSharePath string
 @sys.description('FSLogix storage account FDQN.')
 param fslogixStorageFqdn string
 
+@sys.description('FSLogix storage account resource ID.')
+param fslogixStorageAccountResourceId string
+
+@sys.description('Host pool resource ID.')
+param hostPoolResourceId string
+
 @sys.description('URI for AVD session host configuration script URI.')
 param sessionHostConfigurationScriptUri string
 
@@ -182,7 +188,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         location: location
         timeZone: timeZone
         zone: useAvailabilityZones ? (i % 3 + 1) : 0
-        managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
+        managedIdentities: contains(identityServiceProvider, 'EntraID') || deployMonitoring ? {
             systemAssigned: true
         }: null
         encryptionAtHost: encryptionAtHost
@@ -235,7 +241,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         }
         // Microsoft Entra ID Join.
         extensionAadJoinConfig: {
-            enabled: (identityServiceProvider == 'EntraID') ? true : false
+            enabled: contains(identityServiceProvider, 'EntraID') ? true : false
             settings: createIntuneEnrollment ? {
                mdmId: '0000000a-0000-0000-c000-000000000000'
             } : {}
@@ -301,7 +307,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: true
         settings: {
-            workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
+            workspaceId: !empty(alaWorkspaceResourceId) ? alaWorkspace.properties.customerId : ''
         }
         protectedSettings: {
             workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
@@ -309,7 +315,6 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
     }
     dependsOn: [
         sessionHostsAntimalwareExtension
-        alaWorkspace
     ]
 }]
 
@@ -335,12 +340,13 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        hostPoolResourceId: hostPoolResourceId
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
         fslogix: createAvdFslogixDeployment
         identityDomainName: identityDomainName
         vmSize: vmSize
+        fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
         fslogixFileShare: fslogixSharePath
         fslogixStorageFqdn: fslogixStorageFqdn
         identityServiceProvider: identityServiceProvider
