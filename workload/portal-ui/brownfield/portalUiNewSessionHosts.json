@@ -42,16 +42,8 @@
 									"toolTip": "The name of the resource group to deploy. (Default: AVD1)",
 									"constraints": {
 										"required": true,
-										"validations": [
-											{
-												"isValid": "[or(or(empty(steps('basics').deploymentPrefix),and(not(startsWith(steps('basics').deploymentPrefix,'[[')),startsWith(steps('basics').deploymentPrefix,'['),endsWith(steps('basics').deploymentPrefix,']'),greater(indexOf(steps('basics').deploymentPrefix,'('),-1),greater(indexOf(steps('basics').deploymentPrefix,')'),-1))),greaterOrEquals(length(steps('basics').deploymentPrefix),2))]",
-												"message": "The value must have a length of at least 2."
-											},
-											{
-												"isValid": "[or(or(empty(steps('basics').deploymentPrefix),and(not(startsWith(steps('basics').deploymentPrefix,'[[')),startsWith(steps('basics').deploymentPrefix,'['),endsWith(steps('basics').deploymentPrefix,']'),greater(indexOf(steps('basics').deploymentPrefix,'('),-1),greater(indexOf(steps('basics').deploymentPrefix,')'),-1))),lessOrEquals(length(steps('basics').deploymentPrefix),4))]",
-												"message": "The value must have a length of at most 4."
-											}
-										]
+										"regex": "^(?!-)[a-zA-Z0-9-]{1,2}a-zA-Z0-9$",
+										"validationMessage": "The prefix can be 2-4 aphanumeric characters and hyphens but not the first or last characters."
 									}
 								},
 								{
