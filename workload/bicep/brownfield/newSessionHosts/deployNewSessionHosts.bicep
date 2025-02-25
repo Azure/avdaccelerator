@@ -226,7 +226,7 @@ var varManagedDisk = empty(diskEncryptionSetResourceId)
 var varFslogixSharePath = configureFslogix
   ? '\\\\${last(split(fslogixStorageAccountResourceId, '/'))}.file.${environment().suffixes.storage}\\${fslogixFileShareName}'
   : ''
-var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/shawntmeyer/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
 var varAvdDefaultTags = {
@@ -266,7 +266,7 @@ resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' exis
 
 // Hostpool update
 module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
-  scope: resourceGroup(split(hostPoolResourceId, '/')[2], split(hostPoolResourceId, '/')[4])
+  scope: resourceGroup(split(hostPoolResourceId, '/')[4])
   name: 'HostPool-${time}'
   params: {
     name: hostPoolGet.name
@@ -330,7 +330,6 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
           }
         : null
       encryptionAtHost: encryptionAtHost
-      //virtualMachineScaleSetResourceId: !empty(virtualMachineScaleSetResourceId) ? virtualMachineScaleSetResourceId : ''
       osType: 'Windows'
       licenseType: 'Windows_Client'
       vmSize: vmSize

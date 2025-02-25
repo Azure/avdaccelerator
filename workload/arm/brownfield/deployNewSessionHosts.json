@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "6888479864066172791"
+      "templateHash": "6216966737346152420"
     }
   },
   "parameters": {
@@ -699,7 +699,7 @@
     "varSessionHostLocationLowercase": "[toLower(replace(parameters('location'), ' ', ''))]",
     "varManagedDisk": "[if(empty(parameters('diskEncryptionSetResourceId')), createObject('storageAccountType', parameters('diskType')), createObject('diskEncryptionSet', createObject('id', parameters('diskEncryptionSetResourceId')), 'storageAccountType', parameters('diskType')))]",
     "varFslogixSharePath": "[if(parameters('configureFslogix'), format('\\\\{0}.file.{1}\\{2}', last(split(parameters('fslogixStorageAccountResourceId'), '/')), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/shawntmeyer/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "Set-SessionHostConfiguration.ps1",
     "varAvdDefaultTags": {
@@ -716,7 +716,6 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('HostPool-{0}', parameters('time'))]",
-      "subscriptionId": "[split(parameters('hostPoolResourceId'), '/')[2]]",
       "resourceGroup": "[split(parameters('hostPoolResourceId'), '/')[4]]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -6522,7 +6521,7 @@
           },
           "fslogixStorageAccountResourceId": "[if(parameters('configureFslogix'), createObject('value', parameters('fslogixStorageAccountResourceId')), createObject('value', ''))]",
           "hostPoolResourceId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hostPoolResourceId'), '/')[2], split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
           },
           "baseScriptUri": {
             "value": "[variables('varSessionHostConfigurationScriptUri')]"
@@ -6675,7 +6674,7 @@
         }
       },
       "dependsOn": [
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('hostPoolResourceId'), '/')[2], split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time')))]",
         "monitoring",
         "sessionHosts"
       ]
