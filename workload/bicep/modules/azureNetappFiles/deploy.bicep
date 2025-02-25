@@ -8,8 +8,8 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+@sys.description('Workload subscription ID')
+param subId string
 
 @sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
@@ -106,12 +106,12 @@ param ouStgPath string = ''
 // Call on the KV.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
     name: wrklKvName
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+    scope: resourceGroup('${subId}', '${serviceObjectsRgName}')
 }
 
 // Provision the Azure NetApp Files.
 module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
+    scope: resourceGroup('${subId}', '${storageObjectsRgName}')
     name: 'Storage-${storagePurpose}-${time}'
     params: {
         name: anfAccountName
@@ -123,7 +123,7 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
         // customerManagedKey: *************
         //smbServerNamePrefix: ***************
         domainJoinUser: domainJoinUserName
-        domainJoinPassword: avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
+        domainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         domainJoinOU: ouStgPath
         capacityPools:[
             {
