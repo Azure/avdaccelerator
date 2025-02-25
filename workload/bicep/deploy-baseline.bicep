@@ -1400,7 +1400,7 @@ module anf './modules/azureNetappFiles/deploy.bicep' = if (createFslogixDeployme
     anfAccountName: varAnfAccountName
     anfCapacityPoolName: anfCapacityPoolName
     anfVolumeName: varFslogixFileShareName
-    dnsServers: ********************
+    dnsServers: customDnsIps
     volumeSize: fslogixFileShareQuotaSize
     anfPerformance: anfPerformance
     anfSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAnfSubnetName}' : existingVnetAnfSubnetResourceId

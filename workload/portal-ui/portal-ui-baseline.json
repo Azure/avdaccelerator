@@ -1204,11 +1204,12 @@
                             "name": "virtualNetworkDns",
                             "type": "Microsoft.Common.TextBox",
                             "visible": "[and(steps('network').createAvdVirtualNetwork, not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')))]",
-                            "label": "Custom DNS servers",
+                            "label": "DNS servers",
                             "defaultValue": "",
                             "placeholder": "Example: 10.10.100.4,10.10.100.5",
                             "toolTip": "Enter multiple IPs separated by a comma, if not provided Azure provided DNS will be used. Azure default DNS server (168.63.129.16) will be added as a last resort.",
                             "constraints": {
+                                "required": true,
                                 "regex": ""
                             }
                         },
