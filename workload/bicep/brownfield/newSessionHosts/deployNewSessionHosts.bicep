@@ -261,7 +261,7 @@ var varZones = [for zone in availabilityZones: int(zone)]
 // Call on the hotspool
 resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
   name: last(split(hostPoolResourceId, '/'))
-  scope: resourceGroup(split(hostPoolResourceId, '/')[2], split(hostPoolResourceId, '/')[4])
+  scope: resourceGroup(split(hostPoolResourceId, '/')[4])
 }
 
 // Hostpool update
