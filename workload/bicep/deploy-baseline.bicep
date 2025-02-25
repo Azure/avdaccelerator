@@ -1393,7 +1393,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
 }
 
 // FSLogix Azure NetApp Files
-module anf './modules/anf/deploy.bicep' = if (createFslogixDeployment && (smbStorageType == 'ANF')) {
+module anf './modules/azureNetappFiles/deploy.bicep' = if (createFslogixDeployment && (smbStorageType == 'ANF')) {
   name: 'Storage-FSLogix-${time}'
   params: {
     storagePurpose: 'fslogix'
