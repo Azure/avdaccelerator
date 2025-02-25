@@ -946,7 +946,7 @@
 				"vmSize": "[steps('virtualMachines').settings.vmSize]",
 				"enableAcceleratedNetworking": "[steps('virtualMachines').settings.enableAcceleratedNetworking]",
 				"availability": "[steps('virtualMachines').availability.option]",
-				"AvailabilityZones": "[if(equals(steps('virtualMachines').availability.option, 'AvailabilityZones'), steps('virtualMachines').availability.availabilityZones, parse('[]'))]",
+				"availabilityZones": "[if(equals(steps('virtualMachines').availability.option, 'AvailabilityZones'), steps('virtualMachines').availability.availabilityZones, parse('[]'))]",
 				"useSharedImage": "[if(equals(steps('virtualMachines').image.source, 'computegallery'), true, false)]",
 				"mpImageOffer": "[if(equals(steps('virtualMachines').image.source, 'marketplace'), steps('virtualMachines').image.offer, '')]",
 				"mpImageSku": "[if(equals(steps('virtualMachines').image.source, 'marketplace'), steps('virtualMachines').image.sku, '')]",

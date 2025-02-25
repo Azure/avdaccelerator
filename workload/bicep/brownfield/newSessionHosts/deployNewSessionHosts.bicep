@@ -60,7 +60,7 @@ param availability string = 'None'
   '2'
   '3'
 ])
-param availabilityZones array = []
+param availabilityZones array = ['1','2','3']
 
 @sys.description('Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
