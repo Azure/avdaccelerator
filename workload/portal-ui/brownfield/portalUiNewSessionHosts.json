@@ -804,7 +804,7 @@
 							"toolTip": "Team accountable for day-to-day operations.",
 							"constraints": {
 								"required": false,
-								"regex": "^[\\w\\s\\.\\-]{1,256}$",
+								"regex": "^(?![@.\\-_])[a-zA-Z0-9@.\\-_]{1,254}(?<![@.\\-_])$",
 								"validationMessage": "A valid tag value must be provided"
 							},
 							"visible": "[steps('tags').createResourceTags]"
@@ -817,7 +817,7 @@
 							"toolTip": "Organizational owner of the AVD deployment.",
 							"constraints": {
 								"required": false,
-								"regex": "^[\\w\\s\\.\\-]{1,256}$",
+								"regex": "^(?![@.\\-_])[a-zA-Z0-9@.\\-_]{1,254}(?<![@.\\-_])$",
 								"validationMessage": "A valid tag value must be provided"
 							},
 							"visible": "[steps('tags').createResourceTags]"
