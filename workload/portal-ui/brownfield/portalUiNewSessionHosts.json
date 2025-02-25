@@ -42,8 +42,8 @@
 									"toolTip": "The name of the resource group to deploy. (Default: AVD1)",
 									"constraints": {
 										"required": true,
-										"regex": "^(?!-)[a-zA-Z0-9-]{1,2}a-zA-Z0-9$",
-										"validationMessage": "The prefix can be 2-4 aphanumeric characters and hyphens but not the first or last characters."
+										"regex": "^[a-zA-Z0-9]{2,4}$",
+										"validationMessage": "The prefix can be 2-4 aphanumeric characters."
 									}
 								},
 								{
