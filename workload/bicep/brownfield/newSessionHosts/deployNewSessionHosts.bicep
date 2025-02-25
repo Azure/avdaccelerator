@@ -304,7 +304,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
   name: last(split(keyVaultResourceId, '/'))
-  scope: resourceGroup(split(keyVaultResourceId, '/')[2], split(keyVaultResourceId, '/')[4])
+  scope: resourceGroup(split(keyVaultResourceId, '/')[4])
 }
 
 // Call to the ALA workspace
