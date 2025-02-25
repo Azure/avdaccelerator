@@ -26,11 +26,8 @@ param fslogix bool
 @sys.description('FSLogix storage account resource ID.')
 param fslogixStorageAccountResourceId string
 
-@sys.description('File share path for FSlogix storage.')
-param fslogixFileShare string
-
-@sys.description('FSLogix storage account FDQN.')
-param fslogixStorageFqdn string
+@sys.description('File share name for FSlogix storage.')
+param fslogixFileShareName string
 
 @sys.description('Session host VM size.')
 param vmSize string
@@ -44,11 +41,15 @@ param hostPoolResourceId string
 // var ScreenCaptureProtection = true
 // Additional parameter for screen capture functionallity -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose' powershell script will need to be updated too
 
+var fslogixFileShare = fslogix
+  ? '${storageAccount.properties.primaryEndpoints.file}${fslogixFileShareName}'
+  : ''
+
 var varBaseScriptArguments = '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPool.listRegistrationTokens().value[0].token} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
-var varBaseFSLogixScriptArguments = '-FslogixFileShare ${fslogixFileShare} -FslogixStorageFqdn ${fslogixStorageFqdn}'
-var varFSLogixScriptArguments = !empty(fslogixStorageAccountResourceId)
+var varBaseFSLogixScriptArguments = '-FslogixFileShare ${fslogixFileShare}'
+var varFSLogixScriptArguments = identityServiceProvider == 'EntraID'
   ? '${varBaseFSLogixScriptArguments} -FslogixStorageAccountKey ${storageAccount.listkeys().keys[0].value}'
-  : !empty(identityDomainName)
+  : identityServiceProvider == 'EntraIDKerberos'
       ? '${varBaseFSLogixScriptArguments} -IdentityDomainName ${identityDomainName}'
       : varBaseFSLogixScriptArguments
 var varScriptArguments = fslogix ? '${varBaseScriptArguments} ${varFSLogixScriptArguments}' : varBaseScriptArguments

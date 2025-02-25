@@ -25,9 +25,6 @@ param namePrefix string
 @sys.description('Resource Group name for the session hosts.')
 param computeObjectsRgName string
 
-@sys.description('Name of AVD service objects RG.')
-param serviceObjectsRgName string
-
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
@@ -45,6 +42,9 @@ param countIndex int
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true).')
 param useAvailabilityZones bool
+
+@sys.description('Defines the Availability Zones for the VMs.')
+param availabilityZones array = []
 
 // @sys.description('VMSS flex name.')
 // param vmssFlexNamePrefix string
@@ -91,8 +91,8 @@ param avdImageTemplateDefinitionId string
 @sys.description('Local administrator username.')
 param vmLocalUserName string
 
-@sys.description('Name of keyvault that contains credentials.')
-param wrklKvName string
+@sys.description('The Resource ID of keyvault that contains credentials.')
+param wrklKvResourceId string
 
 @sys.description('Identity domain name.')
 param identityDomainName string
@@ -111,9 +111,6 @@ param createAvdFslogixDeployment bool
 
 @sys.description('Path for the FSlogix share.')
 param fslogixSharePath string
-
-@sys.description('FSLogix storage account FDQN.')
-param fslogixStorageFqdn string
 
 @sys.description('FSLogix storage account resource ID.')
 param fslogixStorageAccountResourceId string
@@ -169,14 +166,16 @@ var varCustomOsDiskProperties = {
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
 }
 
+var zones = [for zone in availabilityZones: int(replace(zone, 'Zone ', ''))]
+
 // =========== //
 // Deployments //
 // =========== //
 
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-    name: wrklKvName
-    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+    name: last(split(wrklKvResourceId, '/'))
+    scope: resourceGroup(wrklKvResourceId)
 }
 
 // Session hosts
@@ -187,7 +186,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        zone: useAvailabilityZones ? (i % 3 + 1) : 0
+        zone: useAvailabilityZones ? zones[(i-1) % length(zones)] : 0
         managedIdentities: contains(identityServiceProvider, 'EntraID') || deployMonitoring ? {
             systemAssigned: true
         }: null
@@ -347,8 +346,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
         identityDomainName: identityDomainName
         vmSize: vmSize
         fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
-        fslogixFileShare: fslogixSharePath
-        fslogixStorageFqdn: fslogixStorageFqdn
+        fslogixFileShareName: fslogixSharePath
         identityServiceProvider: identityServiceProvider
     }
     dependsOn: [

@@ -13,19 +13,15 @@ Param(
 
         [parameter(Mandatory)]
         [string]
-        $Fslogix,
+        $FSLogix,
 
         [parameter(Mandatory = $false)]
         [string]
-        $FsLogixStorageAccountKey = '',
+        $FSLogixStorageAccountKey,
 
         [parameter(Mandatory = $false)]
         [string]
-        $FslogixFileShare,
-
-        [parameter(Mandatory = $false)]
-        [string]
-        $fslogixStorageFqdn,
+        $FSLogixFileShare,
 
         [parameter(Mandatory)]
         [string]
@@ -185,7 +181,8 @@ try {
         ##############################################################
         #  Add Fslogix Settings
         ##############################################################
-        if ($Fslogix -eq 'true') {                
+        if ($Fslogix -eq 'true') {
+                $FSLogixStorageFQDN = $FSLogixFileShare.Split('\')[2]                
                 $Settings += @(
                         # Enables Fslogix profile containers: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#enabled
                         [PSCustomObject]@{
@@ -227,12 +224,12 @@ try {
                                 Name         = 'VHDLocations'
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
                                 PropertyType = 'MultiString'
-                                Value        = $FslogixFileShare
+                                Value        = $FSLogixFileShare
                         },
                         [PSCustomObject]@{
                                 Name         = 'VolumeType'
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
-                                PropertyType = 'MultiString'
+                                PropertyType = 'String'
                                 Value        = 'vhdx'
                         },
                         [PSCustomObject]@{
@@ -279,20 +276,19 @@ try {
                                 Name         = $IdentityDomainName
                                 Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\domain_realm'
                                 PropertyType = 'String'
-                                Value        = $fslogixStorageFqdn
+                                Value        = $FSLogixStorageFQDN
                         }
 
                 )
         }
-        If ($FsLogixStorageAccountKey -ne '') {
-                $SAFQDN = $FSLogixFileShare.Split('\')[2]
-                $SAName = $SAFQDN.Split('.')[0]
-                Write-Log -Message "Adding Local Storage Account Key for '$SAFQDN' to Credential Manager" -Type 'INFO'
-                $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$SAFQDN /user:localhost\$SAName /pass:$FsLogixStorageAccountKey" -Wait -PassThru
+        If ($FsLogixStorageAccountKey -ne '') {                
+                $SAName = $FSLogixStorageFQDN.Split('.')[0]
+                Write-Log -Message "Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
+                $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$FSLogixStorageFQDN /user:localhost\$SAName /pass:$FSLogixStorageAccountKey" -Wait -PassThru
                 If ($CMDKey.ExitCode -ne 0) {
-                        Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$SAFQDN' to Credential Manager" -Type 'ERROR'
+                        Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'ERROR'
                 } Else {
-                        Write-Log -Message "Successfully added Local Storage Account Key for '$SAFQDN' to Credential Manager" -Type 'INFO'
+                        Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
                 }
                 $Settings += @(
                         # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject
