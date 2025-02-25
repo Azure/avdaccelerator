@@ -11,13 +11,13 @@ targetScope = 'subscription'
 @sys.description('Workload subscription ID')
 param subId string
 
-@sys.description('Resource Group Name for Azure Files.')
+@sys.description('Resource Group Name where to deploy Azure NetApp Files.')
 param storageObjectsRgName string
 
 // @sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
 // param identityServiceProvider string
 
-@sys.description('Resource Group Name for management VM.')
+@sys.description('Resource Group Name for management VM and keyvault.')
 param serviceObjectsRgName string
 
 @sys.description('ANF account name.')
@@ -66,7 +66,7 @@ param volumeSize int
 // param storageToDomainScriptUri string
 
 @sys.description('Tags to be applied to resources')
-param tags object
+param tags object = {}
 
 // @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 // param managementVmName string
