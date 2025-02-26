@@ -706,16 +706,15 @@
 						{
 							"name": "sessionHostsDomainJoinSettings",
 							"type": "Microsoft.Common.Section",
-							"visible": "[and(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')) ,steps('sessionHosts').deploySessionHosts)]",
-							"label": "General settings",
+							"visible": "[and(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'DS'), steps('sessionHosts').deploySessionHosts)]",
+							"label": "Domain Join Settings",
 							"elements": [
 								{
 									"name": "identityDomainOuPath",
 									"type": "Microsoft.Common.TextBox",
 									"label": "Custom OU path (Optional)",
 									"toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default Computers container.",
-									"placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
-									"constraints": {}
+									"placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com"
 								}
 							]
 						},

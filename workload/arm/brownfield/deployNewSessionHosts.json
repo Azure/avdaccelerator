@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "14446626186426347081"
+      "templateHash": "13030728374835656784"
     }
   },
   "parameters": {
@@ -2458,7 +2458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "9111225881552103183"
+              "templateHash": "8208486074488552172"
             }
           },
           "parameters": {
@@ -2795,7 +2795,7 @@
                   "adminUsername": {
                     "reference": {
                       "keyVault": {
-                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('keyVaultResourceId')), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))]"
+                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))]"
                       },
                       "secretName": "vmLocalUserName"
                     }
@@ -2803,7 +2803,7 @@
                   "adminPassword": {
                     "reference": {
                       "keyVault": {
-                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('keyVaultResourceId')), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))]"
+                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))]"
                       },
                       "secretName": "vmLocalUserPassword"
                     }
@@ -2818,7 +2818,7 @@
                       }
                     ]
                   },
-                  "extensionDomainJoinPassword": "[if(contains(parameters('identityServiceProvider'), 'DS'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, parameters('keyVaultResourceId')), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))), 'secretName', 'domainJoinUserPassword')), createObject('value', null()))]",
+                  "extensionDomainJoinPassword": "[if(contains(parameters('identityServiceProvider'), 'DS'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('keyVaultResourceId'), '/')[4]), 'Microsoft.KeyVault/vaults', last(split(parameters('keyVaultResourceId'), '/')))), 'secretName', 'domainJoinUserPassword')), createObject('value', null()))]",
                   "extensionDomainJoinConfig": "[if(contains(parameters('identityServiceProvider'), 'DS'), createObject('value', createObject('enabled', true(), 'settings', createObject('name', parameters('identityDomainName'), 'ouPath', if(not(empty(parameters('sessionHostOuPath'))), parameters('sessionHostOuPath'), null()), 'user', parameters('domainJoinUserPrincipalName'), 'restart', 'true', 'options', '3'))), createObject('value', null()))]",
                   "extensionAadJoinConfig": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), createObject('value', createObject('enabled', if(contains(parameters('identityServiceProvider'), 'EntraID'), true(), false()), 'settings', if(parameters('createIntuneEnrollment'), createObject('mdmId', '0000000a-0000-0000-c000-000000000000'), createObject()))), createObject('value', null()))]",
                   "tags": {
