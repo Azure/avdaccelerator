@@ -883,17 +883,31 @@
 									}
 								},
 								{
-									"name": "sessionHostsCount",
-									"type": "Microsoft.Common.TextBox",
-									"label": "VM count",
-									"toolTip": "Provide the number of session hosts to deploy (1-100).",
-									"defaultValue": 1,
-									"constraints": {
-										"required": true,
-										"regex": "^([1-9]|[1-9][0-9]|[1][0][0])$",
-										"validationMessage": "The count must be between 1-100 session hosts."
-									}
-								},
+                                    "name": "sessionHostsIndex",
+                                    "type": "Microsoft.Common.Slider",
+                                    "label": "Starting number (index)",
+                                    "defaultValue": 1,
+                                    "toolTip": "Select the start number of the virtual machine suffix.",
+                                    "min": 1,
+                                    "max": 4998,
+                                    "showStepMarkers": true,
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "sessionHostsCount",
+                                    "type": "Microsoft.Common.Slider",
+                                    "label": "Number of Virtual Machines",
+                                    "defaultValue": 1,
+                                    "toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
+                                    "min": 1,
+                                    "max": 9999,
+                                    "showStepMarkers": true,
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
 								{
 									"name": "sessionHostDiskType",
 									"type": "Microsoft.Common.DropDown",
@@ -2796,6 +2810,7 @@
 				"availabilityZones": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsAvailabilitySection.option, 'AvailabilityZones')), steps('sessionHosts').sessionHostsAvailabilitySection.availabilityZones, parse('[]'))]",
 				"zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
 				"avdDeploySessionHostsCount": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
+				"avdDeploySessionHostsIndex": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsIndex, 1)]",
 				"useSharedImage": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), true, false)]",
 				"mpImageOffer": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.offer, '')]",
 				"mpImageSku": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.sku, '')]",

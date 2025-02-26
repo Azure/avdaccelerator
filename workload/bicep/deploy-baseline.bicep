@@ -224,8 +224,8 @@ param alaExistingWorkspaceResourceId string = ''
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
 
-@sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
-param avdSessionHostCountIndex int = 0
+@sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 1)')
+param avdSessionHostCountIndex int = 1
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level.')
 @allowed([

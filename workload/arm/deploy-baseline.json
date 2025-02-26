@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2282517214239916474"
+      "templateHash": "10550780937452637725"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -452,9 +452,9 @@
     },
     "avdSessionHostCountIndex": {
       "type": "int",
-      "defaultValue": 0,
+      "defaultValue": 1,
       "metadata": {
-        "description": "The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)"
+        "description": "The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 1)"
       }
     },
     "availability": {
