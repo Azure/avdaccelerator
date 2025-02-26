@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10864969307158506973"
+      "templateHash": "3151663468663239846"
     }
   },
   "parameters": {
@@ -2327,7 +2327,7 @@
         "name": "sessionHosts",
         "count": "[length(range(1, parameters('count')))]",
         "mode": "serial",
-        "batchSize": 3
+        "batchSize": 100
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",

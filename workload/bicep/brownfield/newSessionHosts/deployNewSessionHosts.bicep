@@ -316,7 +316,7 @@ resource laWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exist
 }
 
 // Session hosts
-@batchSize(3)
+@batchSize(100)
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [
   for i in range(1, count): {
     scope: resourceGroup(computeRgResourceGroupName)
