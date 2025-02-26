@@ -845,9 +845,36 @@
 							"label": "Session hosts settings",
 							"elements": [
 								{
+                                    "name": "sessionHostsIndex",
+                                    "type": "Microsoft.Common.Slider",
+                                    "label": "Starting number (index)",
+                                    "defaultValue": 1,
+                                    "toolTip": "Select the start number of the virtual machine suffix.",
+                                    "min": 1,
+                                    "max": 4998,
+                                    "showStepMarkers": true,
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "sessionHostsCount",
+                                    "type": "Microsoft.Common.Slider",
+                                    "label": "Number of Session Hosts",
+                                    "defaultValue": 1,
+                                    "toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
+                                    "min": 1,
+                                    "max": 9999,
+                                    "showStepMarkers": true,
+                                    "constraints": {
+                                        "required": true
+                                    }
+                                },
+								{
 									"name": "sessionHostSize",
 									"type": "Microsoft.Compute.SizeSelector",
 									"label": "VM Size",
+									"count": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostCount]",
 									"toolTip": "Select the size of the virtual machines. Multi-session hosts should have 4 - 24 vCPUs. Single session host should have 2 or more vCPUs.",
 									"recommendedSizes": [
 										"Standard_D4ads_v5",
@@ -881,33 +908,7 @@
 										"uri": "https://learn.microsoft.com/windows-server/remote/remote-desktop-services/virtual-machine-recs",
 										"style": "Info"
 									}
-								},
-								{
-                                    "name": "sessionHostsIndex",
-                                    "type": "Microsoft.Common.Slider",
-                                    "label": "Starting number (index)",
-                                    "defaultValue": 1,
-                                    "toolTip": "Select the start number of the virtual machine suffix.",
-                                    "min": 1,
-                                    "max": 4998,
-                                    "showStepMarkers": true,
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
-                                    "name": "sessionHostsCount",
-                                    "type": "Microsoft.Common.Slider",
-                                    "label": "Number of Virtual Machines",
-                                    "defaultValue": 1,
-                                    "toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
-                                    "min": 1,
-                                    "max": 9999,
-                                    "showStepMarkers": true,
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
+								},								
 								{
 									"name": "sessionHostDiskType",
 									"type": "Microsoft.Common.DropDown",
