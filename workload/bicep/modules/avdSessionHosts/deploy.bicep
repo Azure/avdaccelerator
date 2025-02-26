@@ -41,7 +41,7 @@ param count int
 param countIndex int
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true).')
-param useAvailabilityZones bool
+param availability string
 
 @sys.description('Defines the Availability Zones for the VMs.')
 param availabilityZones array = []
@@ -166,7 +166,7 @@ var varCustomOsDiskProperties = {
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
 }
 
-var zones = [for zone in availabilityZones: int(replace(zone, 'Zone ', ''))]
+var varZones = [for zone in availabilityZones: int(zone)]
 
 // =========== //
 // Deployments //
@@ -186,7 +186,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        zone: useAvailabilityZones ? zones[(i-1) % length(zones)] : 0
+        zone: availability == 'AvailabilityZones' ? varZones[(i-1) % length(varZones)] : 0
         managedIdentities: contains(identityServiceProvider, 'EntraID') || deployMonitoring ? {
             systemAssigned: true
         }: null

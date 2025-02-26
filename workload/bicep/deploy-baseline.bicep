@@ -227,8 +227,20 @@ param avdDeploySessionHostsCount int = 1
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
 param avdSessionHostCountIndex int = 0
 
-@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)')
-param availabilityZonesCompute bool = true
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level.')
+@allowed([
+  'None'
+  'AvailabilityZones'
+])
+param availability string = 'None'
+
+@sys.description('The Availability Zones to use for the session hosts.')
+@allowed([
+  '1'
+  '2'
+  '3'
+])
+param availabilityZones array = ['1','2','3']
 
 @sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
 param zoneRedundantStorage bool = false
@@ -1461,6 +1473,8 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i - 1}-${time}'
     params: {
+      availability: availability
+      availabilityZones: availabilityZones
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
       timeZone: varTimeZoneSessionHosts
       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateAppAttachDeployment)
@@ -1482,8 +1496,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
         ? avdSessionHostCountIndex
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
       domainJoinUserName: avdDomainJoinUserName
-      wrklKvName: varWrklKvName
-      serviceObjectsRgName: varServiceObjectsRgName
+      wrklKvResourceId: varWrklKvName
       identityDomainName: identityDomainName
       avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
       sessionHostOuPath: avdOuPath
@@ -1499,13 +1512,11 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       subnetId: createAvdVnet
         ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
         : existingVnetAvdSubnetResourceId
-      useAvailabilityZones: availabilityZonesCompute
       vmLocalUserName: avdVmLocalUserName
       subscriptionId: avdWorkloadSubsId
       encryptionAtHost: diskZeroTrust
       createAvdFslogixDeployment: createAvdFslogixDeployment
       fslogixSharePath: varFslogixSharePath
-      fslogixStorageFqdn: varFslogixStorageFqdn
       sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
       sessionHostConfigurationScript: varSessionHostConfigurationScript
       marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]

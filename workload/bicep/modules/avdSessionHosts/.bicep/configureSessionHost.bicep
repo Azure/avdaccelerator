@@ -41,14 +41,16 @@ param hostPoolResourceId string
 // var ScreenCaptureProtection = true
 // Additional parameter for screen capture functionallity -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose' powershell script will need to be updated too
 
+var fslogixStorageAccountName = fslogix ? last(split(fslogixStorageAccountResourceId, '/')) : ''
+
 var fslogixFileShare = fslogix
-  ? '${storageAccount.properties.primaryEndpoints.file}${fslogixFileShareName}'
+  ? '\\\\${fslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}'
   : ''
 
-var varBaseScriptArguments = '-AmdVmSize ${varAmdVmSize} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken ${hostPool.listRegistrationTokens().value[0].token} -NvidiaVmSize ${varNvidiaVmSize} -verbose'
-var varBaseFSLogixScriptArguments = '-FslogixFileShare ${fslogixFileShare}'
+var varBaseScriptArguments = '-IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken "${hostPool.listRegistrationTokens().value[0].token}" -AmdVmSize ${varAmdVmSize} -NvidiaVmSize ${varNvidiaVmSize}'
+var varBaseFSLogixScriptArguments = '-FslogixFileShare "${fslogixFileShare}"'
 var varFSLogixScriptArguments = identityServiceProvider == 'EntraID'
-  ? '${varBaseFSLogixScriptArguments} -FslogixStorageAccountKey ${storageAccount.listkeys().keys[0].value}'
+  ? '${varBaseFSLogixScriptArguments} -FslogixStorageAccountKey "${storageAccount.listkeys().keys[0].value}"'
   : identityServiceProvider == 'EntraIDKerberos'
       ? '${varBaseFSLogixScriptArguments} -IdentityDomainName ${identityDomainName}'
       : varBaseFSLogixScriptArguments
@@ -90,7 +92,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' existin
 }
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(fslogixStorageAccountResourceId)) {
-  name: last(split(fslogixStorageAccountResourceId, '/'))
+  name: fslogixStorageAccountName
   scope: resourceGroup(split(fslogixStorageAccountResourceId, '/')[4])
 }
 
@@ -110,3 +112,4 @@ resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09
     }
   }
 }
+
