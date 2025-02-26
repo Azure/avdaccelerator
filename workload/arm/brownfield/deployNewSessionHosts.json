@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "12031822415937666733"
+      "templateHash": "8244610146894798329"
     }
   },
   "parameters": {
@@ -702,7 +702,7 @@
     "varTimeZoneSessionHosts": "[variables('varLocations')[variables('varSessionHostLocationLowercase')].timeZone]",
     "varSessionHostLocationLowercase": "[toLower(replace(parameters('location'), ' ', ''))]",
     "varFslogixSharePath": "[if(parameters('configureFslogix'), format('\\\\{0}.file.{1}\\{2}', last(split(parameters('fslogixStorageAccountResourceId'), '/')), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/shawntmeyer/avdaccelerator/main/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "Set-SessionHostConfiguration.ps1",
     "varAvdDefaultTags": {

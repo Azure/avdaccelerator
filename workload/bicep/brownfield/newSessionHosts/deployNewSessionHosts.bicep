@@ -225,7 +225,7 @@ var varSessionHostLocationLowercase = toLower(replace(location, ' ', ''))
 var varFslogixSharePath = configureFslogix
   ? '\\\\${last(split(fslogixStorageAccountResourceId, '/'))}.file.${environment().suffixes.storage}\\${fslogixFileShareName}'
   : ''
-var varBaseScriptUri = 'https://raw.githubusercontent.com/shawntmeyer/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
 var varAvdDefaultTags = {

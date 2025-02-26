@@ -43,19 +43,24 @@ param appAttachFileShareQuotaSize = 1
 param avdDeploySessionHosts = true
 param avdDeploySessionHostsCount = 1
 param avdSessionHostCountIndex = 0
-param availabilityZonesCompute = true
+param availability = 'AvailabilityZones'
+param availabilityZones = [
+  '1'
+  '2'
+  '3'
+]
 param zoneRedundantStorage = false
 param fslogixStoragePerformance = 'Premium'
 param appAttachStoragePerformance = 'Premium'
 param avdSessionHostsSize = 'Standard_D2s_v3'
 param avdSessionHostDiskType = 'Premium_LRS'
-param avdOsImage = 'win11_23h2'
+param mpImageOffer = 'office-365'
+param mpImageSku = 'win11-24h2-avd-m365'
 param managementVmOsImage = 'winServer_2022_Datacenter_smalldisk_g2'
 param securityType = 'TrustedLaunch'
 param secureBootEnabled = true
 param vTpmEnabled = true
 param useSharedImage = false
-param avdImageTemplateDefinitionId = ''
 param storageOuPath = ''
 param createResourceTags = false
 param deployAlaWorkspace = true
