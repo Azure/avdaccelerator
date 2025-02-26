@@ -874,7 +874,7 @@
 									"name": "sessionHostSize",
 									"type": "Microsoft.Compute.SizeSelector",
 									"label": "VM Size",
-									"count": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostCount]",
+									"count": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount]",
 									"toolTip": "Select the size of the virtual machines. Multi-session hosts should have 4 - 24 vCPUs. Single session host should have 2 or more vCPUs.",
 									"recommendedSizes": [
 										"Standard_D4ads_v5",
