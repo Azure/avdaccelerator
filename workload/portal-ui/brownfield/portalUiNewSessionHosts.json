@@ -95,8 +95,8 @@
                     ]
                 },
                 {
-                    "name": "virtualMachines",
-                    "label": "Virtual Machines",
+                    "name": "sessionHosts",
+                    "label": "Session Hosts",
                     "elements": [
                         {
                             "name": "resourceSkusApi",
@@ -129,7 +129,7 @@
                                         "regex": "^[a-zA-Z0-9_-]{1,11}$",
                                         "validationMessage": "The prefix can be 1-11 characters and must consist of only alphanumerics, underscores (_), or dashes (-)."
                                     },
-                                    "visible": "[steps('virtualMachines').naming.customNaming]"
+                                    "visible": "[steps('sessionHosts').naming.customNaming]"
                                 },
                                 {
                                     "name": "index",
@@ -159,111 +159,7 @@
                                 }
                             ]
                         },
-                        {
-                            "name": "settings",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Virtual Machine Specs",
-                            "elements": [
-                                {
-                                    "name": "diskSku",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "OS Disk SKU",
-                                    "filter": true,
-                                    "defaultValue": "Premium_LRS",
-                                    "toolTip": "Select the disk SKU for the operating system disk.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Premium_LRS",
-                                                "value": "Premium_LRS"
-                                            },
-                                            {
-                                                "label": "Standard_LRS",
-                                                "value": "Standard_LRS"
-                                            },
-                                            {
-                                                "label": "StandardSSD_LRS",
-                                                "value": "StandardSSD_LRS"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "vmSize",
-                                    "type": "Microsoft.Compute.SizeSelector",
-                                    "label": "VM Size",
-                                    "toolTip": "Select the size of the virtual machines. Multi-session hosts should have 4 - 24 vCPUs. Single session host should have 2 or more vCPUs.",
-                                    "count": "[steps('virtualMachines').naming.count]",
-                                    "recommendedSizes": [
-                                        "Standard_D4ads_v5",
-                                        "Standard_D8ads_v5",
-                                        "Standard_D16ads_v5",
-                                        "Standard_D32ads_v5",
-                                        "Standard_D4ds_v4",
-                                        "Standard_D8ds_v4",
-                                        "Standard_D16ds_v4",
-                                        "Standard_D32ds_v4",
-                                        "Standard_D4s_v3",
-                                        "Standard_D8s_v3",
-                                        "Standard_D16s_v3",
-                                        "Standard_D32s_v3"
-                                    ],
-                                    "options": {
-                                        "hideDiskTypeFilter": "[if(equals(steps('virtualMachines').settings.diskSku, 'Premium_LRS'), true, false)]"
-                                    },
-                                    "osPlatform": "Windows",
-                                    "scope": {
-                                        "location": "[steps('basics').resourceScope.location.name]",
-                                        "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
-                                    }
-                                },
-                                {
-                                    "name": "enableAcceleratedNetworking",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Enable Accelerated Networking",
-                                    "defaultValue": true,
-                                    "toolTip": "Enables accelerated Networking on the session hosts."
-                                }
-                            ]
-                        },
-                        {
-                            "name": "availability",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Availability",
-                            "elements": [
-                                {
-                                    "name": "option",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "defaultValue": "[if(empty(first(map(first(map(filter(steps('virtualMachines').resourceSkusApi.value, (sku) => contains(sku.name, steps('virtualMachines').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), 'No infrastructure redundancy required', 'Availability Zones')]",
-                                    "label": "Availability Option",
-                                    "toolTip": "Select the redundancy / resiliency for the virtual machines.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": "[if(empty(first(map(first(map(filter(steps('virtualMachines').resourceSkusApi.value, (sku) => contains(sku.name, steps('virtualMachines').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), parse('[{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'), parse('[{\"label\":\"Availability Zones\",\"value\":\"AvailabilityZones\"},{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'))]"
-                                    }
-                                },
-                                {
-                                    "name": "availabilityZones",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Select Availability Zones",
-                                    "defaultValue": [
-                                        "Zone 1",
-                                        "Zone 2",
-                                        "Zone 3"
-                                    ],
-                                    "multiselect": true,
-                                    "selectAll": true,
-                                    "toolTip": "Select the desired Availability Zones",
-                                    "constraints": {
-                                        "allowedValues": "[map(first(map(first(map(filter(steps('virtualMachines').resourceSkusApi.value, (sku) => contains(sku.name, steps('virtualMachines').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones)), (zone) => parse(concat('{\"label\":\"Zone ', zone, '\",\"value\":\"', zone, '\"}')))]",
-                                        "required": true
-                                    },
-                                    "visible": "[equals(steps('virtualMachines').availability.option, 'AvailabilityZones')]"
-                                }
-                            ]
-                        },
-                        {
+						{
                             "name": "image",
                             "type": "Microsoft.Common.Section",
                             "label": "Operating System Image",
@@ -312,15 +208,15 @@
                                         ],
                                         "required": true
                                     },
-                                    "visible": "[equals(steps('virtualMachines').image.source, 'marketplace')]"
+                                    "visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
                                 },
                                 {
                                     "name": "skusApi",
                                     "type": "Microsoft.Solutions.ArmApiControl",
-                                    "condition": "[and(not(empty(steps('basics').resourceScope.subscription)), not(empty(steps('basics').resourceScope.location)), equals(steps('virtualMachines').image.source, 'marketplace'), not(empty(steps('virtualMachines').image.offer)))]",
+                                    "condition": "[and(not(empty(steps('basics').resourceScope.subscription)), not(empty(steps('basics').resourceScope.location)), equals(steps('sessionHosts').image.source, 'marketplace'), not(empty(steps('sessionHosts').image.offer)))]",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('virtualMachines').image.offer, '/skus?api-version=2022-08-01')]"
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('sessionHosts').image.offer, '/skus?api-version=2022-08-01')]"
                                     }
                                 },
                                 {
@@ -330,15 +226,15 @@
                                     "defaultValue": "win11-24h2-avd-m365",
                                     "toolTip": "Select the desired marketplace image SKU.",
                                     "constraints": {
-                                        "allowedValues": "[map(steps('virtualMachines').image.skusApi, (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+                                        "allowedValues": "[map(steps('sessionHosts').image.skusApi, (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
                                         "required": true
                                     },
-                                    "visible": "[equals(steps('virtualMachines').image.source, 'marketplace')]"
+                                    "visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
                                 },
                                 {
                                     "name": "computeGallery",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[equals(steps('virtualMachines').image.source, 'computegallery')]",
+                                    "visible": "[equals(steps('sessionHosts').image.source, 'computegallery')]",
                                     "label": "Compute Gallery",
                                     "resourceType": "Microsoft.Compute/galleries",
                                     "constraints": {
@@ -348,10 +244,10 @@
                                 {
                                     "name": "imageDefinitionsApi",
                                     "type": "Microsoft.Solutions.ArmApiControl",
-                                    "condition": "[and(equals(steps('virtualMachines').image.source, 'computegallery'), not(empty(steps('virtualMachines').image.computeGallery)))]",
+                                    "condition": "[and(equals(steps('sessionHosts').image.source, 'computegallery'), not(empty(steps('sessionHosts').image.computeGallery)))]",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('virtualMachines').image.computeGallery.id, '/images?api-version=2024-03-03')]",
+                                        "path": "[concat(steps('sessionHosts').image.computeGallery.id, '/images?api-version=2024-03-03')]",
                                         "transforms": {
                                             "list": "value|[*].{label:name, value:id}"
                                         }
@@ -362,27 +258,188 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Image Definition",
                                     "constraints": {
-                                        "allowedValues": "[steps('virtualMachines').image.imageDefinitionsApi.transformed.list]",
+                                        "allowedValues": "[steps('sessionHosts').image.imageDefinitionsApi.transformed.list]",
                                         "required": true
                                     },
-                                    "visible": "[and(equals(steps('virtualMachines').image.source, 'computegallery'), not(empty(steps('virtualMachines').image.computeGallery)))]"
-                                }
+                                    "visible": "[and(equals(steps('sessionHosts').image.source, 'computegallery'), not(empty(steps('sessionHosts').image.computeGallery)))]"
+                                },
+								{
+									"name": "imageDefinitionApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "[not(empty(steps('sessionHosts').image.imageDefinition))]",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('sessionHosts').image.imageDefinition, '?api-version=2024-03-03')]",
+										"transforms": {
+											"IsAcceleratedNetworkSupported": "properties.features[?name=='IsAcceleratedNetworkSupported'].value | [0]",
+											"SecurityType": "properties.features[?name=='SecurityType'].value | [0]"
+										}
+									}
+								}
                             ]
                         },
                         {
-                            "name": "security",
+                            "name": "settings",
                             "type": "Microsoft.Common.Section",
-                            "label": "Security Settings",
+                            "label": "Virtual Machine Specs",
                             "elements": [
                                 {
-                                    "name": "asg",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.resourceGroup.id, '/providers/Microsoft.Network/applicationSecurityGroups?api-version=2024-05-01')]"
+                                    "name": "diskSku",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "OS Disk SKU",
+                                    "filter": true,
+                                    "defaultValue": "Premium_LRS",
+                                    "toolTip": "Select the disk SKU for the operating system disk.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": [
+                                            {
+                                                "label": "Premium_LRS",
+                                                "value": "Premium_LRS"
+                                            },
+                                            {
+                                                "label": "Standard_LRS",
+                                                "value": "Standard_LRS"
+                                            },
+                                            {
+                                                "label": "StandardSSD_LRS",
+                                                "value": "StandardSSD_LRS"
+                                            }
+                                        ]
                                     }
                                 },
                                 {
+									"name": "diskSizeGB",
+									"type": "Microsoft.Common.DropDown",
+									"label": "OS Disk Size",
+									"placeholder": "",
+									"defaultValue": "Default from Image (Typically 128 GB)",
+									"toolTip": "",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "Default from Image (Typically 128 GB)",
+												"value": 0
+											},
+											{
+												"label": "Resize to 64 GB (P6)",
+												"value": 64
+											},
+											{
+												"label": "Resize to 128 GB (P10)",
+												"value": 128
+											},
+											{
+												"label": "Resize to 256 GB (P15)",
+												"value": 256
+											},
+											{
+												"label": "Resize to 512 GB (P20)",
+												"value": 512
+											},
+											{
+												"label": "Resize to 1 TB (P30)",
+												"value": 1024
+											},
+											{
+												"label": "Resize to 2 TB (P40)",
+												"value": 2048
+											}
+										],
+										"required": true
+									},
+									"visible": true
+								},
+                                {
+                                    "name": "vmSize",
+                                    "type": "Microsoft.Compute.SizeSelector",
+                                    "label": "VM Size",
+                                    "toolTip": "Select the size of the virtual machines. Multi-session hosts should have 4 - 24 vCPUs. Single session host should have 2 or more vCPUs.",
+                                    "count": "[steps('sessionHosts').naming.count]",
+                                    "recommendedSizes": [
+                                        "Standard_D4ads_v5",
+                                        "Standard_D8ads_v5",
+                                        "Standard_D16ads_v5",
+                                        "Standard_D32ads_v5",
+                                        "Standard_D4ds_v4",
+                                        "Standard_D8ds_v4",
+                                        "Standard_D16ds_v4",
+                                        "Standard_D32ds_v4",
+                                        "Standard_D4s_v3",
+                                        "Standard_D8s_v3",
+                                        "Standard_D16s_v3",
+                                        "Standard_D32s_v3"
+                                    ],
+                                    "options": {
+                                        "hideDiskTypeFilter": "[if(equals(steps('sessionHosts').settings.diskSku, 'Premium_LRS'), true, false)]"
+                                    },
+                                    "osPlatform": "Windows",
+                                    "scope": {
+                                        "location": "[steps('basics').resourceScope.location.name]",
+                                        "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
+                                    }
+                                },
+                                {
+									"name": "acceleratedNetworking",
+									"type": "Microsoft.Common.CheckBox",
+									"label": "Enable accelerated networking",
+									"defaultValue": true,
+									"toolTip": "Enables low latency and high throughput on the network interface.",
+									"visible": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(equals(steps('sessionHosts').image.imageDefinitionApi.transformed.IsAcceleratedNetworkSupported, 'True'), true, false), true)]"
+								},
+								{
+									"name": "enableAntiMalwareExt",
+									"type": "Microsoft.Common.CheckBox",
+									"visible": true,
+									"label": "Enable Antimalware extension",
+									"defaultValue": true,
+									"toolTip": "Enables Azure VM antimalware extension on session hosts."
+								}
+                            ]
+                        },
+                        {
+                            "name": "availability",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Availability",
+                            "elements": [
+                                {
+                                    "name": "option",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "defaultValue": "[if(empty(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), 'No infrastructure redundancy required', 'Availability Zones')]",
+                                    "label": "Availability Option",
+                                    "toolTip": "Select the redundancy / resiliency for the virtual machines.",
+                                    "constraints": {
+                                        "required": true,
+                                        "allowedValues": "[if(empty(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), parse('[{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'), parse('[{\"label\":\"Availability Zones\",\"value\":\"AvailabilityZones\"},{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'))]"
+                                    }
+                                },
+                                {
+                                    "name": "availabilityZones",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Select Availability Zones",
+                                    "defaultValue": [
+                                        "Zone 1",
+                                        "Zone 2",
+                                        "Zone 3"
+                                    ],
+                                    "multiselect": true,
+                                    "selectAll": true,
+                                    "toolTip": "Select the desired Availability Zones",
+                                    "constraints": {
+                                        "allowedValues": "[map(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones)), (zone) => parse(concat('{\"label\":\"Zone ', zone, '\",\"value\":\"', zone, '\"}')))]",
+                                        "required": true
+                                    },
+                                    "visible": "[equals(steps('sessionHosts').availability.option, 'AvailabilityZones')]"
+                                }
+                            ]
+                        },
+						{
+							"name": "securityProfile",
+							"type": "Microsoft.Common.Section",
+							"label": "Security Profile",
+							"visible": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(contains(steps('sessionHosts').image.imageDefinitionApi.transformed.SecurityType, 'TrustedLaunch'), true, false), if(or(contains(steps('sessionHosts').image.sku, 'win11'), contains(steps('sessionHosts').image.sku, 'g2')), true, false))]",
+							"elements": [
+								{
                                     "name": "securityType",
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Security Type",
@@ -410,7 +467,7 @@
                                     "label": "Enable Secure Boot",
                                     "toolTip": "Secure boot helps protect your VMs against boot kits, rootkits, and kernel-level malware.",
                                     "defaultValue": true,
-                                    "visible": "[equals(steps('virtualMachines').security.securityType, 'TrustedLaunch')]"
+                                    "visible": "[equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch')]"
                                 },
                                 {
                                     "name": "vTpmEnabled",
@@ -418,8 +475,23 @@
                                     "label": "Enable vTPM",
                                     "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets.",
                                     "defaultValue": true,
-                                    "visible": "[equals(steps('hosts').security.securityType, 'TrustedLaunch'))]"
-                                },
+                                    "visible": "[equals(steps('hosts').securityProfile.securityType, 'TrustedLaunch'))]"
+                                }
+							]
+						},
+                        {
+                            "name": "security",
+                            "type": "Microsoft.Common.Section",
+                            "label": "Other Security Settings",
+                            "elements": [
+                                {
+                                    "name": "asg",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "[concat(steps('basics').resourceScope.resourceGroup.id, '/providers/Microsoft.Network/applicationSecurityGroups?api-version=2024-05-01')]"
+                                    }
+                                },                                
                                 {
                                     "name": "encryptionAtHost",
                                     "type": "Microsoft.Common.CheckBox",
@@ -438,7 +510,7 @@
                                 {
                                     "name": "diskEncryptionSetApi",
                                     "type": "Microsoft.Solutions.ArmApiControl",
-                                    "condition": "[steps('virtualMachines').security.diskZeroTrust]",
+                                    "condition": "[steps('sessionHosts').security.diskZeroTrust]",
                                     "request": {
                                         "method": "GET",
                                         "path": "[concat(steps('basics').resourceScope.resourceGroup.id, '/providers/Microsoft.Compute/diskEncryptionSets?api-version=2024-03-02')]",
@@ -452,10 +524,10 @@
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Disk Encryption Set",
                                     "constraints": {
-                                        "allowedValues": "[steps('virtualMachines').security.diskEncryptionSetApi.transformed.list]",
+                                        "allowedValues": "[steps('sessionHosts').security.diskEncryptionSetApi.transformed.list]",
                                         "required": true
                                     },
-                                    "visible": "[steps('virtualMachines').security.diskZeroTrust]"
+                                    "visible": "[steps('sessionHosts').security.diskZeroTrust]"
                                 },
                                 {
                                     "name": "deployAntiMalwareExt",
@@ -503,7 +575,7 @@
                                 {
                                     "name": "identityServiceProviderInfo1",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'EntraID')]",
+                                    "visible": "[equals(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
                                     "options": {
                                         "text": "If you are deploying this solution with FSLogix Storage, storage account key access must be permitted within your subscription. This solution will securely configure your session host to access the FSLogix Azure Files storage with the storage account key.",
                                         "uri": "https://techcommunity.microsoft.com/blog/fslogix-blog/fslogix-profile-containers-for-azure-ad-cloud-only-identities/3739352",
@@ -513,7 +585,7 @@
                                 {
                                     "name": "intuneEnrollment",
                                     "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'EntraID')]",
+                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
                                     "label": "Intune enrollment",
                                     "toolTip": "If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
                                 },
@@ -521,7 +593,7 @@
                                     "name": "identityDomainName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Domain name",
-                                    "visible": "[contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'DS')]",
+                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
                                     "toolTip": "The full qualified domain name of the domain to which the virtual machines will be joined.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
@@ -531,7 +603,7 @@
                                 {
                                     "name": "ouPath",
                                     "type": "Microsoft.Common.TextBox",
-                                    "visible": "[contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'DS')]",
+                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
                                     "label": "OU Path",
                                     "toolTip": "Optionally, input the distinguished name of the desired organization unit for the AVD session hosts.",
                                     "placeholder": "Example: OU=pooled,OU=avd,DC=contoso,DC=com",
@@ -549,12 +621,12 @@
                                         "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
                                         "required": true
                                     },
-                                    "visible": "[contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'DS')]"
+                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]"
                                 },
                                 {
                                     "name": "secretsInfoBox1",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'EntraID')]",
+                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
                                     "options": {
                                         "text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
                                         "style": "Info"
@@ -563,7 +635,7 @@
                                 {
                                     "name": "secretsInfoBox2",
                                     "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'DS')]",
+                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
                                     "options": {
                                         "text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>domainJoinUserPassword</b>: The password associated with the user principal name specified above.</li><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
                                         "style": "Info"
@@ -601,11 +673,11 @@
                                 },
                                 {
                                     "name": "subnetsApi",
-                                    "condition": "[not(empty(steps('virtualMachines').network.virtualNetwork))]",
+                                    "condition": "[not(empty(steps('sessionHosts').network.virtualNetwork))]",
                                     "type": "Microsoft.Solutions.ArmApiControl",
                                     "request": {
                                         "method": "GET",
-                                        "path": "[concat(steps('virtualMachines').network.virtualNetwork.id, '/subnets?api-version=2022-05-01')]",
+                                        "path": "[concat(steps('sessionHosts').network.virtualNetwork.id, '/subnets?api-version=2022-05-01')]",
                                         "transforms": {
                                             "list": "value|[*].{label:name, value:id}"
                                         }
@@ -620,7 +692,7 @@
                                     "toolTip": "Select an existing subnet for the AVD session hosts.",
                                     "constraints": {
                                         "required": true,
-                                        "allowedValues": "[steps('virtualMachines').network.subnetsApi.transformed.list]"
+                                        "allowedValues": "[steps('sessionHosts').network.subnetsApi.transformed.list]"
                                     }
                                 }
                             ]
@@ -637,19 +709,9 @@
                                     "toolTip": "Deploy AVD monitoring resources and setings."
                                 },
                                 {
-                                    "name": "laWorkspace",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[steps('virtualMachines').monitoring.enableMonitoring]",
-                                    "label": "Log Analytics Workspace",
-                                    "resourceType": "Microsoft.OperationalInsights/workspaces",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
                                     "name": "dataCollectionRule",
                                     "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[steps('virtualMachines').monitoring.enableMonitoring]",
+                                    "visible": "[steps('sessionHosts').monitoring.enableMonitoring]",
                                     "label": "AVD Insights Data Collection Rule",
                                     "resourceType": "Microsoft.Insights/dataCollectionRules",
                                     "constraints": {
@@ -937,39 +999,39 @@
                 "deploymentPrefix": "[steps('basics').deployment.prefix]",
                 "deploymentEnvironment": "[steps('basics').deployment.environment]",
                 "hostPoolResourceId": "[steps('basics').deployment.hostPool.id]",
-                "customNaming": "[steps('virtualMachines').naming.customNaming]",
-                "sessionHostCustomNamePrefix": "[if(steps('virtualMachines').naming.customNaming, steps('virtualMachines').naming.vmNamePrefix, 'notapp')]",
-                "count": "[steps('virtualMachines').naming.count]",
-                "countIndex": "[steps('virtualMachines').naming.index]",
-                "diskType": "[steps('virtualMachines').settings.diskSku]",
-                "vmSize": "[steps('virtualMachines').settings.vmSize]",
-                "enableAcceleratedNetworking": "[steps('virtualMachines').settings.enableAcceleratedNetworking]",
-                "availability": "[steps('virtualMachines').availability.option]",
-                "availabilityZones": "[if(equals(steps('virtualMachines').availability.option, 'AvailabilityZones'), steps('virtualMachines').availability.availabilityZones, parse('[]'))]",
-                "useSharedImage": "[if(equals(steps('virtualMachines').image.source, 'computegallery'), true, false)]",
-                "mpImageOffer": "[if(equals(steps('virtualMachines').image.source, 'marketplace'), steps('virtualMachines').image.offer, '')]",
-                "mpImageSku": "[if(equals(steps('virtualMachines').image.source, 'marketplace'), steps('virtualMachines').image.sku, '')]",
-                "customImageDefinitionId": "[if(equals(steps('virtualMachines').image.source, 'computeGallery'), steps('virtualMachines').image.imageDefinition, '')]",
-                "asgResourceId": "[if(empty(steps('virtualMachines').security.asg), '', first(map(steps('virtualMachines').security.asg.value, (asg) => asg.id)))]",
-                "securityType": "[steps('virtualMachines').security.securityType]",
-                "secureBootEnabled": "[if(equals(steps('virtualMachines').security.securityType, 'TrustedLaunch'), steps('virtualMachines').security.secureBootEnabled, false)]",
-                "vTpmEnabled": "[if(equals(steps('virtualMachines').security.securityType, 'TrustedLaunch'), steps('virtualMachines').security.vTpmEnabled, false)]",
-                "encryptionAtHost": "[steps('virtualMachines').security.encryptionAtHost]",
-                "diskEncryptionSetResourceId": "[if(steps('virtualMachines').security.diskZeroTrust, steps('virtualMachines').security.diskEncryptionSet, '')]",
-                "deployAntiMalwareExt": "[steps('virtualMachines').security.deployAntiMalwareExt]",
-                "identityServiceProvider": "[steps('virtualMachines').identityAndAccounts.identityServiceProvider]",
-                "createIntuneEnrollment": "[steps('virtualMachines').identityAndAccounts.intuneEnrollment]",
-                "identityDomainName": "[if(contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'DS'), steps('virtualMachines').identityAndAccounts.identityDomainName, '')]",
-                "sessionHostOuPath": "[if(contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'DS'), steps('virtualMachines').identityAndAccounts.ouPath, '')]",
-                "keyVaultResourceId": "[steps('virtualMachines').identityAndAccounts.keyVault.id]",
-                "domainJoinUserPrincipalName": "[if(contains(steps('virtualMachines').identityAndAccounts.identityServiceProvider, 'DS'), steps('virtualMachines').identityAndAccounts.domainJoinUserPrincipalName, '')]",
-                "subnetResourceId": "[steps('virtualMachines').network.subnet]",
-                "enableMonitoring": "[steps('virtualMachines').monitoring.enableMonitoring]", 
-                "laWorkspaceResourceId": "[if(steps('virtualMachines').monitoring.enableMonitoring, steps('virtualMachines').monitoring.laWorkspace.id, '')]",
+                "customNaming": "[steps('sessionHosts').naming.customNaming]",
+                "sessionHostCustomNamePrefix": "[if(steps('sessionHosts').naming.customNaming, steps('sessionHosts').naming.vmNamePrefix, 'notapp')]",
+                "count": "[steps('sessionHosts').naming.count]",
+                "countIndex": "[steps('sessionHosts').naming.index]",
+				"useSharedImage": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), true, false)]",
+                "mpImageOffer": "[if(equals(steps('sessionHosts').image.source, 'marketplace'), steps('sessionHosts').image.offer, '')]",
+                "mpImageSku": "[if(equals(steps('sessionHosts').image.source, 'marketplace'), steps('sessionHosts').image.sku, '')]",
+                "customImageDefinitionId": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), steps('sessionHosts').image.imageDefinition, '')]",
+                "diskType": "[steps('sessionHosts').settings.diskSku]",
+                "customOsDiskSizeGB": "[steps('sessionHosts').settings.diskSizeGB]",
+                "vmSize": "[steps('sessionHosts').settings.vmSize]",
+                "enableAcceleratedNetworking": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(equals(steps('sessionHosts').image.imageDefinitionApi.transformed.IsAcceleratedNetworkSupported, 'True'), steps('sessionHosts').settings.acceleratedNetworking, false), steps('sessionHosts').settings.acceleratedNetworking)]",
+                "availability": "[steps('sessionHosts').availability.option]",
+                "availabilityZones": "[if(equals(steps('sessionHosts').availability.option, 'AvailabilityZones'), steps('sessionHosts').availability.availabilityZones, parse('[]'))]",
+				"securityType": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(contains(steps('sessionHosts').image.imageDefinitionApi.transformed.SecurityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.securityType, 'Standard'), if(or(contains(steps('sessionHosts').image.sku, 'win11'), contains(steps('sessionHosts').image.sku, 'g2')), steps('sessionHosts').securityProfile.securityType, 'Standard'))]",
+				"secureBootEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.secureBootEnabled, false)]",
+				"vTpmEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.vTpmEnabled, false)]",
+                "asgResourceId": "[if(empty(steps('sessionHosts').security.asg), '', first(map(steps('sessionHosts').security.asg.value, (asg) => asg.id)))]",
+                "encryptionAtHost": "[steps('sessionHosts').security.encryptionAtHost]",
+                "diskEncryptionSetResourceId": "[if(steps('sessionHosts').security.diskZeroTrust, steps('sessionHosts').security.diskEncryptionSet, '')]",
+                "deployAntiMalwareExt": "[steps('sessionHosts').security.deployAntiMalwareExt]",
+                "identityServiceProvider": "[steps('sessionHosts').identityAndAccounts.identityServiceProvider]",
+                "createIntuneEnrollment": "[steps('sessionHosts').identityAndAccounts.intuneEnrollment]",
+                "identityDomainName": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.identityDomainName, '')]",
+                "sessionHostOuPath": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.ouPath, '')]",
+                "keyVaultResourceId": "[steps('sessionHosts').identityAndAccounts.keyVault.id]",
+                "domainJoinUserPrincipalName": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.domainJoinUserPrincipalName, '')]",
+                "subnetResourceId": "[steps('sessionHosts').network.subnet]",
+                "enableMonitoring": "[steps('sessionHosts').monitoring.enableMonitoring]",
+				"dataCollectionRuleId": "[if(steps('sessionHosts').monitoring.enableMonitoring, steps('sessionHosts').monitoring.dataCollectionRule.id, '')]", 
                 "configureFslogix": "[steps('fslogix').configureFslogix]",
                 "fslogixStorageAccountResourceId": "[if(steps('fslogix').configureFslogix, steps('fslogix').storageAccount.id, '')]",
                 "fslogixFileShareName": "[if(steps('fslogix').configureFslogix, steps('fslogix').fileShareName, '')]",
-                "dataCollectionRuleId": "[if(steps('virtualMachines').monitoring.enableMonitoring, steps('virtualMachines').monitoring.dataCollectionRule.id, '')]",
                 "createResourceTags": "[steps('tags').createResourceTags]",
                 "applicationNameTag": "[if(steps('tags').createResourceTags, steps('tags').applicationNameTag, '')]",
                 "costCenterTag": "[if(steps('tags').createResourceTags, steps('tags').costCenterTag, '')]",

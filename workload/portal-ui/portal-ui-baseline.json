@@ -16,7 +16,7 @@
 								"method": "GET",
 								"path": "subscriptions?api-version=2022-01-01"
 							}
-						},						
+						},
 						{
 							"name": "infoPreReq",
 							"type": "Microsoft.Common.InfoBox",
@@ -56,10 +56,10 @@
 								]
 							}
 						},
-                        {
+						{
 							"name": "avdServicePrincipal",
 							"type": "Microsoft.Solutions.GraphApiControl",
-                            "condition": "[not(empty(steps('basics').resourceScope.subscription))]",
+							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
 							"request": {
 								"method": "GET",
 								"path": "/v1.0/servicePrincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"
@@ -250,7 +250,7 @@
 											"queries": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'DS'), 4194304, 32)]",
 											"disablers": 4,
 											"bladeSubtitle": "Pick the groups to assign",
-											"additionalQueriesOnSearch": 0,											
+											"additionalQueriesOnSearch": 0,
 											"selectionMaximum": 1,
 											"selectionMinimum": 1,
 											"bladeTitle": "Select Groups",
@@ -618,7 +618,7 @@
 											"queries": 4,
 											"bladeSubtitle": "Pick the Service Principal",
 											"additionalQueriesOnSearch": 0,
-											"advancedQueryOptions": {},                                            
+											"advancedQueryOptions": {},
 											"selectionMaximum": 1,
 											"selectionMinimum": 1,
 											"bladeTitle": "Select the Service Principal",
@@ -671,7 +671,6 @@
 							"type": "Microsoft.Common.Section",
 							"visible": "[steps('sessionHosts').deploySessionHosts]",
 							"label": "Region Settings",
-							"tooltip": "The section allows you to specify the region where the compute, storage, and key vault resources are deployed.",
 							"elements": [
 								{
 									"name": "computeApi",
@@ -682,24 +681,6 @@
 									}
 								},
 								{
-									"name": "infoAvailZones",
-									"type": "Microsoft.Common.InfoBox",
-									"visible": true,
-									"options": {
-										"text": "If you select 'Use availability zones' below, some regions may not be available for deployment of session hosts because not all regions support Availability Zones. \n\nThe 'Session hosts region' drop down will automatically update based on this selection. If the value changes to blank, select an alternate region or set 'Use availability zones' to 'No'.",
-										"uri": "https://learn.microsoft.com/azure/reliability/availability-zones-service-support#azure-regions-with-availability-zone-support",
-										"style": "Info"
-									}
-								},
-								{
-									"name": "sessionHostsAvailabilitySettings",
-									"type": "Microsoft.Common.CheckBox",
-									"visible": true,
-									"label": "Availability zones",
-									"defaultValue": true,
-									"toolTip": "Distribute compute resources across availability zones. If 'No' is selected then the VMs will be deployed at a regional level."
-								},
-								{
 									"name": "sessionHostsRegion",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Session hosts region",
@@ -708,25 +689,153 @@
 									"toolTip": "Select the region where the session hosts and required resources are to be deployed.",
 									"constraints": {
 										"required": true,
-										"allowedValues": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false), map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}'))), map(filter(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.zoneMappings)), (item) => equals(length(item.zones), 3)), (item) => parse(concat('{\"label\":\"', item.location, '\",\"value\":\"', toLower(replace(item.location, ' ', '')), '\"}'))))]"
+										"allowedValues": "[map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.computeApi.value, (resourceTypes) => equals(resourceTypes.resourceType, 'virtualMachines')), (item) => item.locations)), (item) => parse(concat('{\"label\":\"', item, '\",\"value\":\"', toLower(replace(item, ' ', '')), '\"}')))]"
+									}
+								},
+								{
+									"name": "resourceSkusApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "[not(empty(steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion))]",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/skus?api-version=2021-07-01&$filter=location eq ', decodeUriComponent('%27'), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, decodeUriComponent('%27'))]"
 									}
 								}
 							]
 						},
 						{
-							"name": "sessionHostsComputeStorageSection",
+							"name": "sessionHostsDomainJoinSettings",
 							"type": "Microsoft.Common.Section",
-							"visible": "[steps('sessionHosts').deploySessionHosts]",
+							"visible": "[and(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')) ,steps('sessionHosts').deploySessionHosts)]",
 							"label": "General settings",
 							"elements": [
 								{
 									"name": "identityDomainOuPath",
 									"type": "Microsoft.Common.TextBox",
-									"visible": "[not(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
 									"label": "Custom OU path (Optional)",
-									"toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU.",
+									"toolTip": "Provide OU where to locate session hosts, if not provided session hosts will be placed on the default Computers container.",
 									"placeholder": "Example: OU=session-hosts,OU=avd,DC=contoso,DC=com",
 									"constraints": {}
+								}
+							]
+						},
+						{
+							"name": "sessionHostsOsSection",
+							"type": "Microsoft.Common.Section",
+							"visible": "[steps('sessionHosts').deploySessionHosts]",
+							"label": "OS selection",
+							"elements": [
+								{
+									"name": "source",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Source",
+									"filter": true,
+									"defaultValue": "Marketplace",
+									"toolTip": "Select marketplace or build custom image to deploy the session hosts.",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Marketplace",
+												"value": "marketplace"
+											},
+											{
+												"label": "Compute Gallery",
+												"value": "computegallery"
+											}
+										]
+									}
+								},
+								{
+									"name": "offer",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Offer",
+									"defaultValue": "Office 365",
+									"toolTip": "Select the desired marketplace image offer.",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "Office 365",
+												"value": "office-365"
+											},
+											{
+												"label": "Windows 10",
+												"value": "Windows-10"
+											},
+											{
+												"label": "Windows 11",
+												"value": "windows-11"
+											}
+										],
+										"required": true
+									},
+									"visible": "[equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')]"
+								},
+								{
+									"name": "skusApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "[and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace'), not(empty(steps('sessionHosts').sessionHostsOsSection.offer)))]",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('sessionHosts').sessionHostsOsSection.offer, '/skus?api-version=2022-08-01')]"
+									}
+								},
+								{
+									"name": "sku",
+									"type": "Microsoft.Common.DropDown",
+									"label": "SKU",
+									"defaultValue": "win11-24h2-avd-m365",
+									"toolTip": "Select the desired marketplace image SKU.",
+									"constraints": {
+										"allowedValues": "[map(steps('sessionHosts').sessionHostsOsSection.skusApi, (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+										"required": true
+									},
+									"visible": "[equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')]"
+								},
+								{
+									"name": "computeGallery",
+									"type": "Microsoft.Solutions.ResourceSelector",
+									"visible": "[equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')]",
+									"label": "Compute Gallery",
+									"resourceType": "Microsoft.Compute/galleries",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "imageDefinitionsApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "[and(equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery'), not(empty(steps('sessionHosts').sessionHostsOsSection.computeGallery)))]",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('sessionHosts').sessionHostsOsSection.computeGallery.id, '/images?api-version=2024-03-03')]",
+										"transforms": {
+											"list": "value|[*].{label:name, value:id}"
+										}
+									}
+								},
+								{
+									"name": "imageDefinition",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Image Definition",
+									"constraints": {
+										"allowedValues": "[steps('sessionHosts').sessionHostsOsSection.imageDefinitionsApi.transformed.list]",
+										"required": true
+									},
+									"visible": "[and(equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery'), not(empty(steps('sessionHosts').sessionHostsOsSection.computeGallery)))]"
+								},
+								{
+									"name": "imageDefinitionApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "[not(empty(steps('sessionHosts').sessionHostsOsSection.imageDefinition))]",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('sessionHosts').sessionHostsOsSection.imageDefinition, '?api-version=2024-03-03')]",
+										"transforms": {
+											"IsAcceleratedNetworkSupported": "properties.features[?name=='IsAcceleratedNetworkSupported'].value | [0]",
+											"SecurityType": "properties.features[?name=='SecurityType'].value | [0]"
+										}
+									}
 								}
 							]
 						},
@@ -756,7 +865,7 @@
 										"Standard_D32s_v3"
 									],
 									"options": {
-										"hideDiskTypeFilter": true
+										"hideDiskTypeFilter": "[if(equals(steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType, 'Premium_LRS'), true, false)]"
 									},
 									"osPlatform": "Windows",
 									"scope": {
@@ -808,6 +917,48 @@
 									}
 								},
 								{
+									"name": "sessionHostdiskSizeGB",
+									"type": "Microsoft.Common.DropDown",
+									"label": "OS Disk Size",
+									"placeholder": "",
+									"defaultValue": "Default from Image (Typically 128 GB)",
+									"toolTip": "",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "Default from Image (Typically 128 GB)",
+												"value": 0
+											},
+											{
+												"label": "Resize to 64 GB (P6)",
+												"value": 64
+											},
+											{
+												"label": "Resize to 128 GB (P10)",
+												"value": 128
+											},
+											{
+												"label": "Resize to 256 GB (P15)",
+												"value": 256
+											},
+											{
+												"label": "Resize to 512 GB (P20)",
+												"value": 512
+											},
+											{
+												"label": "Resize to 1 TB (P30)",
+												"value": 1024
+											},
+											{
+												"label": "Resize to 2 TB (P40)",
+												"value": 2048
+											}
+										],
+										"required": true
+									},
+									"visible": true
+								},
+								{
 									"name": "sessionHostDiskZeroTrust",
 									"type": "Microsoft.Common.CheckBox",
 									"label": "Zero trust disk configuration",
@@ -829,7 +980,16 @@
 									"type": "Microsoft.Common.CheckBox",
 									"label": "Enable accelerated networking",
 									"defaultValue": true,
-									"toolTip": "Enables low latency and high throughput on the network interface."
+									"toolTip": "Enables low latency and high throughput on the network interface.",
+									"visible": "[if(equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery'), if(equals(steps('sessionHosts').sessionHostsOsSection.imageDefinitionApi.transformed.IsAcceleratedNetworkSupported, 'True'), true, false), true)]"
+								},
+								{
+									"name": "enableAntiMalwareExt",
+									"type": "Microsoft.Common.CheckBox",
+									"visible": true,
+									"label": "Enable Antimalware extension",
+									"defaultValue": true,
+									"toolTip": "Enables Azure VM antimalware extension on session hosts."
 								},
 								{
 									"name": "gpuExtensionPolicy",
@@ -837,126 +997,57 @@
 									"label": "Deploy GPU extension policies (AMD and Nvidia)",
 									"defaultValue": false,
 									"toolTip": "Deploy policies and assign policies at pool compute resource group to automatically apply GPU extension policies for AMD and/or Nvidia SKUs."
-								},
-								{
-									"name": "warningAcceleratedNetworkingSupport",
-									"type": "Microsoft.Common.InfoBox",
-									"visible": "[steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource]",
-									"options": {
-										"text": "The Compute Gallery Image definition selected must have the 'isAcceleratedNetworkSupported' feature property set to 'true' if you enable accelerated networking on the session hosts.",
-										"uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/docs/getting-started-baseline.md",
-										"style": "Warning"
-									}
 								}
 							]
 						},
 						{
-							"name": "sessionHostsOsSection",
+							"name": "sessionHostsAvailabilitySection",
 							"type": "Microsoft.Common.Section",
-							"visible": "[steps('sessionHosts').deploySessionHosts]",
-							"label": "OS selection",
+							"label": "Availability Settings",
 							"elements": [
 								{
-									"name": "sessionHostsImageSource",
+									"name": "option",
 									"type": "Microsoft.Common.DropDown",
-									"label": "OS image source",
-									"filter": true,
-									"defaultValue": "Marketplace",
-									"toolTip": "Select marketplace or build custom image to deploy the session hosts.",
+									"defaultValue": "[if(empty(first(map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), 'No infrastructure redundancy required', 'Availability Zones')]",
+									"label": "Availability Option",
+									"toolTip": "Select the redundancy / resiliency for the virtual machines.",
 									"constraints": {
 										"required": true,
-										"allowedValues": [
-											{
-												"label": "Marketplace",
-												"value": false
-											},
-											{
-												"label": "Compute Gallery",
-												"value": true
-											}
-										]
+										"allowedValues": "[if(empty(first(map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), parse('[{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'), parse('[{\"label\":\"Availability Zones\",\"value\":\"AvailabilityZones\"},{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'))]"
 									}
 								},
 								{
-									"name": "sessionHostsOsImage",
+									"name": "availabilityZones",
 									"type": "Microsoft.Common.DropDown",
-									"visible": "[not(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource)]",
-									"label": "OS version",
-									"filter": true,
-									"defaultValue": "Windows 11 23H2",
-									"toolTip": "Select the operating system version of the session hosts.",
+									"label": "Select Availability Zones",
+									"defaultValue": [
+										"Zone 1",
+										"Zone 2",
+										"Zone 3"
+									],
+									"multiselect": true,
+									"selectAll": true,
+									"toolTip": "Select the desired Availability Zones",
 									"constraints": {
-										"required": true,
-										"allowedValues": [
-											{
-												"label": "Windows 10 22H2 (Gen2)",
-												"value": "win10_22h2_g2"
-											},
-											{
-												"label": "Windows 10 22H2 - Office 365 (Gen2)",
-												"value": "win10_22h2_office_g2"
-											},
-											{
-												"label": "Windows 11 22H2",
-												"value": "win11_22h2"
-											},
-											{
-												"label": "Windows 11 22H2 - Office 365",
-												"value": "win11_22h2_office"
-											},
-											{
-												"label": "Windows 11 23H2",
-												"value": "win11_23h2"
-											},
-											{
-												"label": "Windows 11 23H2 - Office 365",
-												"value": "win11_23h2_office"
-											},
-											{
-												"label": "Windows 11 24H2",
-												"value": "win11_24h2"
-											},
-											{
-												"label": "Windows 11 24H2 - Office 365",
-												"value": "win11_24h2_office"
-											}
-										]
-									}
-								},
-								{
-									"name": "sessionHostsComputeGalleryImage",
-									"type": "Microsoft.Solutions.ResourceSelector",
-									"visible": "[steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource]",
-									"label": "Image",
-									"resourceType": "Microsoft.Compute/galleries/images",
-									"constraints": {
+										"allowedValues": "[map(first(map(first(map(filter(steps('sessionHosts').sessionHostsRegionSection.resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize)), (sku) => sku.locationInfo)), (sku) => sku.zones)), (zone) => parse(concat('{\"label\":\"Zone ', zone, '\",\"value\":\"', zone, '\"}')))]",
 										"required": true
-									}
+									},
+									"visible": "[equals(steps('sessionHosts').sessionHostsAvailabilitySection.option, 'AvailabilityZones')]"
 								}
 							]
 						},
 						{
 							"name": "sessionHostsSecuritySection",
 							"type": "Microsoft.Common.Section",
-							"visible": "[and(equals(steps('sessionHosts').deploySessionHosts, true), or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2'), not(empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage))))]",
-							"label": "Security profile",
+							"label": "Security Profile",
+							"visible": "[if(equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery'), if(contains(steps('sessionHosts').sessionHostsOsSection.imageDefinitionApi.transformed.SecurityType, 'TrustedLaunch'), true, false), if(or(contains(steps('sessionHosts').sessionHostsOsSection.sku, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sku, 'g2')), true, false))]",
 							"elements": [
-								{
-									"name": "sessionHostSecurityTypeWarning",
-									"type": "Microsoft.Common.InfoBox",
-									"visible": "[not(empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage))]",
-									"options": {
-										"text": "Setting the Security Type to anything other than 'Standard' requires that the Azure Compute Gallery Image Definition be configured with the Security Type feature set to the appropriate value. You can determine if the image definition supports the required feature by reviewing the 'Properties' tab on the 'Overview' node of the Gallery Image Definition in the portal. If the image definition does not contain these feature options, then the deployment will fail.",
-										"uri": "https://learn.microsoft.com/azure/templates/microsoft.compute/galleries/images?pivots=deployment-language-bicep",
-										"style": "Warning"
-									}
-								},
 								{
 									"name": "securityType",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Security type",
 									"filter": true,
-									"defaultValue": "Trusted Launch Virtual Machines",
+									"defaultValue": "Trusted Launch",
 									"toolTip": "Choose a type of security that matches your needs: Standard includes basic protections at no additional cost. Trusted launch virtual machines provide additional security features on Gen2 virtual machines to protect against persistent and advanced attacks.",
 									"constraints": {
 										"required": true,
@@ -966,12 +1057,8 @@
 												"value": "Standard"
 											},
 											{
-												"label": "Trusted Launch Virtual Machines",
+												"label": "Trusted Launch",
 												"value": "TrustedLaunch"
-											},
-											{
-												"label": "Confidential Virtual Machines",
-												"value": "ConfidentialVM"
 											}
 										]
 									}
@@ -979,7 +1066,7 @@
 								{
 									"name": "secureBootEnabled",
 									"type": "Microsoft.Common.CheckBox",
-									"visible": "[or(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'ConfidentialVM'))]",
+									"visible": "[if(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), true, false)]",
 									"label": "Enable secure boot",
 									"defaultValue": true,
 									"toolTip": "Secure boot helps protect your VMs against boot kits, rootkits, and kernel-level malware."
@@ -987,18 +1074,10 @@
 								{
 									"name": "vTpmEnabled",
 									"type": "Microsoft.Common.CheckBox",
-									"visible": "[or(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'ConfidentialVM'))]",
+									"visible": "[if(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), true, false)]",
 									"label": "Enable vTPM",
 									"defaultValue": true,
 									"toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets."
-								},
-								{
-									"name": "enableAntiMalwareExt",
-									"type": "Microsoft.Common.CheckBox",
-									"visible": true,
-									"label": "Enable Antimalware extension",
-									"defaultValue": true,
-									"toolTip": "Enables Azure VM antimalware extension on session hosts."
 								}
 							]
 						}
@@ -1752,7 +1831,7 @@
 								{
 									"name": "infoAzureDNSzones3",
 									"type": "Microsoft.Common.InfoBox",
-									"visible": "[and(steps('network').deployAvdPrivateLinkService, not(steps('network').virtualNetworkPrivateDnsZone), (or(empty(filter(steps('network').virtualNetworkPrivateDnsZoneSelection.privateDNSZonesApi.value, (zone) => contains(zone.name, 'privatelink-global.wvd.'))), empty(filter(steps('network').virtualNetworkPrivateDnsZoneSelection.privateDNSZonesApi.value, (zone) => contains(zone.name, 'privatelink.wvd.')))))]",
+									"visible": "[and(steps('network').deployAvdPrivateLinkService, not(steps('network').virtualNetworkPrivateDnsZone), or(empty(filter(steps('network').virtualNetworkPrivateDnsZoneSelection.privateDNSZonesApi.value, (zone) => contains(zone.name, 'privatelink-global.wvd.'))), empty(filter(steps('network').virtualNetworkPrivateDnsZoneSelection.privateDNSZonesApi.value, (zone) => contains(zone.name, 'privatelink.wvd.')))))]",
 									"options": {
 										"text": "Private DNS zone name spaces: <br/> AVD Discovery: <br/> - Azure Commercial: privatelink-global.wvd.microsoft.com <br/> - Azure Government: privatelink-global.wvd.azure.us <br/> - Azure China: privatelink-global.wvd.azure.cn <br/> AVD Connection/Feed: <br/> - Azure Commercial: privatelink.wvd.microsoft.com <br/> - Azure Government: privatelink.wvd.azure.us <br/> - Azure China: privatelink.wvd.azure.cn",
 										"style": "Info"
@@ -2467,7 +2546,7 @@
 						{
 							"name": "resourceTags",
 							"type": "Microsoft.Common.Section",
-							"label": "Resources tags:",
+							"label": "Resource tags:",
 							"visible": "[steps('resourceTagging').resourceTaggingSelection]",
 							"elements": [
 								{
@@ -2477,7 +2556,7 @@
 									"toolTip": "This input will be the value of a tag named WorkloadName.",
 									"placeholder": "Example: Contoso-Workload",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"regex": "^[a-z0-9A-Z-]{1,256}$",
 										"validationMessage": "Value must be 1-256 characters."
 									}
@@ -2490,7 +2569,7 @@
 									"defaultValue": "Light",
 									"toolTip": "This input will be the value of a tag named WorkloadType, reference to the size of the VM for your workloads.",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"allowedValues": [
 											{
 												"label": "Light",
@@ -2523,7 +2602,7 @@
 									"defaultValue": "Non-business",
 									"toolTip": "This input will be the value of a tag named DataClassification, reference to the sensitivity of data hosted.",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"allowedValues": [
 											{
 												"label": "Non-business",
@@ -2560,7 +2639,7 @@
 									"toolTip": "This input will be the value of a tag named Department, reference the department that owns the deployment.",
 									"placeholder": "Example: Contoso-AVD",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"regex": "^[a-z0-9A-Z-]{1,256}$",
 										"validationMessage": "Value must be 1-256 characters."
 									}
@@ -2570,10 +2649,9 @@
 									"type": "Microsoft.Common.DropDown",
 									"label": "Workload criticality:",
 									"filter": true,
-									"defaultValue": "Low",
 									"toolTip": "This input will be the value of a tag named Criticality, reference to the criticality of the workload.",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"allowedValues": [
 											{
 												"label": "Low",
@@ -2611,7 +2689,7 @@
 									"toolTip": "This input will be the value of a tag named Criticality, reference to a custom criticality for the workload.",
 									"placeholder": "Example: Contoso-Criticality",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"regex": "^[a-z0-9A-Z-]{1,256}$",
 										"validationMessage": "Value must be 1-256 characters."
 									}
@@ -2623,7 +2701,7 @@
 									"toolTip": "This input will be the value of a tag named ApplicationName, reference details about the application.",
 									"placeholder": "Example: Contoso-App",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"regex": "^[a-z0-9A-Z-]{1,256}$",
 										"validationMessage": "Value must be 1-256 characters."
 									}
@@ -2635,7 +2713,7 @@
 									"toolTip": "This input will be the value of a tag named ServiceClass, reference to the service level agreement level of the worload.",
 									"placeholder": "Example: Contoso-SLA",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"regex": "^[a-z0-9A-Z-]{1,256}$",
 										"validationMessage": "Value must be 1-256 characters."
 									}
@@ -2647,7 +2725,7 @@
 									"toolTip": "This input will be the value of a tag named OpsTeam, reference to the team accountable for day-to-day operations.",
 									"placeholder": "Example: workload-admins@Contoso.com",
 									"constraints": {
-										"required": true
+										"required": false
 									}
 								},
 								{
@@ -2657,7 +2735,7 @@
 									"toolTip": "This input will be the value of a tag named Owner, reference to the organizational owner of the Azure Virtual Desktop deployment.",
 									"placeholder": "Example: workload-owner@Contoso.com",
 									"constraints": {
-										"required": true
+										"required": false
 									}
 								},
 								{
@@ -2667,7 +2745,7 @@
 									"toolTip": "This input will be the value of a tag named CostCenter, reference to the cost center of owner team.",
 									"placeholder": "Example: Contoso-CC",
 									"constraints": {
-										"required": true,
+										"required": false,
 										"regex": "^[a-z0-9A-Z-]{1,256}$",
 										"validationMessage": "Value must be 1-256 characters."
 									}
@@ -2698,7 +2776,7 @@
 				"identityDomainName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainInformation.identityDomainName)]",
 				"identityDomainGuid": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainInformation.identityDomainGuid)]",
 				"avdSecurityGroups": "[steps('identity').identityAvdAccess.groupPickerBlade.transformed.selection]",
-				"avdOuPath": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
+				"avdOuPath": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('sessionHosts').sessionHostsDomainJoinSettings.identityDomainOuPath)]",
 				"avdDomainJoinUserName": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
 				"avdDomainJoinUserPassword": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
 				"avdVmLocalUserName": "[steps('identity').identityLocalCredentials.identityLocalUserName]",
@@ -2715,19 +2793,22 @@
 				"avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
 				"avdStartVmOnConnect": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
 				"avdDeployScalingPlan": "[if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
-				"availabilityZonesCompute": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
+				"availability": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsAvailabilitySection.option, 'None')]",
+				"availabilityZones": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsAvailabilitySection.option, 'AvailabilityZones')), steps('sessionHosts').sessionHostsAvailabilitySection.availabilityZones, parse('[]'))]",
 				"zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
-				"avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
-				"useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
-				"avdOsImage": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false), steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11_23h2')]",
-				"securityType": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.securityType, 'Standard')]",
-				"secureBootEnabled": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled, false)]",
-				"vTpmEnabled": "[if(and(or(contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sessionHostsOsImage, 'g2')), empty(steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage)), steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled, false)]",
-				"deployAntiMalwareExt": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSecuritySection.enableAntiMalwareExt, true)]",
-				"avdImageTemplateDefinitionId": "[if(equals(steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsComputeGalleryImage.id, '')]",
+				"avdDeploySessionHostsCount": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
+				"useSharedImage": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), true, false)]",
+				"mpImageOffer": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.offer, '')]",
+				"mpImageSku": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.sku, '')]",
+				"avdcustomImageDefinitionId": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'customimage')), steps('sessionHosts').sessionHostsOsSection.imageDefinition, '')]",
+				"deployAntiMalwareExt": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.enableAntiMalwareExt, true)]",
 				"avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
-				"enableAcceleratedNetworking": "[steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking]",
+				"customOsDiskSizeGB": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostdiskSizeGB]",
 				"avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
+				"enableAcceleratedNetworking": "[if(equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery'), if(equals(steps('sessionHosts').sessionHostsOsSection.imageDefinitionApi.transformed.IsAcceleratedNetworkSupported, 'True'), steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking, false), steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking)]",
+				"securityType": "[if(equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery'), if(contains(steps('sessionHosts').sessionHostsOsSection.imageDefinitionApi.transformed.SecurityType, 'TrustedLaunch'), steps('sessionHosts').sessionHostsSecuritySection.securityType, 'Standard'), if(or(contains(steps('sessionHosts').sessionHostsOsSection.sku, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sku, 'g2')), steps('sessionHosts').sessionHostsSecuritySection.securityType, 'Standard'))]",
+				"secureBootEnabled": "[if(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled, false)]",
+				"vTpmEnabled": "[if(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled, false)]",
 				"deployDDoSNetworkProtection": "[steps('network').deployDDoSNetworkProtection]",
 				"deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
 				"deployAvdPrivateLinkService": "[steps('network').deployAvdPrivateLinkService]",
