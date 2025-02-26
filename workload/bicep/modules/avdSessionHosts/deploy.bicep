@@ -83,7 +83,7 @@ param customOsDiskSizeGB int = 0
 param useSharedImage bool
 
 @sys.description('AVD OS image publisher.')
-param mpImagePublisher string = 'microsoftwindowsdesktop'
+param mpImagePublisher string = 'MicrosoftWindowsDesktop'
 
 @sys.description('AVD OS image SKU.')
 param mpImageOffer string = ''
@@ -208,9 +208,9 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
             id: customImageDefinitionId
           }
         : {
-            publisher: toLower(mpImagePublisher)
-            offer: toLower(mpImageOffer)
-            sku: toLower(mpImageSku)
+            publisher: mpImagePublisher
+            offer: mpImageOffer
+            sku: mpImageSku
             version: 'latest'
           }
       osDisk: customOsDiskSizeGB != 0 ? varCustomOsDiskProperties : varOsDiskProperties

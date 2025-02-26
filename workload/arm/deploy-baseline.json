@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4831022654295500681"
+      "templateHash": "8105691250959910787"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -32856,7 +32856,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "11068576417267273100"
+              "templateHash": "8960215367422223477"
             }
           },
           "parameters": {
@@ -33002,7 +33002,7 @@
             },
             "mpImagePublisher": {
               "type": "string",
-              "defaultValue": "microsoftwindowsdesktop",
+              "defaultValue": "MicrosoftWindowsDesktop",
               "metadata": {
                 "description": "AVD OS image publisher."
               }
@@ -33195,7 +33195,7 @@
                   "vTpmEnabled": {
                     "value": "[parameters('vTpmEnabled')]"
                   },
-                  "imageReference": "[if(parameters('useSharedImage'), createObject('value', createObject('id', parameters('customImageDefinitionId'))), createObject('value', createObject('publisher', toLower(parameters('mpImagePublisher')), 'offer', toLower(parameters('mpImageOffer')), 'sku', toLower(parameters('mpImageSku')), 'version', 'latest')))]",
+                  "imageReference": "[if(parameters('useSharedImage'), createObject('value', createObject('id', parameters('customImageDefinitionId'))), createObject('value', createObject('publisher', parameters('mpImagePublisher'), 'offer', parameters('mpImageOffer'), 'sku', parameters('mpImageSku'), 'version', 'latest')))]",
                   "osDisk": "[if(not(equals(parameters('customOsDiskSizeGB'), 0)), createObject('value', variables('varCustomOsDiskProperties')), createObject('value', variables('varOsDiskProperties')))]",
                   "adminUsername": {
                     "reference": {
