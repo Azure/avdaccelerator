@@ -138,9 +138,8 @@ param fslogixStorageAccountResourceId string = ''
 @sys.description('FSLogix file share name.')
 param fslogixFileShareName string = ''
 
-@sys.description('Apply tags on resources and resource groups. (Default: false)')
+@sys.description('Apply tags on resources and resource groups.')
 param createResourceTags bool = false
-
 
 @sys.description('Details about the application.')
 param applicationNameTag string = ''
@@ -149,6 +148,7 @@ param applicationNameTag string = ''
 param costCenterTag string = ''
 
 @allowed([
+  ''
   'Non-business'
   'Public'
   'General'
@@ -156,7 +156,7 @@ param costCenterTag string = ''
   'Highly-confidential'
 ])
 @sys.description('Sensitivity of data hosted')
-param dataClassificationTag string = 'Non-business'
+param dataClassificationTag string = ''
 
 @sys.description('Department that owns the deployment.')
 param departmentTag string = ''
@@ -171,15 +171,17 @@ param ownerTag string = ''
 param workloadNameTag string = ''
 
 @allowed([
+  ''
   'Light'
   'Medium'
   'High'
   'Power'
 ])
 @sys.description('Reference to the size of the VM for your workloads.')
-param workloadTypeTag string = 'Light'
+param workloadTypeTag string = ''
 
 @allowed([
+  ''
   'Low'
   'Medium'
   'High'
@@ -187,7 +189,7 @@ param workloadTypeTag string = 'Light'
   'Custom'
 ])
 @sys.description('Criticality of the workload.')
-param workloadCriticalityTag string = 'Low'
+param workloadCriticalityTag string = ''
 
 @sys.description('Tag value for custom criticality value.')
 param workloadCriticalityCustomValueTag string = ''

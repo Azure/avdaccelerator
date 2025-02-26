@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15714109694126949144"
+      "templateHash": "10864969307158506973"
     }
   },
   "parameters": {
@@ -296,7 +296,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Apply tags on resources and resource groups. (Default: false)"
+        "description": "Apply tags on resources and resource groups."
       }
     },
     "applicationNameTag": {
@@ -315,8 +315,9 @@
     },
     "dataClassificationTag": {
       "type": "string",
-      "defaultValue": "Non-business",
+      "defaultValue": "",
       "allowedValues": [
+        "",
         "Non-business",
         "Public",
         "General",
@@ -357,8 +358,9 @@
     },
     "workloadTypeTag": {
       "type": "string",
-      "defaultValue": "Light",
+      "defaultValue": "",
       "allowedValues": [
+        "",
         "Light",
         "Medium",
         "High",
@@ -370,8 +372,9 @@
     },
     "workloadCriticalityTag": {
       "type": "string",
-      "defaultValue": "Low",
+      "defaultValue": "",
       "allowedValues": [
+        "",
         "Low",
         "Medium",
         "High",
