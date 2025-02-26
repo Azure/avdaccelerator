@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "13030728374835656784"
+      "templateHash": "963397568094453895"
     }
   },
   "parameters": {
@@ -2458,7 +2458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8208486074488552172"
+              "templateHash": "11068576417267273100"
             }
           },
           "parameters": {
@@ -2600,6 +2600,13 @@
               "type": "bool",
               "metadata": {
                 "description": "Set to deploy image from Azure Compute Gallery."
+              }
+            },
+            "mpImagePublisher": {
+              "type": "string",
+              "defaultValue": "microsoftwindowsdesktop",
+              "metadata": {
+                "description": "AVD OS image publisher."
               }
             },
             "mpImageOffer": {
@@ -2790,7 +2797,7 @@
                   "vTpmEnabled": {
                     "value": "[parameters('vTpmEnabled')]"
                   },
-                  "imageReference": "[if(parameters('useSharedImage'), createObject('value', createObject('id', parameters('customImageDefinitionId'))), createObject('value', createObject('publisher', 'MicrosoftWindowsDesktop', 'offer', parameters('mpImageOffer'), 'sku', parameters('mpImageSku'), 'version', 'latest')))]",
+                  "imageReference": "[if(parameters('useSharedImage'), createObject('value', createObject('id', parameters('customImageDefinitionId'))), createObject('value', createObject('publisher', toLower(parameters('mpImagePublisher')), 'offer', toLower(parameters('mpImageOffer')), 'sku', toLower(parameters('mpImageSku')), 'version', 'latest')))]",
                   "osDisk": "[if(not(equals(parameters('customOsDiskSizeGB'), 0)), createObject('value', variables('varCustomOsDiskProperties')), createObject('value', variables('varOsDiskProperties')))]",
                   "adminUsername": {
                     "reference": {

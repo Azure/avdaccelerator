@@ -82,6 +82,9 @@ param customOsDiskSizeGB int = 0
 @sys.description('Set to deploy image from Azure Compute Gallery.')
 param useSharedImage bool
 
+@sys.description('AVD OS image publisher.')
+param mpImagePublisher string = 'microsoftwindowsdesktop'
+
 @sys.description('AVD OS image SKU.')
 param mpImageOffer string = ''
 
@@ -205,9 +208,9 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
             id: customImageDefinitionId
           }
         : {
-            publisher: 'MicrosoftWindowsDesktop'
-            offer: mpImageOffer
-            sku: mpImageSku
+            publisher: toLower(mpImagePublisher)
+            offer: toLower(mpImageOffer)
+            sku: toLower(mpImageSku)
             version: 'latest'
           }
       osDisk: customOsDiskSizeGB != 0 ? varCustomOsDiskProperties : varOsDiskProperties
