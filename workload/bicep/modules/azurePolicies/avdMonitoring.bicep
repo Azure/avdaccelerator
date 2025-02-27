@@ -13,19 +13,7 @@ param subscriptionId string
 param alaWorkspaceId string
 
 @sys.description('Existing data collection rule.')
-param dataCollectionRuleId string
-
-@sys.description('AVD Resource Group Name for the compute resources.')
-param computeObjectsRgName string
-
-@sys.description('AVD Resource Group Name for the service objects.')
-param serviceObjectsRgName string
-
-@sys.description('AVD Resource Group Name for the network resources.')
-param networkObjectsRgName string
-
-@sys.description('AVD Resource Group Name for the storage resources.')
-param storageObjectsRgName string
+param dcrResourceId string
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -33,37 +21,17 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-// Target RGs for policy assignment
-var varComputeServObjRgs = [
-  {
-    rgName: computeObjectsRgName
-  }
-  {
-    rgName: serviceObjectsRgName
-  }
-]
-var varNetworkObjRgs = !empty(networkObjectsRgName) ? [
-  {
-    rgName: networkObjectsRgName
-  }
-] : []
-var varStorageObjRgs = !empty(storageObjectsRgName) ? [
-  {
-    rgName: storageObjectsRgName
-  }
-] : []
-var varPolicyAssignmentRgs = union(varComputeServObjRgs, varNetworkObjRgs, varStorageObjRgs)
 var varAvdMonitoringPolicies = [
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/17b3de92-f710-4cf4-aa55-0e7859f1ed7b'
-    // definitionParameters: {
+    definitionParameters: {
       listOfImageIdToInclude: {
         value: []
       }
       effect: {
         value: 'Modify'
       }
-    // }
+    }
   }
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/3aa571d2-2e4f-4e92-8a30-4312860efbe1'
@@ -75,12 +43,11 @@ var varAvdMonitoringPolicies = [
         value: 'DeployIfNotExists'
       }
       resourceLocationList: {
-        value: '*'
+        value: ['*']
       }
       logAnalytics: {
-        value: alaWorkspaceId
+        value: ''
       }
-      
     }
   }
   {
@@ -93,10 +60,10 @@ var varAvdMonitoringPolicies = [
         value: 'DeployIfNotExists'
       }
       resourceLocationList: {
-        value: '*'
+        value: ['*']
       }
       logAnalytics: {
-        value: alaWorkspaceId
+        value: ''
       }
       categoryGroup: {
         value: 'allLogs'
@@ -127,21 +94,30 @@ var varAvdMonitoringPolicies = [
         value: 'DeployIfNotExists'
       }
       resourceLocationList: {
-        value: '*'
+        value: ['*']
+      }
+      logAnalytics: {
+        value: ''
       }
     }
   }
   {
-    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/6bb23bce-54ea-4d3d-b07d-628ce0f2e4e3'
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/eab1f514-22e3-42e3-9a1f-e1dc9199355c'
     definitionParameters: {
-      diagnosticSettingName: {
-        value: 'setByPolicy-AVD-MonitoringPolicies'
+      scopeToSupportedImages: {
+        value: true
       }
       Effect: {
         value: 'DeployIfNotExists'
       }
-      resourceLocationList: {
-        value: '*'
+      listOfWindowsImageIdToInclude: {
+        value: []
+      }
+      dcrResourceId: {
+        value: ''
+      }
+      resourceType: {
+        value: 'Microsoft.Insights/dataCollectionRules'
       }
     }
   }
@@ -155,10 +131,10 @@ var varAvdMonitoringPolicies = [
         value: 'DeployIfNotExists'
       }
       resourceLocationList: {
-        value: '*'
+        value: ['*']
       }
       logAnalytics: {
-        value: alaWorkspaceId
+        value: ''
       }
     }
   }
@@ -183,8 +159,8 @@ var varAvdMonitoringPolicies = [
 // =========== //
 
 // Policy set definition.
-module policySetDefinitions './policySetDefinitionsSubscriptions.bicep' = {
-  scope: subscription('${subscriptionId}')
+module policySetDefinition './policySetDefinitionsSubscriptions.bicep' = {
+  scope: subscription(subscriptionId)
   name: 'Policy-Set-Definition-${time}'
   params: {
     name: 'AVD-Monitoring-Policy-Set'
@@ -194,57 +170,60 @@ module policySetDefinitions './policySetDefinitionsSubscriptions.bicep' = {
       category: 'AVD Monitoring'
       version: '1.0.0'
     }
-    identity: 'SystemAssigned'
-
-    parameters: varCustomPolicySetDefinitions.libSetDefinition.properties.parameters
-    policyDefinitions: [for policySetDef in varCustomPolicySetDefinitions.libSetChildDefinitions: {
-      policyDefinitionReferenceId: policySetDef.definitionReferenceId
-      policyDefinitionId: policySetDef.definitionId
-      parameters: policySetDef.definitionParameters
-    }]
-    policyDefinitionGroups: []
-  }
-  dependsOn: [
-    policyDefinitions
-  ]
-}
-
-// Policy set assignment.
-module policySetAssignment '../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/resource-group.bicep' = [for policyAssignmentRg in varPolicyAssignmentRgs: {
-  scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
-  name: 'Policy-Set-Assignment-${time}'
-  params: {
-    location: location
-    name: varCustomPolicySetDefinitions.libSetDefinition.name
-    description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
-    displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
-    metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
-    identity: 'SystemAssigned'
-    roleDefinitionIds: [
-      '/providers/Microsoft.Authorization/roleDefinitions/749f88d5-cbae-40b8-bcfc-e573ddc772fa'
-      '/providers/Microsoft.Authorization/roleDefinitions/92aaf0da-9dab-42b6-94a3-d43ce8d16293'
+    policyDefinitions: [
+      for policy in varAvdMonitoringPolicies: {
+        policyDefinitionId: policy.definitionId
+        parameters: policy.definitionParameters
+      }
     ]
     parameters: {
       logAnalytics: {
-        value: alaWorkspaceId
+        type: 'String'
+        defaultValue: alaWorkspaceId
+      }
+      dcrResourceId: {
+        type: 'String'
+        defaultValue: dcrResourceId
       }
     }
-    policyDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policySetDefinitions/policy-set-deploy-avd-diagnostics-to-log-analytics'
   }
-  dependsOn: [
-    policySetDefinitions
-  ]
-}]
-
-// Policy set remediation.
-module policySetRemediation '../../../../avm/1.0.0/ptn/policy-insights/remediation/modules/resource-group.bicep' = [for (policyAssignmentRg, i) in varPolicyAssignmentRgs: {
-  scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
-  name: 'Remm-Diag-${varCustomPolicySetDefinitions.deploymentName}-${i}'
-  params: {
-    name: '${varCustomPolicySetDefinitions.deploymentName}-${i}'
-    policyAssignmentId: policySetAssignment[i].outputs.resourceId
 }
-}]
+
+// // Policy set assignment.
+// module policySetAssignment '../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/subscription.bicep' = {
+//   scope: subscription('${subscriptionId}')
+//   name: 'Policy-Set-Assignment-${time}'
+//   params: {
+//     location: location
+//     name: 'Custom - Deploy Monitoring to AVD Landing Zone'
+//     description: 'Custom - Deploy Monitoring to AVD Landing Zone'
+//     displayName: 'Custom - Deploy Monitoring to AVD Landing Zone'
+//     metadata: {
+//       category: 'AVD Monitoring'
+//       version: '1.0.0'
+//     }
+//     identity: 'SystemAssigned'
+//     parameters: {
+//       logAnalytics: {
+//         value: alaWorkspaceId
+//       }
+//       dcrResourceId: {
+//         value: dcrResourceId
+//       }
+//     }
+//     policyDefinitionId: policySetDefinition.outputs.resourceId
+//   }
+// }
+
+// // Policy set remediation.
+// module policySetRemediation '../../../../avm/1.0.0/ptn/policy-insights/remediation/modules/resource-group.bicep' = [for (policyAssignmentRg, i) in varPolicyAssignmentRgs: {
+//   scope: resourceGroup('${subscriptionId}', '${policyAssignmentRg.rgName}')
+//   name: 'Remm-Diag-${varCustomPolicySetDefinitions.deploymentName}-${i}'
+//   params: {
+//     name: '${varCustomPolicySetDefinitions.deploymentName}-${i}'
+//     policyAssignmentId: policySetAssignment[i].outputs.resourceId
+// }
+// }]
 
 // =========== //
 // Outputs     //

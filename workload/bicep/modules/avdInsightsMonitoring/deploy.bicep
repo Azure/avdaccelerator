@@ -126,7 +126,7 @@ module assignAvdMonitoringPolicies '../azurePolicies/avdMonitoring.bicep' = if (
     serviceObjectsRgName: serviceObjectsRgName
     storageObjectsRgName: storageObjectsRgName
     networkObjectsRgName: networkObjectsRgName
-    dataCollectionRuleId: dataCollectionRule.outputs.dataCollectionRulesId
+    dcrResourceId: dataCollectionRule.outputs.dataCollectionRulesId
   }
   dependsOn: [
     baselineMonitoringResourceGroup
