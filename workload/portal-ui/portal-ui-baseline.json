@@ -652,7 +652,7 @@
 										"required": true
 									},
 									"link": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), empty(steps('basics').avdServicePrincipals))]"
+									"visible": "[and(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), empty(first(steps('basics').avdServicePrincipals.value)))]"
 								}
 							]
 						}
@@ -1331,7 +1331,7 @@
 										"required": true
 									},
 									"link": "[if(empty(steps('storage').storageAppAttach.servicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(steps('basics').avdServicePrincipals), empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade))]"
+									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(first(steps('basics').avdServicePrincipals.value)), empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade))]"
 								},
 								{
 									"name": "armServicePrincipalPickerBlade",
@@ -1378,7 +1378,7 @@
 										"required": true
 									},
 									"link": "[if(empty(steps('storage').storageAppAttach.armServicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(steps('basics').avdServicePrincipals))]"
+									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(first(steps('basics').avdServicePrincipals.value)))]"
 								}
 							]
 						}
@@ -2767,8 +2767,8 @@
 		},
 		"outputs": {
 			"parameters": {
-				"avdServicePrincipalObjectId": "[if(empty(steps('basics').avdServicePrincipals), if(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), '')), first(steps('basics').avdServicePrincipals.transformed.avd))]",
-				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(steps('basics').avdServicePrincipals), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdServicePrincipals.transformed.avdARMProvider)), '')]",
+				"avdServicePrincipalObjectId": "[if(empty(first(steps('basics').avdServicePrincipals.value)), if(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), '')), first(steps('basics').avdServicePrincipals.transformed.avd))]",
+				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdServicePrincipals.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdServicePrincipals.transformed.avdARMProvider)), '')]",
 				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
 				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
 				"diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
