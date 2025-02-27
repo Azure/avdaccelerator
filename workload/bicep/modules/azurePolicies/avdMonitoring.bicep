@@ -32,6 +32,7 @@ var varAvdMonitoringPolicies = [
         value: 'Modify'
       }
     }
+    targetName: 'AMA-System-Managed-Identity'
   }
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/3aa571d2-2e4f-4e92-8a30-4312860efbe1'
@@ -49,6 +50,7 @@ var varAvdMonitoringPolicies = [
         value: ''
       }
     }
+    targetName: 'Application-Group'
   }
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/8ea88471-98e1-47e4-9f63-838c990ba2f4'
@@ -63,12 +65,13 @@ var varAvdMonitoringPolicies = [
         value: ['*']
       }
       logAnalytics: {
-        value: ''
+        value: alaWorkspaceId
       }
       categoryGroup: {
         value: 'allLogs'
       }
     }
+    targetName: 'Scaling-Plan'
   }
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/ca817e41-e85a-4783-bc7f-dc532d36235e'
@@ -83,6 +86,7 @@ var varAvdMonitoringPolicies = [
         value: []
       }
     }
+    targetName: 'AMA-VM'
   }
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/6bb23bce-54ea-4d3d-b07d-628ce0f2e4e3'
@@ -97,9 +101,10 @@ var varAvdMonitoringPolicies = [
         value: ['*']
       }
       logAnalytics: {
-        value: ''
+        value: alaWorkspaceId
       }
     }
+    targetName: 'Workspace'
   }
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/eab1f514-22e3-42e3-9a1f-e1dc9199355c'
@@ -114,12 +119,13 @@ var varAvdMonitoringPolicies = [
         value: []
       }
       dcrResourceId: {
-        value: ''
+        value: dcrResourceId
       }
       resourceType: {
         value: 'Microsoft.Insights/dataCollectionRules'
       }
     }
+    targetName: 'DCR-Association'
   }
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/6f95136f-6544-4722-a354-25a18ddb18a7'
@@ -134,9 +140,10 @@ var varAvdMonitoringPolicies = [
         value: ['*']
       }
       logAnalytics: {
-        value: ''
+        value: alaWorkspaceId
       }
     }
+    targetName: 'Hostpool'
   }
   {
     definitionId: '/providers/Microsoft.Authorization/policyDefinitions/89ca9cc7-25cd-4d53-97ba-445ca7a1f222'
@@ -151,6 +158,7 @@ var varAvdMonitoringPolicies = [
         value: true
       }
     }
+    targetName: 'AMA-Dependency-Agent'
   }
 ]
 
@@ -158,36 +166,63 @@ var varAvdMonitoringPolicies = [
 // Deployments //
 // =========== //
 
-// Policy set definition.
-module policySetDefinition './policySetDefinitionsSubscriptions.bicep' = {
+// Policy assignment for each policy in varAvdMonitoringPolicies
+module policyAssignments '../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/subscription.bicep' = [for (policy, i) in varAvdMonitoringPolicies: {
   scope: subscription(subscriptionId)
-  name: 'Policy-Set-Definition-${time}'
+  name: 'policyAssignment-${i}-${time}'
   params: {
-    name: 'AVD-Monitoring-Policy-Set'
-    description: 'AVD Monitoring Policy Set'
-    displayName: 'AVD Monitoring Policy Set'
-    metadata: {
-      category: 'AVD Monitoring'
-      version: '1.0.0'
-    }
-    policyDefinitions: [
-      for policy in varAvdMonitoringPolicies: {
-        policyDefinitionId: policy.definitionId
-        parameters: policy.definitionParameters
-      }
-    ]
-    parameters: {
-      logAnalytics: {
-        type: 'String'
-        defaultValue: alaWorkspaceId
-      }
-      dcrResourceId: {
-        type: 'String'
-        defaultValue: dcrResourceId
-      }
-    }
+    name: 'AVD Monitoring - ${policy.targetName}'
+    location: location
+    displayName: 'AVD Monitoring - ${policy.targetName}'
+    policyDefinitionId: policy.definitionId
+    parameters: policy.definitionParameters
+    identity: 'SystemAssigned'
   }
+}]
+
+// Policy set remediation.
+module policyRemediations '../../../../avm/1.0.0/ptn/policy-insights/remediation/modules/subscription.bicep' = [for (policy, i) in varAvdMonitoringPolicies: {
+  scope: subscription(subscriptionId)
+  name: 'policyRemediation-${i}-${time}'
+  params: {
+    name: 'AVD Monitoring - ${policy.targetName}'
+    location: location
+    policyAssignmentId: policyAssignments[i].outputs.resourceId
 }
+}]
+
+// // Policy set definition.
+// module policySetDefinition './policySetDefinitionsSubscriptions.bicep' = {
+//   scope: subscription(subscriptionId)
+//   name: 'Policy-Set-Definition-${time}'
+//   params: {
+//     name: 'AVD-Monitoring-Policy-Set'
+//     description: 'AVD Monitoring Policy Set'
+//     displayName: 'AVD Monitoring Policy Set'
+//     metadata: {
+//       category: 'AVD Monitoring'
+//       version: '1.0.0'
+//     }
+//     policyDefinitions: [
+//       for policy in varAvdMonitoringPolicies: {
+//         policyDefinitionId: policy.definitionId
+//         parameters: policy.definitionParameters
+//       }
+//     ]
+//     parameters: {
+//       logAnalytics: {
+//         type: 'String'
+//         defaultValue: alaWorkspaceId
+//       }
+//       dcrResourceId: {
+//         type: 'String'
+//         defaultValue: dcrResourceId
+//       }
+//     }
+//   }
+// }
+
+
 
 // // Policy set assignment.
 // module policySetAssignment '../../../../avm/1.0.0/ptn/authorization/policy-assignment/modules/subscription.bicep' = {
