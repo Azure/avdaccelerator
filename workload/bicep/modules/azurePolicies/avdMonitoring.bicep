@@ -9,8 +9,11 @@ param location string
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
 
-@sys.description('Exisintg Azure log analytics workspace.')
+@sys.description('Existing Azure log analytics workspace.')
 param alaWorkspaceId string
+
+@sys.description('Existing data collection rule.')
+param dataCollectionRuleId string
 
 @sys.description('AVD Resource Group Name for the compute resources.')
 param computeObjectsRgName string
@@ -50,130 +53,149 @@ var varStorageObjRgs = !empty(storageObjectsRgName) ? [
   }
 ] : []
 var varPolicyAssignmentRgs = union(varComputeServObjRgs, varNetworkObjRgs, varStorageObjRgs)
-
-// Policy Set/Initiative Definition Parameter Variables
-var varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters = loadJsonContent('../../../policies/monitoring/policySets/parameters/policy-set-definition-es-deploy-diagnostics-to-log-analytics.parameters.json')
-
-// This variable contains a number of objects that load in the custom Azure Policy Defintions that are provided as part of the ESLZ/ALZ reference implementation. 
-var varCustomPolicyDefinitions = [
+var varAvdMonitoringPolicies = [
   {
-    deploymentName: 'App-Group-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-application-group.json'))
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/17b3de92-f710-4cf4-aa55-0e7859f1ed7b'
+    // definitionParameters: {
+      listOfImageIdToInclude: {
+        value: []
+      }
+      effect: {
+        value: 'Modify'
+      }
+    // }
   }
   {
-    deploymentName: 'Host-Pool-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-host-pool.json'))
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/3aa571d2-2e4f-4e92-8a30-4312860efbe1'
+    definitionParameters: {
+      diagnosticSettingName: {
+        value: 'setByPolicy-AVD-MonitoringPolicies'
+      }
+      Effect: {
+        value: 'DeployIfNotExists'
+      }
+      resourceLocationList: {
+        value: '*'
+      }
+      logAnalytics: {
+        value: alaWorkspaceId
+      }
+      
+    }
   }
   {
-    deploymentName: 'Scaling-Plan-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-scaling-plan.json'))
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/8ea88471-98e1-47e4-9f63-838c990ba2f4'
+    definitionParameters: {
+      diagnosticSettingName: {
+        value: 'setByPolicy-AVD-MonitoringPolicies'
+      }
+      Effect: {
+        value: 'DeployIfNotExists'
+      }
+      resourceLocationList: {
+        value: '*'
+      }
+      logAnalytics: {
+        value: alaWorkspaceId
+      }
+      categoryGroup: {
+        value: 'allLogs'
+      }
+    }
   }
   {
-    deploymentName: 'Workspace-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-avd-workspace.json'))
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/ca817e41-e85a-4783-bc7f-dc532d36235e'
+    definitionParameters: {
+      scopeToSupportedImages: {
+        value: true
+      }
+      Effect: {
+        value: 'DeployIfNotExists'
+      }
+      listOfWindowsImageIdToInclude: {
+        value: []
+      }
+    }
   }
   {
-    deploymentName: 'NSG-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-network-security-group.json'))
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/6bb23bce-54ea-4d3d-b07d-628ce0f2e4e3'
+    definitionParameters: {
+      diagnosticSettingName: {
+        value: 'setByPolicy-AVD-MonitoringPolicies'
+      }
+      Effect: {
+        value: 'DeployIfNotExists'
+      }
+      resourceLocationList: {
+        value: '*'
+      }
+    }
   }
   {
-    deploymentName: 'NIC-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-nic.json'))
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/6bb23bce-54ea-4d3d-b07d-628ce0f2e4e3'
+    definitionParameters: {
+      diagnosticSettingName: {
+        value: 'setByPolicy-AVD-MonitoringPolicies'
+      }
+      Effect: {
+        value: 'DeployIfNotExists'
+      }
+      resourceLocationList: {
+        value: '*'
+      }
+    }
   }
   {
-    deploymentName: 'VM-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-virtual-machine.json'))
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/6f95136f-6544-4722-a354-25a18ddb18a7'
+    definitionParameters: {
+      diagnosticSettingName: {
+        value: 'setByPolicy-AVD-MonitoringPolicies'
+      }
+      Effect: {
+        value: 'DeployIfNotExists'
+      }
+      resourceLocationList: {
+        value: '*'
+      }
+      logAnalytics: {
+        value: alaWorkspaceId
+      }
+    }
   }
   {
-    deploymentName: 'vNet-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-virtual-network.json'))
-  }
-  {
-    deploymentName: 'Azure-Files-Diag'
-    libDefinition: json(loadTextContent('../../../policies/monitoring/policyDefinitions/policy-definition-es-deploy-diagnostics-azure-files.json'))
+    definitionId: '/providers/Microsoft.Authorization/policyDefinitions/89ca9cc7-25cd-4d53-97ba-445ca7a1f222'
+    definitionParameters: {
+      enableProcessesAndDependencies: {
+        value: true
+      }
+      Effect: {
+        value: 'DeployIfNotExists'
+      }
+      scopeToSupportedImages: {
+        value: true
+      }
+    }
   }
 ]
-
-// This variable contains a number of objects that load in the custom Azure Policy Set/Initiative Defintions that are provided as part of the ESLZ/ALZ reference implementation - this is automatically created in the file 'infra-as-code\bicep\modules\policy\lib\policy_set_definitions\_policySetDefinitionsBicepInput.txt' via a GitHub action, that runs on a daily schedule, and is then manually copied into this variable.
-var varCustomPolicySetDefinitions = {
-  deploymentName: 'policy-set-avd-diagnostics'
-  libSetDefinition: json(loadTextContent('../../../policies/monitoring/policySets/policy-set-definition-es-deploy-diagnostics-to-log-analytics.json'))
-  libSetChildDefinitions: [
-    {
-      definitionReferenceId: 'AVDAppGroupDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-application-group'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AVDAppGroupDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'AVDHostPoolsDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-host-pool'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AVDHostPoolsDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-scaling-plan'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AVDScalingPlansDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'AVDWorkspaceDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-avd-workspace'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AVDWorkspaceDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'NetworkSecurityGroupsDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-network-security-group'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.NetworkSecurityGroupsDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'NetworkNICDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-nic'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.NetworkNICDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'VirtualMachinesDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-machine'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.VirtualMachinesDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'VirtualNetworkDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-virtual-network'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.VirtualNetworkDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-    {
-      definitionReferenceId: 'AzureFilesDeployDiagnosticLogDeployLogAnalytics'
-      definitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/policyDefinitions/policy-deploy-diagnostics-azure-files'
-      definitionParameters: varPolicySetDefinitionEsDeployDiagnosticsLoganalyticsParameters.AzureFilesDeployDiagnosticLogDeployLogAnalytics.parameters
-    }
-  ]
-}
 
 // =========== //
 // Deployments //
 // =========== //
-
-// Policy definitions.
-module policyDefinitions './policyDefinitionsSubscriptions.bicep' = [for customPolicyDefinition in varCustomPolicyDefinitions: {
-  scope: subscription('${subscriptionId}')
-  name: 'Policy-Defin-${customPolicyDefinition.deploymentName}-${time}'
-  params: {
-    name: customPolicyDefinition.libDefinition.name
-    displayName: customPolicyDefinition.libDefinition.properties.displayName
-    metadata: customPolicyDefinition.libDefinition.properties.metadata
-    mode: customPolicyDefinition.libDefinition.properties.mode
-    parameters: customPolicyDefinition.libDefinition.properties.parameters
-    policyRule: customPolicyDefinition.libDefinition.properties.policyRule
-  }
-}]
 
 // Policy set definition.
 module policySetDefinitions './policySetDefinitionsSubscriptions.bicep' = {
   scope: subscription('${subscriptionId}')
   name: 'Policy-Set-Definition-${time}'
   params: {
-    name: varCustomPolicySetDefinitions.libSetDefinition.name
-    description: varCustomPolicySetDefinitions.libSetDefinition.properties.description
-    displayName: varCustomPolicySetDefinitions.libSetDefinition.properties.displayName
-    metadata: varCustomPolicySetDefinitions.libSetDefinition.properties.metadata
+    name: 'AVD-Monitoring-Policy-Set'
+    description: 'AVD Monitoring Policy Set'
+    displayName: 'AVD Monitoring Policy Set'
+    metadata: {
+      category: 'AVD Monitoring'
+      version: '1.0.0'
+    }
+    identity: 'SystemAssigned'
+
     parameters: varCustomPolicySetDefinitions.libSetDefinition.properties.parameters
     policyDefinitions: [for policySetDef in varCustomPolicySetDefinitions.libSetChildDefinitions: {
       policyDefinitionReferenceId: policySetDef.definitionReferenceId
