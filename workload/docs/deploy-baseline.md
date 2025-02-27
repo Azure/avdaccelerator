@@ -6,7 +6,7 @@
 
 - **Basics** blade
   - **Subscription** - The subscription where the accelerator is going to deploy the resources.
-  - **Region** – The desired Azure Region to be used for the deployment. Management Plane and Session Host Locations will be selected separately. 
+  - **Region** – The desired Azure Region to be used for the deployment. Management Plane and Session Host Locations will be selected separately.
   - **Prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
   - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
@@ -78,7 +78,7 @@
       - **Custom DNS servers** - Enter the custom DNS servers IPs to be set on the VNet. These DNS server should have proper DNS resolution to your AD DS domain, internet and Azure private DNS zones for private endpoint resolution.
     - **Existing** - Select if using existing virtual networks for the Azure Virtual Desktop deployment.
       - **Azure Virtual Desktop virtual network** - Select virtual network to be used for Azure Virtual Desktop deployment.
-      - **Azure Virtual Desktop subnet** - Select virtual network subnet to be used for session hosts deployment.
+      - **Azure Virtual Desktop subnet** - Select virtual network subnet to be used for session hosts deployment. This subnet must have a service endpoint for Microsoft.Storage.
       - **Private endpoint virtual network** - Select virtual network to be used for private endpoint deployment.
       - **Private endpoint subnet** - Select virtual network subnet to be used for private endpoint deployment.
   - **Private endpoints (Key vault and Azure files)** - Select the checkbox to create private endpoints for key vault and Azure file services, when selecting no public endpoints of the services will be used.
@@ -100,7 +100,7 @@ Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for 
 
 ## Post Deployment Considerations
 
-- When using Microsoft Entra ID as identity provider and deploying FSLogix storage, it is required to grant admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) created during deployment, additional information can be found in the
+- When using Microsoft Entra ID Kerberos as identity provider and deploying FSLogix storage, it is required to grant admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) created during deployment, additional information can be found in the
 [Grant admin consent to the new service principal](https://learn.microsoft.com/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable?tabs=azure-portal#grant-admin-consent-to-the-new-service-principal) guide.
 
 ## Redeployment Considerations

@@ -6,13 +6,12 @@ param avdSessionHostLocation = 'eastus2'
 param avdManagementPlaneLocation = 'eastus2'
 param avdDeployMonitoring = false
 param avdWorkloadSubsId = '<<subscriptionId>>' // value needs to be provided
-param avdEnterpriseAppObjectId = '<<avdObjectID>>' // Value needs to be provided when enabling start VM on connect or scaling plans
+param avdServicePrincipalObjectId = '<<avdObjectID>>' // Value needs to be provided when enabling start VM on connect or scaling plans
 param avdVmLocalUserName = '<<localUserName>>' // value needs to be provided
 param avdVmLocalUserPassword = '<<localUserPassword>>' // value needs to be provided
 param avdIdentityServiceProvider = 'ADDS'
 param createIntuneEnrollment = false
-param securityPrincipalId = ''
-param securityPrincipalName = ''
+param avdSecurityGroups= []
 param identityDomainName = 'none' // value needs to be provided when using ADDS or EntraDS as identity service provider
 param avdDomainJoinUserName = 'none'
 param avdDomainJoinUserPassword = 'none'
@@ -44,19 +43,24 @@ param appAttachFileShareQuotaSize = 1
 param avdDeploySessionHosts = true
 param avdDeploySessionHostsCount = 1
 param avdSessionHostCountIndex = 0
-param availabilityZonesCompute = true
+param availability = 'AvailabilityZones'
+param availabilityZones = [
+  '1'
+  '2'
+  '3'
+]
 param zoneRedundantStorage = false
 param fslogixStoragePerformance = 'Premium'
 param appAttachStoragePerformance = 'Premium'
 param avdSessionHostsSize = 'Standard_D2s_v3'
 param avdSessionHostDiskType = 'Premium_LRS'
-param avdOsImage = 'win11_23h2'
+param mpImageOffer = 'office-365'
+param mpImageSku = 'win11-24h2-avd-m365'
 param managementVmOsImage = 'winServer_2022_Datacenter_smalldisk_g2'
 param securityType = 'TrustedLaunch'
 param secureBootEnabled = true
 param vTpmEnabled = true
 param useSharedImage = false
-param avdImageTemplateDefinitionId = ''
 param storageOuPath = ''
 param createResourceTags = false
 param deployAlaWorkspace = true

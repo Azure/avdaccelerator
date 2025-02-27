@@ -159,7 +159,7 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
         allowExtensionOperations: true
         extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: (identityServiceProvider == 'EntraID') ? false: true
+            enabled: contains(identityServiceProvider, 'EntraID') ? false: true
             settings: {
                 name: identityDomainName
                 ouPath: !empty(ouPath) ? ouPath : null
@@ -170,7 +170,7 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
         }
         // Entra ID Join.
         extensionAadJoinConfig: {
-            enabled: (identityServiceProvider == 'EntraID') ? true: false
+            enabled: contains(identityServiceProvider, 'EntraID') ? true: false
         }
         tags: tags
     }
