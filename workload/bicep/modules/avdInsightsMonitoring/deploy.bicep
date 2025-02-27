@@ -16,10 +16,10 @@ param subscriptionId string
 @sys.description('create new Azure log analytics workspace.')
 param deployAlaWorkspace bool
 
-@sys.description('Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
-param deployCustomPolicyMonitoring bool
+@sys.description('Assign Azure monitoring policies for AVD.')
+param deployAvdMonitoringPolicies bool
 
-@sys.description('Exisintg Azure log analytics workspace resource.')
+@sys.description('Existing Azure log analytics workspace resource.')
 param alaWorkspaceId string = ''
 
 @sys.description('AVD Resource Group Name for monitoring resources.')
@@ -93,25 +93,6 @@ module alaWorkspace '../../../../avm/1.0.0/res/operational-insights/workspace/ma
   ]
 }
 
-// Policy definitions.
-module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep' = if (deployCustomPolicyMonitoring) {
-  scope: subscription('${subscriptionId}')
-  name: 'Custom-Policy-Monitoring-${time}'
-  params: {
-    alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
-    location: location
-    subscriptionId: subscriptionId
-    computeObjectsRgName: computeObjectsRgName
-    serviceObjectsRgName: serviceObjectsRgName
-    storageObjectsRgName: storageObjectsRgName
-    networkObjectsRgName: networkObjectsRgName
-  }
-  dependsOn: [
-    alaWorkspace
-    baselineMonitoringResourceGroup
-  ]
-}
-
 // Get existing LAW
 resource existingAlaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace && !empty(alaWorkspaceId)) {
   scope: resourceGroup(varAlaWorkspaceIdSplitId[2], varAlaWorkspaceIdSplitId[4])
@@ -129,9 +110,27 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
     tags: tags
   }
   dependsOn: [
-    alaWorkspace
-    existingAlaw
     baselineMonitoringResourceGroup
+  ]
+}
+
+// AVD Monitoring policy assignments.
+module assignAvdMonitoringPolicies '../azurePolicies/avdMonitoring.bicep' = if (deployAvdMonitoringPolicies) {
+  scope: subscription('${subscriptionId}')
+  name: 'Custom-Policy-Monitoring-${time}'
+  params: {
+    alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
+    location: location
+    subscriptionId: subscriptionId
+    computeObjectsRgName: computeObjectsRgName
+    serviceObjectsRgName: serviceObjectsRgName
+    storageObjectsRgName: storageObjectsRgName
+    networkObjectsRgName: networkObjectsRgName
+    dataCollectionRuleId: dataCollectionRule.outputs.dataCollectionRulesId
+  }
+  dependsOn: [
+    baselineMonitoringResourceGroup
+    dataCollectionRule
   ]
 }
 

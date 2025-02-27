@@ -206,8 +206,8 @@ param avdDeployMonitoring bool = false
 @sys.description('Deploy AVD Azure log analytics workspace. (Default: true)')
 param deployAlaWorkspace bool = true
 
-@sys.description('Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace. (Default: false)')
-param deployCustomPolicyMonitoring bool = false
+@sys.description('Assign Azure monitoring policies for AVD. (Default: false)')
+param deployAvdMonitoringPolicies bool = false
 
 @sys.description('AVD Azure log analytics workspace data retention. (Default: 90)')
 param avdAlaWorkspaceDataRetention int = 90
@@ -424,10 +424,6 @@ param avdWrklKvPrefixCustomName string = 'kv-sec'
 @maxLength(6)
 @sys.description('AVD disk encryption set custom name. (Default: des-zt)')
 param ztDiskEncryptionSetCustomNamePrefix string = 'des-zt'
-
-@maxLength(5)
-@sys.description('AVD managed identity for zero trust to encrypt managed disks using a customer managed key.  (Default: id-zt)')
-param ztManagedIdentityCustomName string = 'id-zt'
 
 @maxLength(6)
 @sys.description('AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)')
@@ -1016,7 +1012,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     storageObjectsRgName: (createAvdFslogixDeployment || createAppAttachDeployment) ? varStorageObjectsRgName : ''
     networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
     monitoringRgName: varMonitoringRgName
-    deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
+    deployAvdMonitoringPolicies: deployAvdMonitoringPolicies
     alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
     alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : ''
     alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
