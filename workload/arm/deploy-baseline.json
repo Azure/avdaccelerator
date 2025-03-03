@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7757439101299686233"
+      "templateHash": "4711751862376592155"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -26673,7 +26673,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1250311981651125075"
+              "templateHash": "15598155563920004753"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -26920,7 +26920,7 @@
                   "accessTier": {
                     "value": "Hot"
                   },
-                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('id', parameters('vmsSubnetId'), 'action', 'Allow')), 'ipRules', createArray())))]",
+                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
                   "fileServices": {
                     "value": {
                       "shares": [
@@ -29631,7 +29631,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1250311981651125075"
+              "templateHash": "15598155563920004753"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29878,7 +29878,7 @@
                   "accessTier": {
                     "value": "Hot"
                   },
-                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('id', parameters('vmsSubnetId'), 'action', 'Allow')), 'ipRules', createArray())))]",
+                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
                   "fileServices": {
                     "value": {
                       "shares": [

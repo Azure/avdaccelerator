@@ -1213,14 +1213,23 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
     sku: varWrklKeyVaultSku
     softDeleteRetentionInDays: 7
     publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
-    networkAcls: deployPrivateEndpointKeyvaultStorage
-      ? {
-          bypass: 'AzureServices'
-          defaultAction: 'Deny'
-          virtualNetworkRules: []
-          ipRules: []
-        }
-      : {}
+    networkAcls: deployPrivateEndpointKeyvaultStorage ? {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: []
+        ipRules: []
+    } : {}
+    // }: {
+    //     bypass: 'AzureServices'
+    //     defaultAction: 'Deny'
+    //     virtualNetworkRules: [
+    //         {
+    //             id: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
+    //             action: 'Allow'
+    //         }
+    //     ]
+    //     ipRules: []
+    // }
     privateEndpoints: deployPrivateEndpointKeyvaultStorage
       ? [
           {
