@@ -701,9 +701,9 @@ var varBaseScriptUri = 'https://github.com/ARPA-H/avdaccelerator-nih/raw/deploym
 
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
-var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(
-    time, 
-    'P${string(diskEncryptionKeyExpirationInDays)}D'))
+// var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(
+//     time, 
+//     'P${string(diskEncryptionKeyExpirationInDays)}D'))
 var varCreateStorageDeployment = (createAvdFslogixDeployment || varCreateAppAttachDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage 
     ? '${fslogixStoragePerformance}_ZRS' 
@@ -1386,9 +1386,8 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
       diskZeroTrust: diskZeroTrust
       serviceObjectsRgName: varServiceObjectsRgName
       computeObjectsRgName: varComputeObjectsRgName
-      vaultSku: varWrklKeyVaultSku
+      vaultSku: any(varWrklKeyVaultSku)
       diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
-      diskEncryptionKeyExpirationInEpoch: varDiskEncryptionKeyExpirationInEpoch
       diskEncryptionSetName: varDiskEncryptionSetName
       ztKvName: varZtKvName
       ztKvPrivateEndpointName: varZtKvPrivateEndpointName
@@ -1406,10 +1405,9 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
     dependsOn: [
       baselineResourceGroups
       baselineStorageResourceGroup
-      monitoringDiagnosticSettings
       identity
     ]
-  }
+}
 
 // Key vault
 module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
