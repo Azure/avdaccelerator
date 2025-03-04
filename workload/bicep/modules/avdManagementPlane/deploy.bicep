@@ -276,7 +276,7 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     friendlyName: applicationGroup.friendlyName
     location: applicationGroup.location
     applicationGroupType: applicationGroup.applicationGroupType
-    hostpoolName: hostPoolName
+    hostpoolName: hostPool.outputs.name
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
     roleAssignments: !empty(securityPrincipalId) ? [
@@ -288,7 +288,6 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
-    hostPool
   ]
 }]
 
@@ -331,6 +330,12 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
   ]
 }
 
+// call on the host pool
+resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' existing = {
+  name: hostPool.outputs.name
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+}
+
 // Scaling plan.
 module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-plan/main.bicep' =  if (deployScalingPlan)  {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
@@ -344,7 +349,7 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       schedules: scalingPlanSchedules
       hostPoolReferences: [
         {
-        hostPoolArmPath: '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${hostPoolName}'
+        hostPoolArmPath: hostPoolGet.id
         scalingPlanEnabled: true
         }
       ]
@@ -352,8 +357,5 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
-    // hostPool
-    // applicationGroups
-    workSpace
   ]
 }
