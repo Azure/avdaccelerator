@@ -538,7 +538,7 @@ var varScreenCaptureProtectionCustomizer = screenCaptureProtection ? [
         scriptUri: '${varBaseScriptUri}scripts/Set-ScreenCaptureProtection.ps1'
     }
 ] : []
-var varScriptCustomizers = union(varRdpShortPathCustomizer, varScreenCaptureProtectionCustomizer, varVdotCustomizer)
+var varScriptCustomizers = union(varRdpShortPathCustomizer, varScreenCaptureProtectionCustomizer)
 // Placeholder for future feature
 // var varStorageAccountName = customNaming ? storageAccountCustomName : 'stavd${varNamingStandard}${varUniqueStringSixChar}'
 var varTelemetryId = 'pid-b04f18f1-9100-4b92-8e41-71f0d73e3755-${deploymentLocation}'
@@ -547,15 +547,6 @@ var varTimeZone = varLocations[varLocation].timeZone
 // Placeholder for future feature
 // var varUniqueStringSixChar = take('${uniqueString(sharedServicesSubId, time)}', 6)
 var varUserAssignedManagedIdentityName = customNaming ? userAssignedManagedIdentityCustomName : 'id-aib-${varNamingStandard}'
-var varVdotCustomizer = [
-    {
-        type: 'PowerShell'
-        name: 'VirtualDesktopOptimizationTool'
-        runElevated: true
-        runAsSystem: true
-        scriptUri: '${varBaseScriptUri}scripts/Set-VirtualDesktopOptimizations.ps1'
-    }
-]
 var varVirtualNetworkJoinRoleName = 'Virtual Network Join'
 var varVirtualNetworkJoinRole = useExistingVirtualNetwork ? [
     {

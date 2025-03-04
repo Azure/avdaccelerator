@@ -91,7 +91,7 @@ var storageRoleAssignments = [
 // Deployments //
 // =========== //
 
-// Managed identity for fslogix/msix app attach
+// Managed identity for fslogix/App Attach
 module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = if (createStorageDeployment) {
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   name: 'MI-Storage-${time}'

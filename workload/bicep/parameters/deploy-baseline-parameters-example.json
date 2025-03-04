@@ -116,13 +116,13 @@
         "createAvdFslogixDeployment": {
             "value": true
         },
-        "createMsixDeployment": {
+        "createAppAttachDeployment": {
             "value": false
         },
         "fslogixFileShareQuotaSize": {
             "value": 1
         },
-        "msixFileShareQuotaSize": {
+        "appAttachFileShareQuotaSize": {
             "value": 1
         },
         "avdDeploySessionHosts": {
@@ -149,7 +149,7 @@
         "fslogixStoragePerformance": {
             "value": "Premium"
         },
-        "msixStoragePerformance": {
+        "appAttachStoragePerformance": {
             "value": "Premium"
         },
         "avdSessionHostsSize": {
@@ -208,9 +208,6 @@
         },
         "deployGpuPolicies": {
             "value": false
-        },
-        "deployVmssFlex": {
-            "value": true
         },
         "deployAntiMalwareExt": {
             "value": true

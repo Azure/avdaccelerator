@@ -44,6 +44,7 @@ If you are having deployment challenges, refer to the [LZA baseline troubleshoot
 The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
 
 - [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
+- [Deploy AVD agents to VM](./workload/bicep/brownfield/addAvdAgents/readme.md)
 - [Alerts](./workload/bicep/brownfield/alerts/readme.md)
 - [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
 - [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
@@ -53,6 +54,10 @@ The brownfield section contains templates to deploy additional features for Azur
 - [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
 - [AVD Client (Remote Desktop) Kiosk](https://github.com/Azure/AVDClientKiosk)
+
+### Specialized AVD use cases
+
+- [Secure enclaves for research, such as AI](https://github.com/Azure/HubAndSpokeResearchEnclave)
 
 ### Monitoring workbooks
 
@@ -82,10 +87,6 @@ Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https
 | Azure portal UI | [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) [![Deploy to Azure Gov](https://aka.ms/deploytoazuregovbutton)](https://portal.azure.us/?feature.deployapiver=2022-12-01#blade/Microsoft_Azure_CreateUIDef/CustomDeploymentBlade/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Farm%2Fdeploy-custom-image.json/uiFormDefinitionUri/https%3A%2F%2Fraw.githubusercontent.com%2FAzure%2Favdaccelerator%2Fmain%2Fworkload%2Fportal-ui%2Fportal-ui-custom-image.json) |
 | Command line (Bicep/ARM) | [![Powershell/Azure CLI](./workload/docs/icons/powershell.png)](./workload/bicep/readme.md#optional-custom-image-build-deployment) |
 | Terraform | [![Terraform](./workload/docs/icons/terraform.png)](./workload/terraform/customimage) |
-
-### Specialized AVD use cases
-
-- [Secure enclaves for research, such as AI](https://github.com/Azure/HubAndSpokeResearchEnclave)
 
 ## Architectural Diagram
 
