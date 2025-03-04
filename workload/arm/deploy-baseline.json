@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4711751862376592155"
+      "templateHash": "4093291713009396163"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -4197,7 +4197,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10572854243028197859"
+              "templateHash": "18193340059463993465"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -6377,7 +6377,7 @@
                     "value": "[parameters('dnsServers')]"
                   },
                   "peerings": "[if(parameters('createVnetPeering'), createObject('value', createArray(createObject('remoteVirtualNetworkId', parameters('existingHubVnetResourceId'), 'name', parameters('vnetPeeringName'), 'allowForwardedTraffic', true(), 'allowGatewayTransit', false(), 'allowVirtualNetworkAccess', true(), 'doNotVerifyRemoteGateways', true(), 'useRemoteGateways', if(parameters('vNetworkGatewayOnHub'), true(), false()), 'remotePeeringEnabled', true(), 'remotePeeringName', parameters('remoteVnetPeeringName'), 'remotePeeringAllowForwardedTraffic', true(), 'remotePeeringAllowGatewayTransit', if(parameters('vNetworkGatewayOnHub'), true(), false()), 'remotePeeringAllowVirtualNetworkAccess', true(), 'remotePeeringDoNotVerifyRemoteGateways', true(), 'remotePeeringUseRemoteGateways', false()))), createObject('value', createArray()))]",
-                  "subnets": "[if(parameters('deployPrivateEndpointSubnet'), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')), createObject('name', parameters('vnetPrivateEndpointSubnetName'), 'addressPrefix', parameters('vnetPrivateEndpointSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-Private-Endpoint-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-PE-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))))]",
+                  "subnets": "[if(parameters('deployPrivateEndpointSubnet'), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')), createObject('name', parameters('vnetPrivateEndpointSubnetName'), 'addressPrefix', parameters('vnetPrivateEndpointSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-Private-Endpoint-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(and(parameters('createVnet'), parameters('deployPrivateEndpointSubnet')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-PE-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')))), createObject('value', createArray(createObject('name', parameters('vnetAvdSubnetName'), 'addressPrefix', parameters('vnetAvdSubnetAddressPrefix'), 'privateEndpointNetworkPolicies', 'Disabled', 'privateLinkServiceNetworkPolicies', 'Enabled', 'networkSecurityGroupResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('NSG-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'routeTableResourceId', if(parameters('createVnet'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('Route-Table-AVD-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, ''), 'serviceEndpoints', createArray(createObject('service', 'Microsoft.Storage', 'locations', createArray(format('{0}', parameters('location')))), createObject('service', 'Microsoft.KeyVault', 'locations', createArray(format('{0}', parameters('location')))))))))]",
                   "ddosProtectionPlanResourceId": "[if(parameters('deployDDoSNetworkProtection'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('networkObjectsRgName'))), 'Microsoft.Resources/deployments', format('DDoS-Protection-Plan-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', ''))]",
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -8681,7 +8681,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13521638278532946523"
+              "templateHash": "2011583146610473966"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -10590,7 +10590,7 @@
                     "value": "[variables('varApplicationGroups')[copyIndex()].applicationGroupType]"
                   },
                   "hostpoolName": {
-                    "value": "[parameters('hostPoolName')]"
+                    "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
                   },
                   "tags": {
                     "value": "[parameters('tags')]"
@@ -12335,7 +12335,7 @@
                   "hostPoolReferences": {
                     "value": [
                       {
-                        "hostPoolArmPath": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DesktopVirtualization/hostpools/{2}', parameters('subscriptionId'), parameters('serviceObjectsRgName'), parameters('hostPoolName'))]",
+                        "hostPoolArmPath": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.DesktopVirtualization/hostPools', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time'))), '2022-09-01').outputs.name.value)]",
                         "scalingPlanEnabled": true
                       }
                     ]
@@ -12677,7 +12677,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workspace-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time')))]"
               ]
             }
           ]
@@ -19880,7 +19880,7 @@
             "value": 7
           },
           "publicNetworkAccess": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', 'Disabled'), createObject('value', 'Enabled'))]",
-          "networkAcls": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
+          "networkAcls": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('id', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId')), 'action', 'Allow')), 'ipRules', createArray())))]",
           "privateEndpoints": "[if(parameters('deployPrivateEndpointKeyvaultStorage'), createObject('value', createArray(createObject('name', variables('varWrklKvPrivateEndpointName'), 'subnetResourceId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName')), parameters('existingVnetPrivateEndpointSubnetResourceId')), 'customNetworkInterfaceName', format('nic-01-{0}', variables('varWrklKvPrivateEndpointName')), 'service', 'vault', 'privateDnsZoneGroupName', if(parameters('createPrivateDnsZones'), split(reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.keyVaultDnsZoneResourceId.value, '/')[8], split(parameters('avdVnetPrivateDnsZoneKeyvaultId'), '/')[8]), 'privateDnsZoneResourceIds', createArray(if(parameters('createPrivateDnsZones'), reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.keyVaultDnsZoneResourceId.value, parameters('avdVnetPrivateDnsZoneKeyvaultId')))))), createObject('value', createArray()))]",
           "secrets": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'EntraID')), createObject('value', createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', parameters('avdDomainJoinUserName'), 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', parameters('avdDomainJoinUserPassword'), 'contentType', 'Domain join credentials'))), createObject('value', createArray(createObject('name', 'vmLocalUserPassword', 'value', parameters('avdVmLocalUserPassword'), 'contentType', 'Session host local user credentials'), createObject('name', 'vmLocalUserName', 'value', parameters('avdVmLocalUserName'), 'contentType', 'Session host local user credentials'), createObject('name', 'domainJoinUserName', 'value', 'NoUsername', 'contentType', 'Domain join credentials'), createObject('name', 'domainJoinUserPassword', 'value', 'NoPassword', 'contentType', 'Domain join credentials'))))]",
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'), variables('varWorkloadKeyvaultTag'))), createObject('value', union(variables('varAvdDefaultTags'), variables('varWorkloadKeyvaultTag'))))]"
@@ -26673,7 +26673,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "15598155563920004753"
+              "templateHash": "1250311981651125075"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -26920,7 +26920,7 @@
                   "accessTier": {
                     "value": "Hot"
                   },
-                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
+                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('id', parameters('vmsSubnetId'), 'action', 'Allow')), 'ipRules', createArray())))]",
                   "fileServices": {
                     "value": {
                       "shares": [
@@ -29631,7 +29631,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "15598155563920004753"
+              "templateHash": "1250311981651125075"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29878,7 +29878,7 @@
                   "accessTier": {
                     "value": "Hot"
                   },
-                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
+                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('id', parameters('vmsSubnetId'), 'action', 'Allow')), 'ipRules', createArray())))]",
                   "fileServices": {
                     "value": {
                       "shares": [
