@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "5127540398771268904"
+      "templateHash": "9826152848146163813"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -8613,9 +8613,7 @@
             "value": "[parameters('avdHostPoolType')]"
           },
           "preferredAppGroupType": "[if(equals(parameters('hostPoolPreferredAppGroupType'), 'RemoteApp'), createObject('value', 'RailApplications'), createObject('value', 'Desktop'))]",
-          "deployScalingPlan": {
-            "value": "[variables('varDeployScalingPlan')]"
-          },
+          "deployScalingPlan": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
           "scalingPlanExclusionTag": {
             "value": "[variables('varScalingPlanExclusionTag')]"
           },
