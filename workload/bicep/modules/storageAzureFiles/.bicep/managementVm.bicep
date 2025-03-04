@@ -127,6 +127,7 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
         osDisk: {
             createOption: 'FromImage'
             deleteOption: 'Delete'
+            caching: 'ReadWrite'
             managedDisk: varManagedDisk
         }
         adminUsername: vmLocalUserName

@@ -352,8 +352,8 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
-    hostPool
-    applicationGroups
+    // hostPool
+    // applicationGroups
     workSpace
   ]
 }

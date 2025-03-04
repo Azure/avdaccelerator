@@ -1,5 +1,5 @@
 {
-    "$schema": "<relative path to createFormUI.schema.json>",
+    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
     "view": {
         "kind": "Form",
         "properties": {
@@ -187,7 +187,7 @@
                                     "toolTip": "The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Entra ID + FSLogix deployments, because identities need to be hybrid for storage authenctication to be supported.",
                                     "placeholder": "Example: contoso.com",
                                     "constraints": {
-                                        "required": true
+                                        "required": "[if(not(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')), true, false)]"
                                     }
                                 },
                                 {
@@ -206,7 +206,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": "[equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')]",
                                     "options": {
-                                        "text": "FSLogix/App Attach storage: AD domain name and GUID are required to configure directory and file level permissions through Windows File explorer. You can get this information from your domain admin or from an on-premises AD-joined client. If you prefer the LZA deployment to configure using icacls, GUID information is not required.",
+                                        "text": "EntraID + FSLogix: to configure directory and file level permissions through Windows File explorer, you also need to specify domain name and domain GUID for your on-premises AD. You can get this information from your domain admin or from an on-premises AD-joined client. If you prefer to configure using icacls, this information is not required.",
                                         "uri": "https://learn.microsoft.com/en-us/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable?tabs=azure-portal%2Cintune#configure-directory-and-file-level-permissions",
                                         "style": "Info"
                                     }
@@ -220,49 +220,55 @@
                             "label": "Azure Virtual Desktop access assignment",
                             "elements": [
                                 {
-                                    "name": "groupsApi",
-                                    "type": "Microsoft.Solutions.GraphApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "/v1.0/groups?$top=999"
+                                    "name": "groupPickerBlade",
+                                    "type": "Microsoft.Solutions.BladeInvokeControl",
+                                    "openBladeStatus": "[steps('identity').identityAvdAccess.groupSelector.changing]",
+                                    "bladeReference": {
+                                        "name": "ObjectPickerBlade",
+                                        "extension": "Microsoft_AAD_IAM",
+                                        "parameters": {
+                                            "queries": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'DS'), 4194304, 32)]",
+                                            "disablers": 4,
+                                            "bladeSubtitle": "Pick the groups to assign",
+                                            "additionalQueriesOnSearch": 0,
+                                            "advancedQueryOptions": {
+                                                "suggestedObjectsOptions": {}
+                                            },
+                                            "selectionMaximum": 1,
+                                            "selectionMinimum": 1,
+                                            "bladeTitle": "Select Groups",
+                                            "informationHeader": {
+                                                "informationText": "Select the groups to assign to the desktop application group",
+                                                "informationLink": ""
+                                            },
+                                            "inviteEnabled": true,
+                                            "searchBoxLabel": "Search for a group",
+                                            "searchBoxPlaceHolderText": "Enter a string in the group name",
+                                            "searchBoxTooltip": "This is the tooltip",
+                                            "searchGridNoRowsMessage": "No groups found",
+                                            "selectButtonText": "Select Groups",
+                                            "selectedGridLabel": "Selected User Groups",
+                                            "selectedGridNoRowsMessage": "You must select at least one group"
+                                        },
+                                        "inFullScreen": false
+                                    },
+                                    "transforms": {
+                                        "selection": "selectedObjects|[*].{displayName:displayName, objectId:id}"
                                     }
                                 },
                                 {
-                                    "name": "identityAvdUserAccessGroupDropDown",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": "[not(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox)]",
-                                    "label": "Groups",
-                                    "defaultValue": "",
-                                    "filter": true,
-                                    "toolTip": "Select the desired group to give access to Azure Virtual Desktop resources and if applicable to FSLogix file share",
-                                    "multiselect": false,
-                                    "constraints": {
-                                        "allowedValues": "[map(steps('identity').identityAvdAccess.groupsApi.value, (item) => parse(concat('{\"label\":\"', item.displayName, '\",\"value\": {\"name\":\"', item.displayName, '\",\"id\":\"', item.id, '\"}}')))]"
-                                    }
-                                },
-                                {
-                                    "name": "identityAvdUserAccessGroupCheckBox",
-                                    "type": "Microsoft.Common.CheckBox",
+                                    "name": "groupSelector",
+                                    "type": "Microsoft.Common.Selector",
+                                    "label": "Select User Groups",
+                                    "keyPath": "displayName",
+                                    "descriptionKeyPath": "id",
+                                    "value": "[steps('identity').identityAvdAccess.groupPickerBlade.transformed.selection]",
                                     "visible": true,
-                                    "label": "Provide group details",
-                                    "defaultValue": false,
-                                    "toolTip": "When the desired group is not listed in the drop down, selecting this box will allow for entering the group's ObjectID and name. this information will be used to setup AVD access and FSLogix's file share NTFS permissions."
-                                },
-                                {
-                                    "name": "identityAvdUserAccessGroupTextBox1",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox]",
-                                    "label": "Name",
-                                    "toolTip": "Group name to be granted access to Azure Virtual Desktop published items and FSLogix NTFS permissions.",
-                                    "placeholder": "Example: AVD-users"
-                                },
-                                {
-                                    "name": "identityAvdUserAccessGroupTextBox2",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox]",
-                                    "label": "Object ID",
-                                    "toolTip": "Group objectID to be granted access to Azure Virtual Desktop published items and FSLogix NTFS permissions.",
-                                    "placeholder": "Example: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+                                    "barColor": "[if(empty(steps('identity').identityAvdAccess.groupPickerBlade), '#FF0000', '#7fba00')]",
+                                    "constraints": {
+                                        "required": true
+                                    },
+                                    "link": "[if(empty(steps('identity').identityAvdAccess.groupPickerBlade), 'Select groups', 'Re-select groups')]"
                                 }
                             ]
                         },
@@ -338,6 +344,53 @@
                                     "osPlatform": "Windows"
                                 }
                             ]
+                        },
+                        {
+                            "name": "identiyEnableDefOptions",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Microsoft Defender for Cloud solutions you will enable.",
+                            "elements": [
+                                {
+                                    "name": "enableDef",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Deploy Microsoft Defender for Cloud and enable security monitoring for your platform and resources",
+                                    "defaultValue": false,
+                                    "toolTip": "Selecting 'Yes' will enable the options to configure individual Microsoft Defender for Cloud components"
+                                },
+                                {
+                                    "name": "enableDefForServers",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Enable Microsoft Defender for Servers",
+                                    "defaultValue": true,
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for all servers.",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
+                                },
+                                {
+                                    "name": "enableDefForStorage",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Enable Microsoft Defender for Storage",
+                                    "defaultValue": true,
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Storage.",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
+                                },
+                                {
+                                    "name": "enableDefForKeyVault",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Enable Microsoft Defender for Key Vault",
+                                    "defaultValue": true,
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Key Vault",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
+                                },
+                                {
+                                    "name": "enableDefForArm",
+                                    "type": "Microsoft.Common.CheckBox",
+                                    "label": "Enable Microsoft Defender for Azure Resource Manager",
+                                    "defaultValue": true,
+                                    "toolTip": "If 'Yes' is selected, Microsoft Defender for Cloud will be enabled for Resource Manager.",
+                                    "visible": "[steps('identity').identiyEnableDefOptions.enableDef]"
+                                }
+                            ]
                         }
                     ]
                 },
@@ -380,7 +433,7 @@
                                     "type": "Microsoft.Common.InfoBox",
                                     "visible": true,
                                     "options": {
-                                        "icon": "Warning",
+                                        "style": "Warning",
                                         "text": "Host pool type can not be changed after deployment.",
                                         "uri": "https://docs.microsoft.com/azure/virtual-desktop/environment-setup"
                                     }
@@ -593,15 +646,7 @@
                                     "visible": true,
                                     "label": "Availability zones",
                                     "defaultValue": true,
-                                    "toolTip": "Distribute compute resources across availability zones using multi zone VMSS Flex with 1 fault domain (when VMSS Flex is enabled). If 'No' is selected then a VMSS Flex will be created to host the VMs at a regional level but distributing across multiple fault domains."
-                                },
-                                {
-                                    "name": "sessionHostsAvailabilitySettingsVmss",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "visible": true,
-                                    "label": "VMSS Flex",
-                                    "defaultValue": true,
-                                    "toolTip": "Deploy and associate session hosts with a Virtual Machine Scale Set (VMSS) with Flex orchestration to distribute session hosts across fault domains."
+                                    "toolTip": "Distribute compute resources across availability zones. If 'No' is selected then the VMs will be deployed at a regional level."
                                 },
                                 {
                                     "name": "sessionHostsRegion",
@@ -666,7 +711,7 @@
                                     "scope": {
                                         "location": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion]",
                                         "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
-                                    }                              
+                                    }
                                 },
                                 {
                                     "name": "sessionHostSizeInfobox",
@@ -1141,7 +1186,7 @@
                             "visible": "[steps('network').createAvdVirtualNetwork]",
                             "label": "vNet address range",
                             "toolTip": "Virtual network CIDR for Azure Virtual Desktop virtual machines and PaaS private endpoints",
-                            "placeholder": "Example: 10.10.0.0/23",
+                            "placeholder": "Example: 10.10.0.0/16",
                             "constraints": {
                                 "required": true,
                                 "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-4]))$",
@@ -1154,7 +1199,7 @@
                             "visible": "[steps('network').createAvdVirtualNetwork]",
                             "label": "Azure Virtual Desktop subnet address prefix",
                             "toolTip": "Virtual network subnet CIDR for Azure Virtual Desktop virtual machines",
-                            "placeholder": "Example: 10.10.0.0/24",
+                            "placeholder": "Example: 10.10.1.0/24",
                             "constraints": {
                                 "required": true,
                                 "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-4]))$",
@@ -1199,7 +1244,7 @@
                             },
                             "scope": {
                                 "location": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]"
-                            }   
+                            }
                         },
                         {
                             "name": "avdSubnetApi",
@@ -1313,7 +1358,7 @@
                             "visible": "[and(equals(steps('network').createAvdVirtualNetwork, true), or(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').deployAvdPrivateLinkService, true)))]",
                             "label": "Private endpoint subnet address prefix",
                             "toolTip": "Virtual network subnet CIDR for private endpoints",
-                            "placeholder": "Example: 10.10.1.0/27",
+                            "placeholder": "Example: 10.10.2.0/27",
                             "constraints": {
                                 "required": true,
                                 "regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-7]))$",
@@ -1496,7 +1541,6 @@
                                     }
                                 },
                                 {
-                            
                                     "name": "virtualNetworkPrivateDnsZoneAvdConnectionSelector",
                                     "type": "Microsoft.Solutions.ResourceSelector",
                                     "visible": "[and(steps('network').deployAvdPrivateLinkService, not(steps('network').virtualNetworkPrivateDnsZone))]",
@@ -1862,7 +1906,7 @@
                                     "name": "computeObjectsRgCustomName",
                                     "type": "Microsoft.Common.TextBox",
                                     "label": "Resource group",
-                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks, VMSS) resource group custom name.",
+                                    "toolTip": "Azure Virtual Desktop compute resources (VMs, NICs, Disks) resource group custom name.",
                                     "placeholder": "Example: rg-avd-app1-dev-use2-pool-compute",
                                     "constraints": {
                                         "required": true,
@@ -1893,19 +1937,6 @@
                                         "required": true,
                                         "regex": "^[a-z0-9A-Z-]{1,11}$",
                                         "validationMessage": "Value must be 1-11 characters."
-                                    }
-                                },
-                                {
-                                    "name": "vmssCustomNamePrefix",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "VMSS Flex prefix",
-                                    "visible": "[not(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings)]",
-                                    "toolTip": "Azure Virtual Desktop VMSS Flex custom name.",
-                                    "placeholder": "Example: avail",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-z0-9A-Z-]{1,9}$",
-                                        "validationMessage": "Value must be 1-9 characters."
                                     }
                                 }
                             ]
@@ -2481,26 +2512,18 @@
                 "avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
                 "avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
                 "createIntuneEnrollment": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-
-
-
-
-                "identityDomainName": "[steps('identity').identityDomainInformation.identityDomainName]",
-                "identityDomainGuid": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityDomainGuid, '')]",
-                
-                
-                
-                
-                
+                "identityDomainName": "[if(equals(steps('identity').identityDomainInformation.identityDomainName, ''), 'none', steps('identity').identityDomainInformation.identityDomainName)]",
+                "identityDomainGuid": "[steps('identity').identityDomainInformation.identityDomainGuid]",
+                "avdSecurityGroups": "[steps('identity').identityAvdAccess.groupPickerBlade.transformed.selection]",
                 "avdOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "avdDomainJoinUserName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
                 "avdDomainJoinUserPassword": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
                 "avdVmLocalUserName": "[steps('identity').identityLocalCredentials.identityLocalUserName]",
                 "avdVmLocalUserPassword": "[steps('identity').identityLocalCredentials.identityLocalUserPassword.password]",
                 "createAvdVnet": "[steps('network').createAvdVirtualNetwork]",
-                "avdVnetworkAddressPrefixes": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSize, '10.10.0.0/23')]",
-                "vNetworkAvdSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkAvdSubnetSize, '10.10.0.0/24')]",
-                "vNetworkPrivateEndpointSubnetAddressPrefix": "[if(and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)), steps('network').virtualNetworkPrivateEndpointSubnetSize, '10.10.1.0/27')]",
+                "avdVnetworkAddressPrefixes": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSize, '10.10.0.0/16')]",
+                "vNetworkAvdSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkAvdSubnetSize, '10.10.1.0/24')]",
+                "vNetworkPrivateEndpointSubnetAddressPrefix": "[if(and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)), steps('network').virtualNetworkPrivateEndpointSubnetSize, '10.10.2.0/27')]",
                 "customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
                 "existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
                 "vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
@@ -2511,7 +2534,6 @@
                 "avdDeployScalingPlan": "[if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
                 "avdEnterpriseAppObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.avdEnterpriseApplication.value, (item) => item.id))]",
                 "availabilityZonesCompute": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, false)]",
-                "deployVmssFlex": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettingsVmss, false)]",
                 "zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
                 "avdDeploySessionHostsCount": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
                 "useSharedImage": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsOsSection.sessionHostsImageSource, false)]",
@@ -2562,7 +2584,6 @@
                 "avdApplicationGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomName, 'no')]",
                 "avdApplicationGroupCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyName, 'no')]",
                 "avdSessionHostCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, 'no')]",
-                "vmssFlexCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.vmssCustomNamePrefix, 'no')]",
                 "storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, 'no')]",
                 "fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, 'no')]",
                 "appAttachFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.appAttachFileShareCustomName, 'no')]",
@@ -2579,8 +2600,6 @@
                 "opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, 'no')]",
                 "ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, 'no')]",
                 "costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, 'no')]",
-                "securityPrincipalId": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox2, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.id)]",
-                "securityPrincipalName": "[if(steps('identity').identityAvdAccess.identityAvdUserAccessGroupCheckBox, steps('identity').identityAvdAccess.identityAvdUserAccessGroupTextBox1, steps('identity').identityAvdAccess.identityAvdUserAccessGroupDropDown.name)]",
                 "avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
                 "deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
                 "avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",
@@ -2591,7 +2610,12 @@
                 "ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
                 "ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
                 "ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
-                "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]"
+                "deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]",
+                "enableDef": "[steps('identity').identiyEnableDefOptions.enableDef]",
+                "enableDefForServers": "[if(equals(steps('identity').identiyEnableDefOptions.enableDef, true), steps('identity').identiyEnableDefOptions.enableDefForServers, false)]",
+                "enableDefForStorage": "[if(equals(steps('identity').identiyEnableDefOptions.enableDef, true), steps('identity').identiyEnableDefOptions.enableDefForStorage, false)]",
+                "enableDefForKeyVault": "[if(equals(steps('identity').identiyEnableDefOptions.enableDef, true), steps('identity').identiyEnableDefOptions.enableDefForKeyVault, false)]",
+                "enableDefForArm": "[if(equals(steps('identity').identiyEnableDefOptions.enableDef, true), steps('identity').identiyEnableDefOptions.enableDefForArm, false)]"
             },
             "kind": "Subscription",
             "location": "[steps('basics').resourceScope.location.name]",

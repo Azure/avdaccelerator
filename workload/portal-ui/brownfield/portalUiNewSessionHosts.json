@@ -315,23 +315,6 @@
                                     "toolTip": "Distribute compute resources across availability zones."
                                 },
                                 {
-                                    "name": "sessionHostsVmssResourceId",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Select VMSS Flex",
-                                    "visible": true,
-                                    "resourceType": "Microsoft.Compute/virtualMachineScaleSets",
-                                    "toolTip": "Deploy and associate session hosts with a Virtual Machine Scale Set (VMSS) with Flex orchestration to distribute session hosts across fault domains.",
-                                    "constraints": {
-                                        "required": false
-                                    },
-                                    "options": {
-                                        "filter": {
-                                            "subscription": "onBasics",
-                                            "location": "[steps('SessionHosts').SessionHostsRegionSection.SessionHostsRegion.location.name]"
-                                        }
-                                    }
-                                },
-                                {
                                     "name": "sessionHostsRegion",
                                     "type": "Microsoft.Common.DropDown",
                                     "label": "Session hosts region",
@@ -1161,7 +1144,6 @@
                 "vmLocalAdminPasswordSecretName": "[steps('identity').identityCredentials.identityLocalUserPassword]",
                 "hostPoolResourceId": "[steps('managementPlane').managementPlaneSettings.hostPoolSelector.id]",
                 "useAvailabilityZones": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilityZoneSettings]",
-                "virtualMachineScaleSetResourceId": "[steps('sessionHosts').sessionHostsRegionSection.sessionHostsVmssResourceId.id]",
                 "sessionHostOuPath": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), 'no', steps('sessionHosts').sessionHostsComputeStorageSection.identityDomainOuPath)]",
                 "vmSize": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize]",
                 "countIndex": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCountIndex]",

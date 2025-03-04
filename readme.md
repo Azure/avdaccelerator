@@ -44,6 +44,7 @@ If you are having deployment challenges, refer to the [LZA baseline troubleshoot
 The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
 
 - [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
+- [Deploy AVD agents to VM](./workload/bicep/brownfield/addAvdAgents/readme.md)
 - [Alerts](./workload/bicep/brownfield/alerts/readme.md)
 - [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
 - [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)

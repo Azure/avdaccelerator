@@ -66,5 +66,4 @@ param enableAcceleratedNetworking = true
 param diskEncryptionKeyExpirationInDays = 60
 param diskZeroTrust = false
 param deployGpuPolicies = false
-param deployVmssFlex = true
 param deployAntiMalwareExt = true

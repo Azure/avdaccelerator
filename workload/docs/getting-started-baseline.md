@@ -16,7 +16,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 - [x] Access to the Azure Virtual Desktop Azure subscription with owner permissions.
 - [x]  The following resource provider must be registered in the subscription to be used for deployment:
   - Microsoft.DesktopVirtualization
-  - Microsoft.Compute (When deploying Zero Trust mathe feature [EncryptionAtHost](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell) will need to be registered)
+  - Microsoft.Compute (When deploying Zero Trust match feature [EncryptionAtHost](https://learn.microsoft.com/azure/virtual-machines/disks-enable-host-based-encryption-portal?tabs=azure-powershell) will need to be registered)
   - Microsoft.Network
   - Microsoft.Storage
 
@@ -66,7 +66,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
     - Specs: using private endpoints and an existing Azure Virtual Desktop vNet with custom DNS servers configured.
     - Existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.
     
-  **Important**: for all scenatios that use custom DNS servers, conditional forwarding rules MUST be configured to send to Azure (168.63.129.16) the DNS requests targeting file.core.windows.net and vaultcore.azure.net name spaces.
+  **Important**: for all scenarios that use custom DNS servers, conditional forwarding rules MUST be configured to send to Azure (168.63.129.16) the DNS requests targeting file.core.windows.net and vaultcore.azure.net name spaces.
 - [x] Required private DNS zone name spaces:
   - Azure Commercial: privatelink.file.core.windows.net (Azure Files) and privatelink.vaultcore.azure.net (Key Vault).
   - Azure Government: privatelink.file.core.usgovcloudapi.net (Azure Files) and privatelink.vaultcore.usgovcloudapi.net (Key Vault).
@@ -77,16 +77,19 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
 - [x]  If implementing AVD Private Link Service, ensure the subscription resource provider registration has been implemented:
   - [Azure Commercial Private Link Prerequisites](https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-setup?tabs=azure%2Cportal%2Cportal-2#tabpanel_1_azure)
   - [Azure Gov/China Private Link Prerequisites](https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-setup?tabs=us-gov-21vianet%2Cportal%2Cportal-2#tabpanel_1_us-gov-21vianet).
-- [x]  If enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID got to Microsoft Entra ID > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the ObjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
+- [x]  If enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID go to Microsoft Entra ID > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the ObjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
 - [x]  Account used for portal UI deployment, needs to be able to query Microsoft Entra tenant and get the ObjectID of the Azure Virtual Desktop enterprise app, query will be executed by the automation using the user context.
 - [x]  If complying with WAF, the Domain Controllers VMs if hosted in Azure should follow High Availability best practices as mentioned in [here](https://learn.microsoft.com/azure/architecture/example-scenario/identity/adds-extend-domain#reliability) and High availability for Entra Domain services can be setup using replica set as mentioned in [here](https://learn.microsoft.com/entra/identity/domain-services/concepts-replica-sets).
-- [x]  If customer selects "Compute gallery" as the image source then it is customer's responsibility to ensure the high availability of the images used and keep the number of replicas to a minumum for scaling the deployments, as mentioned in [here](https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery).
+- [x]  If customer selects "Compute gallery" as the image source then it is customer's responsibility to ensure the high availability of the images used and keep the number of replicas to a minimum for scaling the deployments, as mentioned in [here](https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery).
+
 
 ## Planning
 
 This section covers the high-level steps for planning an Azure Virtual Desktop deployment and the decisions that need to be made. The deployment will use the Microsoft provided Bicep/PowerShell/Azure CLI templates from this repository and the customer provided configuration files that contain the system specific information.
 
 This Azure Virtual Desktop accelerator supports deployment into greenfield scenarios (no Azure Virtual Desktop Azure infrastructure components exist) or brownfield scenarios (some Azure Virtual Desktop Azure infrastructure components exist).
+
+> **Note**: Enabling Microsoft Defender for Cloud solutions (e.g., Defender for Servers, Defender for Storage, Defender for Key Vault, Defender for Azure Resource Manager) may incur additional costs. Pricing depends on the specific service enabled and the associated usage. It is recommended to review the [Azure Defender Pricing](https://azure.microsoft.com/en-us/pricing/details/defender/) page for detailed information before enabling these features.
 
 ## Greenfield deployment
 
@@ -143,4 +146,4 @@ To learn more about the resource naming used in this accelerator take a look at 
 
 Continue with:
 
-- [Azure Virtual Desktop LZA - Baseline - Deployment](./deploy-baseline.md) if you are ready to deploy an Azure Virtual Desktop workload from the market place, an updated and optimized image previously created by the custom image deployment, or the the Azure market place or from an Azure Compute Gallery.
+- [Azure Virtual Desktop LZA - Baseline - Deployment](./deploy-baseline.md) if you are ready to deploy an Azure Virtual Desktop workload from the market place, an updated and optimized image previously created by the custom image deployment, or the  Azure marketplace or from an Azure Compute Gallery.

@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "1179445004995716419"
+      "version": "0.33.93.31351",
+      "templateHash": "4711751862376592155"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -99,18 +99,11 @@
         "description": "Required, Eronll session hosts on Intune. (Default: false)"
       }
     },
-    "securityPrincipalId": {
-      "type": "string",
-      "defaultValue": "",
+    "avdSecurityGroups": {
+      "type": "array",
+      "defaultValue": [],
       "metadata": {
-        "description": "Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
-      }
-    },
-    "securityPrincipalName": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: \"\")"
+        "description": "Optional. Identity ID(s) to grant RBAC role to access AVD application group and NTFS permissions. (Default: [])"
       }
     },
     "identityDomainName": {
@@ -274,23 +267,23 @@
     },
     "avdVnetworkAddressPrefixes": {
       "type": "string",
-      "defaultValue": "10.10.0.0/23",
+      "defaultValue": "10.10.0.0/16",
       "metadata": {
-        "description": "AVD virtual network address prefixes. (Default: 10.10.0.0/23)"
+        "description": "AVD virtual network address prefixes. (Default: 10.10.0.0/16)"
       }
     },
     "vNetworkAvdSubnetAddressPrefix": {
       "type": "string",
-      "defaultValue": "10.10.0.0/24",
+      "defaultValue": "10.10.1.0/24",
       "metadata": {
-        "description": "AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)"
+        "description": "AVD virtual network subnet address prefix. (Default: 10.10.1.0/24)"
       }
     },
     "vNetworkPrivateEndpointSubnetAddressPrefix": {
       "type": "string",
-      "defaultValue": "10.10.1.0/27",
+      "defaultValue": "10.10.2.0/27",
       "metadata": {
-        "description": "private endpoints virtual network subnet address prefix. (Default: 10.10.1.0/27)"
+        "description": "private endpoints virtual network subnet address prefix. (Default: 10.10.2.0/27)"
       }
     },
     "customDnsIps": {
@@ -460,7 +453,7 @@
       "type": "bool",
       "defaultValue": true,
       "metadata": {
-        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)"
+        "description": "When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)"
       }
     },
     "zoneRedundantStorage": {
@@ -468,20 +461,6 @@
       "defaultValue": false,
       "metadata": {
         "description": "When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)"
-      }
-    },
-    "deployVmssFlex": {
-      "type": "bool",
-      "defaultValue": true,
-      "metadata": {
-        "description": "Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)"
-      }
-    },
-    "vmssFlatformFaultDomainCount": {
-      "type": "int",
-      "defaultValue": 2,
-      "metadata": {
-        "description": "Sets the number of fault domains for the availability set. (Default: 2)"
       }
     },
     "fslogixStoragePerformance": {
@@ -795,14 +774,6 @@
         "description": "AVD session host prefix custom name. (Default: vmapp1duse2)"
       }
     },
-    "vmssFlexCustomNamePrefix": {
-      "type": "string",
-      "defaultValue": "vmss",
-      "maxLength": 9,
-      "metadata": {
-        "description": "AVD VMSS Flex custom name. (Default: vmss)"
-      }
-    },
     "storageAccountPrefixCustomName": {
       "type": "string",
       "defaultValue": "st",
@@ -994,6 +965,41 @@
       "defaultValue": [],
       "metadata": {
         "description": "Additional customer-provided static routes to be added to the route tables."
+      }
+    },
+    "deployDefender": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable Microsoft Defender on the subscription. (Default: false)"
+      }
+    },
+    "enableDefForServers": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable Microsoft Defender for servers. (Default: true)"
+      }
+    },
+    "enableDefForStorage": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable Microsoft Defender for storage. (Default: true)"
+      }
+    },
+    "enableDefForKeyVault": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable Microsoft Defender for Key Vault. (Default: true)"
+      }
+    },
+    "enableDefForArm": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable Microsoft Defender for Azure Resource Manager. (Default: true)"
       }
     }
   },
@@ -1406,7 +1412,6 @@
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
     "varWrklKeyVaultSku": "[if(or(equals(variables('varAzureCloudName'), 'AzureCloud'), equals(variables('varAzureCloudName'), 'AzureUSGovernment')), 'premium', if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), 'standard', null()))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
-    "varVmssFlexNamePrefix": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}', parameters('vmssFlexCustomNamePrefix'), variables('varComputeStorageResourcesNamingStandard')), format('vmss-{0}', variables('varComputeStorageResourcesNamingStandard')))]",
     "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
     "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varAppAttachFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('appAttachFileShareCustomName'), format('appa-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
@@ -1423,7 +1428,6 @@
     "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "./Set-SessionHostConfiguration.ps1",
-    "varDiskEncryptionKeyExpirationInEpoch": "[dateTimeToEpoch(dateTimeAdd(parameters('time'), format('P{0}D', string(parameters('diskEncryptionKeyExpirationInDays')))))]",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateAppAttachDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varAppAttachStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('appAttachStoragePerformance')), format('{0}_LRS', parameters('appAttachStoragePerformance')))]",
@@ -1431,10 +1435,6 @@
     "varMaxSessionHostsDivisionValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varMaxSessionHostsDivisionRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxSessionHostsPerTemplate'))]",
     "varSessionHostBatchCount": "[if(greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0), add(variables('varMaxSessionHostsDivisionValue'), 1), variables('varMaxSessionHostsDivisionValue'))]",
-    "varMaxVmssFlexMembersCount": 999,
-    "varDivisionVmssFlexValue": "[div(parameters('avdDeploySessionHostsCount'), variables('varMaxVmssFlexMembersCount'))]",
-    "varDivisionAvsetRemainderValue": "[mod(parameters('avdDeploySessionHostsCount'), variables('varMaxVmssFlexMembersCount'))]",
-    "varVmssFlexCount": "[if(greater(variables('varDivisionAvsetRemainderValue'), 0), add(variables('varDivisionVmssFlexValue'), 1), variables('varDivisionVmssFlexValue'))]",
     "varHostPoolAgentUpdateSchedule": [
       {
         "dayOfWeek": "Tuesday",
@@ -1716,7 +1716,7 @@
       "Purpose": "Disk encryption keys for zero trust"
     },
     "varTelemetryId": "[format('pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-{0}', parameters('avdManagementPlaneLocation'))]",
-    "verResourceGroups": [
+    "varResourceGroups": [
       {
         "purpose": "Service-Objects",
         "name": "[variables('varServiceObjectsRgName')]",
@@ -1731,7 +1731,9 @@
         "enableDefaultTelemetry": false,
         "tags": "[if(parameters('createResourceTags'), union(variables('varAllComputeStorageTags'), variables('varAvdDefaultTags')), union(variables('varAvdDefaultTags'), variables('varAllComputeStorageTags')))]"
       }
-    ]
+    ],
+    "varSecurityPrincipalId": "[if(not(empty(parameters('avdSecurityGroups'))), parameters('avdSecurityGroups')[0].objectId, '')]",
+    "varSecurityPrincipalName": "[if(not(empty(parameters('avdSecurityGroups'))), parameters('avdSecurityGroups')[0].displayName, '')]"
   },
   "resources": [
     {
@@ -1780,8 +1782,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10799367563903935276"
+              "version": "0.33.93.31351",
+              "templateHash": "17832108042529526083"
             },
             "name": "Resource Groups",
             "description": "This module deploys a Resource Group.",
@@ -1876,11 +1878,11 @@
     {
       "copy": {
         "name": "baselineResourceGroups",
-        "count": "[length(variables('verResourceGroups'))]"
+        "count": "[length(variables('varResourceGroups'))]"
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('{0}-{1}', variables('verResourceGroups')[copyIndex()].purpose, parameters('time'))]",
+      "name": "[format('{0}-{1}', variables('varResourceGroups')[copyIndex()].purpose, parameters('time'))]",
       "subscriptionId": "[parameters('avdWorkloadSubsId')]",
       "location": "[deployment().location]",
       "properties": {
@@ -1890,16 +1892,16 @@
         "mode": "Incremental",
         "parameters": {
           "name": {
-            "value": "[variables('verResourceGroups')[copyIndex()].name]"
+            "value": "[variables('varResourceGroups')[copyIndex()].name]"
           },
           "location": {
-            "value": "[variables('verResourceGroups')[copyIndex()].location]"
+            "value": "[variables('varResourceGroups')[copyIndex()].location]"
           },
           "enableTelemetry": {
-            "value": "[variables('verResourceGroups')[copyIndex()].enableDefaultTelemetry]"
+            "value": "[variables('varResourceGroups')[copyIndex()].enableDefaultTelemetry]"
           },
           "tags": {
-            "value": "[variables('verResourceGroups')[copyIndex()].tags]"
+            "value": "[variables('varResourceGroups')[copyIndex()].tags]"
           }
         },
         "template": {
@@ -1909,8 +1911,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10799367563903935276"
+              "version": "0.33.93.31351",
+              "templateHash": "17832108042529526083"
             },
             "name": "Resource Groups",
             "description": "This module deploys a Resource Group.",
@@ -2033,8 +2035,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10799367563903935276"
+              "version": "0.33.93.31351",
+              "templateHash": "17832108042529526083"
             },
             "name": "Resource Groups",
             "description": "This module deploys a Resource Group.",
@@ -2177,8 +2179,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "693958316710446330"
+              "version": "0.33.93.31351",
+              "templateHash": "9075036806052194789"
             },
             "name": "AVD LZA insights monitoring",
             "description": "This module deploys Log analytics workspace, DCR and policies",
@@ -2315,8 +2317,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "10799367563903935276"
+                      "version": "0.33.93.31351",
+                      "templateHash": "17832108042529526083"
                     },
                     "name": "Resource Groups",
                     "description": "This module deploys a Resource Group.",
@@ -2449,8 +2451,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7478432048193717612"
+                      "version": "0.33.93.31351",
+                      "templateHash": "4856541365330529232"
                     },
                     "name": "Log Analytics Workspaces",
                     "description": "This module deploys a Log Analytics Workspace.",
@@ -2682,8 +2684,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "7818692371155764860"
+                              "version": "0.33.93.31351",
+                              "templateHash": "17358515953093451973"
                             },
                             "name": "Log Analytics Workspace Storage Insight Configs",
                             "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -2878,8 +2880,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "15254280278735080201"
+                      "version": "0.33.93.31351",
+                      "templateHash": "15722550007411230806"
                     }
                   },
                   "parameters": {
@@ -3207,8 +3209,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "7271247064902859568"
+                              "version": "0.33.93.31351",
+                              "templateHash": "14608202935063519743"
                             }
                           },
                           "parameters": {
@@ -3358,8 +3360,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "2683172639322230892"
+                              "version": "0.33.93.31351",
+                              "templateHash": "8832321830420649266"
                             }
                           },
                           "parameters": {
@@ -3508,8 +3510,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "5238484388629101622"
+                              "version": "0.33.93.31351",
+                              "templateHash": "11624908005940613332"
                             },
                             "name": "Policy Assignments (Resource Group scope)",
                             "description": "This module deploys a Policy Assignment at a Resource Group scope.",
@@ -3759,8 +3761,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "7986340452932472267"
+                              "version": "0.33.93.31351",
+                              "templateHash": "15388209522748095710"
                             },
                             "name": "Policy Insights Remediations (Resource Group scope)",
                             "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
@@ -3928,8 +3930,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9200267335396368649"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5179740017078291369"
                     }
                   },
                   "parameters": {
@@ -4194,8 +4196,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "17770770204611831801"
+              "version": "0.33.93.31351",
+              "templateHash": "10572854243028197859"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -4607,8 +4609,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "13553737148375785648"
+                      "version": "0.33.93.31351",
+                      "templateHash": "13272826448432874347"
                     },
                     "name": "Network Security Groups",
                     "description": "This module deploys a Network security Group (NSG).",
@@ -4899,8 +4901,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "858582164560731655"
+                              "version": "0.33.93.31351",
+                              "templateHash": "15539562466007631331"
                             },
                             "name": "Network Security Group (NSG) Security Rules",
                             "description": "This module deploys a Network Security Group (NSG) Security Rule.",
@@ -5162,8 +5164,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "13553737148375785648"
+                      "version": "0.33.93.31351",
+                      "templateHash": "13272826448432874347"
                     },
                     "name": "Network Security Groups",
                     "description": "This module deploys a Network security Group (NSG).",
@@ -5454,8 +5456,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "858582164560731655"
+                              "version": "0.33.93.31351",
+                              "templateHash": "15539562466007631331"
                             },
                             "name": "Network Security Group (NSG) Security Rules",
                             "description": "This module deploys a Network Security Group (NSG) Security Rule.",
@@ -5711,8 +5713,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7889997096439579455"
+                      "version": "0.33.93.31351",
+                      "templateHash": "10611195212449783096"
                     },
                     "name": "Application Security Groups (ASG)",
                     "description": "This module deploys an Application Security Group (ASG).",
@@ -5841,8 +5843,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2893130270746991918"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5932224160998080111"
                     },
                     "name": "Route Tables",
                     "description": "This module deploys a User Defined Route Table (UDR).",
@@ -6048,8 +6050,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2893130270746991918"
+                      "version": "0.33.93.31351",
+                      "templateHash": "5932224160998080111"
                     },
                     "name": "Route Tables",
                     "description": "This module deploys a User Defined Route Table (UDR).",
@@ -6249,8 +6251,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "11201850736227894329"
+                      "version": "0.33.93.31351",
+                      "templateHash": "16370594914247543667"
                     },
                     "name": "DDoS Protection Plans",
                     "description": "This module deploys a DDoS Protection Plan.",
@@ -6391,8 +6393,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "11034583593219610804"
+                      "version": "0.33.93.31351",
+                      "templateHash": "4245282512442607785"
                     },
                     "name": "Virtual Networks",
                     "description": "This module deploys a Virtual Network (vNet).",
@@ -6762,8 +6764,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "8517065818703040556"
+                              "version": "0.33.93.31351",
+                              "templateHash": "16191373076114856248"
                             },
                             "name": "Virtual Network Subnets",
                             "description": "This module deploys a Virtual Network Subnet.",
@@ -7085,8 +7087,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "4110545110162011128"
+                              "version": "0.33.93.31351",
+                              "templateHash": "16105287874291442618"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -7230,8 +7232,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "4110545110162011128"
+                              "version": "0.33.93.31351",
+                              "templateHash": "16105287874291442618"
                             },
                             "name": "Virtual Network Peerings",
                             "description": "This module deploys a Virtual Network Peering.",
@@ -7428,8 +7430,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "4815469193365888611"
+                      "version": "0.33.93.31351",
+                      "templateHash": "7907389961578779292"
                     },
                     "name": "Private DNS Zones",
                     "description": "This module deploys a Private DNS zone.",
@@ -7539,8 +7541,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "2969695484390182131"
+                              "version": "0.33.93.31351",
+                              "templateHash": "2426664930993560639"
                             },
                             "name": "Private DNS Zone Virtual Network Link",
                             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -7710,8 +7712,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "4815469193365888611"
+                      "version": "0.33.93.31351",
+                      "templateHash": "7907389961578779292"
                     },
                     "name": "Private DNS Zones",
                     "description": "This module deploys a Private DNS zone.",
@@ -7821,8 +7823,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "2969695484390182131"
+                              "version": "0.33.93.31351",
+                              "templateHash": "2426664930993560639"
                             },
                             "name": "Private DNS Zone Virtual Network Link",
                             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -7992,8 +7994,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "4815469193365888611"
+                      "version": "0.33.93.31351",
+                      "templateHash": "7907389961578779292"
                     },
                     "name": "Private DNS Zones",
                     "description": "This module deploys a Private DNS zone.",
@@ -8103,8 +8105,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "2969695484390182131"
+                              "version": "0.33.93.31351",
+                              "templateHash": "2426664930993560639"
                             },
                             "name": "Private DNS Zone Virtual Network Link",
                             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -8274,8 +8276,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "4815469193365888611"
+                      "version": "0.33.93.31351",
+                      "templateHash": "7907389961578779292"
                     },
                     "name": "Private DNS Zones",
                     "description": "This module deploys a Private DNS zone.",
@@ -8385,8 +8387,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "2969695484390182131"
+                              "version": "0.33.93.31351",
+                              "templateHash": "2426664930993560639"
                             },
                             "name": "Private DNS Zone Virtual Network Link",
                             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -8642,7 +8644,9 @@
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
-          "securityPrincipalId": "[if(not(empty(parameters('securityPrincipalId'))), createObject('value', parameters('securityPrincipalId')), createObject('value', ''))]",
+          "securityPrincipalId": {
+            "value": "[variables('varSecurityPrincipalId')]"
+          },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
           "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
           "hostPoolAgentUpdateSchedule": {
@@ -8676,8 +8680,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10832968390292678257"
+              "version": "0.33.93.31351",
+              "templateHash": "13521638278532946523"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -9022,8 +9026,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9830359677166168897"
+                      "version": "0.33.93.31351",
+                      "templateHash": "13233883945180272639"
                     },
                     "name": "Azure Virtual Desktop Host Pool",
                     "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -9633,8 +9637,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "2296735823394017699"
+                              "version": "0.33.93.31351",
+                              "templateHash": "17400304622639006546"
                             },
                             "name": "Key Vault Secrets",
                             "description": "This module deploys a Key Vault Secret.",
@@ -10604,8 +10608,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "14213682580568647702"
+                      "version": "0.33.93.31351",
+                      "templateHash": "16898620795855988188"
                     },
                     "name": "Azure Virtual Desktop Application Group",
                     "description": "This module deploys an Azure Virtual Desktop Application Group.",
@@ -11010,8 +11014,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "12429020349302903087"
+                              "version": "0.33.93.31351",
+                              "templateHash": "16824974346962416831"
                             },
                             "name": "Azure Virtual Desktop Application Group Application",
                             "description": "This module deploys an Azure Virtual Desktop Application Group Application.",
@@ -11215,8 +11219,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7426845977522939193"
+                      "version": "0.33.93.31351",
+                      "templateHash": "10029283164655666238"
                     },
                     "name": "Workspace",
                     "description": "This module deploys an Azure Virtual Desktop Workspace.",
@@ -12350,8 +12354,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "15669160169651640727"
+                      "version": "0.33.93.31351",
+                      "templateHash": "3638448674165937672"
                     },
                     "name": "Azure Virtual Desktop Scaling Plan",
                     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -12673,8 +12677,6 @@
                 }
               },
               "dependsOn": [
-                "applicationGroups",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time')))]",
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workspace-{0}', parameters('time')))]"
               ]
             }
@@ -12731,7 +12733,9 @@
           "createStorageDeployment": {
             "value": "[variables('varCreateStorageDeployment')]"
           },
-          "securityPrincipalId": "[if(not(empty(parameters('securityPrincipalId'))), createObject('value', parameters('securityPrincipalId')), createObject('value', ''))]",
+          "securityPrincipalId": {
+            "value": "[variables('varSecurityPrincipalId')]"
+          },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
         },
         "template": {
@@ -12740,8 +12744,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10956105869554160487"
+              "version": "0.33.93.31351",
+              "templateHash": "242675397767662822"
             }
           },
           "parameters": {
@@ -12902,8 +12906,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "8817521758779794696"
+                      "version": "0.33.93.31351",
+                      "templateHash": "4949725037835210878"
                     },
                     "name": "User Assigned Identities",
                     "description": "This module deploys a User Assigned Identity.",
@@ -13157,8 +13161,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -13335,8 +13339,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -13511,8 +13515,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -13686,8 +13690,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -13858,8 +13862,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -14030,8 +14034,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -14222,9 +14226,6 @@
           "diskEncryptionKeyExpirationInDays": {
             "value": "[parameters('diskEncryptionKeyExpirationInDays')]"
           },
-          "diskEncryptionKeyExpirationInEpoch": {
-            "value": "[variables('varDiskEncryptionKeyExpirationInEpoch')]"
-          },
           "diskEncryptionSetName": {
             "value": "[variables('varDiskEncryptionSetName')]"
           },
@@ -14253,8 +14254,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "888600418488658828"
+              "version": "0.33.93.31351",
+              "templateHash": "8370040284189693367"
             }
           },
           "parameters": {
@@ -14289,12 +14290,6 @@
               }
             },
             "diskEncryptionKeyExpirationInDays": {
-              "type": "int",
-              "metadata": {
-                "description": "This value is used to set the expiration date on the disk encryption key."
-              }
-            },
-            "diskEncryptionKeyExpirationInEpoch": {
               "type": "int",
               "metadata": {
                 "description": "This value is used to set the expiration date on the disk encryption key."
@@ -14424,8 +14419,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7271247064902859568"
+                      "version": "0.33.93.31351",
+                      "templateHash": "14608202935063519743"
                     }
                   },
                   "parameters": {
@@ -14584,8 +14579,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5238484388629101622"
+                      "version": "0.33.93.31351",
+                      "templateHash": "11624908005940613332"
                     },
                     "name": "Policy Assignments (Resource Group scope)",
                     "description": "This module deploys a Policy Assignment at a Resource Group scope.",
@@ -14836,8 +14831,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7986340452932472267"
+                      "version": "0.33.93.31351",
+                      "templateHash": "15388209522748095710"
                     },
                     "name": "Policy Insights Remediations (Resource Group scope)",
                     "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
@@ -15025,8 +15020,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5238484388629101622"
+                      "version": "0.33.93.31351",
+                      "templateHash": "11624908005940613332"
                     },
                     "name": "Policy Assignments (Resource Group scope)",
                     "description": "This module deploys a Policy Assignment at a Resource Group scope.",
@@ -15278,8 +15273,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7986340452932472267"
+                      "version": "0.33.93.31351",
+                      "templateHash": "15388209522748095710"
                     },
                     "name": "Policy Insights Remediations (Resource Group scope)",
                     "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
@@ -15443,8 +15438,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -15617,8 +15612,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -15787,8 +15782,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2332163903177695625"
+                      "version": "0.33.93.31351",
+                      "templateHash": "2452193429452217414"
                     },
                     "name": "Role Assignments (Resource Group scope)",
                     "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -15972,9 +15967,6 @@
                   "diskEncryptionKeyExpirationInDays": {
                     "value": "[parameters('diskEncryptionKeyExpirationInDays')]"
                   },
-                  "diskEncryptionKeyExpirationInEpoch": {
-                    "value": "[parameters('diskEncryptionKeyExpirationInEpoch')]"
-                  },
                   "diskEncryptionSetName": {
                     "value": "[parameters('diskEncryptionSetName')]"
                   },
@@ -15991,8 +15983,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "8752784192374769479"
+                      "version": "0.33.93.31351",
+                      "templateHash": "14616528108278942259"
                     }
                   },
                   "parameters": {
@@ -16045,12 +16037,6 @@
                       }
                     },
                     "diskEncryptionKeyExpirationInDays": {
-                      "type": "int",
-                      "metadata": {
-                        "description": "This value is used to set the expiration date on the disk encryption key."
-                      }
-                    },
-                    "diskEncryptionKeyExpirationInEpoch": {
                       "type": "int",
                       "metadata": {
                         "description": "This value is used to set the expiration date on the disk encryption key."
@@ -16143,8 +16129,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "11359615356678017351"
+                              "version": "0.33.93.31351",
+                              "templateHash": "10860312797222506854"
                             },
                             "name": "Key Vaults",
                             "description": "This module deploys a Key Vault.",
@@ -17327,8 +17313,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "12779770633323343092"
+                                      "version": "0.33.93.31351",
+                                      "templateHash": "673206505709710643"
                                     },
                                     "name": "Key Vault Access Policies",
                                     "description": "This module deploys a Key Vault Access Policy.",
@@ -17593,8 +17579,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "2296735823394017699"
+                                      "version": "0.33.93.31351",
+                                      "templateHash": "17400304622639006546"
                                     },
                                     "name": "Key Vault Secrets",
                                     "description": "This module deploys a Key Vault Secret.",
@@ -17874,8 +17860,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "9206519335079239914"
+                                      "version": "0.33.93.31351",
+                                      "templateHash": "15753887201917524746"
                                     },
                                     "name": "Key Vault Keys",
                                     "description": "This module deploys a Key Vault Key.",
@@ -18871,9 +18857,6 @@
                           "attributesEnabled": {
                             "value": true
                           },
-                          "attributesExp": {
-                            "value": "[parameters('diskEncryptionKeyExpirationInEpoch')]"
-                          },
                           "keySize": {
                             "value": 4096
                           },
@@ -18922,8 +18905,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "9206519335079239914"
+                              "version": "0.33.93.31351",
+                              "templateHash": "15753887201917524746"
                             },
                             "name": "Key Vault Keys",
                             "description": "This module deploys a Key Vault Key.",
@@ -19244,8 +19227,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "2541549255303167610"
+                              "version": "0.33.93.31351",
+                              "templateHash": "18223652687669431134"
                             },
                             "name": "Disk Encryption Sets",
                             "description": "This module deploys a Disk Encryption Set. The module will attempt to set permissions on the provided Key Vault for any used user-assigned identity.",
@@ -19471,8 +19454,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "11748127323414305938"
+                                      "version": "0.33.93.31351",
+                                      "templateHash": "10714750736508729314"
                                     }
                                   },
                                   "parameters": {
@@ -19559,8 +19542,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.33.13.18514",
-                                              "templateHash": "3099447853930949939"
+                                              "version": "0.33.93.31351",
+                                              "templateHash": "13289997093207697331"
                                             },
                                             "name": "Key Vault Access Policies",
                                             "description": "This module deploys a Key Vault Access Policy.",
@@ -19909,8 +19892,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "11359615356678017351"
+              "version": "0.33.93.31351",
+              "templateHash": "10860312797222506854"
             },
             "name": "Key Vaults",
             "description": "This module deploys a Key Vault.",
@@ -21093,8 +21076,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "12779770633323343092"
+                      "version": "0.33.93.31351",
+                      "templateHash": "673206505709710643"
                     },
                     "name": "Key Vault Access Policies",
                     "description": "This module deploys a Key Vault Access Policy.",
@@ -21359,8 +21342,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "2296735823394017699"
+                      "version": "0.33.93.31351",
+                      "templateHash": "17400304622639006546"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret.",
@@ -21640,8 +21623,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9206519335079239914"
+                      "version": "0.33.93.31351",
+                      "templateHash": "15753887201917524746"
                     },
                     "name": "Key Vault Keys",
                     "description": "This module deploys a Key Vault Key.",
@@ -22706,8 +22689,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "10011511416389336534"
+              "version": "0.33.93.31351",
+              "templateHash": "145165832351743331"
             }
           },
           "parameters": {
@@ -22924,6 +22907,7 @@
                     "value": {
                       "createOption": "FromImage",
                       "deleteOption": "Delete",
+                      "caching": "ReadWrite",
                       "managedDisk": "[variables('varManagedDisk')]"
                     }
                   },
@@ -22987,8 +22971,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9347214792206496875"
+                      "version": "0.33.93.31351",
+                      "templateHash": "11050393703898934384"
                     },
                     "name": "Virtual Machines",
                     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -23817,8 +23801,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "3570678065509185439"
+                              "version": "0.33.93.31351",
+                              "templateHash": "11733090358061195696"
                             }
                           },
                           "definitions": {
@@ -25370,8 +25354,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -25576,8 +25560,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -25777,8 +25761,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -25985,8 +25969,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -26186,8 +26170,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -26384,8 +26368,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -26651,7 +26635,9 @@
             "value": "[variables('varOuStgPath')]"
           },
           "managedIdentityClientId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
-          "securityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), createObject('value', parameters('securityPrincipalName')), createObject('value', ''))]",
+          "securityPrincipalName": {
+            "value": "[variables('varSecurityPrincipalName')]"
+          },
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
           },
@@ -26686,8 +26672,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "667670496768450180"
+              "version": "0.33.93.31351",
+              "templateHash": "15598155563920004753"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -26934,7 +26920,7 @@
                   "accessTier": {
                     "value": "Hot"
                   },
-                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('id', parameters('vmsSubnetId'), 'action', 'Allow')), 'ipRules', createArray())))]",
+                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
                   "fileServices": {
                     "value": {
                       "shares": [
@@ -26962,8 +26948,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "387218233905685797"
+                      "version": "0.33.93.31351",
+                      "templateHash": "13156695704748320501"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account.",
@@ -28480,8 +28466,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "8355629121997036621"
+                              "version": "0.33.93.31351",
+                              "templateHash": "5174215295464783855"
                             },
                             "name": "Storage Account File Share Services",
                             "description": "This module deploys a Storage Account File Share Service.",
@@ -28758,8 +28744,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "9349329831045900891"
+                                      "version": "0.33.93.31351",
+                                      "templateHash": "823140844991744662"
                                     },
                                     "name": "Storage Account File Shares",
                                     "description": "This module deploys a Storage Account File Share.",
@@ -28952,8 +28938,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.33.13.18514",
-                                              "templateHash": "2661782584218455776"
+                                              "version": "0.33.93.31351",
+                                              "templateHash": "16821934161134527264"
                                             }
                                           },
                                           "parameters": {
@@ -29276,8 +29262,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "372347773754194554"
+                      "version": "0.33.93.31351",
+                      "templateHash": "4206601194007058149"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -29377,8 +29363,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -29542,6 +29528,7 @@
       "dependsOn": [
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Storage-RG-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-MGMT-VM-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]"
@@ -29606,7 +29593,9 @@
             "value": "[variables('varOuStgPath')]"
           },
           "managedIdentityClientId": "[if(variables('varCreateStorageDeployment'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
-          "securityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), createObject('value', parameters('securityPrincipalName')), createObject('value', ''))]",
+          "securityPrincipalName": {
+            "value": "[variables('varSecurityPrincipalName')]"
+          },
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
           },
@@ -29641,8 +29630,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "667670496768450180"
+              "version": "0.33.93.31351",
+              "templateHash": "15598155563920004753"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29889,7 +29878,7 @@
                   "accessTier": {
                     "value": "Hot"
                   },
-                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(createObject('id', parameters('vmsSubnetId'), 'action', 'Allow')), 'ipRules', createArray())))]",
+                  "networkAcls": "[if(parameters('deployPrivateEndpoint'), createObject('value', createObject('bypass', 'AzureServices', 'defaultAction', 'Deny', 'virtualNetworkRules', createArray(), 'ipRules', createArray())), createObject('value', createObject()))]",
                   "fileServices": {
                     "value": {
                       "shares": [
@@ -29917,8 +29906,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "387218233905685797"
+                      "version": "0.33.93.31351",
+                      "templateHash": "13156695704748320501"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account.",
@@ -31435,8 +31424,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "8355629121997036621"
+                              "version": "0.33.93.31351",
+                              "templateHash": "5174215295464783855"
                             },
                             "name": "Storage Account File Share Services",
                             "description": "This module deploys a Storage Account File Share Service.",
@@ -31713,8 +31702,8 @@
                                   "metadata": {
                                     "_generator": {
                                       "name": "bicep",
-                                      "version": "0.33.13.18514",
-                                      "templateHash": "9349329831045900891"
+                                      "version": "0.33.93.31351",
+                                      "templateHash": "823140844991744662"
                                     },
                                     "name": "Storage Account File Shares",
                                     "description": "This module deploys a Storage Account File Share.",
@@ -31907,8 +31896,8 @@
                                           "metadata": {
                                             "_generator": {
                                               "name": "bicep",
-                                              "version": "0.33.13.18514",
-                                              "templateHash": "2661782584218455776"
+                                              "version": "0.33.93.31351",
+                                              "templateHash": "16821934161134527264"
                                             }
                                           },
                                           "parameters": {
@@ -32231,8 +32220,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "372347773754194554"
+                      "version": "0.33.93.31351",
+                      "templateHash": "4206601194007058149"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -32332,8 +32321,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -32498,117 +32487,10 @@
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Storage-RG-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-MGMT-VM-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]"
-      ]
-    },
-    {
-      "condition": "[and(parameters('avdDeploySessionHosts'), parameters('deployVmssFlex'))]",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('AVD-VMSS-Flex-{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
-      "resourceGroup": "[format('{0}', variables('varComputeObjectsRgName'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "namePrefix": {
-            "value": "[variables('varVmssFlexNamePrefix')]"
-          },
-          "location": {
-            "value": "[parameters('avdSessionHostLocation')]"
-          },
-          "count": {
-            "value": "[variables('varVmssFlexCount')]"
-          },
-          "platformFaultDomainCount": {
-            "value": "[parameters('vmssFlatformFaultDomainCount')]"
-          },
-          "useAvailabilityZones": {
-            "value": "[parameters('availabilityZonesCompute')]"
-          },
-          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "8861275536891226361"
-            },
-            "name": "AVD Accelerator - VMSS Flex",
-            "description": "Deploys a VMSS Flex without VM profile",
-            "owner": "Azure/avdaccelerator"
-          },
-          "parameters": {
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "Location where to deploy compute services."
-              }
-            },
-            "namePrefix": {
-              "type": "string",
-              "metadata": {
-                "description": "Availablity Set name."
-              }
-            },
-            "platformFaultDomainCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Platform Fault Domain count."
-              }
-            },
-            "count": {
-              "type": "int",
-              "metadata": {
-                "description": "VMSS Flex count."
-              }
-            },
-            "useAvailabilityZones": {
-              "type": "bool",
-              "metadata": {
-                "description": "Use availability zones."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "metadata": {
-                "description": "Tags to be applied to resources"
-              }
-            }
-          },
-          "resources": [
-            {
-              "copy": {
-                "name": "vmssFlex",
-                "count": "[length(range(1, parameters('count')))]"
-              },
-              "type": "Microsoft.Compute/virtualMachineScaleSets",
-              "apiVersion": "2024-03-01",
-              "name": "[format('{0}-{1}', parameters('namePrefix'), padLeft(range(1, parameters('count'))[copyIndex()], 3, '0'))]",
-              "location": "[parameters('location')]",
-              "zones": "[if(parameters('useAvailabilityZones'), createArray('1', '2', '3'), null())]",
-              "properties": {
-                "orchestrationMode": "Flexible",
-                "zoneBalance": "[if(parameters('useAvailabilityZones'), true(), false())]",
-                "platformFaultDomainCount": "[if(parameters('useAvailabilityZones'), 1, parameters('platformFaultDomainCount'))]",
-                "singlePlacementGroup": false
-              },
-              "tags": "[parameters('tags')]"
-            }
-          ]
-        }
-      },
-      "dependsOn": [
-        "baselineResourceGroups",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
       ]
     },
     {
@@ -32639,15 +32521,6 @@
           },
           "createIntuneEnrollment": {
             "value": "[parameters('createIntuneEnrollment')]"
-          },
-          "maxVmssFlexMembersCount": {
-            "value": "[variables('varMaxVmssFlexMembersCount')]"
-          },
-          "vmssFlexNamePrefix": {
-            "value": "[variables('varVmssFlexNamePrefix')]"
-          },
-          "useVmssFlex": {
-            "value": "[parameters('deployVmssFlex')]"
           },
           "batchId": {
             "value": "[sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1)]"
@@ -32750,8 +32623,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "14078363065744157477"
+              "version": "0.33.93.31351",
+              "templateHash": "18304255021868622646"
             }
           },
           "parameters": {
@@ -32815,18 +32688,6 @@
                 "description": "Quantity of session hosts to deploy."
               }
             },
-            "useVmssFlex": {
-              "type": "bool",
-              "metadata": {
-                "description": "Associate VMs with VMSS Flex group."
-              }
-            },
-            "maxVmssFlexMembersCount": {
-              "type": "int",
-              "metadata": {
-                "description": "Max VMs per availability set."
-              }
-            },
             "countIndex": {
               "type": "int",
               "metadata": {
@@ -32836,13 +32697,7 @@
             "useAvailabilityZones": {
               "type": "bool",
               "metadata": {
-                "description": "Creates an availability zone and adds the VMs to it. Cannot be used in combination with availability set nor scale set."
-              }
-            },
-            "vmssFlexNamePrefix": {
-              "type": "string",
-              "metadata": {
-                "description": "VMSS flex name."
+                "description": "When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)."
               }
             },
             "identityServiceProvider": {
@@ -33033,11 +32888,13 @@
             "varOsDiskProperties": {
               "createOption": "FromImage",
               "deleteOption": "Delete",
+              "caching": "ReadWrite",
               "managedDisk": "[variables('varManagedDisk')]"
             },
             "varCustomOsDiskProperties": {
               "createOption": "FromImage",
               "deleteOption": "Delete",
+              "caching": "ReadWrite",
               "managedDisk": "[variables('varManagedDisk')]",
               "diskSizeGB": "[if(not(empty(parameters('customOsDiskSizeGB'))), parameters('customOsDiskSizeGB'), null())]"
             }
@@ -33073,7 +32930,6 @@
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
                   },
-                  "virtualMachineScaleSetResourceId": "[if(parameters('useVmssFlex'), createObject('value', format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.Compute/virtualMachineScaleSets/{2}-{3}', parameters('subscriptionId'), parameters('computeObjectsRgName'), parameters('vmssFlexNamePrefix'), padLeft(add(1, div(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('maxVmssFlexMembersCount'))), 3, '0'))), createObject('value', ''))]",
                   "osType": {
                     "value": "Windows"
                   },
@@ -33150,8 +33006,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "9347214792206496875"
+                      "version": "0.33.93.31351",
+                      "templateHash": "11050393703898934384"
                     },
                     "name": "Virtual Machines",
                     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -33980,8 +33836,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "3570678065509185439"
+                              "version": "0.33.93.31351",
+                              "templateHash": "11733090358061195696"
                             }
                           },
                           "definitions": {
@@ -35533,8 +35389,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -35739,8 +35595,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -35940,8 +35796,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -36148,8 +36004,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -36349,8 +36205,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -36547,8 +36403,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.13.18514",
-                              "templateHash": "6280369724759087952"
+                              "version": "0.33.93.31351",
+                              "templateHash": "6738255057321581868"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -36806,8 +36662,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "6280369724759087952"
+                      "version": "0.33.93.31351",
+                      "templateHash": "6738255057321581868"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension.",
@@ -37020,8 +36876,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "6280369724759087952"
+                      "version": "0.33.93.31351",
+                      "templateHash": "6738255057321581868"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension.",
@@ -37205,8 +37061,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7415231606199880926"
+                      "version": "0.33.93.31351",
+                      "templateHash": "6919490302839277834"
                     }
                   },
                   "parameters": {
@@ -37303,8 +37159,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "15967130229227627847"
+                      "version": "0.33.93.31351",
+                      "templateHash": "6026927917548225141"
                     }
                   },
                   "parameters": {
@@ -37440,7 +37296,6 @@
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('AVD-MGMT-Plane-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varComputeObjectsRgName'))), 'Microsoft.Resources/deployments', format('AVD-VMSS-Flex-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]",
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Zero-Trust-{0}', parameters('time')))]"
       ]
@@ -37474,8 +37329,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.13.18514",
-              "templateHash": "6006838643708738904"
+              "version": "0.33.93.31351",
+              "templateHash": "13528932355889121125"
             }
           },
           "parameters": {
@@ -37564,8 +37419,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7271247064902859568"
+                      "version": "0.33.93.31351",
+                      "templateHash": "14608202935063519743"
                     }
                   },
                   "parameters": {
@@ -37710,8 +37565,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "5238484388629101622"
+                      "version": "0.33.93.31351",
+                      "templateHash": "11624908005940613332"
                     },
                     "name": "Policy Assignments (Resource Group scope)",
                     "description": "This module deploys a Policy Assignment at a Resource Group scope.",
@@ -37961,8 +37816,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.13.18514",
-                      "templateHash": "7986340452932472267"
+                      "version": "0.33.93.31351",
+                      "templateHash": "15388209522748095710"
                     },
                     "name": "Policy Insights Remediations (Resource Group scope)",
                     "description": "This module deploys a Policy Insights Remediation on a Resource Group scope.",
@@ -38094,6 +37949,185 @@
               "dependsOn": [
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('computeObjectsRgName'))), 'Microsoft.Resources/deployments', format('Policy-Assign-{0}-{1}', variables('varCustomPolicyDefinitions')[copyIndex()].deploymentName, parameters('time')))]"
               ]
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "sessionHosts"
+      ]
+    },
+    {
+      "condition": "[parameters('deployDefender')]",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('Defender-Policies-{0}', parameters('time'))]",
+      "subscriptionId": "[format('{0}', parameters('avdWorkloadSubsId'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "enableDefForServers": {
+            "value": "[parameters('enableDefForServers')]"
+          },
+          "enableDefForStorage": {
+            "value": "[parameters('enableDefForStorage')]"
+          },
+          "enableDefForKeyVault": {
+            "value": "[parameters('enableDefForKeyVault')]"
+          },
+          "enableDefForArm": {
+            "value": "[parameters('enableDefForArm')]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.33.93.31351",
+              "templateHash": "17890795729608815451"
+            }
+          },
+          "parameters": {
+            "initiativeName": {
+              "type": "string",
+              "defaultValue": "Custom - Deploy Microsoft Defender for Cloud Security - AVD",
+              "metadata": {
+                "description": "Name of the initiative definition."
+              }
+            },
+            "initiativeDisplayName": {
+              "type": "string",
+              "defaultValue": "Custom - Deploy Microsoft Defender for Cloud Security - AVD",
+              "metadata": {
+                "description": "Display name of the initiative."
+              }
+            },
+            "initiativeDescription": {
+              "type": "string",
+              "defaultValue": "This initiative deploys Microsoft Defender for Cloud Security for AVD.",
+              "metadata": {
+                "description": "Description of the initiative."
+              }
+            },
+            "initiativeCategory": {
+              "type": "string",
+              "defaultValue": "Security Center",
+              "metadata": {
+                "description": "Category of the initiative."
+              }
+            },
+            "effect": {
+              "type": "string",
+              "defaultValue": "DeployIfNotExists",
+              "allowedValues": [
+                "DeployIfNotExists",
+                "Disabled"
+              ],
+              "metadata": {
+                "description": "Effect for the policy."
+              }
+            },
+            "isOnUploadMalwareScanningEnabled": {
+              "type": "string",
+              "defaultValue": "true",
+              "allowedValues": [
+                "true",
+                "false"
+              ],
+              "metadata": {
+                "description": "Enable or disable the Malware Scanning add-on feature."
+              }
+            },
+            "capGBPerMonthPerStorageAccount": {
+              "type": "int",
+              "defaultValue": 5000,
+              "metadata": {
+                "description": "Cap GB scanned per month per storage account."
+              }
+            },
+            "isSensitiveDataDiscoveryEnabled": {
+              "type": "string",
+              "defaultValue": "true",
+              "allowedValues": [
+                "true",
+                "false"
+              ],
+              "metadata": {
+                "description": "Enable or disable the Sensitive Data Threat Detection add-on feature."
+              }
+            },
+            "keyVaultSubPlan": {
+              "type": "string",
+              "defaultValue": "PerTransaction",
+              "allowedValues": [
+                "PerTransaction",
+                "PerKeyVault"
+              ],
+              "metadata": {
+                "description": "Select a Defender for Key Vault plan."
+              }
+            },
+            "resourceManagerSubPlan": {
+              "type": "string",
+              "defaultValue": "PerApiCall",
+              "allowedValues": [
+                "PerSubscription",
+                "PerApiCall"
+              ],
+              "metadata": {
+                "description": "Select a Defender for Resource Manager plan."
+              }
+            },
+            "enableDefForServers": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable or disable the \"Configure Azure Defender for servers to be enabled\" policy."
+              }
+            },
+            "enableDefForStorage": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable or disable the \"Configure Microsoft Defender for Storage to be enabled\" policy."
+              }
+            },
+            "enableDefForKeyVault": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable or disable the \"Configure Microsoft Defender for Key Vault plan\" policy."
+              }
+            },
+            "enableDefForArm": {
+              "type": "bool",
+              "defaultValue": false,
+              "metadata": {
+                "description": "Enable or disable the \"Configure Azure Defender for Resource Manager to be enabled\" policy."
+              }
+            }
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Authorization/policySetDefinitions",
+              "apiVersion": "2023-04-01",
+              "name": "[parameters('initiativeName')]",
+              "properties": {
+                "displayName": "[parameters('initiativeDisplayName')]",
+                "description": "[parameters('initiativeDescription')]",
+                "version": "1.0.0",
+                "metadata": {
+                  "category": "[parameters('initiativeCategory')]",
+                  "version": "1.0.0"
+                },
+                "policyDefinitions": "[concat(createArray(createObject('policyDefinitionReferenceId', 'EnsureContactEmail', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '4f4f78b8-e367-4b10-a341-d9a4ad5cf1c7'), 'parameters', createObject('effect', createObject('value', 'AuditIfNotExists')))), if(parameters('enableDefForServers'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForServers', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '8e86a5b6-b9bd-49d1-8e21-4bb8a0862222'), 'parameters', createObject('effect', createObject('value', parameters('effect'))))), createArray()), if(parameters('enableDefForStorage'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForStorage', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', 'cfdc5972-75b3-4418-8ae1-7f5c36839390'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'isOnUploadMalwareScanningEnabled', createObject('value', parameters('isOnUploadMalwareScanningEnabled')), 'capGBPerMonthPerStorageAccount', createObject('value', parameters('capGBPerMonthPerStorageAccount')), 'isSensitiveDataDiscoveryEnabled', createObject('value', parameters('isSensitiveDataDiscoveryEnabled'))))), createArray()), if(parameters('enableDefForKeyVault'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForKeyVault', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', '1f725891-01c0-420a-9059-4fa46cb770b7'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'subPlan', createObject('value', parameters('keyVaultSubPlan'))))), createArray()), if(parameters('enableDefForArm'), createArray(createObject('policyDefinitionReferenceId', 'DefenderForARM', 'policyDefinitionId', tenantResourceId('Microsoft.Authorization/policyDefinitions', 'b7021b2b-08fd-4dc0-9de7-3c6ece09faf9'), 'parameters', createObject('effect', createObject('value', parameters('effect')), 'subPlan', createObject('value', parameters('resourceManagerSubPlan'))))), createArray()))]"
+              }
             }
           ]
         }

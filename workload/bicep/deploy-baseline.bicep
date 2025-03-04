@@ -56,11 +56,8 @@ param avdIdentityServiceProvider string = 'ADDS'
 @sys.description('Required, Eronll session hosts on Intune. (Default: false)')
 param createIntuneEnrollment bool = false
 
-@sys.description('Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
-param securityPrincipalId string = ''
-
-@sys.description('Optional, Identity name to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
-param securityPrincipalName string = ''
+@sys.description('Optional. Identity ID(s) to grant RBAC role to access AVD application group and NTFS permissions. (Default: [])')
+param avdSecurityGroups array = []
 
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainName string = 'none'
@@ -146,14 +143,14 @@ param existingVnetPrivateEndpointSubnetResourceId string = ''
 @sys.description('Existing hub virtual network for perring. (Default: "")')
 param existingHubVnetResourceId string = ''
 
-@sys.description('AVD virtual network address prefixes. (Default: 10.10.0.0/23)')
-param avdVnetworkAddressPrefixes string = '10.10.0.0/23'
+@sys.description('AVD virtual network address prefixes. (Default: 10.10.0.0/16)')
+param avdVnetworkAddressPrefixes string = '10.10.0.0/16'
 
-@sys.description('AVD virtual network subnet address prefix. (Default: 10.10.0.0/23)')
-param vNetworkAvdSubnetAddressPrefix string = '10.10.0.0/24'
+@sys.description('AVD virtual network subnet address prefix. (Default: 10.10.1.0/24)')
+param vNetworkAvdSubnetAddressPrefix string = '10.10.1.0/24'
 
-@sys.description('private endpoints virtual network subnet address prefix. (Default: 10.10.1.0/27)')
-param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.1.0/27'
+@sys.description('private endpoints virtual network subnet address prefix. (Default: 10.10.2.0/27)')
+param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.2.0/27'
 
 @sys.description('custom DNS servers IPs. (Default: "")')
 param customDnsIps string = ''
@@ -226,17 +223,17 @@ param avdDeploySessionHostsCount int = 1
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
 param avdSessionHostCountIndex int = 0
 
-@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true)')
 param availabilityZonesCompute bool = true
 
 @sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
 param zoneRedundantStorage bool = false
 
-@sys.description('Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)')
-param deployVmssFlex bool = true
+// @sys.description('Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)')
+// param deployVmssFlex bool = true
 
-@sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
-param vmssFlatformFaultDomainCount int = 2
+// @sys.description('Sets the number of fault domains for the availability set. (Default: 2)')
+// param vmssFlatformFaultDomainCount int = 2
 
 @allowed([
   'Standard'
@@ -402,9 +399,9 @@ param avdApplicationGroupCustomFriendlyName string = 'Desktops - App1 - Dev - Ea
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
 param avdSessionHostCustomNamePrefix string = 'vmapp1duse2'
 
-@maxLength(9)
-@sys.description('AVD VMSS Flex custom name. (Default: vmss)')
-param vmssFlexCustomNamePrefix string = 'vmss'
+// @maxLength(9)
+// @sys.description('AVD VMSS Flex custom name. (Default: vmss)')
+// param vmssFlexCustomNamePrefix string = 'vmss'
 
 @maxLength(2)
 @sys.description('AVD FSLogix and App Attach storage account prefix custom name. (Default: st)')
@@ -514,6 +511,24 @@ param deployAntiMalwareExt bool = true
 @sys.description('Additional customer-provided static routes to be added to the route tables.')
 param customStaticRoutes array = []
 
+//
+// Parameters for Microsoft Defender
+//
+@sys.description('Enable Microsoft Defender on the subscription. (Default: false)')
+param deployDefender bool = false
+
+@sys.description('Enable Microsoft Defender for servers. (Default: true)')
+param enableDefForServers bool = true
+
+@sys.description('Enable Microsoft Defender for storage. (Default: true)')
+param enableDefForStorage bool = true
+
+@sys.description('Enable Microsoft Defender for Key Vault. (Default: true)')
+param enableDefForKeyVault bool = true
+
+@sys.description('Enable Microsoft Defender for Azure Resource Manager. (Default: true)')
+param enableDefForArm bool = true
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -570,7 +585,7 @@ var varWrklKvName = avdUseCustomNaming ? '${avdWrklKvPrefixCustomName}-${varComp
 var varWrklKvPrivateEndpointName = 'pe-${varWrklKvName}-vault'
 var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName == 'AzureUSGovernment') ? 'premium' : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
 var varSessionHostNamePrefix = avdUseCustomNaming ? avdSessionHostCustomNamePrefix : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
-var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
+//var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
 var varFslogixFileShareName = avdUseCustomNaming ? fslogixFileShareCustomName : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varAppAttachFileShareName = avdUseCustomNaming ? appAttachFileShareCustomName : 'appa-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
@@ -588,10 +603,6 @@ var varFslogixSharePath = createAvdFslogixDeployment ? '\\\\${varFslogixStorageN
 var varBaseScriptUri = 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
-var varDiskEncryptionKeyExpirationInEpoch = dateTimeToEpoch(dateTimeAdd(
-  time,
-  'P${string(diskEncryptionKeyExpirationInDays)}D'
-))
 var varCreateStorageDeployment = (createAvdFslogixDeployment || varCreateAppAttachDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage ? '${fslogixStoragePerformance}_ZRS' : '${fslogixStoragePerformance}_LRS'
 var varAppAttachStorageSku = zoneRedundantStorage ? '${appAttachStoragePerformance}_ZRS' : '${appAttachStoragePerformance}_LRS'
@@ -607,10 +618,10 @@ var varMaxSessionHostsPerTemplate = 10
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
 var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 ? varMaxSessionHostsDivisionValue + 1 : varMaxSessionHostsDivisionValue
-var varMaxVmssFlexMembersCount = 999
-var varDivisionVmssFlexValue = avdDeploySessionHostsCount / varMaxVmssFlexMembersCount
-var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxVmssFlexMembersCount
-var varVmssFlexCount = varDivisionAvsetRemainderValue > 0 ? varDivisionVmssFlexValue + 1 : varDivisionVmssFlexValue
+// var varMaxVmssFlexMembersCount = 999
+// var varDivisionVmssFlexValue = avdDeploySessionHostsCount / varMaxVmssFlexMembersCount
+// var varDivisionAvsetRemainderValue = avdDeploySessionHostsCount % varMaxVmssFlexMembersCount
+// var varVmssFlexCount = varDivisionAvsetRemainderValue > 0 ? varDivisionVmssFlexValue + 1 : varDivisionVmssFlexValue
 var varHostPoolAgentUpdateSchedule = [
   {
     dayOfWeek: 'Tuesday'
@@ -908,7 +919,7 @@ var varZtKeyvaultTag = {
 }
 //
 var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
-var verResourceGroups = [
+var varResourceGroups = [
   {
     purpose: 'Service-Objects'
     name: varServiceObjectsRgName
@@ -928,6 +939,10 @@ var verResourceGroups = [
       : union(varAvdDefaultTags, varAllComputeStorageTags)
   }
 ]
+
+// security Principals (you can add support for more than one because it is an array. Future)
+var varSecurityPrincipalId = !empty(avdSecurityGroups) ? avdSecurityGroups[0].objectId : ''
+var varSecurityPrincipalName = !empty(avdSecurityGroups) ? avdSecurityGroups[0].displayName : ''
 
 // =========== //
 // Deployments //
@@ -963,7 +978,7 @@ module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-grou
 
 // Compute, service objects
 module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
-  for resourceGroup in verResourceGroups: {
+  for resourceGroup in varResourceGroups: {
     scope: subscription(avdWorkloadSubsId)
     name: '${resourceGroup.purpose}-${time}'
     params: {
@@ -1094,7 +1109,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     startVmOnConnect: avdStartVmOnConnect
     subscriptionId: avdWorkloadSubsId
     identityServiceProvider: avdIdentityServiceProvider
-    securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
+    securityPrincipalId: varSecurityPrincipalId
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     alaWorkspaceResourceId: avdDeployMonitoring
       ? (deployAlaWorkspace
@@ -1143,7 +1158,7 @@ module identity './modules/identity/deploy.bicep' = {
     enableStartVmOnConnect: avdStartVmOnConnect
     identityServiceProvider: avdIdentityServiceProvider
     createStorageDeployment: varCreateStorageDeployment
-    securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
+    securityPrincipalId: varSecurityPrincipalId
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
   dependsOn: [
@@ -1163,9 +1178,8 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
     diskZeroTrust: diskZeroTrust
     serviceObjectsRgName: varServiceObjectsRgName
     computeObjectsRgName: varComputeObjectsRgName
-    vaultSku: varWrklKeyVaultSku
+    vaultSku: any(varWrklKeyVaultSku)
     diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
-    diskEncryptionKeyExpirationInEpoch: varDiskEncryptionKeyExpirationInEpoch
     diskEncryptionSetName: varDiskEncryptionSetName
     ztKvName: varZtKvName
     ztKvPrivateEndpointName: varZtKvPrivateEndpointName
@@ -1199,14 +1213,23 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
     sku: varWrklKeyVaultSku
     softDeleteRetentionInDays: 7
     publicNetworkAccess: deployPrivateEndpointKeyvaultStorage ? 'Disabled' : 'Enabled'
-    networkAcls: deployPrivateEndpointKeyvaultStorage
-      ? {
-          bypass: 'AzureServices'
-          defaultAction: 'Deny'
-          virtualNetworkRules: []
-          ipRules: []
-        }
-      : {}
+    networkAcls: deployPrivateEndpointKeyvaultStorage ? {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: []
+        ipRules: []
+    } : {}
+    // }: {
+    //     bypass: 'AzureServices'
+    //     defaultAction: 'Deny'
+    //     virtualNetworkRules: [
+    //         {
+    //             id: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
+    //             action: 'Allow'
+    //         }
+    //     ]
+    //     ipRules: []
+    // }
     privateEndpoints: deployPrivateEndpointKeyvaultStorage
       ? [
           {
@@ -1340,7 +1363,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
     ouStgPath: varOuStgPath
     managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
-    securityPrincipalName: !empty(securityPrincipalName) ? securityPrincipalName : ''
+    securityPrincipalName: varSecurityPrincipalName
     domainJoinUserName: avdDomainJoinUserName
     wrklKvName: varWrklKvName
     serviceObjectsRgName: varServiceObjectsRgName
@@ -1366,7 +1389,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
   dependsOn: [
     baselineStorageResourceGroup
     wrklKeyVault
-    // managementVm
+    managementVm
   ]
 }
 
@@ -1391,7 +1414,7 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
     deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
     ouStgPath: varOuStgPath
     managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
-    securityPrincipalName: !empty(securityPrincipalName) ? securityPrincipalName : ''
+    securityPrincipalName: varSecurityPrincipalName
     domainJoinUserName: avdDomainJoinUserName
     wrklKvName: varWrklKvName
     serviceObjectsRgName: varServiceObjectsRgName
@@ -1418,27 +1441,27 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
     fslogixAzureFilesStorage
     baselineStorageResourceGroup
     wrklKeyVault
-    // managementVm
+    managementVm
   ]
 }
 
 // VMSS Flex
-module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = if (avdDeploySessionHosts && deployVmssFlex) {
-  name: 'AVD-VMSS-Flex-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
-  params: {
-    namePrefix: varVmssFlexNamePrefix
-    location: avdSessionHostLocation
-    count: varVmssFlexCount
-    platformFaultDomainCount: vmssFlatformFaultDomainCount
-    useAvailabilityZones: availabilityZonesCompute
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-  }
-  dependsOn: [
-    baselineResourceGroups
-    monitoringDiagnosticSettings
-  ]
-}
+// module vmScaleSetFlex './modules/avdSessionHosts/.bicep/vmScaleSet.bicep' = if (avdDeploySessionHosts && deployVmssFlex) {
+//   name: 'AVD-VMSS-Flex-${time}'
+//   scope: resourceGroup('${avdWorkloadSubsId}', '${varComputeObjectsRgName}')
+//   params: {
+//     namePrefix: varVmssFlexNamePrefix
+//     location: avdSessionHostLocation
+//     count: varVmssFlexCount
+//     platformFaultDomainCount: vmssFlatformFaultDomainCount
+//     useAvailabilityZones: availabilityZonesCompute
+//     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//   }
+//   dependsOn: [
+//     baselineResourceGroups
+//     monitoringDiagnosticSettings
+//   ]
+// }
 
 // Session hosts
 @batchSize(3)
@@ -1453,9 +1476,9 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
         : ''
       identityServiceProvider: avdIdentityServiceProvider
       createIntuneEnrollment: createIntuneEnrollment
-      maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
-      vmssFlexNamePrefix: varVmssFlexNamePrefix
-      useVmssFlex: deployVmssFlex
+      // maxVmssFlexMembersCount: varMaxVmssFlexMembersCount
+      // vmssFlexNamePrefix: varVmssFlexNamePrefix
+      //useVmssFlex: deployVmssFlex
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
@@ -1507,7 +1530,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       fslogixAzureFilesStorage
       baselineResourceGroups
       wrklKeyVault
-      vmScaleSetFlex
+      //vmScaleSetFlex
       managementPLane
     ]
   }
@@ -1521,6 +1544,20 @@ module gpuPolicies './modules/azurePolicies/gpuExtensionsSubscriptions.bicep' = 
     computeObjectsRgName: varComputeObjectsRgName
     location: avdSessionHostLocation
     subscriptionId: avdWorkloadSubsId
+  }
+  dependsOn: [
+    sessionHosts
+  ]
+}
+
+module defenderPolicySet './modules/azurePolicies/defenderSubscription.bicep' = if (deployDefender) {
+  scope: subscription('${avdWorkloadSubsId}')
+  name: 'Defender-Policies-${time}'
+  params: {
+    enableDefForServers: enableDefForServers
+    enableDefForStorage: enableDefForStorage
+    enableDefForKeyVault: enableDefForKeyVault
+    enableDefForArm: enableDefForArm
   }
   dependsOn: [
     sessionHosts

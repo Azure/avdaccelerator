@@ -22,10 +22,19 @@
     - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using Microsoft Entra ID as the identity provider.
     - Note: when using Microsoft Entra ID as the identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
   - **When selecting AD DS or Microsoft Entra DS:**
-    - Domain join credentials The Username and password with rights to join computers to the domain.
+    - Domain join credentials: The Username and password with rights to join computers to the domain.
   - **When selecting Microsoft Entra ID:**
-    - Enroll VM with Intune: check the box to enroll session hosts on tenant's.
+    - Enroll VM with Intune: Check the box to enroll session hosts on the tenant’s Intune.
   - **Session host local admin credentials** The Username and password to set for local administrator.
+  - **Microsoft Defender for Cloud Solutions**:
+    - This section enables advanced security monitoring for resources deployed within your Azure Virtual Desktop setup. Below are the Defender solutions available:
+      - **Deploy Microsoft Defender for Cloud**: Deploys a policy for enabling overall security monitoring for the platform and resources deployed as part of Azure Virtual Desktop.
+      - **Enable Microsoft Defender for Servers**: Deploys a policy for providing enhanced protection for session host virtual machines (VMs), including real-time threat detection, vulnerability assessment, and automated response.
+      - **Enable Microsoft Defender for Storage**: Deploys a policy for protecting Azure Storage resources (e.g., FSLogix file shares) against malicious threats and unauthorized access attempts.
+      - **Enable Microsoft Defender for Key Vault**: Deploys a policy to monitor Azure Key Vault access and prevent misuse or unauthorized activity.
+      - **Enable Microsoft Defender for Azure Resource Manager**: Deploys a policy for ensuring the integrity of management operations on Azure resources by monitoring for suspicious activity or privilege escalations.
+    - **Recommendation**:
+      - Enable relevant Defender solutions for better security posture in production environments. For cost estimation, refer to the [Azure Pricing Calculator](https://azure.microsoft.com/en-us/pricing/calculator/).
 - **Management plane** blade
   - **Deployment location** - The Azure Region where management plane resources (workspace, host pool, application groups) will be deployed. These resources are not available in all locations but are globally replicated and they can share the same location as the session hosts or not.
   - **Host pool type** - This option determines if a personal (aka single session) or pool (aka multi-session ) host pool will be configured.
@@ -41,11 +50,10 @@
   - **Deploy sessions hosts** - You can choose to not deploy session hosts just the Azure Virtual Desktop service objects.
   - **Session host region** - Provide the region to where you want to deploy the session hosts. This defaults to the Management Plane region but can be changed.
   - **Session hosts OU path (Optional)** - Provide OU where to locate session hosts, if not provided session hosts will be placed on the default (computers) OU. If left empty the computer account will be created in the default Computers OU. Example: OU=avd,DC=contoso,DC=com.
-  - **Availability zones** - If you deselect the checkbox, VMs will be deployed regionally and will be associated with a regional VMSS Flex (if VMSS is enabled). If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones and will also associate the VMs with a VMSS Flex group created to use multiple availability zones.
-  - **VMSS Flex** - If you deselect the checkbox, no VMSS Flex will be created. If you select the checkbox, the accelerator will deploy a VMSS Flex and VMs will be associated with it.
+  - **Availability zones** - If you uncheck the checkbox, VMs will be deployed regionally. If you select the checkbox the accelerator  will distribute compute and storage resources across availability zones.
   - **VM size** -  Select the SKU size for the session hosts.
   - **VM count** - Select the number of session hosts to deploy.
-  - **OS disk type** - Select the OS Disk SKU type. Premium is recommended for performance and higher SLA.
+  - **OS disk type** - Select the OS Disk SKU type. Premium is recommended for performance and a higher SLA.
   - **Zero trust disk configuration** - Check the box to enable the zero trust configuration on the session host disks to ensure all the disks are encrypted, the OS and data disks are protected with double encryption with a customer managed key, and network access is disabled.
   - **Enable Antimalware extension** -  Enables Azure VM antimalware extension on session hosts
   - **Enable accelerated networking** - Check the box to ensure the network traffic on the session hosts is offloaded to the network interface to enhance performance. This feature is free and available as long a supported VM SKU and [OS](https://learn.microsoft.com/en-us/azure/virtual-network/accelerated-networking-overview?tabs=redhat#supported-operating-systems) is chosen. To check whether a VM size supports Accelerated Networking, see [Sizes for virtual machines in Azure](https://learn.microsoft.com/en-us/azure/virtual-machines/sizes). This feature is recommended as it will decrease CPU utilization for networking (offloading to NIC) and increase network performance/throughput to Azure VMs and Services, like Azure Files.
@@ -92,7 +100,7 @@ Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for 
 
 ## Post Deployment Considerations
 
-- When using Microsoft Entra ID as identity provider and deploying FSLogix storage, it is required to grant admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) created during deployemnt, additional information can be found in the
+- When using Microsoft Entra ID as identity provider and deploying FSLogix storage, it is required to grant admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) created during deployment, additional information can be found in the
 [Grant admin consent to the new service principal](https://learn.microsoft.com/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable?tabs=azure-portal#grant-admin-consent-to-the-new-service-principal) guide.
 
 ## Redeployment Considerations
@@ -118,4 +126,4 @@ We have these other options available:
 
 ## Known Issues
 
-Please report issues using the projects [issues](https://github.com/Azure/avdaccelerator/issues) tracker.
+Please report issues using the project's [issues](https://github.com/Azure/avdaccelerator/issues) tracker.
