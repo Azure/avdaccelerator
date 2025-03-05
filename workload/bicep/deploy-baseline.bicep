@@ -1096,7 +1096,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
     hostPoolType: avdHostPoolType
     preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
-    deployScalingPlan: varDeployScalingPlan
+    deployScalingPlan: !empty(avdEnterpriseAppObjectId) ? varDeployScalingPlan : false
     scalingPlanExclusionTag: varScalingPlanExclusionTag
     scalingPlanSchedules: (avdHostPoolType == 'Pooled')
       ? varPooledScalingPlanSchedules
