@@ -1260,7 +1260,7 @@ module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         hostPoolType: avdHostPoolType
         preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
-        deployScalingPlan: varDeployScalingPlan
+        deployScalingPlan: !empty(avdEnterpriseAppObjectId) ? varDeployScalingPlan : false
         scalingPlanExclusionTag: varScalingPlanExclusionTag
         scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
         scalingPlanName: varScalingPlanName
