@@ -980,10 +980,12 @@ var varTagsWithValues = union(
   empty(costCenterTag) ? {} : { CostCenter: costCenterTag }
 )
 var varCustomResourceTags = createResourceTags ? varTagsWithValues : {}
-var varAllComputeStorageTags = avdIdentityServiceProvider != 'EntraID' ? {
-  DomainName: identityDomainName
-  IdentityServiceProvider: avdIdentityServiceProvider
-} : {}
+var varAllComputeStorageTags = avdIdentityServiceProvider != 'EntraID'
+  ? {
+      DomainName: identityDomainName
+      IdentityServiceProvider: avdIdentityServiceProvider
+    }
+  : {}
 var varAvdDefaultTags = {
   'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
   Environment: deploymentEnvironment
@@ -1234,7 +1236,7 @@ module identity './modules/identity/deploy.bicep' = {
     storageObjectsRgName: varStorageObjectsRgName
     avdServicePrincipalObjectId: avdServicePrincipalObjectId
     avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
-    deployScalingPlan: varDeployScalingPlan
+    deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
     storageManagedIdentityName: varStorageManagedIdentityName
     enableStartVmOnConnect: avdStartVmOnConnect
     identityServiceProvider: avdIdentityServiceProvider
@@ -1301,7 +1303,19 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
           virtualNetworkRules: []
           ipRules: []
         }
-      : {}
+      : {
+          bypass: 'AzureServices'
+          defaultAction: 'Deny'
+          virtualNetworkRules: [
+            {
+              id: createAvdVnet
+                ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
+                : existingVnetAvdSubnetResourceId
+              action: 'Allow'
+            }
+          ]
+          ipRules: []
+        }
     privateEndpoints: deployPrivateEndpointKeyvaultStorage
       ? [
           {
@@ -1564,7 +1578,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
       createIntuneEnrollment: createIntuneEnrollment
       customImageDefinitionId: avdCustomImageDefinitionId
-      dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''      
+      dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''
       deployAntiMalwareExt: deployAntiMalwareExt
       deployMonitoring: avdDeployMonitoring
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
@@ -1581,7 +1595,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       identityDomainName: identityDomainName
       identityServiceProvider: avdIdentityServiceProvider
       keyVaultResourceId: wrklKeyVault.outputs.resourceId
-      location: avdSessionHostLocation      
+      location: avdSessionHostLocation
       mpImageOffer: mpImageOffer
       mpImageSku: mpImageSku
       namePrefix: varSessionHostNamePrefix
@@ -1592,8 +1606,8 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       sessionHostOuPath: avdOuPath
       subscriptionId: avdWorkloadSubsId
       subnetId: createAvdVnet
-      ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
-      : existingVnetAvdSubnetResourceId
+        ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
+        : existingVnetAvdSubnetResourceId
       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
       timeZone: varTimeZoneSessionHosts
       useSharedImage: useSharedImage

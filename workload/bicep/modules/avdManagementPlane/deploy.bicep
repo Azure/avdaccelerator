@@ -276,7 +276,7 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     friendlyName: applicationGroup.friendlyName
     location: applicationGroup.location
     applicationGroupType: applicationGroup.applicationGroupType
-    hostpoolName: hostPoolName
+    hostpoolName: hostPool.outputs.name
     tags: tags
     applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
     roleAssignments: !empty(securityPrincipalId) ? [
@@ -287,9 +287,6 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     ]: []
     diagnosticSettings: varDiagnosticSettings
   }
-  dependsOn: [
-    hostPool
-  ]
 }]
 
 // Workspace.
@@ -344,7 +341,7 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       schedules: scalingPlanSchedules
       hostPoolReferences: [
         {
-        hostPoolArmPath: '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${hostPoolName}'
+        hostPoolArmPath: hostPool.outputs.resourceId
         scalingPlanEnabled: true
         }
       ]
@@ -352,7 +349,6 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
-    hostPool
     applicationGroups
     workSpace
   ]
