@@ -574,7 +574,7 @@
 								{
 									"name": "startVmOnConnectRoleInfo",
 									"type": "Microsoft.Common.InfoBox",
-									"visible": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
+									"visible": "[and(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, not(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan))]",
 									"options": {
 										"text": "Deployment will automatically grant role 'Desktop Virtualization Power On Contributor' to Azure virtual Desktop enterprise application (AppID: 9cdead84-a844-4324-93f2-b2e6bb768d07)",
 										"uri": "https://learn.microsoft.com/azure/virtual-desktop/start-virtual-machine-connect?tabs=azure-portal",
@@ -753,20 +753,20 @@
 									"name": "offer",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Offer",
-									"defaultValue": "Office 365",
+									"defaultValue": "Office-365",
 									"toolTip": "Select the desired marketplace image offer.",
 									"constraints": {
 										"allowedValues": [
 											{
-												"label": "Office 365",
+												"label": "Office-365",
 												"value": "office-365"
 											},
 											{
-												"label": "Windows 10",
+												"label": "Windows-10",
 												"value": "Windows-10"
 											},
 											{
-												"label": "Windows 11",
+												"label": "Windows-11",
 												"value": "windows-11"
 											}
 										],
@@ -790,7 +790,7 @@
 									"defaultValue": "win11-24h2-avd-m365",
 									"toolTip": "Select the desired marketplace image SKU.",
 									"constraints": {
-										"allowedValues": "[map(steps('sessionHosts').sessionHostsOsSection.skusApi, (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+										"allowedValues": "[map(filter(steps('sessionHosts').sessionHostsOsSection.skusApi, and(startsWith(sku.name, 'win'), not(contains(sku.name, 'entn')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
 										"required": true
 									},
 									"visible": "[equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')]"
@@ -2767,7 +2767,7 @@
 		},
 		"outputs": {
 			"parameters": {
-				"avdEnterpriseAppObjectId": "[if(empty(first(steps('basics').avdServicePrincipals.value)), if(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), '')), first(steps('basics').avdServicePrincipals.transformed.avd))]",
+				"avdServicePrincipalObjectId": "[if(empty(first(steps('basics').avdServicePrincipals.value)), if(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), '')), first(steps('basics').avdServicePrincipals.transformed.avd))]",
 				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdServicePrincipals.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdServicePrincipals.transformed.avdARMProvider)), '')]",
 				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
 				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
