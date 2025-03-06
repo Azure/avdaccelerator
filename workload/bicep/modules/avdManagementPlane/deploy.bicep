@@ -287,8 +287,6 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     ]: []
     diagnosticSettings: varDiagnosticSettings
   }
-  dependsOn: [
-  ]
 }]
 
 // Workspace.
