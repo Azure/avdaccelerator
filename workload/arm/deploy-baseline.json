@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "721335279981548586"
+      "templateHash": "4380741974874204208"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -14482,7 +14482,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8370040284189693367"
+              "templateHash": "15430509182052402638"
             }
           },
           "parameters": {
@@ -15656,7 +15656,7 @@
                     "value": "/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840"
                   },
                   "principalType": {
-                    "value": ""
+                    "value": "ServicePrincipal"
                   }
                 },
                 "template": {
