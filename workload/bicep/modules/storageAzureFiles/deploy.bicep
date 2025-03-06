@@ -135,68 +135,78 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
     scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
     name: 'Storage-${storagePurpose}-${time}'
     params: {
-        name: storageAccountName
-        location: location
-        skuName: storageSku
-        allowBlobPublicAccess: false
-        publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
-        kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
-        largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'
-        azureFilesIdentityBasedAuthentication: {
-            directoryServiceOptions: varDirectoryServiceOptions
-            activeDirectoryProperties: (identityServiceProvider == 'EntraID') ? {
-                domainGuid: identityDomainGuid
-                domainName: identityDomainName
-            } : {}
-        }
-        accessTier: 'Hot'
-        networkAcls: deployPrivateEndpoint ? {
-            bypass: 'AzureServices'
-            defaultAction: 'Deny'
-            virtualNetworkRules: []
-            ipRules: []
-        } : {
-            bypass: 'AzureServices'
-            defaultAction: 'Deny'
-            virtualNetworkRules: [
-                {
-                    id: vmsSubnetId
-                    action: 'Allow'
+      name: storageAccountName
+      location: location
+      skuName: storageSku
+      allowBlobPublicAccess: false
+      publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
+      kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+      largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled' : 'Disabled'
+      azureFilesIdentityBasedAuthentication: identityServiceProvider != 'EntraID'
+        ? {
+            directoryServiceOptions: identityServiceProvider == 'EntraDS'
+              ? 'AADDS'
+              : identityServiceProvider == 'EntraIDKerberos' ? 'AADKERB' : 'none'
+            activeDirectoryProperties: (identityServiceProvider == 'EntraIDKerberos')
+              ? {
+                  domainGuid: identityDomainGuid
+                  domainName: identityDomainName
                 }
-            ]
-            ipRules: []
-        }
-        fileServices: {
-            shares: [
-                {
-                    name: fileShareName
-                    shareQuota: fileShareQuotaSize * 100 //Portal UI steps scale
-                }
-            ]
-            protocolSettings: fileShareMultichannel ? {
-                smb: {
-                    multichannel: {
-                        enabled: fileShareMultichannel
-                    }
-                }
-            } : {}
-            diagnosticSettings: varDiagnosticSettings
-        }
-        privateEndpoints: deployPrivateEndpoint ? [
+              : {}
+          }
+        : null
+      accessTier: 'Hot'
+      networkAcls: deployPrivateEndpoint ? {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: []
+        ipRules: []
+    } : {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: [
             {
-                name: varWrklStoragePrivateEndpointName
-                subnetResourceId: privateEndpointSubnetId
-                customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
-                service: 'file'
-                privateDnsZoneGroupName: split(vnetPrivateDnsZoneFilesId, '/')[8]
-                privateDnsZoneResourceIds: [
-                    vnetPrivateDnsZoneFilesId
-                ]
+                id: vmsSubnetId
+                action: 'Allow'
             }
-        ] : []
-        tags: tags
-        diagnosticSettings: varDiagnosticSettings
+        ]
+        ipRules: []
     }
+    fileServices: {
+      shares: [
+        {
+          name: fileShareName
+          shareQuota: fileShareQuotaSize * 100 //Portal UI steps scale
+        }
+      ]
+      protocolSettings: fileShareMultichannel
+        ? {
+            smb: {
+              multichannel: {
+                enabled: fileShareMultichannel
+              }
+            }
+          }
+        : {}
+      diagnosticSettings: varDiagnosticSettings
+    }
+    privateEndpoints: deployPrivateEndpoint
+      ? [
+          {
+            name: varWrklStoragePrivateEndpointName
+            subnetResourceId: privateEndpointSubnetId
+            customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
+            service: 'file'
+            privateDnsZoneGroupName: split(vnetPrivateDnsZoneFilesId, '/')[8]
+            privateDnsZoneResourceIds: [
+              vnetPrivateDnsZoneFilesId
+            ]
+          }
+        ]
+      : []
+    tags: tags
+    diagnosticSettings: varDiagnosticSettings
+  }
 }
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
