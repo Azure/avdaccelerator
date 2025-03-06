@@ -1223,7 +1223,9 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
         defaultAction: 'Deny'
         virtualNetworkRules: [
             {
-                id: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' : existingVnetAvdSubnetResourceId
+                id: createAvdVnet 
+                ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}' 
+                : existingVnetAvdSubnetResourceId
                 action: 'Allow'
             }
         ]
