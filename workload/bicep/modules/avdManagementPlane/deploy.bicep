@@ -22,8 +22,8 @@ param identityServiceProvider string
 @sys.description('Identity ID to grant RBAC role to access AVD application group.')
 param securityPrincipalId string
 
-@sys.description('AVD OS image source.')
-param osImage string
+@sys.description('Marketplace AVD OS image sku.')
+param mpImageSku string
 
 @sys.description('Resource ID of keyvault that will contain host pool registration token.')
 param keyVaultResourceId string
@@ -159,7 +159,7 @@ var varApplicationGroups = [
     applicationGroupType: (preferredAppGroupType == 'Desktop') ? 'Desktop' : 'RemoteApp'
   }
 ]
-var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
+var varHostPoolRdpPropertiesDomainServiceCheck = contains(identityServiceProvider, 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
 var varRAppApplicationGroupsStandardApps = (preferredAppGroupType == 'RailApplications') ? [
   {
     name: 'Task Manager'
@@ -220,7 +220,7 @@ var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplicat
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
   }
 ]: []
-var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
+var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(mpImageSku, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
   {
     workspaceResourceId: alaWorkspaceResourceId
@@ -353,3 +353,5 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
     workSpace
   ]
 }
+
+output hostPoolResourceId string = hostPool.outputs.resourceId

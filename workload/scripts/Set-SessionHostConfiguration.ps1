@@ -1,78 +1,78 @@
 Param(
-[parameter(Mandatory=$false)]
-[string]
-$IdentityDomainName, 
+        [parameter(Mandatory = $false)]
+        [string]
+        $IdentityDomainName, 
 
-[parameter(Mandatory)]
-[string]
-$AmdVmSize, 
+        [parameter(Mandatory)]
+        [string]
+        $AmdVmSize, 
 
-[parameter(Mandatory)]
-[string]
-$IdentityServiceProvider,
+        [parameter(Mandatory)]
+        [string]
+        $IdentityServiceProvider,
 
-[parameter(Mandatory)]
-[string]
-$Fslogix,
+        [parameter(Mandatory)]
+        [string]
+        $FSLogix,
 
-[parameter(Mandatory=$false)]
-[string]
-$FslogixFileShare,
+        [parameter(Mandatory = $false)]
+        [string]
+        $FSLogixStorageAccountKey,
 
-[parameter(Mandatory=$false)]
-[string]
-$fslogixStorageFqdn,
+        [parameter(Mandatory = $false)]
+        [string]
+        $FSLogixFileShare,
 
-[parameter(Mandatory)]
-[string]
-$HostPoolRegistrationToken,    
+        [parameter(Mandatory)]
+        [string]
+        $HostPoolRegistrationToken,    
 
-[parameter(Mandatory)]
-[string]
-$NvidiaVmSize
+        [parameter(Mandatory)]
+        [string]
+        $NvidiaVmSize
 
-# [parameter(Mandatory)]
-# [string]
-# $ScreenCaptureProtection
+        # [parameter(Mandatory)]
+        # [string]
+        # $ScreenCaptureProtection
 )
 
 ##############################################################
 #  Functions
 ##############################################################
 function Write-Log {
-param(
-        [parameter(Mandatory)]
-        [string]$Message,
+        param(
+                [parameter(Mandatory)]
+                [string]$Message,
 
-        [parameter(Mandatory)]
-        [string]$Type
-)
-$Path = 'C:\Windows\Temp\AVDSessionHostConfig.log'
-if (!(Test-Path -Path $Path)) {
-        New-Item -Path 'C:\' -Name 'AVDSessionHostConfig.log' | Out-Null
-}
-$Timestamp = Get-Date -Format 'MM/dd/yyyy HH:mm:ss.ff'
-$Entry = '[' + $Timestamp + '] [' + $Type + '] ' + $Message
-$Entry | Out-File -FilePath $Path -Append
+                [parameter(Mandatory)]
+                [string]$Type
+        )
+        $Path = 'C:\Windows\Temp\AVDSessionHostConfig.log'
+        if (!(Test-Path -Path $Path)) {
+                New-Item -Path 'C:\' -Name 'AVDSessionHostConfig.log' | Out-Null
+        }
+        $Timestamp = Get-Date -Format 'MM/dd/yyyy HH:mm:ss.ff'
+        $Entry = '[' + $Timestamp + '] [' + $Type + '] ' + $Message
+        $Entry | Out-File -FilePath $Path -Append
 }
 
 function Get-WebFile {
-param(
-        [parameter(Mandatory)]
-        [string]$FileName,
+        param(
+                [parameter(Mandatory)]
+                [string]$FileName,
 
-        [parameter(Mandatory)]
-        [string]$URL
-)
-$Counter = 0
-do {
-        Invoke-WebRequest -Uri $URL -OutFile $FileName -ErrorAction 'SilentlyContinue'
-        if ($Counter -gt 0) {
-                Start-Sleep -Seconds 30
+                [parameter(Mandatory)]
+                [string]$URL
+        )
+        $Counter = 0
+        do {
+                Invoke-WebRequest -Uri $URL -OutFile $FileName -ErrorAction 'SilentlyContinue'
+                if ($Counter -gt 0) {
+                        Start-Sleep -Seconds 30
+                }
+                $Counter++
         }
-        $Counter++
-}
-until((Test-Path $FileName) -or $Counter -eq 9)
+        until((Test-Path $FileName) -or $Counter -eq 9)
 }
 
 $ErrorActionPreference = 'Stop'
@@ -182,6 +182,7 @@ try {
         #  Add Fslogix Settings
         ##############################################################
         if ($Fslogix -eq 'true') {
+                $FSLogixStorageFQDN = $FSLogixFileShare.Split('\')[2]                
                 $Settings += @(
                         # Enables Fslogix profile containers: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#enabled
                         [PSCustomObject]@{
@@ -223,12 +224,12 @@ try {
                                 Name         = 'VHDLocations'
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
                                 PropertyType = 'MultiString'
-                                Value        = $FslogixFileShare
+                                Value        = $FSLogixFileShare
                         },
                         [PSCustomObject]@{
                                 Name         = 'VolumeType'
                                 Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
-                                PropertyType = 'MultiString'
+                                PropertyType = 'String'
                                 Value        = 'vhdx'
                         },
                         [PSCustomObject]@{
@@ -257,7 +258,7 @@ try {
                         }
                 )
         }
-        if ($IdentityServiceProvider -eq "EntraID" -and $Fslogix -eq 'true') {
+        if ($IdentityServiceProvider -eq "EntraIDKerberos" -and $Fslogix -eq 'true') {
                 $Settings += @(
                         [PSCustomObject]@{
                                 Name         = 'CloudKerberosTicketRetrievalEnabled'
@@ -275,16 +276,35 @@ try {
                                 Name         = $IdentityDomainName
                                 Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\domain_realm'
                                 PropertyType = 'String'
-                                Value        = $fslogixStorageFqdn
+                                Value        = $FSLogixStorageFQDN
                         }
 
+                )
+        }
+        If ($FsLogixStorageAccountKey -ne '') {                
+                $SAName = $FSLogixStorageFQDN.Split('.')[0]
+                Write-Log -Message "Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
+                $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$FSLogixStorageFQDN /user:localhost\$SAName /pass:$FSLogixStorageAccountKey" -Wait -PassThru
+                If ($CMDKey.ExitCode -ne 0) {
+                        Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'ERROR'
+                } Else {
+                        Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
+                }
+                $Settings += @(
+                        # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject
+                        [PSCustomObject]@{
+                                Name         = 'AccessNetworkAsComputerObject'
+                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                                PropertyType = 'DWord'
+                                Value        = 1
+                        }                                
                 )
         }
 
         ##############################################################
         #  Add Microsoft Entra ID Join Setting
         ##############################################################
-        if ($IdentityServiceProvider -eq "EntraID") {
+        if ($IdentityServiceProvider -match "EntraID") {
                 $Settings += @(
 
                         # Enable PKU2U: https://docs.microsoft.com/en-us/azure/virtual-desktop/troubleshoot-azure-ad-connections#windows-desktop-client
@@ -380,11 +400,11 @@ try {
         ##############################################################
         #  Restart VM
         ##############################################################
-        if ($IdentityServiceProvider -eq "EntraID" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
+        if ($IdentityServiceProvider -eq "EntraIDKerberos" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {
                 Start-Process -FilePath 'shutdown' -ArgumentList '/r /t 30'
         }
 }
 catch {
-Write-Log -Message $_ -Type 'ERROR'
-throw
+        Write-Log -Message $_ -Type 'ERROR'
+        throw
 }
