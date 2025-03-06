@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7145861304657596367"
+      "templateHash": "7191464235262466626"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -61,7 +61,7 @@
         "description": "AVD workload subscription ID, multiple subscriptions scenario. (Default: \"\")"
       }
     },
-    "avdEnterpriseAppObjectId": {
+    "avdServicePrincipalObjectId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -8628,7 +8628,7 @@
             "value": "[parameters('avdHostPoolType')]"
           },
           "preferredAppGroupType": "[if(equals(parameters('hostPoolPreferredAppGroupType'), 'RemoteApp'), createObject('value', 'RailApplications'), createObject('value', 'Desktop'))]",
-          "deployScalingPlan": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
+          "deployScalingPlan": "[if(not(empty(parameters('avdServicePrincipalObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
           "scalingPlanExclusionTag": {
             "value": "[variables('varScalingPlanExclusionTag')]"
           },
@@ -12742,12 +12742,12 @@
             "value": "[variables('varStorageObjectsRgName')]"
           },
           "avdServicePrincipalObjectId": {
-            "value": "[parameters('avdEnterpriseAppObjectId')]"
+            "value": "[parameters('avdServicePrincipalObjectId')]"
           },
           "avdArmServicePrincipalObjectId": {
             "value": "[parameters('avdArmServicePrincipalObjectId')]"
           },
-          "deployScalingPlan": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
+          "deployScalingPlan": "[if(not(empty(parameters('avdServicePrincipalObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
           "storageManagedIdentityName": {
             "value": "[variables('varStorageManagedIdentityName')]"
           },
