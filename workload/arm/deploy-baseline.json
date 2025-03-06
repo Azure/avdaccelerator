@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9091241784856883777"
+      "templateHash": "11628630187844129412"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -61,18 +61,18 @@
         "description": "AVD workload subscription ID, multiple subscriptions scenario. (Default: \"\")"
       }
     },
-    "avdServicePrincipalObjectId": {
+    "avdEnterpriseAppObjectId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Azure Virtual Desktop Enterprise Application object ID. (Default: \"\")"
+        "description": "Azure Virtual Desktop Enterprise Application object ID (Enterprise app name: Azure Virtual Desktop) . (Default: \"\")"
       }
     },
     "avdArmServicePrincipalObjectId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
-        "description": "Azure Virtual Desktop ARM Enterprise Application Object Id. Required for the deployment of App Attach File Share with EntraID identity provider. (Default: \"\")"
+        "description": "Azure Virtual Desktop ARM Enterprise Application Object Id (Enterprise app name: Azure Virtual Desktop ARM Provider). Required for the deployment of App Attach File Share with EntraID identity provider. (Default: \"\")"
       }
     },
     "avdVmLocalUserName": {
@@ -8628,9 +8628,7 @@
             "value": "[parameters('avdHostPoolType')]"
           },
           "preferredAppGroupType": "[if(equals(parameters('hostPoolPreferredAppGroupType'), 'RemoteApp'), createObject('value', 'RailApplications'), createObject('value', 'Desktop'))]",
-          "deployScalingPlan": {
-            "value": "[variables('varDeployScalingPlan')]"
-          },
+          "deployScalingPlan": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
           "scalingPlanExclusionTag": {
             "value": "[variables('varScalingPlanExclusionTag')]"
           },
@@ -12744,12 +12742,12 @@
             "value": "[variables('varStorageObjectsRgName')]"
           },
           "avdServicePrincipalObjectId": {
-            "value": "[parameters('avdServicePrincipalObjectId')]"
+            "value": "[parameters('avdEnterpriseAppObjectId')]"
           },
           "avdArmServicePrincipalObjectId": {
             "value": "[parameters('avdArmServicePrincipalObjectId')]"
           },
-          "deployScalingPlan": "[if(not(empty(parameters('avdServicePrincipalObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
+          "deployScalingPlan": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
           "storageManagedIdentityName": {
             "value": "[variables('varStorageManagedIdentityName')]"
           },
