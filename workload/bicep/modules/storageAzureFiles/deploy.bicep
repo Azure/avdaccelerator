@@ -158,24 +158,22 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
         }
       : null
     accessTier: 'Hot'
-    networkAcls: deployPrivateEndpoint
-      ? {
-          bypass: 'AzureServices'
-          defaultAction: 'Deny'
-          virtualNetworkRules: []
-          ipRules: []
-        }
-      : {
-          bypass: 'AzureServices'
-          defaultAction: 'Deny'
-          virtualNetworkRules: [
+    networkAcls: deployPrivateEndpoint ? {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: []
+        ipRules: []
+    } : {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: [
             {
-              id: vmsSubnetId
-              action: 'Allow'
+                id: vmsSubnetId
+                action: 'Allow'
             }
-          ]
-          ipRules: []
-        }
+        ]
+        ipRules: []
+    }
     fileServices: {
       shares: [
         {
