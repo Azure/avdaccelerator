@@ -35,10 +35,10 @@ param avdManagementPlaneLocation string
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
 param avdWorkloadSubsId string = ''
 
-@sys.description('Azure Virtual Desktop Enterprise Application object ID. (Default: "")')
-param avdServicePrincipalObjectId string = ''
+@sys.description('Azure Virtual Desktop Enterprise Application object ID (Enterprise app name: Azure Virtual Desktop) . (Default: "")')
+param avdEnterpriseAppObjectId string = ''
 
-@sys.description('Azure Virtual Desktop ARM Enterprise Application Object Id. Required for the deployment of App Attach File Share with EntraID identity provider. (Default: "")')
+@sys.description('Azure Virtual Desktop ARM Enterprise Application Object Id (Enterprise app name: Azure Virtual Desktop ARM Provider). Required for the deployment of App Attach File Share with EntraID identity provider. (Default: "")')
 param avdArmServicePrincipalObjectId string = ''
 
 @sys.description('AVD session host local username.')
@@ -1234,9 +1234,9 @@ module identity './modules/identity/deploy.bicep' = {
     createAppAttachRoleAssignments: createAppAttachDeployment && avdIdentityServiceProvider == 'EntraID'
     serviceObjectsRgName: varServiceObjectsRgName
     storageObjectsRgName: varStorageObjectsRgName
-    avdServicePrincipalObjectId: avdServicePrincipalObjectId
+    avdServicePrincipalObjectId: avdEnterpriseAppObjectId
     avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
-    deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
+    deployScalingPlan: !empty(avdEnterpriseAppObjectId) ? varDeployScalingPlan : false
     storageManagedIdentityName: varStorageManagedIdentityName
     enableStartVmOnConnect: avdStartVmOnConnect
     identityServiceProvider: avdIdentityServiceProvider
