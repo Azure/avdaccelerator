@@ -193,7 +193,7 @@ module ztRoleAssignmentServObj '../../../../avm/1.0.0/ptn/authorization/role-ass
     params: {
         principalId: diskZeroTrust ? ztPolicyAssignmentServiceObjects[i].outputs.principalId : ''
         roleDefinitionIdOrName: '/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840'
-        principalType: ''
+        principalType: 'ServicePrincipal'
     }
     dependsOn: [
         ztPolicyAssignmentServiceObjects
