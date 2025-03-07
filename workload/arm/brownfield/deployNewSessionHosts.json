@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15042999169958914406"
+      "templateHash": "9866270491130820411"
     }
   },
   "parameters": {
@@ -2321,13 +2321,13 @@
     {
       "copy": {
         "name": "sessionHosts",
-        "count": "[length(range(1, variables('varSessionHostBatchCount')))]",
+        "count": "[length(range(0, variables('varSessionHostBatchCount')))]",
         "mode": "serial",
         "batchSize": 10
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('SH-Batch-{0}-{1}', sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
+      "name": "[format('SH-Batch-{0}-{1}', sub(range(0, variables('varSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2345,7 +2345,7 @@
             "value": "[parameters('availabilityZones')]"
           },
           "batchId": {
-            "value": "[sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1)]"
+            "value": "[sub(range(0, variables('varSessionHostBatchCount'))[copyIndex()], 1)]"
           },
           "computeObjectsRgName": {
             "value": "[parameters('computeRgResourceGroupName')]"
@@ -2353,8 +2353,8 @@
           "configureFslogix": {
             "value": "[parameters('configureFslogix')]"
           },
-          "count": "[if(and(equals(range(1, variables('varSessionHostBatchCount'))[copyIndex()], variables('varSessionHostBatchCount')), greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0)), createObject('value', variables('varMaxSessionHostsDivisionRemainderValue')), createObject('value', variables('varMaxSessionHostsPerTemplate')))]",
-          "countIndex": "[if(equals(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), createObject('value', parameters('countIndex')), createObject('value', add(mul(sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), variables('varMaxSessionHostsPerTemplate')), parameters('countIndex'))))]",
+          "count": "[if(and(equals(range(0, variables('varSessionHostBatchCount'))[copyIndex()], variables('varSessionHostBatchCount')), greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0)), createObject('value', variables('varMaxSessionHostsDivisionRemainderValue')), createObject('value', variables('varMaxSessionHostsPerTemplate')))]",
+          "countIndex": "[if(equals(range(0, variables('varSessionHostBatchCount'))[copyIndex()], 1), createObject('value', parameters('countIndex')), createObject('value', add(mul(sub(range(0, variables('varSessionHostBatchCount'))[copyIndex()], 1), variables('varMaxSessionHostsPerTemplate')), parameters('countIndex'))))]",
           "createIntuneEnrollment": {
             "value": "[parameters('createIntuneEnrollment')]"
           },

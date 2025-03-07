@@ -301,7 +301,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 
 @batchSize(10)
 module sessionHosts '../../modules/avdSessionHosts/deploy.bicep' = [
-  for i in range(1, varSessionHostBatchCount): {
+  for i in range(0, varSessionHostBatchCount): {
     name: 'SH-Batch-${i-1}-${time}'
     params: {
       asgResourceId: asgResourceId
