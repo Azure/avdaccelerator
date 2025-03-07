@@ -611,48 +611,53 @@
 										"style": "Warning"
 									}
 								},
-                                {
-                                    "name": "servicePrincipalPickerBlade",
-                                    "type": "Microsoft.Solutions.BladeInvokeControl",
-                                    "openBladeStatus": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalSelector.changing]",
-                                    "bladeReference": {
-                                        "name": "ObjectPickerBlade",
-                                        "extension": "Microsoft_AAD_IAM",
-                                        "parameters": {
-                                            "queries": 4,
-                                            "bladeSubtitle": "Pick the Service Principal",
-                                            "additionalQueriesOnSearch": 0,
-                                            "advancedQueryOptions": {},
-                                            "selectionMaximum": 1,
-                                            "selectionMinimum": 1,
-                                            "bladeTitle": "Select the Service Principal",
-                                            "searchBoxLabel": "Search for the 'Azure Virtual Desktop' service principal",
-                                            "searchBoxPlaceHolderText": "Enter 'Azure Virtual Desktop'",
-                                            "searchBoxTooltip": "This is the tooltip",
-                                            "defaultSearchValue": "Azure Virtual Desktop",
-                                            "searchGridNoRowsMessage": "No Service Principals found",
-                                            "selectButtonText": "Select Service Principal",
-                                            "selectedGridLabel": "Selected Service Principal",
-                                            "selectedGridNoRowsMessage": "You must select the 'Azure Virtual Desktop' service principal"
-                                        }
-                                    },
-                                    "transforms": {
-                                        "selection": "selectedObjects|[*].{displayName:displayName,id:id}"
-                                    }
-                                },
 								{
-									"name": "servicePrincipalSelector",
-									"type": "Microsoft.Common.Selector",
-									"label": "Select the <b>Azure Virtual Desktop</b> Service Principal",
-									"keyPath": "displayName",
-									"value": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection]",
-									"barColor": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), '#FF0000', '#7fba00')]",
-									"constraints": {
-										"required": true
+									"name": "servicePrincipalPickerBlade",
+									"type": "Microsoft.Solutions.BladeInvokeControl",
+									"openBladeStatus": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalSelector.changing]",
+									"bladeReference": {
+										"name": "ObjectPickerBlade",
+										"extension": "Microsoft_AAD_IAM",
+										"parameters": {
+											"queries": 4,
+											"bladeSubtitle": "Pick the Service Principal",
+											"additionalQueriesOnSearch": 0,
+											"advancedQueryOptions": {},
+											"selectionMaximum": 1,
+											"selectionMinimum": 1,
+											"bladeTitle": "Select the Service Principal",
+											"informationHeader": {
+												"informationText": "Select the 'Azure Virtual Desktop' service principal."
+											},
+											"searchBoxLabel": "Search for the 'Azure Virtual Desktop' service principal",
+											"searchBoxPlaceHolderText": "Enter 'Azure Virtual Desktop'",
+											"searchGridNoRowsMessage": "No Service Principals found",
+											"selectButtonText": "Select Service Principal",
+											"selectedGridLabel": "Selected Service Principal",
+											"selectedGridNoRowsMessage": "You must select the 'Azure Virtual Desktop' service principal"
+										}
 									},
-									"link": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), empty(first(steps('basics').avdServicePrincipals.value)))]"
-								}
+									"transforms": {
+										"selection": "selectedObjects|[*].{displayName:displayName,id:id}"
+									}
+								},
+                                {
+                                    "name": "servicePrincipalSelector",
+                                    "type": "Microsoft.Common.Selector",
+                                    "label": "Select the <b>Azure Virtual Desktop</b> Service Principal",
+                                    "keyPath": "displayName",
+                                    "defaultValue": {
+                                        "displayName": "Azure Virtual Desktop",
+                                        "id": "9cdead84-a844-4324-93f2-b2e6bb768d07"
+                                    },
+                                    "value": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection]",
+                                    "barColor": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), '#FF0000', '#7fba00')]",
+                                    "constraints": {
+                                        "required": true
+                                    },
+                                    "link": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
+                                    "visible": "[and(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), empty(first(steps('basics').avdServicePrincipals.value)))]"
+                                }
 							]
 						}
 					]
