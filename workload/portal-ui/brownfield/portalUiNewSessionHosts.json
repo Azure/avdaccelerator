@@ -1,268 +1,311 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
-    "view": {
-        "kind": "Form",
-        "properties": {
-            "title": "Add Session Hosts to Host Pool",
-            "steps": [
-                {
-                    "name": "basics",
-                    "label": "Basics",
-                    "elements": [
-                        {
-                            "name": "resourceScope",
-                            "type": "Microsoft.Common.ResourceScope",
-                            "location": {
-                                "resourceTypes": [
-                                    "microsoft.compute/virtualMachines"
-                                ]
-                            },
-                            "instanceDetailsLabel": "Virtual Machines Region and Resource Group"
-                        },
-                        {
-                            "type": "Microsoft.Common.ResourceGroupSelector",
-                            "name": "resourceGroup",
-                            "label": "Resource Group",
-                            "allowedMode": "UseExisting",
-                            "scope": {
-                                "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
-                            }
-                        },
-                        {
-                            "name": "deployment",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Deployment Details",
-                            "elements": [
-                                {
-                                    "name": "prefix",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Deployment Prefix",
-                                    "subLabel": "",
-                                    "defaultValue": "AVD1",
-                                    "toolTip": "The name of the resource group to deploy. (Default: AVD1)",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-zA-Z0-9]{2,4}$",
-                                        "validationMessage": "The prefix can be 2-4 aphanumeric characters."
-                                    }
-                                },
-                                {
-                                    "name": "environment",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Deployment Environment",
-                                    "defaultValue": "Dev",
-                                    "toolTip": "The name of the resource group to deploy.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Dev",
-                                                "value": "Dev"
-                                            },
-                                            {
-                                                "label": "Test",
-                                                "value": "Test"
-                                            },
-                                            {
-                                                "label": "Prod",
-                                                "value": "Prod"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "hostPool",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": true,
-                                    "label": "Hostpool to update",
-                                    "resourceType": "Microsoft.DesktopVirtualization/hostPools",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                }
-                            ],
-                            "visible": true
-                        },
-                        {
-                            "name": "encryptionAtHostFeatureApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "condition": "[not(empty(steps('basics').resourceScope.subscription))]",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Features/providers/Microsoft.Compute/features/encryptionAtHost?api-version=2021-07-01')]"
-                            }
-                        }
-                    ]
-                },
-                {
-                    "name": "sessionHosts",
-                    "label": "Session Hosts",
-                    "elements": [
-                        {
-                            "name": "resourceSkusApi",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "condition": "[and(not(empty(steps('basics').resourceScope.subscription)), not(empty(steps('basics').resourceScope.location)))]",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/skus?api-version=2021-07-01&$filter=location eq ', decodeUriComponent('%27'), steps('basics').resourceScope.location.name, decodeUriComponent('%27'))]"
-                            }
-                        },
-                        {
-                            "name": "naming",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Virtual Machine Naming",
-                            "elements": [
-                                {
-                                    "name": "customNaming",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Use Custom Session Host Name",
-                                    "toolTip": "",
-                                    "defaultValue": true
-                                },
-                                {
-                                    "name": "vmNamePrefix",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Session Host Name Prefix",
-                                    "toolTip": "Session host prefix",
-                                    "constraints": {
-                                        "required": true,
-                                        "regex": "^[a-zA-Z0-9_-]{1,11}$",
-                                        "validationMessage": "The prefix can be 1-11 characters and must consist of only alphanumerics, underscores (_), or dashes (-)."
-                                    },
-                                    "visible": "[steps('sessionHosts').naming.customNaming]"
-                                },
-                                {
-                                    "name": "index",
-                                    "type": "Microsoft.Common.Slider",
-                                    "label": "Starting number (index)",
-                                    "defaultValue": 1,
-                                    "toolTip": "Select the start number of the virtual machine suffix.",
-                                    "min": 1,
-                                    "max": 4998,
-                                    "showStepMarkers": true,
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
-                                    "name": "count",
-                                    "type": "Microsoft.Common.Slider",
-                                    "label": "Number of Virtual Machines",
-                                    "defaultValue": 1,
-                                    "toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
-                                    "min": 1,
-                                    "max": 4999,
-                                    "showStepMarkers": true,
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                }
-                            ]
-                        },
+	"$schema": "https://schema.management.azure.com/schemas/2021-09-09/uiFormDefinition.schema.json",
+	"view": {
+		"kind": "Form",
+		"properties": {
+			"title": "Add Session Hosts to Host Pool",
+			"steps": [
+				{
+					"name": "basics",
+					"label": "Basics",
+					"elements": [
 						{
-                            "name": "image",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Operating System Image",
-                            "elements": [
-                                {
-                                    "name": "source",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Source",
-                                    "filter": true,
-                                    "defaultValue": "Marketplace",
-                                    "toolTip": "Select marketplace or build custom image to deploy the session hosts.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Marketplace",
-                                                "value": "marketplace"
-                                            },
-                                            {
-                                                "label": "Compute Gallery",
-                                                "value": "computegallery"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "offer",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Offer",
-                                    "defaultValue": "Office 365",
-                                    "toolTip": "Select the desired marketplace image offer.",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Office 365",
-                                                "value": "office-365"
-                                            },
-                                            {
-                                                "label": "Windows 10",
-                                                "value": "Windows-10"
-                                            },
-                                            {
-                                                "label": "Windows 11",
-                                                "value": "windows-11"
-                                            }
-                                        ],
-                                        "required": true
-                                    },
-                                    "visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
-                                },
-                                {
-                                    "name": "skusApi",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "condition": "[and(not(empty(steps('basics').resourceScope.subscription)), not(empty(steps('basics').resourceScope.location)), equals(steps('sessionHosts').image.source, 'marketplace'), not(empty(steps('sessionHosts').image.offer)))]",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('sessionHosts').image.offer, '/skus?api-version=2022-08-01')]"
-                                    }
-                                },
-                                {
-                                    "name": "sku",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "SKU",
-                                    "defaultValue": "win11-24h2-avd-m365",
-                                    "toolTip": "Select the desired marketplace image SKU.",
-                                    "constraints": {
-                                        "allowedValues": "[map(filter(steps('sessionHosts').image.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'entn')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
-                                        "required": true
-                                    },
-                                    "visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
-                                },
-                                {
-                                    "name": "computeGallery",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[equals(steps('sessionHosts').image.source, 'computegallery')]",
-                                    "label": "Compute Gallery",
-                                    "resourceType": "Microsoft.Compute/galleries",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
-                                    "name": "imageDefinitionsApi",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "condition": "[and(equals(steps('sessionHosts').image.source, 'computegallery'), not(empty(steps('sessionHosts').image.computeGallery)))]",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "[concat(steps('sessionHosts').image.computeGallery.id, '/images?api-version=2024-03-03')]",
-                                        "transforms": {
-                                            "list": "value|[*].{label:name, value:id}"
-                                        }
-                                    }
-                                },
-                                {
-                                    "name": "imageDefinition",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Image Definition",
-                                    "constraints": {
-                                        "allowedValues": "[steps('sessionHosts').image.imageDefinitionsApi.transformed.list]",
-                                        "required": true
-                                    },
-                                    "visible": "[and(equals(steps('sessionHosts').image.source, 'computegallery'), not(empty(steps('sessionHosts').image.computeGallery)))]"
-                                },
+							"name": "infoBox",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": true,
+							"options": {
+								"style": "Info",
+								"text": "This Custom deployment is an add-on to the AVD LZ Accelerator. As such, you'll get your best results if the host pool was deployed with the deploy-baseline option of that solution.",
+								"uri": "https://aks.ms/avdautomation"
+							}
+						},
+						{
+							"name": "hostPool",
+							"type": "Microsoft.Solutions.ResourceSelector",
+							"visible": true,
+							"label": "Select the hostpool to update",
+							"resourceType": "Microsoft.DesktopVirtualization/hostPools",
+							"constraints": {
+								"required": true
+							}
+						},
+						{
+							"name": "hostPoolApi",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"condition": "[not(empty(steps('basics').hostPool.name))]",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('basics').hostPool.id, '?api-version=2024-04-03')]"
+							}
+						},
+						{
+							"name": "resourceGroupsApi",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('basics').resourceScope.subscription.id, '/resourcegroups?api-version=2021-04-01')]",
+								"transforms": {
+									"list": "value|[*].{label:name, value:{location:location,name:name,id:id}}"
+								}
+							}
+						},
+						{
+							"name": "resourceScope",
+							"type": "Microsoft.Common.ResourceScope",
+							"instanceDetailsLabel": "Virtual Machine Region and Resource Group Details",
+							"location": {
+								"resourceTypes": [
+									"microsoft.compute/virtualMachines"
+								]
+							}
+						},
+						{
+							"name": "resourceGroup",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Compute Resource Group",
+							"constraints": {
+								"allowedValues": "[map(filter(steps('basics').resourceGroupsApi.value, (rg) => and(equals(rg.location, steps('basics').resourceScope.location.name), contains(rg.name, 'compute'))), (rg) => parse(concat('{\"label\":\"', rg.name, '\",\"value\":{\"name\":\"', rg.name, '\",\"id\":\"', rg.id, '\"}}')))]",
+								"required": true
+							}
+						},
+						{
+							"name": "encryptionAtHostFeatureApi",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Features/providers/Microsoft.Compute/features/encryptionAtHost?api-version=2021-07-01')]"
+							}
+						},
+						{
+									"name": "diskEncryptionSetsApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "[not(empty(steps('basics').resourceScope.subscription.id))]",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/diskEncryptionSets?api-version=2024-03-02')]",
+										"transforms": {
+											"list": "value|[*].{label:name, value:id}"
+										}
+									}
+								},
+						{
+							"name": "deployment",
+							"type": "Microsoft.Common.Section",
+							"label": "Deployment Details",
+							"elements": [
+								{
+									"name": "prefix",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Deployment Prefix",
+									"subLabel": "",
+									"defaultValue": "AVD1",
+									"toolTip": "The name of the resource group to deploy. (Default: AVD1)",
+									"constraints": {
+										"required": true,
+										"regex": "^[a-zA-Z0-9]{2,4}$",
+										"validationMessage": "The prefix can be 2-4 aphanumeric characters."
+									}
+								},
+								{
+									"name": "environment",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Deployment Environment",
+									"defaultValue": "Dev",
+									"toolTip": "The name of the resource group to deploy.",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Dev",
+												"value": "Dev"
+											},
+											{
+												"label": "Test",
+												"value": "Test"
+											},
+											{
+												"label": "Prod",
+												"value": "Prod"
+											}
+										]
+									}
+								}
+							],
+							"visible": true
+						}
+					]
+				},
+				{
+					"name": "sessionHosts",
+					"label": "Session Hosts",
+					"elements": [
+						{
+							"name": "resourceSkusApi",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"condition": "[and(not(empty(steps('basics').resourceScope.subscription)), not(empty(steps('basics').resourceScope.location)))]",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/skus?api-version=2021-07-01&$filter=location eq ', decodeUriComponent('%27'), steps('basics').resourceScope.location.name, decodeUriComponent('%27'))]"
+							}
+						},
+						{
+							"name": "naming",
+							"type": "Microsoft.Common.Section",
+							"label": "Virtual Machine Naming",
+							"elements": [
+								{
+									"name": "customNaming",
+									"type": "Microsoft.Common.CheckBox",
+									"label": "Use Custom Session Host Name",
+									"toolTip": "",
+									"defaultValue": true
+								},
+								{
+									"name": "vmNamePrefix",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Session Host Name Prefix",
+									"toolTip": "Session host prefix",
+									"constraints": {
+										"required": true,
+										"regex": "^[a-zA-Z0-9_-]{1,11}$",
+										"validationMessage": "The prefix can be 1-11 characters and must consist of only alphanumerics, underscores (_), or dashes (-)."
+									},
+									"visible": "[steps('sessionHosts').naming.customNaming]"
+								},
+								{
+									"name": "index",
+									"type": "Microsoft.Common.Slider",
+									"label": "Starting number (index)",
+									"defaultValue": 1,
+									"toolTip": "Select the start number of the virtual machine suffix.",
+									"min": 1,
+									"max": 4998,
+									"showStepMarkers": true,
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "count",
+									"type": "Microsoft.Common.Slider",
+									"label": "Number of Virtual Machines",
+									"defaultValue": 1,
+									"toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
+									"min": 1,
+									"max": 4999,
+									"showStepMarkers": true,
+									"constraints": {
+										"required": true
+									}
+								}
+							]
+						},
+						{
+							"name": "image",
+							"type": "Microsoft.Common.Section",
+							"label": "Operating System Image",
+							"elements": [
+								{
+									"name": "source",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Source",
+									"filter": true,
+									"defaultValue": "Marketplace",
+									"toolTip": "Select marketplace or build custom image to deploy the session hosts.",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Marketplace",
+												"value": "marketplace"
+											},
+											{
+												"label": "Compute Gallery",
+												"value": "computegallery"
+											}
+										]
+									}
+								},
+								{
+									"name": "offer",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Offer",
+									"defaultValue": "Office 365",
+									"toolTip": "Select the desired marketplace image offer.",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "Office 365",
+												"value": "office-365"
+											},
+											{
+												"label": "Windows 10",
+												"value": "Windows-10"
+											},
+											{
+												"label": "Windows 11",
+												"value": "windows-11"
+											}
+										],
+										"required": true
+									},
+									"visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
+								},
+								{
+									"name": "skusApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "[and(not(empty(steps('basics').resourceScope.subscription)), not(empty(steps('basics').resourceScope.location)), equals(steps('sessionHosts').image.source, 'marketplace'), not(empty(steps('sessionHosts').image.offer)))]",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('sessionHosts').image.offer, '/skus?api-version=2022-08-01')]"
+									}
+								},
+								{
+									"name": "sku",
+									"type": "Microsoft.Common.DropDown",
+									"label": "SKU",
+									"defaultValue": "win11-24h2-avd-m365",
+									"toolTip": "Select the desired marketplace image SKU.",
+									"constraints": {
+										"allowedValues": "[map(filter(steps('sessionHosts').image.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'entn')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+										"required": true
+									},
+									"visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
+								},
+								{
+									"name": "computeGallery",
+									"type": "Microsoft.Solutions.ResourceSelector",
+									"visible": "[equals(steps('sessionHosts').image.source, 'computegallery')]",
+									"label": "Compute Gallery",
+									"resourceType": "Microsoft.Compute/galleries",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "imageDefinitionsApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "[and(equals(steps('sessionHosts').image.source, 'computegallery'), not(empty(steps('sessionHosts').image.computeGallery)))]",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('sessionHosts').image.computeGallery.id, '/images?api-version=2024-03-03')]",
+										"transforms": {
+											"list": "value|[*].{label:name, value:id}"
+										}
+									}
+								},
+								{
+									"name": "imageDefinition",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Image Definition",
+									"constraints": {
+										"allowedValues": "[steps('sessionHosts').image.imageDefinitionsApi.transformed.list]",
+										"required": true
+									},
+									"visible": "[and(equals(steps('sessionHosts').image.source, 'computegallery'), not(empty(steps('sessionHosts').image.computeGallery)))]"
+								},
 								{
 									"name": "imageDefinitionApi",
 									"type": "Microsoft.Solutions.ArmApiControl",
@@ -276,39 +319,39 @@
 										}
 									}
 								}
-                            ]
-                        },
-                        {
-                            "name": "settings",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Virtual Machine Specs",
-                            "elements": [
-                                {
-                                    "name": "diskSku",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "OS Disk SKU",
-                                    "filter": true,
-                                    "defaultValue": "Premium_LRS",
-                                    "toolTip": "Select the disk SKU for the operating system disk.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Premium_LRS",
-                                                "value": "Premium_LRS"
-                                            },
-                                            {
-                                                "label": "Standard_LRS",
-                                                "value": "Standard_LRS"
-                                            },
-                                            {
-                                                "label": "StandardSSD_LRS",
-                                                "value": "StandardSSD_LRS"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
+							]
+						},
+						{
+							"name": "settings",
+							"type": "Microsoft.Common.Section",
+							"label": "Virtual Machine Specs",
+							"elements": [
+								{
+									"name": "diskSku",
+									"type": "Microsoft.Common.DropDown",
+									"label": "OS Disk SKU",
+									"filter": true,
+									"defaultValue": "Premium_LRS",
+									"toolTip": "Select the disk SKU for the operating system disk.",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Premium_LRS",
+												"value": "Premium_LRS"
+											},
+											{
+												"label": "Standard_LRS",
+												"value": "Standard_LRS"
+											},
+											{
+												"label": "StandardSSD_LRS",
+												"value": "StandardSSD_LRS"
+											}
+										]
+									}
+								},
+								{
 									"name": "diskSizeGB",
 									"type": "Microsoft.Common.DropDown",
 									"label": "OS Disk Size",
@@ -350,36 +393,36 @@
 									},
 									"visible": true
 								},
-                                {
-                                    "name": "vmSize",
-                                    "type": "Microsoft.Compute.SizeSelector",
-                                    "label": "VM Size",
-                                    "toolTip": "Select the size of the virtual machines. Multi-session hosts should have 4 - 24 vCPUs. Single session host should have 2 or more vCPUs.",
-                                    "count": "[steps('sessionHosts').naming.count]",
-                                    "recommendedSizes": [
-                                        "Standard_D4ads_v5",
-                                        "Standard_D8ads_v5",
-                                        "Standard_D16ads_v5",
-                                        "Standard_D32ads_v5",
-                                        "Standard_D4ds_v4",
-                                        "Standard_D8ds_v4",
-                                        "Standard_D16ds_v4",
-                                        "Standard_D32ds_v4",
-                                        "Standard_D4s_v3",
-                                        "Standard_D8s_v3",
-                                        "Standard_D16s_v3",
-                                        "Standard_D32s_v3"
-                                    ],
-                                    "options": {
-                                        "hideDiskTypeFilter": "[if(equals(steps('sessionHosts').settings.diskSku, 'Premium_LRS'), true, false)]"
-                                    },
-                                    "osPlatform": "Windows",
-                                    "scope": {
-                                        "location": "[steps('basics').resourceScope.location.name]",
-                                        "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
-                                    }
-                                },
-                                {
+								{
+									"name": "vmSize",
+									"type": "Microsoft.Compute.SizeSelector",
+									"label": "VM Size",
+									"toolTip": "Select the size of the virtual machines. Multi-session hosts should have 4 - 24 vCPUs. Single session host should have 2 or more vCPUs.",
+									"count": "[steps('sessionHosts').naming.count]",
+									"recommendedSizes": [
+										"Standard_D4ads_v5",
+										"Standard_D8ads_v5",
+										"Standard_D16ads_v5",
+										"Standard_D32ads_v5",
+										"Standard_D4ds_v4",
+										"Standard_D8ds_v4",
+										"Standard_D16ds_v4",
+										"Standard_D32ds_v4",
+										"Standard_D4s_v3",
+										"Standard_D8s_v3",
+										"Standard_D16s_v3",
+										"Standard_D32s_v3"
+									],
+									"options": {
+										"hideDiskTypeFilter": "[if(equals(steps('sessionHosts').settings.diskSku, 'Premium_LRS'), true, false)]"
+									},
+									"osPlatform": "Windows",
+									"scope": {
+										"location": "[steps('basics').resourceScope.location.name]",
+										"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]"
+									}
+								},
+								{
 									"name": "acceleratedNetworking",
 									"type": "Microsoft.Common.CheckBox",
 									"label": "Enable accelerated networking",
@@ -395,44 +438,44 @@
 									"defaultValue": true,
 									"toolTip": "Enables Azure VM antimalware extension on session hosts."
 								}
-                            ]
-                        },
-                        {
-                            "name": "availability",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Availability",
-                            "elements": [
-                                {
-                                    "name": "option",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "defaultValue": "[if(empty(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), 'No infrastructure redundancy required', 'Availability Zones')]",
-                                    "label": "Availability Option",
-                                    "toolTip": "Select the redundancy / resiliency for the virtual machines.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": "[if(empty(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), parse('[{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'), parse('[{\"label\":\"Availability Zones\",\"value\":\"AvailabilityZones\"},{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'))]"
-                                    }
-                                },
-                                {
-                                    "name": "availabilityZones",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Select Availability Zones",
-                                    "defaultValue": [
-                                        "Zone 1",
-                                        "Zone 2",
-                                        "Zone 3"
-                                    ],
-                                    "multiselect": true,
-                                    "selectAll": true,
-                                    "toolTip": "Select the desired Availability Zones",
-                                    "constraints": {
-                                        "allowedValues": "[map(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones)), (zone) => parse(concat('{\"label\":\"Zone ', zone, '\",\"value\":\"', zone, '\"}')))]",
-                                        "required": true
-                                    },
-                                    "visible": "[equals(steps('sessionHosts').availability.option, 'AvailabilityZones')]"
-                                }
-                            ]
-                        },
+							]
+						},
+						{
+							"name": "availability",
+							"type": "Microsoft.Common.Section",
+							"label": "Availability",
+							"elements": [
+								{
+									"name": "option",
+									"type": "Microsoft.Common.DropDown",
+									"defaultValue": "[if(empty(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), 'No infrastructure redundancy required', 'Availability Zones')]",
+									"label": "Availability Option",
+									"toolTip": "Select the redundancy / resiliency for the virtual machines.",
+									"constraints": {
+										"required": true,
+										"allowedValues": "[if(empty(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones))), parse('[{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'), parse('[{\"label\":\"Availability Zones\",\"value\":\"AvailabilityZones\"},{\"label\":\"No infrastructure redundancy required\",\"value\":\"None\"}]'))]"
+									}
+								},
+								{
+									"name": "availabilityZones",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Select Availability Zones",
+									"defaultValue": [
+										"Zone 1",
+										"Zone 2",
+										"Zone 3"
+									],
+									"multiselect": true,
+									"selectAll": true,
+									"toolTip": "Select the desired Availability Zones",
+									"constraints": {
+										"allowedValues": "[map(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones)), (zone) => parse(concat('{\"label\":\"Zone ', zone, '\",\"value\":\"', zone, '\"}')))]",
+										"required": true
+									},
+									"visible": "[equals(steps('sessionHosts').availability.option, 'AvailabilityZones')]"
+								}
+							]
+						},
 						{
 							"name": "securityProfile",
 							"type": "Microsoft.Common.Section",
@@ -440,611 +483,602 @@
 							"visible": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(contains(steps('sessionHosts').image.imageDefinitionApi.transformed.SecurityType, 'TrustedLaunch'), true, false), if(or(contains(steps('sessionHosts').image.sku, 'win11'), contains(steps('sessionHosts').image.sku, 'g2')), true, false))]",
 							"elements": [
 								{
-                                    "name": "securityType",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Security Type",
-                                    "placeholder": "",
-                                    "defaultValue": "Trusted Launch",
-                                    "toolTip": "Select the appropriate Security Type configuration for the Virtual Machine. Note that 'Confidential Virtual Machines' are not available in all regions and the option may not appear.",
-                                    "constraints": {
-                                        "allowedValues": [
-                                            {
-                                                "label": "Standard",
-                                                "value": "Standard"
-                                            },
-                                            {
-                                                "label": "Trusted Launch",
-                                                "value": "TrustedLaunch"
-                                            }
-                                        ],
-                                        "required": true
-                                    },
-                                    "visible": true
-                                },
-                                {
-                                    "name": "secureBootEnabled",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Enable Secure Boot",
-                                    "toolTip": "Secure boot helps protect your VMs against boot kits, rootkits, and kernel-level malware.",
-                                    "defaultValue": true,
-                                    "visible": "[equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch')]"
-                                },
-                                {
-                                    "name": "vTpmEnabled",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Enable vTPM",
-                                    "toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets.",
-                                    "defaultValue": true,
-                                    "visible": "[equals(steps('hosts').securityProfile.securityType, 'TrustedLaunch'))]"
-                                }
+									"name": "securityType",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Security Type",
+									"placeholder": "",
+									"defaultValue": "Trusted Launch",
+									"toolTip": "Select the appropriate Security Type configuration for the Virtual Machine. Note that 'Confidential Virtual Machines' are not available in all regions and the option may not appear.",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "Standard",
+												"value": "Standard"
+											},
+											{
+												"label": "Trusted Launch",
+												"value": "TrustedLaunch"
+											}
+										],
+										"required": true
+									},
+									"visible": true
+								},
+								{
+									"name": "secureBootEnabled",
+									"type": "Microsoft.Common.CheckBox",
+									"label": "Enable Secure Boot",
+									"toolTip": "Secure boot helps protect your VMs against boot kits, rootkits, and kernel-level malware.",
+									"defaultValue": true,
+									"visible": "[equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch')]"
+								},
+								{
+									"name": "vTpmEnabled",
+									"type": "Microsoft.Common.CheckBox",
+									"label": "Enable vTPM",
+									"toolTip": "Virtual Trusted Platform Module (vTPM) is TPM2.0 compliant and validates your VM boot integrity apart from securely storing keys and secrets.",
+									"defaultValue": true,
+									"visible": "[equals(steps('hosts').securityProfile.securityType, 'TrustedLaunch'))]"
+								}
 							]
 						},
-                        {
-                            "name": "security",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Other Security Settings",
-                            "elements": [
-                                {
-                                    "name": "asg",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.resourceGroup.id, '/providers/Microsoft.Network/applicationSecurityGroups?api-version=2024-05-01')]"
-                                    }
-                                },                                
-                                {
-                                    "name": "encryptionAtHost",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Encryption At Host",
-                                    "toolTip": "Check to enable Encryption At Host",
-                                    "defaultValue": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), true, false)]",
-                                    "visible": "[equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered')]"
-                                },
-                                {
-                                    "name": "diskZeroTrust",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Enable Customer-Managed Keys on OS Disk",
-                                    "toolTip": "Enables a zero trust configuration on the session host disks.",
-                                    "visible": true
-                                },
-                                {
-                                    "name": "diskEncryptionSetApi",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "condition": "[steps('sessionHosts').security.diskZeroTrust]",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "[concat(steps('basics').resourceScope.resourceGroup.id, '/providers/Microsoft.Compute/diskEncryptionSets?api-version=2024-03-02')]",
-                                        "transforms": {
-                                            "list": "value|[*].{label:name, value:id}"
-                                        }
-                                    }
-                                },
-                                {
-                                    "name": "diskEncryptionSet",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Disk Encryption Set",
-                                    "constraints": {
-                                        "allowedValues": "[steps('sessionHosts').security.diskEncryptionSetApi.transformed.list]",
-                                        "required": true
-                                    },
-                                    "visible": "[steps('sessionHosts').security.diskZeroTrust]"
-                                },
-                                {
-                                    "name": "deployAntiMalwareExt",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Deploy Anti-Malware Extension",
-                                    "defaultValue": true,
-                                    "toolTip": "Deploys anti-malware extension on session hosts."
-                                }
-                            ]
-                        },
-                        {
-                            "name": "identityAndAccounts",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Identity and Account Settings",
-                            "elements": [
-                                {
-                                    "name": "identityServiceProvider",
-                                    "type": "Microsoft.Common.OptionsGroup",
-                                    "visible": true,
-                                    "label": "Identity Service Provider",
-                                    "defaultValue": "Active Directory (AD DS)",
-                                    "toolTip": "Choose the identity service provider for your users and session hosts. Your choices explained:</br></br><b>Active Directory (ADDS)</b>: The users are sourced from ADDS and session hosts will be domain joined.</br></br><b>Microsoft Entra Domain Services</b>: The users are sourced from Entra ID or ADDS and the session hosts are joined to Entra Domain Services.</br></br><b>Microsoft Entra ID</b>: The users are sourced from Entra ID and the session hosts will join Entra ID.</br></br><b>Microsoft Entra ID Kerberos</b>: The Users are sourced from ADDS, but the session hosts will be joined to Entra ID.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Active Directory (AD DS)",
-                                                "value": "ADDS"
-                                            },
-                                            {
-                                                "label": "Microsoft Entra Domain Services",
-                                                "value": "EntraDS"
-                                            },
-                                            {
-                                                "label": "Microsoft Entra ID",
-                                                "value": "EntraID"
-                                            },
-                                            {
-                                                "label": "Microsoft Entra ID Kerberos",
-                                                "value": "EntraIDKerberos"
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    "name": "identityServiceProviderInfo1",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[equals(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
-                                    "options": {
-                                        "text": "If you are deploying this solution with FSLogix Storage, storage account key access must be permitted within your subscription. This solution will securely configure your session host to access the FSLogix Azure Files storage with the storage account key.",
-                                        "uri": "https://techcommunity.microsoft.com/blog/fslogix-blog/fslogix-profile-containers-for-azure-ad-cloud-only-identities/3739352",
-                                        "style": "Warning"
-                                    }
-                                },
-                                {
-                                    "name": "intuneEnrollment",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
-                                    "label": "Intune enrollment",
-                                    "toolTip": "If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
-                                },
-                                {
-                                    "name": "identityDomainName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "label": "Domain name",
-                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
-                                    "toolTip": "The full qualified domain name of the domain to which the virtual machines will be joined.",
-                                    "placeholder": "Example: contoso.com",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                },
-                                {
-                                    "name": "ouPath",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
-                                    "label": "OU Path",
-                                    "toolTip": "Optionally, input the distinguished name of the desired organization unit for the AVD session hosts.",
-                                    "placeholder": "Example: OU=pooled,OU=avd,DC=contoso,DC=com",
-                                    "constraints": {
-                                        "required": false
-                                    }
-                                },
-                                {
-                                    "name": "domainJoinUserPrincipalName",
-                                    "type": "Microsoft.Common.TextBox",
-                                    "placeholder": "domainjoin@contoso.com",
-                                    "label": "Domain Join User Principal Name",
-                                    "toolTip": "The User Principal Name of the domain join account.",
-                                    "constraints": {
-                                        "regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-                                        "required": true
-                                    },
-                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]"
-                                },
-                                {
-                                    "name": "secretsInfoBox1",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
-                                    "options": {
-                                        "text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "secretsInfoBox2",
-                                    "type": "Microsoft.Common.InfoBox",
-                                    "visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
-                                    "options": {
-                                        "text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>domainJoinUserPassword</b>: The password associated with the user principal name specified above.</li><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
-                                        "style": "Info"
-                                    }
-                                },
-                                {
-                                    "name": "keyVault",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Select Keyvault containing workload secrets",
-                                    "resourceType": "Microsoft.KeyVault/vaults",
-                                    "toolTip": "Select Keyvault which contains the secrets",
-                                    "constraints": {
-                                        "required": true
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "network",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Network",
-                            "elements": [
-                                {
-                                    "name": "virtualNetwork",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "label": "Virtual Network",
-                                    "resourceType": "Microsoft.Network/virtualNetworks",
-                                    "constraints": {
-                                        "required": true
-                                    },
-                                    "scope": {
-                                        "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-                                        "location": "[steps('basics').resourceScope.location.name]"
-                                    }
-                                },
-                                {
-                                    "name": "subnetsApi",
-                                    "condition": "[not(empty(steps('sessionHosts').network.virtualNetwork))]",
-                                    "type": "Microsoft.Solutions.ArmApiControl",
-                                    "request": {
-                                        "method": "GET",
-                                        "path": "[concat(steps('sessionHosts').network.virtualNetwork.id, '/subnets?api-version=2022-05-01')]",
-                                        "transforms": {
-                                            "list": "value|[*].{label:name, value:id}"
-                                        }
-                                    }
-                                },
-                                {
-                                    "name": "subnet",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "visible": true,
-                                    "label": "Subnet",
-                                    "defaultValue": "",
-                                    "toolTip": "Select an existing subnet for the AVD session hosts.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": "[steps('sessionHosts').network.subnetsApi.transformed.list]"
-                                    }
-                                }
-                            ]
-                        },
-                        {
-                            "name": "monitoring",
-                            "type": "Microsoft.Common.Section",
-                            "label": "Monitoring",
-                            "elements": [
-                                {
-                                    "name": "enableMonitoring",
-                                    "type": "Microsoft.Common.CheckBox",
-                                    "label": "Deploy Azure Monitor Agent and Associate Data Collection Rule",
-                                    "toolTip": "Deploy AVD monitoring resources and setings."
-                                },
-                                {
-                                    "name": "dataCollectionRule",
-                                    "type": "Microsoft.Solutions.ResourceSelector",
-                                    "visible": "[steps('sessionHosts').monitoring.enableMonitoring]",
-                                    "label": "AVD Insights Data Collection Rule",
-                                    "resourceType": "Microsoft.Insights/dataCollectionRules",
-                                    "constraints": {
-                                        "required": true
-                                    },
-                                    "scope": {
-                                        "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-                                        "location": "[steps('basics').resourceScope.location.name]"
-                                    }
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    "name": "fslogix",
-                    "label": "FSLogix",
-                    "elements": [
-                        {
-                            "name": "configureFslogix",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Configure Fslogix on Session Hosts",
-                            "defaultValue": true,
-                            "toolTip": "Configure FSLogix on Session Hosts via the registry"
-                        },
-                        {
-                            "name": "storageAccount",
-                            "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[steps('fslogix').configureFslogix]",
-                            "label": "FSLogix Azure Files Storage Account",
-                            "resourceType": "Microsoft.Storage/storageAccounts",
-                            "constraints": {
-                                "required": true
-                            },
-                            "scope": {
-                                "subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-                                "location": "[steps('basics').resourceScope.location.name]"
-                            }
-                        },
-                        {
-                            "name": "sharesApi",
-                            "condition": "[not(empty(steps('fslogix').storageAccount.id))]",
-                            "type": "Microsoft.Solutions.ArmApiControl",
-                            "request": {
-                                "method": "GET",
-                                "path": "[concat(steps('fslogix').storageAccount.id, '/fileServices/default/shares?api-version=2023-05-01')]",
-                                "transforms": {
-                                    "list": "value|[*].{label:name, value:name}"
-                                }
-                            }
-                        },
-                        {
-                            "name": "fileShareName",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "File Share Name",
-                            "constraints": {
-                                "allowedValues": "[steps('fslogix').sharesApi.transformed.list]",
-                                "required": true
-                            },
-                            "visible": "[not(empty(steps('fslogix').storageAccount.id))]"
-                        }
-                    ]
-                },
-                {
-                    "name": "tags",
-                    "label": "Tags",
-                    "elements": [
-                        {
-                            "name": "createResourceTags",
-                            "type": "Microsoft.Common.CheckBox",
-                            "label": "Create Resource Tags",
-                            "toolTip": "Apply tags on resources."
-                        },
-                        {
-                            "name": "applicationNameTag",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Application Name Tag",
-                            "placeHolder": "Contoso-App",
-                            "toolTip": "Details about the application.",
-                            "constraints": {
-                                "required": false,
-                                "regex": "^[\\w\\s\\.\\-]{1,256}$",
-                                "validationMessage": "A valid tag value must be provided"
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "costCenterTag",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Cost Center Tag",
-                            "placeHolder": "Contoso-CC",
-                            "toolTip": "Cost center of owner team.",
-                            "constraints": {
-                                "required": false,
-                                "regex": "^[\\w\\s\\.\\-]{1,256}$",
-                                "validationMessage": "A valid tag value must be provided"
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "departmentTag",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Department Tag",
-                            "placeHolder": "Contoso-AVD",
-                            "toolTip": "Department that owns the deployment",
-                            "constraints": {
-                                "required": false,
-                                "regex": "^[\\w\\s\\.\\-]{1,256}$",
-                                "validationMessage": "A valid tag value must be provided"
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "dataClassificationTag",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Data Classification Tag",
-                            "defaultValue": "Non-business",
-                            "toolTip": "Sensitivity of data hosted",
-                            "constraints": {
-                                "required": false,
-                                "allowedValues": [
-                                    {
-                                        "label": "Non-business",
-                                        "value": "Non-business"
-                                    },
-                                    {
-                                        "label": "Public",
-                                        "value": "Public"
-                                    },
-                                    {
-                                        "label": "General",
-                                        "value": "General"
-                                    },
-                                    {
-                                        "label": "Confidential",
-                                        "value": "Confidential"
-                                    },
-                                    {
-                                        "label": "Highly-confidential",
-                                        "value": "Highly-confidential"
-                                    }
-                                ]
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "opsTeamTag",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Ops Team Tag",
-                            "placeHolder": "workload-admins@Contoso.com",
-                            "toolTip": "Team accountable for day-to-day operations.",
-                            "constraints": {
-                                "required": false,
-                                "regex": "^(?![@.\\-_])[a-zA-Z0-9@.\\-_]{1,254}(?<![@.\\-_])$",
-                                "validationMessage": "A valid tag value must be provided"
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "ownerTag",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Owner Tag",
-                            "defaultValue": "workload-owner@Contoso.com",
-                            "toolTip": "Organizational owner of the AVD deployment.",
-                            "constraints": {
-                                "required": false,
-                                "regex": "^(?![@.\\-_])[a-zA-Z0-9@.\\-_]{1,254}(?<![@.\\-_])$",
-                                "validationMessage": "A valid tag value must be provided"
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "workloadNameTag",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Workload Name Tag",
-                            "defaultValue": "Contoso-Workload",
-                            "toolTip": "The name of workload for tagging purposes.",
-                            "constraints": {
-                                "required": false,
-                                "regex": "^[\\w\\s\\.\\-]{1,256}$",
-                                "validationMessage": "A valid tag value must be provided"
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "workloadTypeTag",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Workload Type Tag",
-                            "subLabel": "",
-                            "defaultValue": "Light",
-                            "toolTip": "Reference to the size of the VM for your workloads",
-                            "constraints": {
-                                "required": false,
-                                "allowedValues": [
-                                    {
-                                        "label": "Light",
-                                        "value": "Light"
-                                    },
-                                    {
-                                        "label": "Medium",
-                                        "value": "Medium"
-                                    },
-                                    {
-                                        "label": "High",
-                                        "value": "High"
-                                    },
-                                    {
-                                        "label": "Power",
-                                        "value": "Power"
-                                    }
-                                ]
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "workloadCriticalityTag",
-                            "type": "Microsoft.Common.DropDown",
-                            "label": "Workload Criticality Tag",
-                            "defaultValue": "Low",
-                            "toolTip": "Criticality of the workload.",
-                            "constraints": {
-                                "required": false,
-                                "allowedValues": [
-                                    {
-                                        "label": "Low",
-                                        "value": "Low"
-                                    },
-                                    {
-                                        "label": "Medium",
-                                        "value": "Medium"
-                                    },
-                                    {
-                                        "label": "High",
-                                        "value": "High"
-                                    },
-                                    {
-                                        "label": "Mission-critical",
-                                        "value": "Mission-critical"
-                                    },
-                                    {
-                                        "label": "Custom",
-                                        "value": "Custom"
-                                    }
-                                ]
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        },
-                        {
-                            "name": "workloadCriticalityCustomValueTag",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Workload Criticality Custom Value Tag",
-                            "defaultValue": "Contoso-Critical",
-                            "toolTip": "Tag value for custom criticality value.",
-                            "constraints": {
-                                "required": false,
-                                "regex": "^[\\w\\s\\.\\-]{1,256}$",
-                                "validationMessage": "A valid tag value must be provided"
-                            },
-                            "visible": "[and(steps('tags').createResourceTags, equals(steps('tags').workloadCriticalityTag, 'Custom'))]"
-                        },
-                        {
-                            "name": "workloadSlaTag",
-                            "type": "Microsoft.Common.TextBox",
-                            "label": "Workload Sla Tag",
-                            "defaultValue": "Contoso-SLA",
-                            "toolTip": "Service level agreement level of the worload.",
-                            "constraints": {
-                                "required": false,
-                                "regex": "^[\\w\\s\\.\\-]{1,256}$",
-                                "validationMessage": "A valid tag value must be provided"
-                            },
-                            "visible": "[steps('tags').createResourceTags]"
-                        }
-                    ]
-                }
-            ]
-        },
-        "outputs": {
-            "kind": "Subscription",
-            "subscriptionId": "[steps('basics').resourceScope.subscription.id]",
-            "location": "[steps('basics').resourceScope.location.name]",
-            "parameters": {
-                "location": "[steps('basics').resourceScope.location.name]",
-                "computeRgResourceGroupName": "[steps('basics').resourceGroup.value.name]",
-                "deploymentPrefix": "[steps('basics').deployment.prefix]",
-                "deploymentEnvironment": "[steps('basics').deployment.environment]",
-                "hostPoolResourceId": "[steps('basics').deployment.hostPool.id]",
-                "customNaming": "[steps('sessionHosts').naming.customNaming]",
-                "sessionHostCustomNamePrefix": "[if(steps('sessionHosts').naming.customNaming, steps('sessionHosts').naming.vmNamePrefix, 'notapp')]",
-                "count": "[steps('sessionHosts').naming.count]",
-                "countIndex": "[steps('sessionHosts').naming.index]",
+						{
+							"name": "security",
+							"type": "Microsoft.Common.Section",
+							"label": "Other Security Settings",
+							"elements": [
+								{
+									"name": "asg",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('basics').resourceGroup.id, '/providers/Microsoft.Network/applicationSecurityGroups?api-version=2024-05-01')]"
+									}
+								},
+								{
+									"name": "encryptionAtHost",
+									"type": "Microsoft.Common.CheckBox",
+									"label": "Encryption At Host",
+									"toolTip": "Check to enable Encryption At Host",
+									"defaultValue": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), true, false)]",
+									"visible": "[equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered')]"
+								},								
+								{
+									"name": "diskZeroTrust",
+									"type": "Microsoft.Common.CheckBox",
+									"label": "Enable Customer-Managed Keys on OS Disk",
+									"defaultValue": "[if(not(empty(first(map(filter(steps('basic').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id)), (des) => des.name)))), true, false)]",
+									"toolTip": "Enables a zero trust configuration on the session host disks.",
+									"visible": "[not(empty(steps('basics').diskEncryptionSetsApi.value))]"
+								},
+								{
+									"name": "diskEncryptionSet",
+									"type": "Microsoft.Common.DropDown",
+									"defaultValue": "[first(map(filter(steps('basics').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id)), (des) => des.name))]",
+									"label": "Disk Encryption Set",
+									"constraints": {
+										"allowedValues": "[steps('basics').diskEncryptionSetsApi.transformed.list]",
+										"required": true
+									},
+									"visible": "[steps('sessionHosts').security.diskZeroTrust]"
+								},
+
+								
+								{
+									"name": "deployAntiMalwareExt",
+									"type": "Microsoft.Common.CheckBox",
+									"label": "Deploy Anti-Malware Extension",
+									"toolTip": "Deploys anti-malware extension on session hosts."
+								}
+							]
+						},
+						{
+							"name": "identityAndAccounts",
+							"type": "Microsoft.Common.Section",
+							"label": "Identity and Account Settings",
+							"elements": [
+								{
+									"name": "identityServiceProvider",
+									"type": "Microsoft.Common.OptionsGroup",
+									"visible": true,
+									"label": "Identity Service Provider",
+									"defaultValue": "Active Directory (AD DS)",
+									"toolTip": "Choose the identity service provider for your users and session hosts. Your choices explained:</br></br><b>Active Directory (ADDS)</b>: The users are sourced from ADDS and session hosts will be domain joined.</br></br><b>Microsoft Entra Domain Services</b>: The users are sourced from Entra ID or ADDS and the session hosts are joined to Entra Domain Services.</br></br><b>Microsoft Entra ID</b>: The users are sourced from Entra ID and the session hosts will join Entra ID.</br></br><b>Microsoft Entra ID Kerberos</b>: The Users are sourced from ADDS, but the session hosts will be joined to Entra ID.",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Active Directory (AD DS)",
+												"value": "ADDS"
+											},
+											{
+												"label": "Microsoft Entra Domain Services",
+												"value": "EntraDS"
+											},
+											{
+												"label": "Microsoft Entra ID",
+												"value": "EntraID"
+											},
+											{
+												"label": "Microsoft Entra ID Kerberos",
+												"value": "EntraIDKerberos"
+											}
+										]
+									}
+								},
+								{
+									"name": "identityServiceProviderInfo1",
+									"type": "Microsoft.Common.InfoBox",
+									"visible": "[equals(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
+									"options": {
+										"text": "If you are deploying this solution with FSLogix Storage, storage account key access must be permitted within your subscription. This solution will securely configure your session host to access the FSLogix Azure Files storage with the storage account key.",
+										"uri": "https://techcommunity.microsoft.com/blog/fslogix-blog/fslogix-profile-containers-for-azure-ad-cloud-only-identities/3739352",
+										"style": "Warning"
+									}
+								},
+								{
+									"name": "intuneEnrollment",
+									"type": "Microsoft.Common.CheckBox",
+									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
+									"label": "Intune enrollment",
+									"toolTip": "If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
+								},
+								{
+									"name": "identityDomainName",
+									"type": "Microsoft.Common.TextBox",
+									"label": "Domain name",
+									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
+									"toolTip": "The full qualified domain name of the domain to which the virtual machines will be joined.",
+									"placeholder": "Example: contoso.com",
+									"constraints": {
+										"required": true
+									}
+								},
+								{
+									"name": "ouPath",
+									"type": "Microsoft.Common.TextBox",
+									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
+									"label": "OU Path",
+									"toolTip": "Optionally, input the distinguished name of the desired organization unit for the AVD session hosts.",
+									"placeholder": "Example: OU=pooled,OU=avd,DC=contoso,DC=com",
+									"constraints": {
+										"required": false
+									}
+								},
+								{
+									"name": "domainJoinUserPrincipalName",
+									"type": "Microsoft.Common.TextBox",
+									"placeholder": "domainjoin@contoso.com",
+									"label": "Domain Join User Principal Name",
+									"toolTip": "The User Principal Name of the domain join account.",
+									"constraints": {
+										"regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+										"required": true
+									},
+									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]"
+								},
+								{
+									"name": "secretsInfoBox1",
+									"type": "Microsoft.Common.InfoBox",
+									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
+									"options": {
+										"text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
+										"style": "Info"
+									}
+								},
+								{
+									"name": "secretsInfoBox2",
+									"type": "Microsoft.Common.InfoBox",
+									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
+									"options": {
+										"text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>domainJoinUserPassword</b>: The password associated with the user principal name specified above.</li><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
+										"style": "Info"
+									}
+								},
+								{
+									"name": "keyVault",
+									"type": "Microsoft.Solutions.ResourceSelector",
+									"label": "Select Keyvault containing workload secrets",
+									"resourceType": "Microsoft.KeyVault/vaults",
+									"toolTip": "Select Keyvault which contains the secrets",
+									"constraints": {
+										"required": true
+									}
+								}
+							]
+						},
+						{
+							"name": "network",
+							"type": "Microsoft.Common.Section",
+							"label": "Network",
+							"elements": [
+								{
+									"name": "virtualNetwork",
+									"type": "Microsoft.Solutions.ResourceSelector",
+									"label": "Virtual Network",
+									"resourceType": "Microsoft.Network/virtualNetworks",
+									"constraints": {
+										"required": true
+									},
+									"scope": {
+										"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
+										"location": "[steps('basics').resourceScope.location.name]"
+									}
+								},
+								{
+									"name": "subnetsApi",
+									"condition": "[not(empty(steps('sessionHosts').network.virtualNetwork))]",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('sessionHosts').network.virtualNetwork.id, '/subnets?api-version=2022-05-01')]",
+										"transforms": {
+											"list": "value|[*].{label:name, value:id}"
+										}
+									}
+								},
+								{
+									"name": "subnet",
+									"type": "Microsoft.Common.DropDown",
+									"visible": true,
+									"label": "Subnet",
+									"defaultValue": "",
+									"toolTip": "Select an existing subnet for the AVD session hosts.",
+									"constraints": {
+										"required": true,
+										"allowedValues": "[steps('sessionHosts').network.subnetsApi.transformed.list]"
+									}
+								}
+							]
+						},
+						{
+							"name": "monitoring",
+							"type": "Microsoft.Common.Section",
+							"label": "Monitoring",
+							"elements": [
+								{
+									"name": "enableMonitoring",
+									"type": "Microsoft.Common.CheckBox",
+									"label": "Deploy Azure Monitor Agent and Associate Data Collection Rule",
+									"toolTip": "Deploy AVD monitoring resources and setings."
+								},
+								{
+									"name": "dataCollectionRule",
+									"type": "Microsoft.Solutions.ResourceSelector",
+									"visible": "[steps('sessionHosts').monitoring.enableMonitoring]",
+									"label": "AVD Insights Data Collection Rule",
+									"resourceType": "Microsoft.Insights/dataCollectionRules",
+									"constraints": {
+										"required": true
+									},
+									"scope": {
+										"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
+										"location": "[steps('basics').resourceScope.location.name]"
+									}
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "fslogix",
+					"label": "FSLogix",
+					"elements": [
+						{
+							"name": "configureFslogix",
+							"type": "Microsoft.Common.CheckBox",
+							"label": "Configure Fslogix on Session Hosts",
+							"defaultValue": true,
+							"toolTip": "Configure FSLogix on Session Hosts via the registry"
+						},
+						{
+							"name": "storageAccount",
+							"type": "Microsoft.Solutions.ResourceSelector",
+							"visible": "[steps('fslogix').configureFslogix]",
+							"label": "FSLogix Azure Files Storage Account",
+							"resourceType": "Microsoft.Storage/storageAccounts",
+							"constraints": {
+								"required": true
+							},
+							"scope": {
+								"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
+								"location": "[steps('basics').resourceScope.location.name]"
+							}
+						},
+						{
+							"name": "sharesApi",
+							"condition": "[not(empty(steps('fslogix').storageAccount.id))]",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('fslogix').storageAccount.id, '/fileServices/default/shares?api-version=2023-05-01')]",
+								"transforms": {
+									"list": "value|[*].{label:name, value:name}"
+								}
+							}
+						},
+						{
+							"name": "fileShareName",
+							"type": "Microsoft.Common.DropDown",
+							"label": "File Share Name",
+							"constraints": {
+								"allowedValues": "[steps('fslogix').sharesApi.transformed.list]",
+								"required": true
+							},
+							"visible": "[not(empty(steps('fslogix').storageAccount.id))]"
+						}
+					]
+				},
+				{
+					"name": "tags",
+					"label": "Tags",
+					"elements": [
+						{
+							"name": "createResourceTags",
+							"type": "Microsoft.Common.CheckBox",
+							"label": "Create Resource Tags",
+							"toolTip": "Apply tags on resources."
+						},
+						{
+							"name": "applicationNameTag",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Application Name Tag",
+							"placeHolder": "Contoso-App",
+							"toolTip": "Details about the application.",
+							"constraints": {
+								"required": false,
+								"regex": "^[\\w\\s\\.\\-]{1,256}$",
+								"validationMessage": "A valid tag value must be provided"
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "costCenterTag",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Cost Center Tag",
+							"placeHolder": "Contoso-CC",
+							"toolTip": "Cost center of owner team.",
+							"constraints": {
+								"required": false,
+								"regex": "^[\\w\\s\\.\\-]{1,256}$",
+								"validationMessage": "A valid tag value must be provided"
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "departmentTag",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Department Tag",
+							"placeHolder": "Contoso-AVD",
+							"toolTip": "Department that owns the deployment",
+							"constraints": {
+								"required": false,
+								"regex": "^[\\w\\s\\.\\-]{1,256}$",
+								"validationMessage": "A valid tag value must be provided"
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "dataClassificationTag",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Data Classification Tag",
+							"defaultValue": "Non-business",
+							"toolTip": "Sensitivity of data hosted",
+							"constraints": {
+								"required": false,
+								"allowedValues": [
+									{
+										"label": "Non-business",
+										"value": "Non-business"
+									},
+									{
+										"label": "Public",
+										"value": "Public"
+									},
+									{
+										"label": "General",
+										"value": "General"
+									},
+									{
+										"label": "Confidential",
+										"value": "Confidential"
+									},
+									{
+										"label": "Highly-confidential",
+										"value": "Highly-confidential"
+									}
+								]
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "opsTeamTag",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Ops Team Tag",
+							"placeHolder": "workload-admins@Contoso.com",
+							"toolTip": "Team accountable for day-to-day operations.",
+							"constraints": {
+								"required": false,
+								"regex": "^(?![@.\\-_])[a-zA-Z0-9@.\\-_]{1,254}(?<![@.\\-_])$",
+								"validationMessage": "A valid tag value must be provided"
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "ownerTag",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Owner Tag",
+							"defaultValue": "workload-owner@Contoso.com",
+							"toolTip": "Organizational owner of the AVD deployment.",
+							"constraints": {
+								"required": false,
+								"regex": "^(?![@.\\-_])[a-zA-Z0-9@.\\-_]{1,254}(?<![@.\\-_])$",
+								"validationMessage": "A valid tag value must be provided"
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "workloadNameTag",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Workload Name Tag",
+							"defaultValue": "Contoso-Workload",
+							"toolTip": "The name of workload for tagging purposes.",
+							"constraints": {
+								"required": false,
+								"regex": "^[\\w\\s\\.\\-]{1,256}$",
+								"validationMessage": "A valid tag value must be provided"
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "workloadTypeTag",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Workload Type Tag",
+							"subLabel": "",
+							"defaultValue": "Light",
+							"toolTip": "Reference to the size of the VM for your workloads",
+							"constraints": {
+								"required": false,
+								"allowedValues": [
+									{
+										"label": "Light",
+										"value": "Light"
+									},
+									{
+										"label": "Medium",
+										"value": "Medium"
+									},
+									{
+										"label": "High",
+										"value": "High"
+									},
+									{
+										"label": "Power",
+										"value": "Power"
+									}
+								]
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "workloadCriticalityTag",
+							"type": "Microsoft.Common.DropDown",
+							"label": "Workload Criticality Tag",
+							"defaultValue": "Low",
+							"toolTip": "Criticality of the workload.",
+							"constraints": {
+								"required": false,
+								"allowedValues": [
+									{
+										"label": "Low",
+										"value": "Low"
+									},
+									{
+										"label": "Medium",
+										"value": "Medium"
+									},
+									{
+										"label": "High",
+										"value": "High"
+									},
+									{
+										"label": "Mission-critical",
+										"value": "Mission-critical"
+									},
+									{
+										"label": "Custom",
+										"value": "Custom"
+									}
+								]
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						},
+						{
+							"name": "workloadCriticalityCustomValueTag",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Workload Criticality Custom Value Tag",
+							"defaultValue": "Contoso-Critical",
+							"toolTip": "Tag value for custom criticality value.",
+							"constraints": {
+								"required": false,
+								"regex": "^[\\w\\s\\.\\-]{1,256}$",
+								"validationMessage": "A valid tag value must be provided"
+							},
+							"visible": "[and(steps('tags').createResourceTags, equals(steps('tags').workloadCriticalityTag, 'Custom'))]"
+						},
+						{
+							"name": "workloadSlaTag",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Workload Sla Tag",
+							"defaultValue": "Contoso-SLA",
+							"toolTip": "Service level agreement level of the worload.",
+							"constraints": {
+								"required": false,
+								"regex": "^[\\w\\s\\.\\-]{1,256}$",
+								"validationMessage": "A valid tag value must be provided"
+							},
+							"visible": "[steps('tags').createResourceTags]"
+						}
+					]
+				}
+			]
+		},
+		"outputs": {
+			"kind": "Subscription",
+			"subscriptionId": "[steps('basics').resourceScope.subscription.id]",
+			"location": "[steps('basics').resourceScope.location.name]",
+			"parameters": {
+				"hostPoolResourceId": "[steps('basics').hostPool.id]",
+				"location": "[steps('basics').resourceScope.location.name]",
+				"computeRgResourceGroupName": "[steps('basics').resourceGroup.name]",
+				"deploymentPrefix": "[steps('basics').deployment.prefix]",
+				"deploymentEnvironment": "[steps('basics').deployment.environment]",
+				"customNaming": "[steps('sessionHosts').naming.customNaming]",
+				"sessionHostCustomNamePrefix": "[if(steps('sessionHosts').naming.customNaming, steps('sessionHosts').naming.vmNamePrefix, 'notapp')]",
+				"count": "[steps('sessionHosts').naming.count]",
+				"countIndex": "[steps('sessionHosts').naming.index]",
 				"useSharedImage": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), true, false)]",
-                "mpImageOffer": "[if(equals(steps('sessionHosts').image.source, 'marketplace'), steps('sessionHosts').image.offer, '')]",
-                "mpImageSku": "[if(equals(steps('sessionHosts').image.source, 'marketplace'), steps('sessionHosts').image.sku, '')]",
-                "customImageDefinitionId": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), steps('sessionHosts').image.imageDefinition, '')]",
-                "diskType": "[steps('sessionHosts').settings.diskSku]",
-                "customOsDiskSizeGB": "[steps('sessionHosts').settings.diskSizeGB]",
-                "vmSize": "[steps('sessionHosts').settings.vmSize]",
-                "enableAcceleratedNetworking": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(equals(steps('sessionHosts').image.imageDefinitionApi.transformed.IsAcceleratedNetworkSupported, 'True'), steps('sessionHosts').settings.acceleratedNetworking, false), steps('sessionHosts').settings.acceleratedNetworking)]",
-                "availability": "[steps('sessionHosts').availability.option]",
-                "availabilityZones": "[if(equals(steps('sessionHosts').availability.option, 'AvailabilityZones'), steps('sessionHosts').availability.availabilityZones, parse('[]'))]",
+				"mpImageOffer": "[if(equals(steps('sessionHosts').image.source, 'marketplace'), steps('sessionHosts').image.offer, '')]",
+				"mpImageSku": "[if(equals(steps('sessionHosts').image.source, 'marketplace'), steps('sessionHosts').image.sku, '')]",
+				"customImageDefinitionId": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), steps('sessionHosts').image.imageDefinition, '')]",
+				"diskType": "[steps('sessionHosts').settings.diskSku]",
+				"customOsDiskSizeGB": "[steps('sessionHosts').settings.diskSizeGB]",
+				"vmSize": "[steps('sessionHosts').settings.vmSize]",
+				"enableAcceleratedNetworking": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(equals(steps('sessionHosts').image.imageDefinitionApi.transformed.IsAcceleratedNetworkSupported, 'True'), steps('sessionHosts').settings.acceleratedNetworking, false), steps('sessionHosts').settings.acceleratedNetworking)]",
+				"availability": "[steps('sessionHosts').availability.option]",
+				"availabilityZones": "[if(equals(steps('sessionHosts').availability.option, 'AvailabilityZones'), steps('sessionHosts').availability.availabilityZones, parse('[]'))]",
 				"securityType": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(contains(steps('sessionHosts').image.imageDefinitionApi.transformed.SecurityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.securityType, 'Standard'), if(or(contains(steps('sessionHosts').image.sku, 'win11'), contains(steps('sessionHosts').image.sku, 'g2')), steps('sessionHosts').securityProfile.securityType, 'Standard'))]",
 				"secureBootEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.secureBootEnabled, false)]",
 				"vTpmEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.vTpmEnabled, false)]",
-                "asgResourceId": "[if(empty(steps('sessionHosts').security.asg), '', first(map(steps('sessionHosts').security.asg.value, (asg) => asg.id)))]",
-                "encryptionAtHost": "[steps('sessionHosts').security.encryptionAtHost]",
-                "diskEncryptionSetResourceId": "[if(steps('sessionHosts').security.diskZeroTrust, steps('sessionHosts').security.diskEncryptionSet, '')]",
-                "deployAntiMalwareExt": "[steps('sessionHosts').security.deployAntiMalwareExt]",
-                "identityServiceProvider": "[steps('sessionHosts').identityAndAccounts.identityServiceProvider]",
-                "createIntuneEnrollment": "[steps('sessionHosts').identityAndAccounts.intuneEnrollment]",
-                "identityDomainName": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.identityDomainName, '')]",
-                "sessionHostOuPath": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.ouPath, '')]",
-                "keyVaultResourceId": "[steps('sessionHosts').identityAndAccounts.keyVault.id]",
-                "domainJoinUserPrincipalName": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.domainJoinUserPrincipalName, '')]",
-                "subnetResourceId": "[steps('sessionHosts').network.subnet]",
-                "enableMonitoring": "[steps('sessionHosts').monitoring.enableMonitoring]",
-				"dataCollectionRuleId": "[if(steps('sessionHosts').monitoring.enableMonitoring, steps('sessionHosts').monitoring.dataCollectionRule.id, '')]", 
-                "configureFslogix": "[steps('fslogix').configureFslogix]",
-                "fslogixStorageAccountResourceId": "[if(steps('fslogix').configureFslogix, steps('fslogix').storageAccount.id, '')]",
-                "fslogixFileShareName": "[if(steps('fslogix').configureFslogix, steps('fslogix').fileShareName, '')]",
-                "createResourceTags": "[steps('tags').createResourceTags]",
-                "applicationNameTag": "[if(steps('tags').createResourceTags, steps('tags').applicationNameTag, '')]",
-                "costCenterTag": "[if(steps('tags').createResourceTags, steps('tags').costCenterTag, '')]",
-                "departmentTag": "[if(steps('tags').createResourceTags, steps('tags').departmentTag, '')]",
-                "dataClassificationTag": "[if(steps('tags').createResourceTags, steps('tags').dataClassificationTag, '')]",
-                "opsTeamTag": "[if(steps('tags').createResourceTags, steps('tags').opsTeamTag, '')]",
-                "ownerTag": "[if(steps('tags').createResourceTags, steps('tags').ownerTag, '')]",
-                "workloadNameTag": "[if(steps('tags').createResourceTags, steps('tags').workloadNameTag, '')]",
-                "workloadTypeTag": "[if(steps('tags').createResourceTags, steps('tags').workloadTypeTag, '')]",
-                "workloadCriticalityTag": "[if(steps('tags').createResourceTags, steps('tags').workloadCriticalityTag, '')]",
-                "workloadCriticalityCustomValueTag": "[if(and(steps('tags').createResourceTags, equals(steps('tags').workloadCriticalityTag, 'Custom')), steps('tags').workloadCriticalityCustomValueTag, '')]",
-                "workloadSlaTag": "[if(steps('tags').createResourceTags, steps('tags').workloadSlaTag, '')]"
-            }
-        }
-    }
+				"asgResourceId": "[if(empty(steps('sessionHosts').security.asg), '', first(map(steps('sessionHosts').security.asg.value, (asg) => asg.id)))]",
+				"encryptionAtHost": "[steps('sessionHosts').security.encryptionAtHost]",
+				
+				"deployAntiMalwareExt": "[steps('sessionHosts').security.deployAntiMalwareExt]",
+				"identityServiceProvider": "[steps('sessionHosts').identityAndAccounts.identityServiceProvider]",
+				"createIntuneEnrollment": "[steps('sessionHosts').identityAndAccounts.intuneEnrollment]",
+				"identityDomainName": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.identityDomainName, '')]",
+				"sessionHostOuPath": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.ouPath, '')]",
+				"keyVaultResourceId": "[steps('sessionHosts').identityAndAccounts.keyVault.id]",
+				"domainJoinUserPrincipalName": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.domainJoinUserPrincipalName, '')]",
+				"subnetResourceId": "[steps('sessionHosts').network.subnet]",
+				"enableMonitoring": "[steps('sessionHosts').monitoring.enableMonitoring]",
+				"dataCollectionRuleId": "[if(steps('sessionHosts').monitoring.enableMonitoring, steps('sessionHosts').monitoring.dataCollectionRule.id, '')]",
+				"configureFslogix": "[steps('fslogix').configureFslogix]",
+				"fslogixStorageAccountResourceId": "[if(steps('fslogix').configureFslogix, steps('fslogix').storageAccount.id, '')]",
+				"fslogixFileShareName": "[if(steps('fslogix').configureFslogix, steps('fslogix').fileShareName, '')]",
+				"createResourceTags": "[steps('tags').createResourceTags]",
+				"applicationNameTag": "[if(steps('tags').createResourceTags, steps('tags').applicationNameTag, '')]",
+				"costCenterTag": "[if(steps('tags').createResourceTags, steps('tags').costCenterTag, '')]",
+				"departmentTag": "[if(steps('tags').createResourceTags, steps('tags').departmentTag, '')]",
+				"dataClassificationTag": "[if(steps('tags').createResourceTags, steps('tags').dataClassificationTag, '')]",
+				"opsTeamTag": "[if(steps('tags').createResourceTags, steps('tags').opsTeamTag, '')]",
+				"ownerTag": "[if(steps('tags').createResourceTags, steps('tags').ownerTag, '')]",
+				"workloadNameTag": "[if(steps('tags').createResourceTags, steps('tags').workloadNameTag, '')]",
+				"workloadTypeTag": "[if(steps('tags').createResourceTags, steps('tags').workloadTypeTag, '')]",
+				"workloadCriticalityTag": "[if(steps('tags').createResourceTags, steps('tags').workloadCriticalityTag, '')]",
+				"workloadCriticalityCustomValueTag": "[if(and(steps('tags').createResourceTags, equals(steps('tags').workloadCriticalityTag, 'Custom')), steps('tags').workloadCriticalityCustomValueTag, '')]",
+				"workloadSlaTag": "[if(steps('tags').createResourceTags, steps('tags').workloadSlaTag, '')]"
+			}
+		}
+	}
 }
