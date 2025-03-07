@@ -153,7 +153,7 @@
 									"visible": true,
 									"label": "Identity service provider",
 									"defaultValue": "Active Directory (AD DS)",
-									"toolTip": "Choose the identity service provider for your users and session hosts. Your choices explained:</br></br><b>Active Directory (ADDS)</b>: The users are sourced from ADDS and session hosts will be domain joined.</br></br><b>Microsoft Entra Domain Services</b>: The users are sourced from Entra ID or ADDS and the session hosts are joined to Entra Domain Services.</br></br><b>Microsoft Entra ID</b>: The users are sourced from Entra ID and the session hosts will join Entra ID.</br></br><b>Microsoft Entra ID Kerberos</b>: The Users are sourced from ADDS, but the session hosts will be joined to Entra ID.",
+									"toolTip": "Choose the identity service provider for your users and session hosts. Your choices explained:</br></br><b>Active Directory (ADDS)</b>: The users are sourced from ADDS and session hosts will be domain joined.</br></br><b>Microsoft Entra Domain Services</b>: The users are sourced from Entra ID or ADDS and the session hosts are joined to Entra Domain Services.</br></br><b>Microsoft Entra ID</b>: The users are sourced from Entra ID and the session hosts will join Entra ID.</br></br><b>Microsoft Entra ID Kerberos (hybrid identities)</b>: The Users are sourced from ADDS, but the session hosts will be joined to Entra ID.",
 									"constraints": {
 										"required": true,
 										"allowedValues": [
@@ -170,7 +170,7 @@
 												"value": "EntraID"
 											},
 											{
-												"label": "Microsoft Entra ID Kerberos",
+												"label": "Microsoft Entra ID Kerberos (hybrid identities)",
 												"value": "EntraIDKerberos"
 											}
 										]
