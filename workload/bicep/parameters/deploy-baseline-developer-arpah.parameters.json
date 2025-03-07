@@ -220,9 +220,6 @@
       },
       "storageFilePrivateEndpointStaticIp": {
           "value": ""
-      },
-      "storageFilePrivateEndpointStaticIpRemote": {
-          "value": ""
       }
   }
 }

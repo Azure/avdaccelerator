@@ -541,17 +541,12 @@ param enableDefForArm bool = true
 @sys.description('Storage account private endpoint static ip')
 param storageFilePrivateEndpointStaticIp string
 
-@sys.description('Storage account private endpoint static ip for the remote apps file share')
-param storageFilePrivateEndpointStaticIpRemote string
+// @sys.description('Storage account private endpoint static ip for the remote apps file share')
+// param storageFilePrivateEndpointStaticIpRemote string
 
 // =========== //
 // Variable declaration //
 // =========== //
-// vm sku based on environment
-var vmSku = (deploymentEnvironment == 'Prod')
-    ? 'Standard_E8s_v5'
-    : avdSessionHostsSize
-
 // Resource naming
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varAzureCloudName = environment().name
@@ -571,9 +566,6 @@ var varComputeStorageResourcesNamingStandard = '${varDeploymentPrefixLowercase}-
 var varDiskEncryptionSetName = avdUseCustomNaming 
     ? '${ztDiskEncryptionSetCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}-001' 
     : 'des-zt-${varComputeStorageResourcesNamingStandard}-001'
-var varZtManagedIdentityName = avdUseCustomNaming 
-    ? '${ztManagedIdentityCustomName}-${varComputeStorageResourcesNamingStandard}-001' 
-    : 'id-zt-${varComputeStorageResourcesNamingStandard}-001'
 var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
 var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
 var varServiceObjectsRgName = avdUseCustomNaming 
@@ -655,33 +647,33 @@ var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName
 var varSessionHostNamePrefix = avdUseCustomNaming 
     ? avdSessionHostCustomNamePrefix 
     : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
-var varVmssFlexNamePrefix = avdUseCustomNaming
-  ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}'
-  : 'vmss-${varComputeStorageResourcesNamingStandard}'
-var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
+// var varVmssFlexNamePrefix = avdUseCustomNaming
+//   ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}'
+//   : 'vmss-${varComputeStorageResourcesNamingStandard}'
+var varStorageManagedIdentityName = 'id-storage-developer-${varComputeStorageResourcesNamingStandard}-001'
 var varFslogixFileShareName = avdUseCustomNaming 
     ? fslogixFileShareCustomName 
     : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
-var varFslogixFileShareNameRemote = avdUseCustomNaming 
-    ? fslogixFileShareCustomNameRemote 
-    : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
+// var varFslogixFileShareNameRemote = avdUseCustomNaming 
+//     ? fslogixFileShareCustomNameRemote 
+//     : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varAppAttachFileShareName = avdUseCustomNaming ? appAttachFileShareCustomName : 'appa-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming 
-    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
+    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}developer' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 
 // for remote apps
-var varFslogixStorageNameRemote = avdUseCustomNaming 
-    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}ra' 
-    : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
+// var varFslogixStorageNameRemote = avdUseCustomNaming 
+//     ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}ra' 
+//     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 
 var varFslogixStorageFqdn = createAvdFslogixDeployment 
     ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
     : ''
 
-var varFslogixStorageFqdnRemote = createAvdFslogixDeployment 
-    ? '${varFslogixStorageNameRemote}.file.${environment().suffixes.storage}' 
-    : ''
+// var varFslogixStorageFqdnRemote = createAvdFslogixDeployment 
+//     ? '${varFslogixStorageNameRemote}.file.${environment().suffixes.storage}' 
+//     : ''
 
 var varAppAttachStorageFqdn = '${varAppAttachStorageName}.file.${environment().suffixes.storage}'
 var varAppAttachStorageName = avdUseCustomNaming 
@@ -703,9 +695,9 @@ var varFslogixSharePath = createAvdFslogixDeployment
     ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
     : ''
 
-var varFslogixSharePathRemote = createAvdFslogixDeployment 
-    ? '\\\\${varFslogixStorageNameRemote}.file.${environment().suffixes.storage}\\${varFslogixFileShareNameRemote}' 
-    : ''
+// var varFslogixSharePathRemote = createAvdFslogixDeployment 
+//     ? '\\\\${varFslogixStorageNameRemote}.file.${environment().suffixes.storage}\\${varFslogixFileShareNameRemote}' 
+//     : ''
 
 var fsLogixStorageAccounts = [
     {
@@ -714,13 +706,6 @@ var fsLogixStorageAccounts = [
         fslogixSharePath: varFslogixSharePath   
         fslogixFileShareName: varFslogixFileShareName
         storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIp
-    }
-    {
-        storageAccountName: varFslogixStorageNameRemote
-        fslogixStorageFqdn: varFslogixStorageFqdnRemote
-        fslogixSharePath: varFslogixSharePathRemote
-        fslogixFileShareName: varFslogixFileShareNameRemote
-        storageFilePrivateEndpointStaticIp: storageFilePrivateEndpointStaticIpRemote
     }
 ]
 //var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/main/workload/'
