@@ -114,7 +114,7 @@
           "value": ""
       },
       "createPrivateDnsZones": {
-          "value": true
+          "value": false
       },
       "avdVnetPrivateDnsZoneFilesId": {
           "value": "<<PrivateDnsZoneFilesId>>"
