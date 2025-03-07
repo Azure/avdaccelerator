@@ -650,6 +650,10 @@
                                     "type": "Microsoft.Common.Selector",
                                     "label": "Select the <b>Azure Virtual Desktop</b> Service Principal",
                                     "keyPath": "displayName",
+                                    "defaultValue": {
+                                        "displayName": "Azure Virtual Desktop",
+                                        "id": "9cdead84-a844-4324-93f2-b2e6bb768d07"
+                                    },
                                     "value": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection]",
                                     "barColor": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), '#FF0000', '#7fba00')]",
                                     "constraints": {
