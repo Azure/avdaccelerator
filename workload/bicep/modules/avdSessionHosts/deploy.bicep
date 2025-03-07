@@ -182,7 +182,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 
 // Session hosts
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [
-  for i in range(1, count): {
+  for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-${batchId}-${i - 1}-${time}'
     params: {
@@ -278,7 +278,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
-  for i in range(1, count): if (deployAntiMalwareExt) {
+  for i in range(0, count): if (deployAntiMalwareExt) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
     params: {
@@ -316,7 +316,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
 
 // Add monitoring extension to session host
 module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
-  for i in range(1, count): if (deployMonitoring) {
+  for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Mon-${batchId}-${i - 1}-${time}'
     params: {
@@ -337,7 +337,7 @@ module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bic
 
 // Data collection rule association
 module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [
-  for i in range(1, count): if (deployMonitoring) {
+  for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
     params: {
@@ -353,7 +353,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
-  for i in range(1, count): {
+  for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Config-${batchId}-${i}-${time}'
     params: {

@@ -598,34 +598,49 @@
 										"style": "Warning"
 									}
 								},
-								{
-									"name": "servicePrincipalPickerBlade",
-									"type": "Microsoft.Solutions.BladeInvokeControl",
-									"openBladeStatus": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalSelector.changing]",
-									"bladeReference": {
-										"name": "ObjectPickerBlade",
-										"extension": "Microsoft_AAD_IAM",
-										"parameters": {
-											"queries": 4,
-											"bladeSubtitle": "Pick the Service Principal",
-											"additionalQueriesOnSearch": 0,
-											"advancedQueryOptions": {},
-											"selectionMaximum": 1,
-											"selectionMinimum": 1,
-											"bladeTitle": "Select the Service Principal"
-										}
-									},
-									"transforms": {
-										"selection": "selectedObjects|[*].{displayName:displayName,id:id}"
+                                {
+                                    "name": "servicePrincipalPickerBlade",
+                                    "type": "Microsoft.Solutions.BladeInvokeControl",
+                                    "openBladeStatus": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalSelector.changing]",
+                                    "bladeReference": {
+                                        "name": "ObjectPickerBlade",
+                                        "extension": "Microsoft_AAD_IAM",
+                                        "parameters": {
+                                            "queries": 4,
+                                            "bladeSubtitle": "Pick the Service Principal",
+                                            "additionalQueriesOnSearch": 0,
+                                            "advancedQueryOptions": {},
+                                            "selectionMaximum": 1,
+                                            "selectionMinimum": 1,
+                                            "bladeTitle": "Select the Service Principal",
+                                            "informationHeader": {
+                                                "informationText": "Select the 'Azure Virtual Desktop' service principal."
+                                            },
+                                            "searchBoxLabel": "Search for the 'Azure Virtual Desktop' service principal",
+                                            "searchBoxPlaceHolderText": "Enter 'Azure Virtual Desktop'",
+                                            "searchGridNoRowsMessage": "No Service Principals found",
+                                            "selectButtonText": "Select Service Principal",
+                                            "selectedGridLabel": "Selected Service Principal",
+                                            "selectedGridNoRowsMessage": "You must select the 'Azure Virtual Desktop' service principal"
+                                        }
+                                    },
+                                    "transforms": {
+                                        "selection": "selectedObjects|[*].{displayName:displayName,id:id}"
+                                    },
+									"defaultValue": {
+										"displayName": "Azure Virtual Desktop",
+										"id": "9cdead84-a844-4324-93f2-b2e6bb768d07"
 									}
-								},
+                                },
 								{
 									"name": "servicePrincipalSelector",
-									"visible": true,
 									"type": "Microsoft.Common.Selector",
-									"label": "Selecting Azure Virtual Desktop enterprise application",
+									"visible": "[or(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
+									"label": "Select the <b>Azure Virtual Desktop</b> Service Principal",
 									"keyPath": "displayName",
-									"value": "[parse('[{\"displayName\":\"Azure Virtual Desktop\",\"id\":\"9cdead84-a844-4324-93f2-b2e6bb768d07\"}]')]"
+									"value": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection]",
+									"barColor": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), '#FF0000', '#7fba00')]",
+									"link": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]"
 								}
 							]
 						}
@@ -763,7 +778,7 @@
 									"defaultValue": "win11-24h2-avd-m365",
 									"toolTip": "Select the desired marketplace image SKU.",
 									"constraints": {
-										"allowedValues": "[map(filter(steps('sessionHosts').sessionHostsOsSection.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'entn')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+										"allowedValues": "[map(filter(steps('sessionHosts').sessionHostsOsSection.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'ent')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
 										"required": true
 									},
 									"visible": "[equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')]"
@@ -828,7 +843,7 @@
                                     "defaultValue": 1,
                                     "toolTip": "Select the start number of the virtual machine suffix.",
                                     "min": 1,
-                                    "max": 4998,
+                                    "max": 999,
                                     "showStepMarkers": true,
                                     "constraints": {
                                         "required": true
@@ -841,7 +856,7 @@
                                     "defaultValue": 1,
                                     "toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
                                     "min": 1,
-                                    "max": 9999,
+                                    "max": 999,
                                     "showStepMarkers": true,
                                     "constraints": {
                                         "required": true
@@ -1304,7 +1319,7 @@
 										"required": true
 									},
 									"link": "[if(empty(steps('storage').storageAppAttach.servicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade))]"
+									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade))]"
 								},
 								{
 									"name": "armServicePrincipalPickerBlade",
@@ -2740,128 +2755,7 @@
 		},
 		"outputs": {
 			"parameters": {
-				"avdServicePrincipalObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id))]",
-				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdServicePrincipals.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdServicePrincipals.transformed.avdARMProvider)), '')]",
-				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
-				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
-				"diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
-				"avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
-				"avdSessionHostLocation": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]",
-				"avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-				"avdHostPoolType": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType]",
-				"hostPoolPreferredAppGroupType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneAppGroupOptions.preferredAppGroupType, 'Desktop')]",
-				"avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
-				"hostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
-				"avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
-				"avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
-				"createIntuneEnrollment": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
-				"identityDomainName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainInformation.identityDomainName)]",
-				"identityDomainGuid": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainInformation.identityDomainGuid)]",
-				"avdSecurityGroups": "[steps('identity').identityAvdAccess.groupPickerBlade.transformed.selection]",
-				"avdOuPath": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('sessionHosts').sessionHostsDomainJoinSettings.identityDomainOuPath)]",
-				"avdDomainJoinUserName": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
-				"avdDomainJoinUserPassword": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
-				"avdVmLocalUserName": "[steps('identity').identityLocalCredentials.identityLocalUserName]",
-				"avdVmLocalUserPassword": "[steps('identity').identityLocalCredentials.identityLocalUserPassword.password]",
-				"createAvdVnet": "[steps('network').createAvdVirtualNetwork]",
-				"avdVnetworkAddressPrefixes": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSize, '10.10.0.0/16')]",
-				"vNetworkAvdSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkAvdSubnetSize, '10.10.1.0/24')]",
-				"vNetworkPrivateEndpointSubnetAddressPrefix": "[if(and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)), steps('network').virtualNetworkPrivateEndpointSubnetSize, '10.10.2.0/27')]",
-				"customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
-				"existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
-				"vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
-				"existingVnetAvdSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkAvdSubnetSelectorName, '')]",
-				"existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, '')]",
-				"avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
-				"avdStartVmOnConnect": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
-				"avdDeployScalingPlan": "[if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
-				"availability": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsAvailabilitySection.option, 'None')]",
-				"availabilityZones": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsAvailabilitySection.option, 'AvailabilityZones')), steps('sessionHosts').sessionHostsAvailabilitySection.availabilityZones, parse('[]'))]",
-				"zoneRedundantStorage": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageGeneralSettingsZoneRedundancy, false)]",
-				"avdDeploySessionHostsCount": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
-				"avdDeploySessionHostsIndex": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsIndex, 1)]",
-				"useSharedImage": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')), true, false)]",
-				"mpImageOffer": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.offer, '')]",
-				"mpImageSku": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.sku, '')]",
-				"avdcustomImageDefinitionId": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')), steps('sessionHosts').sessionHostsOsSection.imageDefinition, '')]",
-				"deployAntiMalwareExt": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.enableAntiMalwareExt, true)]",
-				"avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
-				"customOsDiskSizeGB": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostdiskSizeGB]",
-				"avdSessionHostsSize": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.sessionHostSize, 'Standard_D4ads_v5')]",
-				"enableAcceleratedNetworking": "[if(equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery'), if(equals(steps('sessionHosts').sessionHostsOsSection.imageDefinitionApi.transformed.IsAcceleratedNetworkSupported, 'True'), steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking, false), steps('sessionHosts').sessionHostsSettingsSection.acceleratedNetworking)]",
-				"securityType": "[if(equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery'), if(contains(steps('sessionHosts').sessionHostsOsSection.imageDefinitionApi.transformed.SecurityType, 'TrustedLaunch'), steps('sessionHosts').sessionHostsSecuritySection.securityType, 'Standard'), if(or(contains(steps('sessionHosts').sessionHostsOsSection.sku, 'win11'), contains(steps('sessionHosts').sessionHostsOsSection.sku, 'g2')), steps('sessionHosts').sessionHostsSecuritySection.securityType, 'Standard'))]",
-				"secureBootEnabled": "[if(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), steps('sessionHosts').sessionHostsSecuritySection.secureBootEnabled, false)]",
-				"vTpmEnabled": "[if(equals(steps('sessionHosts').sessionHostsSecuritySection.securityType, 'TrustedLaunch'), steps('sessionHosts').sessionHostsSecuritySection.vTpmEnabled, false)]",
-				"deployDDoSNetworkProtection": "[steps('network').deployDDoSNetworkProtection]",
-				"deployPrivateEndpointKeyvaultStorage": "[steps('network').deployPrivateEndpointKeyvaultStorage]",
-				"deployAvdPrivateLinkService": "[steps('network').deployAvdPrivateLinkService]",
-				"hostPoolPublicNetworkAccess": "[if(equals(steps('network').deployAvdPrivateLinkService, true), steps('network').hostPoolPrivateEndpointNetworkAccessSelector, 'Enabled')]",
-				"workspacePublicNetworkAccess": "[if(equals(steps('network').deployAvdPrivateLinkService, true), steps('network').workspacePrivateEndpointNetworkAccessSelector, 'Enabled')]",
-				"createPrivateDnsZones": "[if(or(steps('network').deployPrivateEndpointKeyvaultStorage, steps('network').deployAvdPrivateLinkService), steps('network').virtualNetworkPrivateDnsZone, false)]",
-				"avdVnetPrivateDnsZoneFilesId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.azureFilesPrivateDnsZone, '')]",
-				"avdVnetPrivateDnsZoneKeyvaultId": "[if(and(equals(steps('network').deployPrivateEndpointKeyvaultStorage, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.azureKeyVaultPrivateDnsZone, '')]",
-				"avdVnetPrivateDnsZoneDiscoveryResourceId": "[if(and(equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.avdDiscoveryPrivateDnsZone, '')]",
-				"avdVnetPrivateDnsZoneConnectionResourceId": "[if(and(equals(steps('network').deployAvdPrivateLinkService, true), equals(steps('network').virtualNetworkPrivateDnsZone, false)), steps('network').virtualNetworkPrivateDnsZoneSelection.avdConnectionPrivateDnsZone, '')]",
-				"createAvdFslogixDeployment": "[steps('storage').storageFslogix.fslogixDeployment]",
-				"fslogixStoragePerformance": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.fslogixStorageAccountSku, 'Premium')]",
-				"fslogixFileShareQuotaSize": "[if(equals(steps('storage').storageFslogix.fslogixDeployment, true), steps('storage').storageFslogix.sessionHostsFslogixFileShareQuota, 1 )]",
-				"createAppAttachDeployment": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), if(contains(steps('basics').resourceScope.location.name, 'china'), false, steps('storage').storageAppAttach.appAttachStorageDeployment), false)]",
-				"appAttachStoragePerformance": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.appAttachStorageAccountSku, 'Premium')]",
-				"appAttachFileShareQuotaSize": "[if(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), steps('storage').storageAppAttach.sessionHostsAppAttachFileShareQuota, 1 )]",
-				"storageOuPath": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.identityDomainOuPathStorageExisting, '')]",
-				"avdUseCustomNaming": "[steps('resourceNaming').resourceNamingSelection]",
-				"avdServiceObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.serviceObjectsRgCustomName, '')]",
-				"avdNetworkObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.networkObjectsRgCustomName, '')]",
-				"avdComputeObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.computeObjectsRgCustomName, '')]",
-				"avdStorageObjectsRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageObjectsRgCustomName, '')]",
-				"avdVnetworkCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.virtualNetworkCustomName, '')]",
-				"avdVnetworkSubnetCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.virtualNetworkAvdSubnetCustomName, '')]",
-				"avdNetworksecurityGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.avdNetworkSecurityGroupCustomName, '')]",
-				"avdRouteTableCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.avdRouteTableCustomName, '')]",
-				"privateEndpointVnetworkSubnetCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.virtualNetworkPrivateEndpointSubnetCustomName, '')]",
-				"privateEndpointNetworksecurityGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.privateEndpointNetworkSecurityGroupCustomName, '')]",
-				"privateEndpointRouteTableCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingNetwork.privateEndpointRouteTableCustomName, '')]",
-				"avdApplicationSecurityGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.applicationSecurityGroupCustomName, '')]",
-				"avdWorkSpaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workSpaceCustomName, '')]",
-				"avdWorkSpaceCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workSpaceCustomFriendlyName, '')]",
-				"avdHostPoolCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomName, '')]",
-				"avdHostPoolCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomFriendlyName, '')]",
-				"avdScalingPlanCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.scalingPlanCustomName, '')]",
-				"avdApplicationGroupCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomName, '')]",
-				"avdApplicationGroupCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.applicationGroupCustomFriendlyName, '')]",
-				"avdSessionHostCustomNamePrefix": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingCompute.sessionHostCustomNamePrefix, '')]",
-				"storageAccountPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.storageAccountPrefixCustomName, '')]",
-				"fslogixFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.fslogixFileShareCustomName, '')]",
-				"appAttachFileShareCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingStorage.appAttachFileShareCustomName, '')]",
-				"avdWrklKvPrefixCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.workloadKvCustomName, '')]",
-				"createResourceTags": "[steps('resourceTagging').resourceTaggingSelection]",
-				"workloadNameTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadName, '')]",
-				"workloadTypeTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadType, 'Light')]",
-				"dataClassificationTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsDataClassificationTag, 'Non-business')]",
-				"departmentTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsDepartmentTag, '')]",
-				"workloadCriticalityTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCriticalityTag, 'Low')]",
-				"workloadCriticalityCustomValueTag": "[if(equals(steps('resourceTagging').resourceTags.tagsCriticalityTag, 'Custom'), steps('resourceTagging').resourceTags.tagsCustomWorkloadCriticality, 'Low')]",
-				"applicationNameTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsApplicationNameTag, '')]",
-				"workloadSlaTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsWorkloadSlaTag, '')]",
-				"opsTeamTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOpsTeamTag, '')]",
-				"ownerTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsOwnerTag, '')]",
-				"costCenterTag": "[if(equals(steps('resourceTagging').resourceTaggingSelection, true), steps('resourceTagging').resourceTags.tagsCostCenterTag, '')]",
-				"avdDeployMonitoring": "[steps('monitoring').deployMonitoring]",
-				"deployAlaWorkspace": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringAlaWorkspace, false)]",
-				"avdAlaWorkspaceDataRetention": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, true), steps('monitoring').deployMonitoringNewAlaWorkspaceRetention, 0)]",
-				"alaExistingWorkspaceResourceId": "[if(equals(steps('monitoring').deployMonitoringAlaWorkspace, false), steps('monitoring').alaWorkspaceExistingWorkspacesSelection.id, '')]",
-				"deployCustomPolicyMonitoring": "[if(equals(steps('monitoring').deployMonitoring, true), steps('monitoring').deployMonitoringPolicies, false)]",
-				"avdMonitoringRgCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringObjectsRgCustomName, '')]",
-				"avdAlaWorkspaceCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingMonitoring.monitoringLogAnalyticsWorkspaceName, '')]",
-				"ztDiskEncryptionSetCustomNamePrefix": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsDiskEncryptionSetCustomName]",
-				"ztKvPrefixCustomName ": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsKeyVaultCustomPrefix]",
-				"ztManagedIdentityCustomName": "[steps('resourceNaming').resourceNamingZeroTrust.zeroTrustObjectsManagedIdentityCustomName]",
-				"deployGpuPolicies": "[steps('sessionHosts').sessionHostsSettingsSection.gpuExtensionPolicy]",
-				"enableDef": "[steps('identity').identiyEnableDefOptions.enableDef]",
-				"enableDefForServers": "[if(equals(steps('identity').identiyEnableDefOptions.enableDef, true), steps('identity').identiyEnableDefOptions.enableDefForServers, false)]",
-				"enableDefForStorage": "[if(equals(steps('identity').identiyEnableDefOptions.enableDef, true), steps('identity').identiyEnableDefOptions.enableDefForStorage, false)]",
-				"enableDefForKeyVault": "[if(equals(steps('identity').identiyEnableDefOptions.enableDef, true), steps('identity').identiyEnableDefOptions.enableDefForKeyVault, false)]",
-				"enableDefForArm": "[if(equals(steps('identity').identiyEnableDefOptions.enableDef, true), steps('identity').identiyEnableDefOptions.enableDefForArm, false)]"
+				"avdServicePrincipalObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id))]"
 			},
 			"kind": "Subscription",
 			"location": "[steps('basics').resourceScope.location.name]",
