@@ -785,6 +785,7 @@
 							"type": "Microsoft.Common.DropDown",
 							"defaultValue": "[first(map(filter(steps('fslogix').storageAccountsApi.value, (sa) => equals(sa.tags.cm-resource-parent, steps('basics').hostPool.id)), (sa) => sa.name))]",
 							"label": "FSLogix Azure Files Storage Account",
+                            "mulitLine": true,
 							"constraints": {
 								"allowedValues": "[map(filter(steps('fslogix').storageAccountsApi.value, (sa) => equals(sa.location, steps('basics').resourceScope.location.name)), (sa) => parse(concat('{\"label\":\"', sa.name, '\",\"description\":\"ResourceGroup: ', first(skip(split(sa.id, '/'), 4)), '\", \"value\":\"', sa.id, '\"}')))]",
 								"required": true
