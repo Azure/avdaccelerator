@@ -65,7 +65,7 @@
 							"type": "Microsoft.Common.DropDown",
 							"label": "Compute Resource Group",
 							"constraints": {
-								"allowedValues": "[map(filter(steps('basics').resourceGroupsApi.value, (rg) => and(equals(rg.location, steps('basics').resourceScope.location.name), contains(rg.name, 'compute'))), (rg) => parse(concat('{\"label\":\"', rg.name, '\",\"value\":{\"name\":\"', rg.name, '\",\"id\":\"', rg.id, '\"}}')))]",
+								"allowedValues": "[map(filter(steps('basics').resourceGroupsApi.value, (rg) => equals(rg.location, steps('basics').resourceScope.location.name)), (rg) => parse(concat('{\"label\":\"', rg.name, '\",\"value\":{\"name\":\"', rg.name, '\",\"id\":\"', rg.id, '\"}}')))]",
 								"required": true
 							}
 						},
@@ -79,17 +79,17 @@
 							}
 						},
 						{
-									"name": "diskEncryptionSetsApi",
-									"type": "Microsoft.Solutions.ArmApiControl",
-									"condition": "[not(empty(steps('basics').resourceScope.subscription.id))]",
-									"request": {
-										"method": "GET",
-										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/diskEncryptionSets?api-version=2024-03-02')]",
-										"transforms": {
-											"list": "value|[*].{label:name, value:id}"
-										}
-									}
-								},
+							"name": "diskEncryptionSetsApi",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"condition": "[not(empty(steps('basics').resourceScope.subscription.id))]",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/diskEncryptionSets?api-version=2024-03-02')]",
+								"transforms": {
+									"list": "value|[*].{label:name, value:id}"
+								}
+							}
+						},
 						{
 							"name": "deployment",
 							"type": "Microsoft.Common.Section",
@@ -542,12 +542,12 @@
 									"toolTip": "Check to enable Encryption At Host",
 									"defaultValue": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), true, false)]",
 									"visible": "[equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered')]"
-								},								
+								},
 								{
 									"name": "diskZeroTrust",
 									"type": "Microsoft.Common.CheckBox",
 									"label": "Enable Customer-Managed Keys on OS Disk",
-									"defaultValue": "[if(not(empty(first(map(filter(steps('basic').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id)), (des) => des.name)))), true, false)]",
+									"defaultValue": "[if(empty(filter(steps('basics').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id))), false, true)]",
 									"toolTip": "Enables a zero trust configuration on the session host disks.",
 									"visible": "[not(empty(steps('basics').diskEncryptionSetsApi.value))]"
 								},
@@ -562,8 +562,6 @@
 									},
 									"visible": "[steps('sessionHosts').security.diskZeroTrust]"
 								},
-
-								
 								{
 									"name": "deployAntiMalwareExt",
 									"type": "Microsoft.Common.CheckBox",
@@ -772,26 +770,34 @@
 							"toolTip": "Configure FSLogix on Session Hosts via the registry"
 						},
 						{
-							"name": "storageAccount",
-							"type": "Microsoft.Solutions.ResourceSelector",
-							"visible": "[steps('fslogix').configureFslogix]",
-							"label": "FSLogix Azure Files Storage Account",
-							"resourceType": "Microsoft.Storage/storageAccounts",
-							"constraints": {
-								"required": true
-							},
-							"scope": {
-								"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-								"location": "[steps('basics').resourceScope.location.name]"
-							}
-						},
-						{
-							"name": "sharesApi",
-							"condition": "[not(empty(steps('fslogix').storageAccount.id))]",
+							"name": "storageAccountsApi",
 							"type": "Microsoft.Solutions.ArmApiControl",
 							"request": {
 								"method": "GET",
-								"path": "[concat(steps('fslogix').storageAccount.id, '/fileServices/default/shares?api-version=2023-05-01')]",
+								"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Storage/storageAccounts?api-version=2023-01-01')]",
+								"transforms": {
+									"list": "value|[*].{label:name, value:id}"
+								}
+							}
+						},
+						{
+							"name": "storageAccount",
+							"type": "Microsoft.Common.DropDown",
+							"defaultValue": "[first(map(filter(steps('fslogix').storageAccountsApi.value, (sa) => equals(sa.tags.cm-resource-parent, steps('basics').hostPool.id)), (sa) => sa.name))]",
+							"label": "FSLogix Azure Files Storage Account",
+							"constraints": {
+								"allowedValues": "[map(filter(steps('fslogix').storageAccountsApi.value, (sa) => equals(sa.location, steps('basics').resourceScope.location.name)), (sa) => parse(concat('{\"label\":\"', sa.name, '\",\"description\":\"ResourceGroup: ', first(skip(split(sa.id, '/'), 4)), '\", \"value\":\"', sa.id, '\"}')))]",
+								"required": true
+							},
+							"visible": "[steps('fslogix').configureFslogix]"
+						},						
+						{
+							"name": "sharesApi",
+							"condition": "[not(empty(steps('fslogix').storageAccount))]",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('fslogix').storageAccount, '/fileServices/default/shares?api-version=2023-05-01')]",
 								"transforms": {
 									"list": "value|[*].{label:name, value:name}"
 								}
@@ -805,7 +811,7 @@
 								"allowedValues": "[steps('fslogix').sharesApi.transformed.list]",
 								"required": true
 							},
-							"visible": "[not(empty(steps('fslogix').storageAccount.id))]"
+							"visible": "[not(empty(steps('fslogix').storageAccount))]"
 						}
 					]
 				},
@@ -1052,7 +1058,7 @@
 				"vTpmEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.vTpmEnabled, false)]",
 				"asgResourceId": "[if(empty(steps('sessionHosts').security.asg), '', first(map(steps('sessionHosts').security.asg.value, (asg) => asg.id)))]",
 				"encryptionAtHost": "[steps('sessionHosts').security.encryptionAtHost]",
-				
+				"diskEncryptionSetResourceId": "[if(steps('sessionHosts').security.diskZeroTrust, steps('sessionHosts').security.diskEncryptionSet, '')]",
 				"deployAntiMalwareExt": "[steps('sessionHosts').security.deployAntiMalwareExt]",
 				"identityServiceProvider": "[steps('sessionHosts').identityAndAccounts.identityServiceProvider]",
 				"createIntuneEnrollment": "[steps('sessionHosts').identityAndAccounts.intuneEnrollment]",
@@ -1064,7 +1070,7 @@
 				"enableMonitoring": "[steps('sessionHosts').monitoring.enableMonitoring]",
 				"dataCollectionRuleId": "[if(steps('sessionHosts').monitoring.enableMonitoring, steps('sessionHosts').monitoring.dataCollectionRule.id, '')]",
 				"configureFslogix": "[steps('fslogix').configureFslogix]",
-				"fslogixStorageAccountResourceId": "[if(steps('fslogix').configureFslogix, steps('fslogix').storageAccount.id, '')]",
+				"fslogixStorageAccountResourceId": "[if(steps('fslogix').configureFslogix, steps('fslogix').storageAccount, '')]",
 				"fslogixFileShareName": "[if(steps('fslogix').configureFslogix, steps('fslogix').fileShareName, '')]",
 				"createResourceTags": "[steps('tags').createResourceTags]",
 				"applicationNameTag": "[if(steps('tags').createResourceTags, steps('tags').applicationNameTag, '')]",
