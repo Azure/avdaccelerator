@@ -359,7 +359,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
     params: {
       baseScriptUri: sessionHostConfigurationScriptUri
       fslogix: configureFslogix
-      fslogixFileShareName: fslogixSharePath
+      fslogixSharePath: fslogixSharePath
       fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
       hostPoolResourceId: hostPoolResourceId
       identityDomainName: identityDomainName

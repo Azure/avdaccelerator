@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "18317015710669219357"
+      "templateHash": "16791832218695119197"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -32852,7 +32852,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "7691818391308456975"
+              "templateHash": "4558259705943271965"
             }
           },
           "parameters": {
@@ -37337,7 +37337,7 @@
                   "fslogix": {
                     "value": "[parameters('configureFslogix')]"
                   },
-                  "fslogixFileShareName": {
+                  "fslogixSharePath": {
                     "value": "[parameters('fslogixSharePath')]"
                   },
                   "fslogixStorageAccountResourceId": {
@@ -37372,7 +37372,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "368762370807809538"
+                      "templateHash": "9532141875017141182"
                     }
                   },
                   "parameters": {
@@ -37424,7 +37424,7 @@
                         "description": "FSLogix storage account resource ID."
                       }
                     },
-                    "fslogixFileShareName": {
+                    "fslogixSharePath": {
                       "type": "string",
                       "metadata": {
                         "description": "File share name for FSlogix storage."
@@ -37445,8 +37445,7 @@
                   },
                   "variables": {
                     "fslogixStorageAccountName": "[if(parameters('fslogix'), last(split(parameters('fslogixStorageAccountResourceId'), '/')), '')]",
-                    "fslogixFileShare": "[if(parameters('fslogix'), replace(parameters('fslogixFileShareName'), '\\', '\\\\'), '')]",
-                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\"', variables('fslogixFileShare'))]",
+                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\"', parameters('fslogixSharePath'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
                       "Standard_NV8as_v4",
