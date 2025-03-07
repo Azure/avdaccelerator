@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "678759636618865052"
+      "templateHash": "2031390786301937747"
     }
   },
   "parameters": {
@@ -2458,7 +2458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8960215367422223477"
+              "templateHash": "7691818391308456975"
             }
           },
           "parameters": {
@@ -6978,7 +6978,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "1026663323883539454"
+                      "templateHash": "368762370807809538"
                     }
                   },
                   "parameters": {
@@ -7051,7 +7051,7 @@
                   },
                   "variables": {
                     "fslogixStorageAccountName": "[if(parameters('fslogix'), last(split(parameters('fslogixStorageAccountResourceId'), '/')), '')]",
-                    "fslogixFileShare": "[if(parameters('fslogix'), format('\\\\{0}.file.{1}\\{2}', variables('fslogixStorageAccountName'), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
+                    "fslogixFileShare": "[if(parameters('fslogix'), replace(parameters('fslogixFileShareName'), '\\', '\\\\'), '')]",
                     "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\"', variables('fslogixFileShare'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
