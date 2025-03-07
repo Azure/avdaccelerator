@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "8244610146894798329"
+      "templateHash": "15042999169958914406"
     }
   },
   "parameters": {
@@ -702,7 +702,7 @@
     "varTimeZoneSessionHosts": "[variables('varLocations')[variables('varSessionHostLocationLowercase')].timeZone]",
     "varSessionHostLocationLowercase": "[toLower(replace(parameters('location'), ' ', ''))]",
     "varFslogixSharePath": "[if(parameters('configureFslogix'), format('\\\\{0}.file.{1}\\{2}', last(split(parameters('fslogixStorageAccountResourceId'), '/')), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/EntraID-Storage-Features/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "Set-SessionHostConfiguration.ps1",
     "varAvdDefaultTags": {
@@ -2458,7 +2458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8960215367422223477"
+              "templateHash": "4558259705943271965"
             }
           },
           "parameters": {
@@ -6943,7 +6943,7 @@
                   "fslogix": {
                     "value": "[parameters('configureFslogix')]"
                   },
-                  "fslogixFileShareName": {
+                  "fslogixSharePath": {
                     "value": "[parameters('fslogixSharePath')]"
                   },
                   "fslogixStorageAccountResourceId": {
@@ -6978,7 +6978,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "1026663323883539454"
+                      "templateHash": "9532141875017141182"
                     }
                   },
                   "parameters": {
@@ -7030,7 +7030,7 @@
                         "description": "FSLogix storage account resource ID."
                       }
                     },
-                    "fslogixFileShareName": {
+                    "fslogixSharePath": {
                       "type": "string",
                       "metadata": {
                         "description": "File share name for FSlogix storage."
@@ -7051,8 +7051,7 @@
                   },
                   "variables": {
                     "fslogixStorageAccountName": "[if(parameters('fslogix'), last(split(parameters('fslogixStorageAccountResourceId'), '/')), '')]",
-                    "fslogixFileShare": "[if(parameters('fslogix'), format('\\\\{0}.file.{1}\\{2}', variables('fslogixStorageAccountName'), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
-                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\"', variables('fslogixFileShare'))]",
+                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\"', parameters('fslogixSharePath'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
                       "Standard_NV8as_v4",

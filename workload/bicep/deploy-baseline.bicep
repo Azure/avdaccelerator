@@ -36,7 +36,7 @@ param avdManagementPlaneLocation string
 param avdWorkloadSubsId string = ''
 
 @sys.description('Azure Virtual Desktop Enterprise Application object ID (Enterprise app name: Azure Virtual Desktop) . (Default: "")')
-param avdEnterpriseAppObjectId string = ''
+param avdServicePrincipalObjectId string = ''
 
 @sys.description('Azure Virtual Desktop ARM Enterprise Application Object Id (Enterprise app name: Azure Virtual Desktop ARM Provider). Required for the deployment of App Attach File Share with EntraID identity provider. (Default: "")')
 param avdArmServicePrincipalObjectId string = ''
@@ -669,7 +669,7 @@ var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 var varFslogixSharePath = createAvdFslogixDeployment
   ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
   : ''
-var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/'
+var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/EntraID-Storage-Features/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
 var varCreateStorageDeployment = (createAvdFslogixDeployment || varCreateAppAttachDeployment == true) ? true : false
@@ -1177,7 +1177,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
     hostPoolType: avdHostPoolType
     preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
-    deployScalingPlan: !empty(avdEnterpriseAppObjectId) ? varDeployScalingPlan : false
+    deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
     scalingPlanExclusionTag: varScalingPlanExclusionTag
     scalingPlanSchedules: (avdHostPoolType == 'Pooled')
       ? varPooledScalingPlanSchedules
@@ -1234,9 +1234,9 @@ module identity './modules/identity/deploy.bicep' = {
     createAppAttachRoleAssignments: createAppAttachDeployment && avdIdentityServiceProvider == 'EntraID'
     serviceObjectsRgName: varServiceObjectsRgName
     storageObjectsRgName: varStorageObjectsRgName
-    avdServicePrincipalObjectId: avdEnterpriseAppObjectId
+    avdServicePrincipalObjectId: avdServicePrincipalObjectId
     avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
-    deployScalingPlan: !empty(avdEnterpriseAppObjectId) ? varDeployScalingPlan : false
+    deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
     storageManagedIdentityName: varStorageManagedIdentityName
     enableStartVmOnConnect: avdStartVmOnConnect
     identityServiceProvider: avdIdentityServiceProvider

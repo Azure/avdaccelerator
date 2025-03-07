@@ -27,7 +27,7 @@ param fslogix bool
 param fslogixStorageAccountResourceId string
 
 @sys.description('File share name for FSlogix storage.')
-param fslogixFileShareName string
+param fslogixSharePath string
 
 @sys.description('Session host VM size.')
 param vmSize string
@@ -43,12 +43,8 @@ param hostPoolResourceId string
 
 var fslogixStorageAccountName = fslogix ? last(split(fslogixStorageAccountResourceId, '/')) : ''
 
-var fslogixFileShare = fslogix
-  ? '\\\\${fslogixStorageAccountName}.file.${environment().suffixes.storage}\\${fslogixFileShareName}'
-  : ''
-
 var varBaseScriptArguments = '-IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken "${hostPool.listRegistrationTokens().value[0].token}" -AmdVmSize ${varAmdVmSize} -NvidiaVmSize ${varNvidiaVmSize}'
-var varBaseFSLogixScriptArguments = '-FslogixFileShare "${fslogixFileShare}"'
+var varBaseFSLogixScriptArguments = '-FslogixFileShare "${fslogixSharePath}"'
 var varFSLogixScriptArguments = identityServiceProvider == 'EntraID'
   ? '${varBaseFSLogixScriptArguments} -FslogixStorageAccountKey "${storageAccount.listkeys().keys[0].value}"'
   : identityServiceProvider == 'EntraIDKerberos'

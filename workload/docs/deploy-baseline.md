@@ -12,14 +12,14 @@
 - **Identity provider** blade
   - **Domain to join**
     - **Identity Service Provider** - Identity service provider (AD DS, Entra DS, Microsoft Entra ID) that already exists and will be used for Azure Virtual Desktop.
-      - Microsoft Entra ID.
       - Active Directory (AD DS).
       - Microsoft Entra Domain Services.
-      - **Intune enrollment** - If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box.
-      - **Domain name** - The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Entra ID + FSLogix deployments, because identities need to be hybrid for storage authenctication to be supported.
-      - **Domain GUID** - GUID for the on-premises domain controller.
+      - Microsoft Entra ID
+      - Microsoft Entra ID Kerberos
+      - **Domain name** - The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Microsoft Entra ID Kerberos + FSLogix deployments.
+      - **Domain GUID** - GUID for the on-premises domain controller when Microsoft Entra ID Kerberos is selected..
     - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
-    - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using Microsoft Entra ID as the identity provider.
+    - Groups - select from the fly-out group selector the group to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using Microsoft Entra ID as the identity provider.
     - Note: when using Microsoft Entra ID as the identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
   - **When selecting AD DS or Microsoft Entra DS:**
     - Domain join credentials: The Username and password with rights to join computers to the domain.

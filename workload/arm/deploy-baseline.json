@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "11628630187844129412"
+      "templateHash": "16791832218695119197"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -61,7 +61,7 @@
         "description": "AVD workload subscription ID, multiple subscriptions scenario. (Default: \"\")"
       }
     },
-    "avdEnterpriseAppObjectId": {
+    "avdServicePrincipalObjectId": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
@@ -1444,7 +1444,7 @@
     "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-key-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varZtKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varZtKvName'))]",
     "varFslogixSharePath": "[if(parameters('createAvdFslogixDeployment'), format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/EntraID-Storage-Features/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "Set-SessionHostConfiguration.ps1",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateAppAttachDeployment'), true())), true(), false())]",
@@ -8628,7 +8628,7 @@
             "value": "[parameters('avdHostPoolType')]"
           },
           "preferredAppGroupType": "[if(equals(parameters('hostPoolPreferredAppGroupType'), 'RemoteApp'), createObject('value', 'RailApplications'), createObject('value', 'Desktop'))]",
-          "deployScalingPlan": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
+          "deployScalingPlan": "[if(not(empty(parameters('avdServicePrincipalObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
           "scalingPlanExclusionTag": {
             "value": "[variables('varScalingPlanExclusionTag')]"
           },
@@ -12742,12 +12742,12 @@
             "value": "[variables('varStorageObjectsRgName')]"
           },
           "avdServicePrincipalObjectId": {
-            "value": "[parameters('avdEnterpriseAppObjectId')]"
+            "value": "[parameters('avdServicePrincipalObjectId')]"
           },
           "avdArmServicePrincipalObjectId": {
             "value": "[parameters('avdArmServicePrincipalObjectId')]"
           },
-          "deployScalingPlan": "[if(not(empty(parameters('avdEnterpriseAppObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
+          "deployScalingPlan": "[if(not(empty(parameters('avdServicePrincipalObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
           "storageManagedIdentityName": {
             "value": "[variables('varStorageManagedIdentityName')]"
           },
@@ -14482,7 +14482,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8370040284189693367"
+              "templateHash": "10554191325518595239"
             }
           },
           "parameters": {
@@ -15656,7 +15656,7 @@
                     "value": "/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840"
                   },
                   "principalType": {
-                    "value": ""
+                    "value": "ServicePrincipal"
                   }
                 },
                 "template": {
@@ -15830,7 +15830,7 @@
                     "value": "/providers/Microsoft.Authorization/roleDefinitions/60fc6e62-5479-42d4-8bf4-67625fcc2840"
                   },
                   "principalType": {
-                    "value": ""
+                    "value": "ServicePrincipal"
                   }
                 },
                 "template": {
@@ -32852,7 +32852,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "8960215367422223477"
+              "templateHash": "4558259705943271965"
             }
           },
           "parameters": {
@@ -37337,7 +37337,7 @@
                   "fslogix": {
                     "value": "[parameters('configureFslogix')]"
                   },
-                  "fslogixFileShareName": {
+                  "fslogixSharePath": {
                     "value": "[parameters('fslogixSharePath')]"
                   },
                   "fslogixStorageAccountResourceId": {
@@ -37372,7 +37372,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "1026663323883539454"
+                      "templateHash": "9532141875017141182"
                     }
                   },
                   "parameters": {
@@ -37424,7 +37424,7 @@
                         "description": "FSLogix storage account resource ID."
                       }
                     },
-                    "fslogixFileShareName": {
+                    "fslogixSharePath": {
                       "type": "string",
                       "metadata": {
                         "description": "File share name for FSlogix storage."
@@ -37445,8 +37445,7 @@
                   },
                   "variables": {
                     "fslogixStorageAccountName": "[if(parameters('fslogix'), last(split(parameters('fslogixStorageAccountResourceId'), '/')), '')]",
-                    "fslogixFileShare": "[if(parameters('fslogix'), format('\\\\{0}.file.{1}\\{2}', variables('fslogixStorageAccountName'), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
-                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\"', variables('fslogixFileShare'))]",
+                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\"', parameters('fslogixSharePath'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
                       "Standard_NV8as_v4",

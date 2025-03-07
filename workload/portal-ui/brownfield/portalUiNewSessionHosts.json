@@ -226,7 +226,7 @@
                                     "defaultValue": "win11-24h2-avd-m365",
                                     "toolTip": "Select the desired marketplace image SKU.",
                                     "constraints": {
-                                        "allowedValues": "[map(steps('sessionHosts').image.skusApi, (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+                                        "allowedValues": "[map(filter(steps('sessionHosts').image.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'entn')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
                                         "required": true
                                     },
                                     "visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
