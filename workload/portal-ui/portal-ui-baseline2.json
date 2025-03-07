@@ -18,19 +18,6 @@
 							}
 						},
 						{
-							"name": "avdServicePrincipals",
-							"type": "Microsoft.Solutions.GraphApiControl",
-							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
-							"request": {
-								"method": "GET",
-								"path": "/v1.0/servicePrincipals?$filter=startsWith(displayName, 'Azure Virtual Desktop')&$select=displayName,id",
-								"transforms": {
-									"avd": "[value[?displayName=='Azure Virtual Desktop'] | [0].id]",
-									"avdARMProvider": "[value[?displayName=='Azure Virtual Desktop ARM Provider'] | [0].id]"
-								}
-							}
-						},
-						{
 							"name": "infoPreReq",
 							"type": "Microsoft.Common.InfoBox",
 							"visible": true,
@@ -611,48 +598,35 @@
 										"style": "Warning"
 									}
 								},
-                                {
-                                    "name": "servicePrincipalPickerBlade",
-                                    "type": "Microsoft.Solutions.BladeInvokeControl",
-                                    "openBladeStatus": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalSelector.changing]",
-                                    "bladeReference": {
-                                        "name": "ObjectPickerBlade",
-                                        "extension": "Microsoft_AAD_IAM",
-                                        "parameters": {
-                                            "queries": 4,
-                                            "bladeSubtitle": "Pick the Service Principal",
-                                            "additionalQueriesOnSearch": 0,
-                                            "advancedQueryOptions": {},
-                                            "selectionMaximum": 1,
-                                            "selectionMinimum": 1,
-                                            "bladeTitle": "Select the Service Principal",
-                                            "informationHeader": {
-                                                "informationText": "Select the 'Azure Virtual Desktop' service principal."
-                                            },
-                                            "searchBoxLabel": "Search for the 'Azure Virtual Desktop' service principal",
-                                            "searchBoxPlaceHolderText": "Enter 'Azure Virtual Desktop'",
-                                            "searchGridNoRowsMessage": "No Service Principals found",
-                                            "selectButtonText": "Select Service Principal",
-                                            "selectedGridLabel": "Selected Service Principal",
-                                            "selectedGridNoRowsMessage": "You must select the 'Azure Virtual Desktop' service principal"
-                                        }
-                                    },
-                                    "transforms": {
-                                        "selection": "selectedObjects|[*].{displayName:displayName,id:id}"
-                                    }
-                                },
-                                {
-                                    "name": "servicePrincipalSelector",
-                                    "type": "Microsoft.Common.Selector",
-                                    "label": "Select the <b>Azure Virtual Desktop</b> Service Principal",
-                                    "keyPath": "displayName",
-                                    "value": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection]",
-                                    "barColor": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), '#FF0000', '#7fba00')]",
-                                    "constraints": {
-                                        "required": true
-                                    },
-                                    "link": "[if(empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]"
-                                }
+								{
+									"name": "servicePrincipalPickerBlade",
+									"type": "Microsoft.Solutions.BladeInvokeControl",
+									"openBladeStatus": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalSelector.changing]",
+									"bladeReference": {
+										"name": "ObjectPickerBlade",
+										"extension": "Microsoft_AAD_IAM",
+										"parameters": {
+											"queries": 4,
+											"bladeSubtitle": "Pick the Service Principal",
+											"additionalQueriesOnSearch": 0,
+											"advancedQueryOptions": {},
+											"selectionMaximum": 1,
+											"selectionMinimum": 1,
+											"bladeTitle": "Select the Service Principal"
+										}
+									},
+									"transforms": {
+										"selection": "selectedObjects|[*].{displayName:displayName,id:id}"
+									}
+								},
+								{
+									"name": "servicePrincipalSelector",
+									"visible": true,
+									"type": "Microsoft.Common.Selector",
+									"label": "Selecting Azure Virtual Desktop enterprise application",
+									"keyPath": "displayName",
+									"value": "[parse('[{\"displayName\":\"Azure Virtual Desktop\",\"id\":\"9cdead84-a844-4324-93f2-b2e6bb768d07\"}]')]"
+								}
 							]
 						}
 					]
@@ -1330,7 +1304,7 @@
 										"required": true
 									},
 									"link": "[if(empty(steps('storage').storageAppAttach.servicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(first(steps('basics').avdServicePrincipals.value)), empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade))]"
+									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade))]"
 								},
 								{
 									"name": "armServicePrincipalPickerBlade",
@@ -1377,7 +1351,7 @@
 										"required": true
 									},
 									"link": "[if(empty(steps('storage').storageAppAttach.armServicePrincipalPickerBlade), 'Select Service Principal', first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(first(steps('basics').avdServicePrincipals.value)))]"
+									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment))]"
 								}
 							]
 						}
@@ -2766,7 +2740,7 @@
 		},
 		"outputs": {
 			"parameters": {
-				"avdServicePrincipalObjectId": "[if(empty(first(steps('basics').avdServicePrincipals.value)), if(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), '')), first(steps('basics').avdServicePrincipals.transformed.avd))]",
+				"avdServicePrincipalObjectId": "[first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id))]",
 				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdServicePrincipals.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdServicePrincipals.transformed.avdARMProvider)), '')]",
 				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
 				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
