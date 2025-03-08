@@ -28,26 +28,14 @@
 							"constraints": {
 								"required": true
 							}
-						},
-						{
-							"name": "hostPoolApi",
-							"type": "Microsoft.Solutions.ArmApiControl",
-							"condition": "[not(empty(steps('basics').hostPool.name))]",
-							"request": {
-								"method": "GET",
-								"path": "[concat(steps('basics').hostPool.id, '?api-version=2024-04-03')]"
-							}
-						},
+						},						
 						{
 							"name": "resourceGroupsApi",
 							"type": "Microsoft.Solutions.ArmApiControl",
-							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
+							"condition": "[not(empty(steps('basics').resourceScope.subscription.id))]",
 							"request": {
 								"method": "GET",
-								"path": "[concat(steps('basics').resourceScope.subscription.id, '/resourcegroups?api-version=2021-04-01')]",
-								"transforms": {
-									"list": "value|[*].{label:name, value:{location:location,name:name,id:id}}"
-								}
+								"path": "[concat(steps('basics').resourceScope.subscription.id, '/resourcegroups?api-version=2021-04-01')]"
 							}
 						},
 						{
@@ -64,8 +52,10 @@
 							"name": "resourceGroup",
 							"type": "Microsoft.Common.DropDown",
 							"label": "Compute Resource Group",
+							"multiLine": true,
+							
 							"constraints": {
-								"allowedValues": "[map(filter(steps('basics').resourceGroupsApi.value, (rg) => equals(rg.location, steps('basics').resourceScope.location.name)), (rg) => parse(concat('{\"label\":\"', rg.name, '\",\"value\":{\"name\":\"', rg.name, '\",\"id\":\"', rg.id, '\"}}')))]",
+								"allowedValues": "[map(filter(filter(steps('basics').resourceGroupsApi.value, (rg) => and(equals(rg.location, steps('basics').resourceScope.location.name), not(empty(rg.tags)))), (rg) => not(empty(rg.tags.cm-resource-parent))), (rg) => parse(concat('{\"label\":\"', rg.name, '\",\"description\":\"hostPool: ', last(split(rg.tags.cm-resource-parent, '/')), '\",\"value\":{\"name\":\"', rg.name, '\",\"id\":\"', rg.id, '\"}}')))]",
 								"required": true
 							}
 						},
