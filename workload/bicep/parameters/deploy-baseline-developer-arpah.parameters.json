@@ -27,7 +27,7 @@
           "value": "<<subscriptionId>>"
       },
       "avdApplicationGroupCustomFriendlyName": {
-          "value": "ARPA-H Windows Desktop"
+          "value": "ARPA-H Developer Windows Desktop"
       },
       "deployPrivateEndpointKeyvaultStorage": {
           "value": true
@@ -66,7 +66,7 @@
           "value": ""
       },
       "avdHostPoolType": {
-          "value": "Personal"
+          "value": "Pooled"
       },
       "hostPoolPreferredAppGroupType": {
           "value": "Desktop"
@@ -78,7 +78,7 @@
           "value": "BreadthFirst"
       },
       "hostPoolMaxSessions": {
-          "value": 8
+          "value": 4
       },
       "avdStartVmOnConnect": {
           "value": true
@@ -141,7 +141,7 @@
           "value": true
       },
       "avdDeploySessionHostsCount": {
-          "value": 3
+          "value": 4
       },
       "avdSessionHostCountIndex": {
           "value": 0
