@@ -324,7 +324,7 @@ param avdUseCustomNaming bool = true
 
 @maxLength(90)
 @sys.description('AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)')
-param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-developer-${toLower(deploymentEnvironment)}-use2-service-objects'
+param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-service-objects'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
@@ -332,15 +332,15 @@ param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deployment
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
-param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-developer-${toLower(deploymentEnvironment)}-use2-pool-compute'
+param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pool-compute'
 
 @maxLength(90)
 @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
-param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-developer-${toLower(deploymentEnvironment)}-use2-storage'
+param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-storage'
 
 @maxLength(90)
 @sys.description('AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)')
-param avdMonitoringRgCustomName string = 'avd-nih-arpah-developer-${toLower(deploymentEnvironment)}-use2-monitoring'
+param avdMonitoringRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-monitoring'
 
 // @maxLength(64)
 // @sys.description('AVD virtual network custom name. (Default: vnet-app1-dev-use2-001)')
@@ -1028,26 +1028,26 @@ var varZtKeyvaultTag = {
 }
 //
 var varTelemetryId = 'pid-2ce4228c-d72c-43fb-bb5b-cd8f3ba2138e-${avdManagementPlaneLocation}'
-var varResourceGroups = [
-    {
-        purpose: 'Service-Objects'
-        name: varServiceObjectsRgName
-        location: avdManagementPlaneLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags 
-            ? union(varCustomResourceTags, varAvdDefaultTags) 
-            : union(varAvdDefaultTags, varAllComputeStorageTags)
-    }
-    {
-        purpose: 'Pool-Compute'
-        name: varComputeObjectsRgName
-        location: avdSessionHostLocation
-        enableDefaultTelemetry: false
-        tags: createResourceTags 
-            ? union(varAllComputeStorageTags, varAvdDefaultTags) 
-            : union(varAvdDefaultTags, varAllComputeStorageTags)
-    }
-]
+// var varResourceGroups = [
+//     {
+//         purpose: 'Service-Objects'
+//         name: varServiceObjectsRgName
+//         location: avdManagementPlaneLocation
+//         enableDefaultTelemetry: false
+//         tags: createResourceTags 
+//             ? union(varCustomResourceTags, varAvdDefaultTags) 
+//             : union(varAvdDefaultTags, varAllComputeStorageTags)
+//     }
+//     {
+//         purpose: 'Pool-Compute'
+//         name: varComputeObjectsRgName
+//         location: avdSessionHostLocation
+//         enableDefaultTelemetry: false
+//         tags: createResourceTags 
+//             ? union(varAllComputeStorageTags, varAvdDefaultTags) 
+//             : union(varAvdDefaultTags, varAllComputeStorageTags)
+//     }
+// ]
 
 // security Principals (you can add support for more than one because it is an array. Future)
 // var varSecurityPrincipalId = !empty(avdSecurityGroups) ? avdSecurityGroups[0].objectId : ''
@@ -1072,18 +1072,18 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2024-03-01' = if (
 }
 
 // Compute, service objects
-module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
-  for resourceGroup in varResourceGroups: {
-    scope: subscription(avdWorkloadSubsId)
-    name: '${resourceGroup.purpose}-${time}'
-    params: {
-        name: resourceGroup.name
-        location: resourceGroup.location
-        enableTelemetry: resourceGroup.enableDefaultTelemetry
-        tags: resourceGroup.tags
-    }
-}
-]
+// module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
+//   for resourceGroup in varResourceGroups: {
+//     scope: subscription(avdWorkloadSubsId)
+//     name: '${resourceGroup.purpose}-${time}'
+//     params: {
+//         name: resourceGroup.name
+//         location: resourceGroup.location
+//         enableTelemetry: resourceGroup.enableDefaultTelemetry
+//         tags: resourceGroup.tags
+//     }
+// }
+// ]
 
 // Storage
 // module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (varCreateStorageDeployment) {
@@ -1263,35 +1263,35 @@ module managementPLane './modules/avdManagementPlane/deploy-developer-arpah.bice
       privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
     }
     dependsOn: [
-      baselineResourceGroups
-      identity
+      //baselineResourceGroups
+      //identity
     ]
 }
 
 // Identity: managed identities and role assignments
-module identity './modules/identity/deploy.bicep' = {
-    name: 'Identities-And-RoleAssign-${time}'
-    params: {
-        location: avdSessionHostLocation
-        subscriptionId: avdWorkloadSubsId
-        computeObjectsRgName: varComputeObjectsRgName
-        serviceObjectsRgName: varServiceObjectsRgName
-        storageObjectsRgName: varStorageObjectsRgName
-        avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
-        deployScalingPlan: varDeployScalingPlan
-        storageManagedIdentityName: varStorageManagedIdentityName
-        enableStartVmOnConnect: avdStartVmOnConnect
-        identityServiceProvider: avdIdentityServiceProvider
-        createStorageDeployment: varCreateStorageDeployment
-        securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-    }
-    dependsOn: [
-        baselineResourceGroups
-        //baselineStorageResourceGroup
-        //monitoringDiagnosticSettings
-    ]
-}
+// module identity './modules/identity/deploy.bicep' = {
+//     name: 'Identities-And-RoleAssign-${time}'
+//     params: {
+//         location: avdSessionHostLocation
+//         subscriptionId: avdWorkloadSubsId
+//         computeObjectsRgName: varComputeObjectsRgName
+//         serviceObjectsRgName: varServiceObjectsRgName
+//         storageObjectsRgName: varStorageObjectsRgName
+//         avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
+//         deployScalingPlan: varDeployScalingPlan
+//         storageManagedIdentityName: varStorageManagedIdentityName
+//         enableStartVmOnConnect: avdStartVmOnConnect
+//         identityServiceProvider: avdIdentityServiceProvider
+//         createStorageDeployment: varCreateStorageDeployment
+//         securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
+//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//     }
+//     dependsOn: [
+//         baselineResourceGroups
+//         //baselineStorageResourceGroup
+//         //monitoringDiagnosticSettings
+//     ]
+// }
 
 // retrieve existing resources
 resource keyVaultExisting 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
@@ -1339,9 +1339,9 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
       kvTags: varZtKeyvaultTag
     }
     dependsOn: [
-      baselineResourceGroups
+      //baselineResourceGroups
       //baselineStorageResourceGroup
-      identity
+      //identity
     ]
   }  
 
@@ -1401,7 +1401,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
     }
     dependsOn: [
       //fslogixAzureFilesStorage
-      baselineResourceGroups
+      //baselineResourceGroups
       //wrklKeyVault
       managementPLane
     ]
@@ -1409,18 +1409,18 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
 ]
 
 // VM GPU extension policies
-module gpuPolicies './modules/azurePolicies/gpuExtensionsSubscriptions.bicep' = if (deployGpuPolicies) {
-    scope: subscription('${avdWorkloadSubsId}')
-    name: 'GPU-VM-Extensions-${time}'
-    params: {
-      computeObjectsRgName: varComputeObjectsRgName
-      location: avdSessionHostLocation
-      subscriptionId: avdWorkloadSubsId
-    }
-    dependsOn: [
-      sessionHosts
-    ]
-  }
+// module gpuPolicies './modules/azurePolicies/gpuExtensionsSubscriptions.bicep' = if (deployGpuPolicies) {
+//     scope: subscription('${avdWorkloadSubsId}')
+//     name: 'GPU-VM-Extensions-${time}'
+//     params: {
+//       computeObjectsRgName: varComputeObjectsRgName
+//       location: avdSessionHostLocation
+//       subscriptionId: avdWorkloadSubsId
+//     }
+//     dependsOn: [
+//       sessionHosts
+//     ]
+//   }
   
   // module defenderPolicySet './modules/azurePolicies/defenderSubscription.bicep' = if (deployDefender) {
   //   scope: subscription('${avdWorkloadSubsId}')
