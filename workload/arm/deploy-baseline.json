@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2583596634799897530"
+      "templateHash": "8601036179739641927"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -8694,7 +8694,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1537209700421344723"
+              "templateHash": "13600031053027457294"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -10622,7 +10622,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "17249898340297732712"
+                      "templateHash": "11120131172578458858"
                     },
                     "name": "Azure Virtual Desktop Application Group",
                     "description": "This module deploys an Azure Virtual Desktop Application Group.",
@@ -10920,12 +10920,12 @@
                     "appGroup_hostpool": {
                       "existing": true,
                       "type": "Microsoft.DesktopVirtualization/hostPools",
-                      "apiVersion": "2024-04-08-preview",
+                      "apiVersion": "2023-09-05",
                       "name": "[parameters('hostpoolName')]"
                     },
                     "appGroup": {
                       "type": "Microsoft.DesktopVirtualization/applicationGroups",
-                      "apiVersion": "2024-04-08-preview",
+                      "apiVersion": "2023-09-05",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -10946,7 +10946,7 @@
                       "scope": "[format('Microsoft.DesktopVirtualization/applicationGroups/{0}', parameters('name'))]",
                       "name": "[guid(resourceId('Microsoft.DesktopVirtualization/applicationGroups', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
                       "properties": {
-                        "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                        "roleDefinitionId": "[coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                         "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                         "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                         "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -11010,16 +11010,30 @@
                           "applicationGroupName": {
                             "value": "[parameters('name')]"
                           },
-                          "description": "[if(contains(parameters('applications')[copyIndex()], 'description'), createObject('value', parameters('applications')[copyIndex()].description), createObject('value', ''))]",
-                          "friendlyName": "[if(contains(parameters('applications')[copyIndex()], 'friendlyName'), createObject('value', parameters('applications')[copyIndex()].friendlyName), createObject('value', parameters('name')))]",
+                          "description": {
+                            "value": "[coalesce(tryGet(parameters('applications')[copyIndex()], 'description'), '')]"
+                          },
+                          "friendlyName": {
+                            "value": "[coalesce(tryGet(parameters('applications')[copyIndex()], 'friendlyName'), parameters('name'))]"
+                          },
                           "filePath": {
                             "value": "[parameters('applications')[copyIndex()].filePath]"
                           },
-                          "commandLineSetting": "[if(contains(parameters('applications')[copyIndex()], 'commandLineSetting'), createObject('value', parameters('applications')[copyIndex()].commandLineSetting), createObject('value', 'DoNotAllow'))]",
-                          "commandLineArguments": "[if(contains(parameters('applications')[copyIndex()], 'commandLineArguments'), createObject('value', parameters('applications')[copyIndex()].commandLineArguments), createObject('value', ''))]",
-                          "showInPortal": "[if(contains(parameters('applications')[copyIndex()], 'showInPortal'), createObject('value', parameters('applications')[copyIndex()].showInPortal), createObject('value', false()))]",
-                          "iconPath": "[if(contains(parameters('applications')[copyIndex()], 'iconPath'), createObject('value', parameters('applications')[copyIndex()].iconPath), createObject('value', parameters('applications')[copyIndex()].filePath))]",
-                          "iconIndex": "[if(contains(parameters('applications')[copyIndex()], 'iconIndex'), createObject('value', parameters('applications')[copyIndex()].iconIndex), createObject('value', 0))]"
+                          "commandLineSetting": {
+                            "value": "[coalesce(tryGet(parameters('applications')[copyIndex()], 'commandLineSetting'), 'DoNotAllow')]"
+                          },
+                          "commandLineArguments": {
+                            "value": "[coalesce(tryGet(parameters('applications')[copyIndex()], 'commandLineArguments'), '')]"
+                          },
+                          "showInPortal": {
+                            "value": "[coalesce(tryGet(parameters('applications')[copyIndex()], 'showInPortal'), false())]"
+                          },
+                          "iconPath": {
+                            "value": "[coalesce(tryGet(parameters('applications')[copyIndex()], 'iconPath'), parameters('applications')[copyIndex()].filePath)]"
+                          },
+                          "iconIndex": {
+                            "value": "[coalesce(tryGet(parameters('applications')[copyIndex()], 'iconIndex'), 0)]"
+                          }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
@@ -11181,7 +11195,7 @@
                       "metadata": {
                         "description": "The location of the scaling plan."
                       },
-                      "value": "[reference('appGroup', '2024-04-08-preview', 'full').location]"
+                      "value": "[reference('appGroup', '2023-09-05', 'full').location]"
                     }
                   }
                 }
