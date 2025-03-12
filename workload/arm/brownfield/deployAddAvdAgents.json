@@ -641,7 +641,7 @@
             },
             "hostPool": {
               "type": "Microsoft.DesktopVirtualization/hostPools",
-              "apiVersion": "2024-04-08-preview",
+              "apiVersion": "2023-09-05",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1646,7 +1646,7 @@
               "metadata": {
                 "description": "The location of the host pool."
               },
-              "value": "[reference('hostPool', '2024-04-08-preview', 'full').location]"
+              "value": "[reference('hostPool', '2023-09-05', 'full').location]"
             },
             "keyVaultTokenSecretResourceId": {
               "type": "string",

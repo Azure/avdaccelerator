@@ -6,7 +6,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "4807830892066379754"
+      "templateHash": "3580382825984694060"
     },
     "name": "Azure Virtual Desktop Scaling Plan",
     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -241,7 +241,7 @@
       },
       "condition": "[equals(parameters('hostPoolType'), 'Personal')]",
       "type": "Microsoft.DesktopVirtualization/scalingPlans/personalSchedules",
-      "apiVersion": "2024-04-08-preview",
+      "apiVersion": "2023-09-05",
       "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
       "properties": "[parameters('schedules')[copyIndex()]]",
       "dependsOn": [
@@ -255,7 +255,7 @@
       },
       "condition": "[equals(parameters('hostPoolType'), 'Pooled')]",
       "type": "Microsoft.DesktopVirtualization/scalingPlans/pooledSchedules",
-      "apiVersion": "2024-04-08-preview",
+      "apiVersion": "2023-09-05",
       "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
       "properties": "[parameters('schedules')[copyIndex()]]",
       "dependsOn": [

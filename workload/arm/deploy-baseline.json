@@ -12616,7 +12616,7 @@
                       },
                       "condition": "[equals(parameters('hostPoolType'), 'Personal')]",
                       "type": "Microsoft.DesktopVirtualization/scalingPlans/personalSchedules",
-                      "apiVersion": "2024-04-08-preview",
+                      "apiVersion": "2023-09-05",
                       "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
                       "properties": "[parameters('schedules')[copyIndex()]]",
                       "dependsOn": [
@@ -12630,7 +12630,7 @@
                       },
                       "condition": "[equals(parameters('hostPoolType'), 'Pooled')]",
                       "type": "Microsoft.DesktopVirtualization/scalingPlans/pooledSchedules",
-                      "apiVersion": "2024-04-08-preview",
+                      "apiVersion": "2023-09-05",
                       "name": "[format('{0}/{1}', parameters('name'), format('{0}', parameters('schedules')[copyIndex()].name))]",
                       "properties": "[parameters('schedules')[copyIndex()]]",
                       "dependsOn": [
