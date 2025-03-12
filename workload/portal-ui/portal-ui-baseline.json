@@ -1784,7 +1784,7 @@
 									"multiLine": true,
 									"toolTip": "Select the existing Private DNS Zone for Azure Files.",
 									"constraints": {
-										"allowedValues": "[map(filter(steps('network').virtualNetworkPrivateDnsZoneSelection.privateDNSZonesApi.value, (zone) => contains(zone.name, 'privatelink.file.')), (zone) => parse(concat('{\"label\":\"', zone.name, '\",\"description\":\"Resource group: ', first(skip(split(zone.id, '/'), 4)), '\",\"value\":\"', zone.id, '\"}')))]",
+										"allowedValues": "[map(filter(steps('network').virtualNetworkPrivateDnsZoneSelection.privateDNSZonesApi.value, (zone) => contains(zone.name, 'privatelink.file.')), (zone) => parse(concat('{\"label\":\"', zone.name, '\",\"description\":\"<b>Resource group:</b> ', first(skip(split(zone.id, '/'), 4)), '\",\"value\":\"', zone.id, '\"}')))]",
 										"required": true
 									}
 								},
