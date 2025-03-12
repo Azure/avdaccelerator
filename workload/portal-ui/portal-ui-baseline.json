@@ -634,8 +634,8 @@
                                             "informationHeader": {
                                                 "informationText": "Select the 'Azure/Windows Virtual Desktop' enterprise application."
                                             },
-                                            "searchBoxLabel": "Search for the Enterprise Application with appId '91eeb16e-7f29-4269-946e-9f718ed6fe2c'.",
-                                            "searchBoxPlaceHolderText": "Enter '91eeb16e-7f29-4269-946e-9f718ed6fe2c'",
+                                            "searchBoxLabel": "Search for the Enterprise Application with appId '9cdead84-a844-4324-93f2-b2e6bb768d07'.",
+                                            "searchBoxPlaceHolderText": "Enter '9cdead84-a844-4324-93f2-b2e6bb768d07'",
                                             "searchGridNoRowsMessage": "No Enterprise Applications found",
                                             "selectButtonText": "Select Enterprise Application",
                                             "selectedGridLabel": "Selected Enterprise Application",
@@ -1313,8 +1313,8 @@
 												"informationLink": ""
 											},
 											"inviteEnabled": true,
-											"searchBoxLabel": "Search for the Enterprise Application with AppId '91eeb16e-7f29-4269-946e-9f718ed6fe2c'",
-											"searchBoxPlaceHolderText": "Enter '91eeb16e-7f29-4269-946e-9f718ed6fe2c'",
+											"searchBoxLabel": "Search for the Enterprise Application with AppId '9cdead84-a844-4324-93f2-b2e6bb768d07'",
+											"searchBoxPlaceHolderText": "Enter '9cdead84-a844-4324-93f2-b2e6bb768d07'",
 											"searchGridNoRowsMessage": "No Enterprise Applications found",
 											"selectButtonText": "Select Enterprise Application",
 											"selectedGridLabel": "Selected Enterprise Application",
