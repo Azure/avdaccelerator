@@ -184,7 +184,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [
   for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${i}-${time}'
+    name: 'SH-${batchId}-${i + countIndex}-${time}'
     params: {
       name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       location: location
@@ -280,7 +280,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
   for i in range(0, count): if (deployAntiMalwareExt) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimal-${batchId}-${i}-${time}'
+    name: 'SH-Antimal-${batchId}-${i + countIndex}-${time}'
     params: {
       location: location
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -318,7 +318,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
 module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
   for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${batchId}-${i}-${time}'
+    name: 'SH-Mon-${batchId}-${i + countIndex}-${time}'
     params: {
       location: location
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -339,7 +339,7 @@ module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bic
 module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [
   for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'DCR-Asso-${batchId}-${i}-${time}'
+    name: 'DCR-Asso-${batchId}-${i + countIndex}-${time}'
     params: {
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       dataCollectionRuleId: dataCollectionRuleId
@@ -355,7 +355,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
   for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Config-${batchId}-${i}-${time}'
+    name: 'SH-Config-${batchId}-${i + countIndex}-${time}'
     params: {
       baseScriptUri: sessionHostConfigurationScriptUri
       fslogix: configureFslogix
