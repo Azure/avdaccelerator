@@ -36,24 +36,47 @@ Param(
         # $ScreenCaptureProtection
 )
 
-##############################################################
-#  Functions
-##############################################################
-function Write-Log {
-        param(
-                [parameter(Mandatory)]
-                [string]$Message,
-
-                [parameter(Mandatory)]
-                [string]$Type
+function New-Log {
+        Param (
+                [Parameter(Mandatory = $true, Position = 0)]
+                [string] $Path
         )
-        $Path = 'C:\Windows\Temp\AVDSessionHostConfig.log'
-        if (!(Test-Path -Path $Path)) {
-                New-Item -Path 'C:\' -Name 'AVDSessionHostConfig.log' | Out-Null
+    
+        $date = Get-Date -UFormat "%Y-%m-%d %H-%M-%S"
+        Set-Variable logFile -Scope Script
+        $script:logFile = "$Script:Name-$date.log"
+    
+        if ((Test-Path $path ) -eq $false) {
+                $null = New-Item -Path $path -type directory
         }
-        $Timestamp = Get-Date -Format 'MM/dd/yyyy HH:mm:ss.ff'
-        $Entry = '[' + $Timestamp + '] [' + $Type + '] ' + $Message
-        $Entry | Out-File -FilePath $Path -Append
+    
+        $script:Log = Join-Path $path $logfile
+    
+        Add-Content $script:Log "Date`t`t`tCategory`t`tDetails"
+}
+
+function Write-Log {
+        Param (
+                [Parameter(Mandatory = $false, Position = 0)]
+                [ValidateSet("Info", "Warning", "Error")]
+                $Category = 'Info',
+                [Parameter(Mandatory = $true, Position = 1)]
+                $Message
+        )
+    
+        $Date = get-date
+        $Content = "[$Date]`t$Category`t`t$Message`n" 
+        Add-Content $Script:Log $content -ErrorAction Stop
+        If ($Verbose) {
+                Write-Verbose $Content
+        }
+        Else {
+                Switch ($Category) {
+                        'Info' { Write-Host $content }
+                        'Error' { Write-Error $Content }
+                        'Warning' { Write-Warning $Content }
+                }
+        }
 }
 
 function Get-WebFile {
@@ -78,51 +101,53 @@ function Get-WebFile {
 Function Set-RegistryValue {
         [CmdletBinding()]
         param (
-            [Parameter()]
-            [string]
-            $Name,
-            [Parameter()]
-            [string]
-            $Path,
-            [Parameter()]
-            [string]$PropertyType,
-            [Parameter()]
-            $Value
+                [Parameter()]
+                [string]
+                $Name,
+                [Parameter()]
+                [string]
+                $Path,
+                [Parameter()]
+                [string]$PropertyType,
+                [Parameter()]
+                $Value
         )
         Begin {
-            Write-Log -message "[Set-RegistryValue]: Setting Registry Value: $Name"
+                Write-Log -message "[Set-RegistryValue]: Setting Registry Value: $Name"
         }
         Process {
-            # Create the registry Key(s) if necessary.
-            If (!(Test-Path -Path $Path)) {
-                Write-Log -message "[Set-RegistryValue]: Creating Registry Key: $Path"
-                New-Item -Path $Path -Force | Out-Null
-            }
-            # Check for existing registry setting
-            $RemoteValue = Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue
-            If ($RemoteValue) {
-                # Get current Value
-                $CurrentValue = Get-ItemPropertyValue -Path $Path -Name $Name
-                Write-Log -message "[Set-RegistryValue]: Current Value of $($Path)\$($Name) : $CurrentValue"
-                If ($Value -ne $CurrentValue) {
-                    Write-Log -message "[Set-RegistryValue]: Setting Value of $($Path)\$($Name) : $Value"
-                    Set-ItemProperty -Path $Path -Name $Name -Value $Value -Force | Out-Null
-                } Else {
-                    Write-Log -message "[Set-RegistryValue]: Value of $($Path)\$($Name) is already set to $Value"
-                }           
-            }
-            Else {
-                Write-Log -message "[Set-RegistryValue]: Setting Value of $($Path)\$($Name) : $Value"
-                New-ItemProperty -Path $Path -Name $Name -PropertyType $PropertyType -Value $Value -Force | Out-Null
-            }
-            Start-Sleep -Milliseconds 500
+                # Create the registry Key(s) if necessary.
+                If (!(Test-Path -Path $Path)) {
+                        Write-Log -message "[Set-RegistryValue]: Creating Registry Key: $Path"
+                        New-Item -Path $Path -Force | Out-Null
+                }
+                # Check for existing registry setting
+                $RemoteValue = Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue
+                If ($RemoteValue) {
+                        # Get current Value
+                        $CurrentValue = Get-ItemPropertyValue -Path $Path -Name $Name
+                        Write-Log -message "[Set-RegistryValue]: Current Value of $($Path)\$($Name) : $CurrentValue"
+                        If ($Value -ne $CurrentValue) {
+                                Write-Log -message "[Set-RegistryValue]: Setting Value of $($Path)\$($Name) : $Value"
+                                Set-ItemProperty -Path $Path -Name $Name -Value $Value -Force | Out-Null
+                        }
+                        Else {
+                                Write-Log -message "[Set-RegistryValue]: Value of $($Path)\$($Name) is already set to $Value"
+                        }           
+                }
+                Else {
+                        Write-Log -message "[Set-RegistryValue]: Setting Value of $($Path)\$($Name) : $Value"
+                        New-ItemProperty -Path $Path -Name $Name -PropertyType $PropertyType -Value $Value -Force | Out-Null
+                }
+                Start-Sleep -Milliseconds 500
         }
         End {
         }
-    }
+}
 
 $ErrorActionPreference = 'Stop'
-
+$Script:Name = 'Set-SessionHostConfiguration'
+New-Log -Path (Join-Path -Path $env:SystemRoot -ChildPath 'Logs')
 try {
 
         ##############################################################
@@ -333,7 +358,8 @@ try {
                 $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$FSLogixStorageFQDN /user:localhost\$SAName /pass:$FSLogixStorageAccountKey" -Wait -PassThru
                 If ($CMDKey.ExitCode -ne 0) {
                         Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'ERROR'
-                } Else {
+                }
+                Else {
                         Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
                 }
                 $Settings += @(
@@ -384,7 +410,7 @@ try {
 
         # Resize OS Disk
         Write-Log -message "Resizing OS Disk"
-        $driveLetter = $env:SystemDrive.Substring(0,1)
+        $driveLetter = $env:SystemDrive.Substring(0, 1)
         $size = Get-PartitionSupportedSize -DriveLetter $driveLetter
         Resize-Partition -DriveLetter $driveLetter -Size $size.SizeMax
         Write-Log -message "OS Disk Resized"
