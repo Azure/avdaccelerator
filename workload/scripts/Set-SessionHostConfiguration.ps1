@@ -36,23 +36,47 @@ Param(
         # $ScreenCaptureProtection
 )
 
-##############################################################
-#  Functions
-##############################################################
-function Write-Log {
-        param(
-                [parameter(Mandatory)]
-                [string]$Message,
-                [parameter(Mandatory)]
-                [string]$Type
+function New-Log {
+        Param (
+                [Parameter(Mandatory = $true, Position = 0)]
+                [string] $Path
         )
-        $Path = 'C:\Windows\Temp\AVDSessionHostConfig.log'
-        if (!(Test-Path -Path $Path)) {
-                New-Item -Path 'C:\' -Name 'AVDSessionHostConfig.log' | Out-Null
+    
+        $date = Get-Date -UFormat "%Y-%m-%d %H-%M-%S"
+        Set-Variable logFile -Scope Script
+        $script:logFile = "$Script:Name-$date.log"
+    
+        if ((Test-Path $path ) -eq $false) {
+                $null = New-Item -Path $path -ItemType directory
         }
-        $Timestamp = Get-Date -Format 'MM/dd/yyyy HH:mm:ss.ff'
-        $Entry = '[' + $Timestamp + '] [' + $Type + '] ' + $Message
-        $Entry | Out-File -FilePath $Path -Append
+    
+        $script:Log = Join-Path $path $logfile
+    
+        Add-Content $script:Log "Date`t`t`tCategory`t`tDetails"
+}
+
+function Write-Log {
+        Param (
+                [Parameter(Mandatory = $false, Position = 0)]
+                [ValidateSet("Info", "Warning", "Error")]
+                $Category = 'Info',
+                [Parameter(Mandatory = $true, Position = 1)]
+                $Message
+        )
+    
+        $Date = get-date
+        $Content = "[$Date]`t$Category`t`t$Message`n" 
+        Add-Content $Script:Log $content -ErrorAction Stop
+        If ($Verbose) {
+                Write-Verbose $Content
+        }
+        Else {
+                Switch ($Category) {
+                        'Info' { Write-Host $content }
+                        'Error' { Write-Error $Content }
+                        'Warning' { Write-Warning $Content }
+                }
+        }
 }
 
 function Get-WebFile {
@@ -74,8 +98,56 @@ function Get-WebFile {
         until((Test-Path $FileName) -or $Counter -eq 9)
 }
 
-$ErrorActionPreference = 'Stop'
+Function Set-RegistryValue {
+        [CmdletBinding()]
+        param (
+                [Parameter()]
+                [string]
+                $Name,
+                [Parameter()]
+                [string]
+                $Path,
+                [Parameter()]
+                [string]$PropertyType,
+                [Parameter()]
+                $Value
+        )
+        Begin {
+                Write-Log -message "[Set-RegistryValue]: Setting Registry Value: $Name"
+        }
+        Process {
+                # Create the registry Key(s) if necessary.
+                If (!(Test-Path -Path $Path)) {
+                        Write-Log -message "[Set-RegistryValue]: Creating Registry Key: $Path"
+                        New-Item -Path $Path -Force | Out-Null
+                }
+                # Check for existing registry setting
+                $RemoteValue = Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue
+                If ($RemoteValue) {
+                        # Get current Value
+                        $CurrentValue = Get-ItemPropertyValue -Path $Path -Name $Name
+                        Write-Log -message "[Set-RegistryValue]: Current Value of $($Path)\$($Name) : $CurrentValue"
+                        If ($Value -ne $CurrentValue) {
+                                Write-Log -message "[Set-RegistryValue]: Setting Value of $($Path)\$($Name) : $Value"
+                                Set-ItemProperty -Path $Path -Name $Name -Value $Value -Force | Out-Null
+                        }
+                        Else {
+                                Write-Log -message "[Set-RegistryValue]: Value of $($Path)\$($Name) is already set to $Value"
+                        }           
+                }
+                Else {
+                        Write-Log -message "[Set-RegistryValue]: Setting Value of $($Path)\$($Name) : $Value"
+                        New-ItemProperty -Path $Path -Name $Name -PropertyType $PropertyType -Value $Value -Force | Out-Null
+                }
+                Start-Sleep -Milliseconds 500
+        }
+        End {
+        }
+}
 
+$ErrorActionPreference = 'Stop'
+$Script:Name = 'Set-SessionHostConfiguration'
+New-Log -Path (Join-Path -Path $env:SystemRoot -ChildPath 'Logs')
 try {
 
         ##############################################################
@@ -256,63 +328,86 @@ try {
                                 Value        = 3
                         }
                 )
-        }
-        if ($IdentityServiceProvider -eq "EntraIDKerberos" -and $Fslogix -eq 'true') {
-                $Settings += @(
-                        [PSCustomObject]@{
-                                Name         = 'CloudKerberosTicketRetrievalEnabled'
-                                Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        },
-                        [PSCustomObject]@{
-                                Name         = 'LoadCredKeyFromProfile'
-                                Path         = 'HKLM:\Software\Policies\Microsoft\AzureADAccount'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        },
-                        [PSCustomObject]@{
-                                Name         = $IdentityDomainName
-                                Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\domain_realm'
-                                PropertyType = 'String'
-                                Value        = $FSLogixStorageFQDN
-                        }
+                if ($IdentityServiceProvider -eq "EntraIDKerberos" -and $Fslogix -eq 'true') {
+                        $Settings += @(
+                                [PSCustomObject]@{
+                                        Name         = 'CloudKerberosTicketRetrievalEnabled'
+                                        Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters'
+                                        PropertyType = 'DWord'
+                                        Value        = 1
+                                },
+                                [PSCustomObject]@{
+                                        Name         = 'LoadCredKeyFromProfile'
+                                        Path         = 'HKLM:\Software\Policies\Microsoft\AzureADAccount'
+                                        PropertyType = 'DWord'
+                                        Value        = 1
+                                },
+                                [PSCustomObject]@{
+                                        Name         = $IdentityDomainName
+                                        Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\domain_realm'
+                                        PropertyType = 'String'
+                                        Value        = $FSLogixStorageFQDN
+                                }
 
-                )
-        }
-        If ($FsLogixStorageAccountKey -ne '') {                
-                $SAName = $FSLogixStorageFQDN.Split('.')[0]
-                Write-Log -Message "Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
-                $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$FSLogixStorageFQDN /user:localhost\$SAName /pass:$FSLogixStorageAccountKey" -Wait -PassThru
-                If ($CMDKey.ExitCode -ne 0) {
-                        Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'ERROR'
+                        )
                 }
-                Else {
-                        Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
-                }
-                $Settings += @(
-                        # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject
-                        [PSCustomObject]@{
-                                Name         = 'AccessNetworkAsComputerObject'
-                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        }                                
-                )
-                $Settings += @(
-                        # Disable Roaming the Recycle Bin because it corrupts. https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#roamrecyclebin
-                        [PSCustomObject]@{
-                                Name         = 'RoamRecycleBin'
-                                Path         = 'HKLM:\SOFTWARE\FSLogix\Apps'
-                                PropertyType = 'DWord'
-                                Value        = 0
+                If ($FsLogixStorageAccountKey -ne '') {                
+                        $SAName = $FSLogixStorageFQDN.Split('.')[0]
+                        Write-Log -Message "Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Info'
+                        $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$FSLogixStorageFQDN /user:localhost\$SAName /pass:$FSLogixStorageAccountKey" -Wait -PassThru
+                        If ($CMDKey.ExitCode -ne 0) {
+                                Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Error'
                         }
-                )
-                # Disable the Recycle Bin
-                Reg LOAD HKLM\DefaultUser "$env:SystemDrive\Users\Default User\NtUser.dat"
-                Set-RegistryValue -Key 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -Type DWord -Value 1
-                Write-Log -Message "Unloading default user hive."
-                $null = cmd /c REG UNLOAD "HKLM\Default" '2>&1'
+                        Else {
+                                Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Info'
+                        }
+                        $Settings += @(
+                                # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject
+                                [PSCustomObject]@{
+                                        Name         = 'AccessNetworkAsComputerObject'
+                                        Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                                        PropertyType = 'DWord'
+                                        Value        = 1
+                                }                                
+                        )
+                        $Settings += @(
+                                # Disable Roaming the Recycle Bin because it corrupts. https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#roamrecyclebin
+                                [PSCustomObject]@{
+                                        Name         = 'RoamRecycleBin'
+                                        Path         = 'HKLM:\SOFTWARE\FSLogix\Apps'
+                                        PropertyType = 'DWord'
+                                        Value        = 0
+                                }
+                        )
+                        # Disable the Recycle Bin
+                        Reg LOAD "HKLM\TempHive" "$env:SystemDrive\Users\Default User\NtUser.dat"
+                        Set-RegistryValue -Path 'HKLM:\TempHive\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
+                        Write-Log -Message "Unloading default user hive."
+                        $null = cmd /c REG UNLOAD "HKLM\TempHive" '2>&1'
+                        If ($LastExitCode -ne 0) {
+                                # sometimes the registry doesn't unload properly so we have to perform powershell garbage collection first.
+                                [GC]::Collect()
+                                [GC]::WaitForPendingFinalizers()
+                                Start-Sleep -Seconds 5
+                                $null = cmd /c REG UNLOAD "HKLM\TempHive" '2>&1'
+                                If ($LastExitCode -eq 0) {
+                                        Write-Log -Message "Hive unloaded successfully."
+                                }
+                                Else {
+                                        Write-Log -category Error -Message "Default User hive unloaded with exit code [$LastExitCode]."
+                                }
+                        }
+                        Else {
+                                Write-Log -Message "Hive unloaded successfully."
+                        }
+                }
+                $LocalAdministrator = (Get-LocalUser | Where-Object { $_.SID -like '*-500' }).Name
+                $LocalGroups = 'FSLogix Profile Exclude List', 'FSLogix ODFC Exclude List'
+                ForEach ($Group in $LocalGroups) {
+                        If (-not (Get-LocalGroupMember -Group $Group | Where-Object { $_.Name -like "*$LocalAdministrator" })) {
+                                Add-LocalGroupMember -Group $Group -Member $LocalAdministrator
+                        }
+                }
         }
 
         ##############################################################
@@ -333,31 +428,15 @@ try {
 
         # Set registry settings
         foreach ($Setting in $Settings) {
-                # Create registry key(s) if necessary
-                if (!(Test-Path -Path $Setting.Path)) {
-                        New-Item -Path $Setting.Path -Force
-                }
-
-                # Checks for existing registry setting
-                $Value = Get-ItemProperty -Path $Setting.Path -Name $Setting.Name -ErrorAction 'SilentlyContinue'
-                $LogOutputValue = 'Path: ' + $Setting.Path + ', Name: ' + $Setting.Name + ', PropertyType: ' + $Setting.PropertyType + ', Value: ' + $Setting.Value
-
-                # Creates the registry setting when it does not exist
-                if (!$Value) {
-                        New-ItemProperty -Path $Setting.Path -Name $Setting.Name -PropertyType $Setting.PropertyType -Value $Setting.Value -Force
-                        Write-Log -Message "Added registry setting: $LogOutputValue" -Type 'INFO'
-                }
-                # Updates the registry setting when it already exists
-                elseif ($Value.$($Setting.Name) -ne $Setting.Value) {
-                        Set-ItemProperty -Path $Setting.Path -Name $Setting.Name -Value $Setting.Value -Force
-                        Write-Log -Message "Updated registry setting: $LogOutputValue" -Type 'INFO'
-                }
-                # Writes log output when registry setting has the correct value
-                else {
-                        Write-Log -Message "Registry setting exists with correct value: $LogOutputValue" -Type 'INFO'    
-                }
-                Start-Sleep -Seconds 1
+                Set-RegistryValue -Name $Setting.Name -Path $Setting.Path -PropertyType $Setting.PropertyType -Value $Setting.Value -Verbose
         }
+
+        # Resize OS Disk
+        Write-Log -message "Resizing OS Disk"
+        $driveLetter = $env:SystemDrive.Substring(0, 1)
+        $size = Get-PartitionSupportedSize -DriveLetter $driveLetter
+        Resize-Partition -DriveLetter $driveLetter -Size $size.SizeMax
+        Write-Log -message "OS Disk Resized"
 
         ##############################################################
         # Add Defender Exclusions for FSLogix 
@@ -380,7 +459,7 @@ try {
                 foreach ($File in $Files) {
                         Add-MpPreference -ExclusionPath $File
                 }
-                Write-Log -Message 'Enabled Defender exlusions for FSLogix paths' -Type 'INFO'
+                Write-Log -Message 'Enabled Defender exlusions for FSLogix paths' -Category 'Info'
 
                 $Processes = @(
                         "%ProgramFiles%\FSLogix\Apps\frxccd.exe",
@@ -391,8 +470,9 @@ try {
                 foreach ($Process in $Processes) {
                         Add-MpPreference -ExclusionProcess $Process
                 }
-                Write-Log -Message 'Enabled Defender exlusions for FSLogix processes' -Type 'INFO'
+                Write-Log -Message 'Enabled Defender exlusions for FSLogix processes' -Category 'Info'
         }
+
 
         ##############################################################
         #  Install the AVD Agent
@@ -400,13 +480,13 @@ try {
         $BootInstaller = 'AVD-Bootloader.msi'
         Get-WebFile -FileName $BootInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrxrH'
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $BootInstaller /quiet /qn /norestart /passive" -Wait -Passthru
-        Write-Log -Message 'Installed AVD Bootloader' -Type 'INFO'
+        Write-Log -Message 'Installed AVD Bootloader' -Category 'Info'
         Start-Sleep -Seconds 5
 
         $AgentInstaller = 'AVD-Agent.msi'
         Get-WebFile -FileName $AgentInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrmXv'
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $AgentInstaller /quiet /qn /norestart /passive REGISTRATIONTOKEN=$HostPoolRegistrationToken" -Wait -PassThru
-        Write-Log -Message 'Installed AVD Agent' -Type 'INFO'
+        Write-Log -Message 'Installed AVD Agent' -Category 'Info'
         Start-Sleep -Seconds 5
 
         ##############################################################
@@ -417,6 +497,6 @@ try {
         }
 }
 catch {
-        Write-Log -Message $_ -Type 'ERROR'
+        Write-Log -Message $_ -Category 'Error'
         throw
 }
