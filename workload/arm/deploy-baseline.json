@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "2976440548318123692"
+      "templateHash": "2232787975011426082"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -32851,7 +32851,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "9442573086716807251"
+              "templateHash": "7109823568683958744"
             }
           },
           "parameters": {
@@ -33151,7 +33151,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-{0}-{1}-{2}', parameters('batchId'), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
+              "name": "[format('SH-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -36834,7 +36834,7 @@
               "condition": "[parameters('deployAntiMalwareExt')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-Antimal-{0}-{1}-{2}', parameters('batchId'), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
+              "name": "[format('SH-Antimal-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -37051,7 +37051,7 @@
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-Mon-{0}-{1}-{2}', parameters('batchId'), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
+              "name": "[format('SH-Mon-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -37255,7 +37255,7 @@
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('DCR-Asso-{0}-{1}-{2}', parameters('batchId'), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
+              "name": "[format('DCR-Asso-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -37321,7 +37321,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-Config-{0}-{1}-{2}', parameters('batchId'), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
+              "name": "[format('SH-Config-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
