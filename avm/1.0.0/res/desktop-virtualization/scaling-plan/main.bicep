@@ -88,7 +88,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2024-04-08-preview' = {
+resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2023-09-05' = {
   name: name
   location: location
   tags: tags

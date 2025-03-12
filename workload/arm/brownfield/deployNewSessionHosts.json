@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "12300850645337003783"
+      "templateHash": "4920620820865500544"
     }
   },
   "parameters": {
@@ -784,7 +784,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13233883945180272639"
+              "templateHash": "8358498560725653513"
             },
             "name": "Azure Virtual Desktop Host Pool",
             "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -1300,7 +1300,7 @@
             },
             "hostPool": {
               "type": "Microsoft.DesktopVirtualization/hostPools",
-              "apiVersion": "2024-04-08-preview",
+              "apiVersion": "2023-09-05",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -2305,7 +2305,7 @@
               "metadata": {
                 "description": "The location of the host pool."
               },
-              "value": "[reference('hostPool', '2024-04-08-preview', 'full').location]"
+              "value": "[reference('hostPool', '2023-09-05', 'full').location]"
             },
             "keyVaultTokenSecretResourceId": {
               "type": "string",

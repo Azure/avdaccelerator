@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "15669160169651640727"
+      "version": "0.33.93.31351",
+      "templateHash": "4807830892066379754"
     },
     "name": "Azure Virtual Desktop Scaling Plan",
     "description": "This module deploys an Azure Virtual Desktop Scaling Plan.",
@@ -220,7 +220,7 @@
     },
     "scalingPlan": {
       "type": "Microsoft.DesktopVirtualization/scalingPlans",
-      "apiVersion": "2024-04-08-preview",
+      "apiVersion": "2023-09-05",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -322,7 +322,7 @@
       "metadata": {
         "description": "The location of the Scaling Plan."
       },
-      "value": "[reference('scalingPlan', '2024-04-08-preview', 'full').location]"
+      "value": "[reference('scalingPlan', '2023-09-05', 'full').location]"
     }
   }
 }
