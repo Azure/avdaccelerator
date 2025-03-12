@@ -356,7 +356,7 @@ try {
                 )
                 # Disable the Recycle Bin
                 Reg LOAD HKLM\DefaultUser "$env:SystemDrive\Users\Default User\NtUser.dat"
-                Set-RegistryValue -Key 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
+                Set-RegistryValue -Path 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
                 Write-Log -Message "Unloading default user hive."
                 $null = cmd /c REG UNLOAD "HKLM\DefaultUser" '2>&1'
         }
