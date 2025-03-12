@@ -328,63 +328,70 @@ try {
                                 Value        = 3
                         }
                 )
-        }
-        if ($IdentityServiceProvider -eq "EntraIDKerberos" -and $Fslogix -eq 'true') {
-                $Settings += @(
-                        [PSCustomObject]@{
-                                Name         = 'CloudKerberosTicketRetrievalEnabled'
-                                Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        },
-                        [PSCustomObject]@{
-                                Name         = 'LoadCredKeyFromProfile'
-                                Path         = 'HKLM:\Software\Policies\Microsoft\AzureADAccount'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        },
-                        [PSCustomObject]@{
-                                Name         = $IdentityDomainName
-                                Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\domain_realm'
-                                PropertyType = 'String'
-                                Value        = $FSLogixStorageFQDN
-                        }
+                if ($IdentityServiceProvider -eq "EntraIDKerberos" -and $Fslogix -eq 'true') {
+                        $Settings += @(
+                                [PSCustomObject]@{
+                                        Name         = 'CloudKerberosTicketRetrievalEnabled'
+                                        Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\Parameters'
+                                        PropertyType = 'DWord'
+                                        Value        = 1
+                                },
+                                [PSCustomObject]@{
+                                        Name         = 'LoadCredKeyFromProfile'
+                                        Path         = 'HKLM:\Software\Policies\Microsoft\AzureADAccount'
+                                        PropertyType = 'DWord'
+                                        Value        = 1
+                                },
+                                [PSCustomObject]@{
+                                        Name         = $IdentityDomainName
+                                        Path         = 'HKLM:\SYSTEM\CurrentControlSet\Control\Lsa\Kerberos\domain_realm'
+                                        PropertyType = 'String'
+                                        Value        = $FSLogixStorageFQDN
+                                }
 
-                )
-        }
-        If ($FsLogixStorageAccountKey -ne '') {                
-                $SAName = $FSLogixStorageFQDN.Split('.')[0]
-                Write-Log -Message "Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Info'
-                $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$FSLogixStorageFQDN /user:localhost\$SAName /pass:$FSLogixStorageAccountKey" -Wait -PassThru
-                If ($CMDKey.ExitCode -ne 0) {
-                        Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Error'
+                        )
                 }
-                Else {
-                        Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Info'
-                }
-                $Settings += @(
-                        # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject
-                        [PSCustomObject]@{
-                                Name         = 'AccessNetworkAsComputerObject'
-                                Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
-                                PropertyType = 'DWord'
-                                Value        = 1
-                        }                                
-                )
-                $Settings += @(
-                        # Disable Roaming the Recycle Bin because it corrupts. https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#roamrecyclebin
-                        [PSCustomObject]@{
-                                Name         = 'RoamRecycleBin'
-                                Path         = 'HKLM:\SOFTWARE\FSLogix\Apps'
-                                PropertyType = 'DWord'
-                                Value        = 0
+                If ($FsLogixStorageAccountKey -ne '') {                
+                        $SAName = $FSLogixStorageFQDN.Split('.')[0]
+                        Write-Log -Message "Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Info'
+                        $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$FSLogixStorageFQDN /user:localhost\$SAName /pass:$FSLogixStorageAccountKey" -Wait -PassThru
+                        If ($CMDKey.ExitCode -ne 0) {
+                                Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Error'
                         }
-                )
-                # Disable the Recycle Bin
-                Reg LOAD HKLM\DefaultUser "$env:SystemDrive\Users\Default User\NtUser.dat"
-                Set-RegistryValue -Path 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
-                Write-Log -Message "Unloading default user hive."
-                $null = cmd /c REG UNLOAD "HKLM\DefaultUser" '2>&1'
+                        Else {
+                                Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Info'
+                        }
+                        $Settings += @(
+                                # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject
+                                [PSCustomObject]@{
+                                        Name         = 'AccessNetworkAsComputerObject'
+                                        Path         = 'HKLM:\SOFTWARE\FSLogix\Profiles'
+                                        PropertyType = 'DWord'
+                                        Value        = 1
+                                }                                
+                        )
+                        $Settings += @(
+                                # Disable Roaming the Recycle Bin because it corrupts. https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#roamrecyclebin
+                                [PSCustomObject]@{
+                                        Name         = 'RoamRecycleBin'
+                                        Path         = 'HKLM:\SOFTWARE\FSLogix\Apps'
+                                        PropertyType = 'DWord'
+                                        Value        = 0
+                                }
+                        )
+                        # Disable the Recycle Bin
+                        Reg LOAD HKLM\DefaultUser "$env:SystemDrive\Users\Default User\NtUser.dat"
+                        Set-RegistryValue -Path 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
+                        Write-Log -Message "Unloading default user hive."
+                        $null = cmd /c REG UNLOAD "HKLM\DefaultUser" '2>&1'
+                }
+                $LocalAdministrator = (Get-LocalUser | Where-Object { $_.SID -like '*-500' }).Name
+                $LocalGroups = 'FSLogix Profile Exclude List', 'FSLogix ODFC Exclude List'
+                ForEach ($Group in $LocalGroups) {
+                        If (-not (Get-LocalGroupMember -Group $Group | Where-Object { $_.Name -like "*$LocalAdministrator" })) {
+                                Add-LocalGroupMember -Group $Group -Member $LocalAdministrator
+                        }
+                }
         }
 
         ##############################################################
