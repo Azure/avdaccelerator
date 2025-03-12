@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "16519836321764328627"
+      "templateHash": "8752058106665991702"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -8694,7 +8694,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "12303908790879135130"
+              "templateHash": "12406779999907533928"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -11213,7 +11213,7 @@
                   },
                   "applicationGroupReferences": {
                     "value": [
-                      "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DesktopVirtualization/applicationgroups/{2}', parameters('subscriptionId'), parameters('serviceObjectsRgName'), parameters('applicationGroupName'))]"
+                      "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('{0}-{1}', variables('varApplicationGroups')[0].name, parameters('time'))), '2022-09-01').outputs.resourceId.value]"
                     ]
                   },
                   "tags": {
@@ -12310,8 +12310,7 @@
                 }
               },
               "dependsOn": [
-                "applicationGroups",
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('HostPool-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('{0}-{1}', variables('varApplicationGroups')[0].name, parameters('time')))]"
               ]
             },
             {
@@ -32852,7 +32851,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10610250022944143326"
+              "templateHash": "7284200321830732994"
             }
           },
           "parameters": {
@@ -33152,7 +33151,7 @@
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-{0}-{1}-{2}', parameters('batchId'), sub(range(0, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('SH-{0}-{1}-{2}', parameters('batchId'), range(0, parameters('count'))[copyIndex()], parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -33170,7 +33169,7 @@
                   "timeZone": {
                     "value": "[parameters('timeZone')]"
                   },
-                  "zone": "[if(equals(parameters('availability'), 'AvailabilityZones'), createObject('value', variables('varZones')[mod(sub(range(0, parameters('count'))[copyIndex()], 1), length(variables('varZones')))]), createObject('value', 0))]",
+                  "zone": "[if(equals(parameters('availability'), 'AvailabilityZones'), createObject('value', variables('varZones')[mod(range(0, parameters('count'))[copyIndex()], length(variables('varZones')))]), createObject('value', 0))]",
                   "managedIdentities": "[if(or(contains(parameters('identityServiceProvider'), 'EntraID'), parameters('deployMonitoring')), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
@@ -36835,7 +36834,7 @@
               "condition": "[parameters('deployAntiMalwareExt')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-Antimal-{0}-{1}-{2}', parameters('batchId'), sub(range(0, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('SH-Antimal-{0}-{1}-{2}', parameters('batchId'), range(0, parameters('count'))[copyIndex()], parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -37052,7 +37051,7 @@
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-Mon-{0}-{1}-{2}', parameters('batchId'), sub(range(0, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('SH-Mon-{0}-{1}-{2}', parameters('batchId'), range(0, parameters('count'))[copyIndex()], parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -37256,7 +37255,7 @@
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('DCR-Asso-{0}-{1}-{2}', parameters('batchId'), sub(range(0, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('DCR-Asso-{0}-{1}-{2}', parameters('batchId'), range(0, parameters('count'))[copyIndex()], parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {

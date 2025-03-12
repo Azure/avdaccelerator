@@ -184,12 +184,12 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [
   for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${i - 1}-${time}'
+    name: 'SH-${batchId}-${i}-${time}'
     params: {
       name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       location: location
       timeZone: timeZone
-      zone: availability == 'AvailabilityZones' ? varZones[(i - 1) % length(varZones)] : 0
+      zone: availability == 'AvailabilityZones' ? varZones[i % length(varZones)] : 0
       managedIdentities: contains(identityServiceProvider, 'EntraID') || deployMonitoring
         ? {
             systemAssigned: true
@@ -280,7 +280,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
   for i in range(0, count): if (deployAntiMalwareExt) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
+    name: 'SH-Antimal-${batchId}-${i}-${time}'
     params: {
       location: location
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -318,7 +318,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
 module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
   for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${batchId}-${i - 1}-${time}'
+    name: 'SH-Mon-${batchId}-${i}-${time}'
     params: {
       location: location
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -339,7 +339,7 @@ module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bic
 module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [
   for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
+    name: 'DCR-Asso-${batchId}-${i}-${time}'
     params: {
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       dataCollectionRuleId: dataCollectionRuleId
