@@ -380,12 +380,26 @@ try {
                                 }
                         )
                         # Disable the Recycle Bin
-                        Reg LOAD HKLM\DefaultUser "$env:SystemDrive\Users\Default User\NtUser.dat"
-                        Set-RegistryValue -Path 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
+                        Reg LOAD "HKLM\TempHive" "$env:SystemDrive\Users\Default User\NtUser.dat"
+                        Set-RegistryValue -Path 'HKLM:\TempHive\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
                         Write-Log -Message "Unloading default user hive."
-                        $null = cmd /c REG UNLOAD "HKLM\DefaultUser" '2>&1'
-                        [GC]::Collect()
-                        [GC]::WaitForPendingFinalizers()
+                        $null = cmd /c REG UNLOAD "HKLM\TempHive" '2>&1'
+                        If ($LastExitCode -ne 0) {
+                                # sometimes the registry doesn't unload properly so we have to perform powershell garbage collection first.
+                                [GC]::Collect()
+                                [GC]::WaitForPendingFinalizers()
+                                Start-Sleep -Seconds 5
+                                $null = cmd /c REG UNLOAD "HKLM\TempHive" '2>&1'
+                                If ($LastExitCode -eq 0) {
+                                        Write-Log -Message "Hive unloaded successfully."
+                                }
+                                Else {
+                                        Write-Log -category Error -Message "Default User hive unloaded with exit code [$LastExitCode]."
+                                }
+                        }
+                        Else {
+                                Write-Log -Message "Hive unloaded successfully."
+                        }
                 }
                 $LocalAdministrator = (Get-LocalUser | Where-Object { $_.SID -like '*-500' }).Name
                 $LocalGroups = 'FSLogix Profile Exclude List', 'FSLogix ODFC Exclude List'
