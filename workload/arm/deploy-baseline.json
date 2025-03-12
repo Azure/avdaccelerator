@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "7685576926211870509"
+      "templateHash": "11923696724928629737"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -4214,7 +4214,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "18193340059463993465"
+              "templateHash": "2534323673630065360"
             },
             "name": "AVD LZA networking",
             "description": "This module deploys vNet, NSG, ASG, UDR, private DNs zones",
@@ -7448,7 +7448,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "7907389961578779292"
+                      "templateHash": "6927397674460939464"
                     },
                     "name": "Private DNS Zones",
                     "description": "This module deploys a Private DNS zone.",
@@ -7513,7 +7513,7 @@
                     },
                     "privateDnsZone": {
                       "type": "Microsoft.Network/privateDnsZones",
-                      "apiVersion": "2020-06-01",
+                      "apiVersion": "2024-06-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]"
@@ -7559,7 +7559,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.93.31351",
-                              "templateHash": "2426664930993560639"
+                              "templateHash": "7935296883010131007"
                             },
                             "name": "Private DNS Zone Virtual Network Link",
                             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -7611,12 +7611,12 @@
                             "privateDnsZone": {
                               "existing": true,
                               "type": "Microsoft.Network/privateDnsZones",
-                              "apiVersion": "2020-06-01",
+                              "apiVersion": "2024-06-01",
                               "name": "[parameters('privateDnsZoneName')]"
                             },
                             "virtualNetworkLink": {
                               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-                              "apiVersion": "2020-06-01",
+                              "apiVersion": "2024-06-01",
                               "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -7655,7 +7655,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('virtualNetworkLink', '2020-06-01', 'full').location]"
+                              "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
                             }
                           }
                         }
@@ -7692,7 +7692,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateDnsZone', '2020-06-01', 'full').location]"
+                      "value": "[reference('privateDnsZone', '2024-06-01', 'full').location]"
                     }
                   }
                 }
@@ -7730,7 +7730,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "7907389961578779292"
+                      "templateHash": "6927397674460939464"
                     },
                     "name": "Private DNS Zones",
                     "description": "This module deploys a Private DNS zone.",
@@ -7795,7 +7795,7 @@
                     },
                     "privateDnsZone": {
                       "type": "Microsoft.Network/privateDnsZones",
-                      "apiVersion": "2020-06-01",
+                      "apiVersion": "2024-06-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]"
@@ -7841,7 +7841,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.93.31351",
-                              "templateHash": "2426664930993560639"
+                              "templateHash": "7935296883010131007"
                             },
                             "name": "Private DNS Zone Virtual Network Link",
                             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -7893,12 +7893,12 @@
                             "privateDnsZone": {
                               "existing": true,
                               "type": "Microsoft.Network/privateDnsZones",
-                              "apiVersion": "2020-06-01",
+                              "apiVersion": "2024-06-01",
                               "name": "[parameters('privateDnsZoneName')]"
                             },
                             "virtualNetworkLink": {
                               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-                              "apiVersion": "2020-06-01",
+                              "apiVersion": "2024-06-01",
                               "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -7937,7 +7937,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('virtualNetworkLink', '2020-06-01', 'full').location]"
+                              "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
                             }
                           }
                         }
@@ -7974,7 +7974,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateDnsZone', '2020-06-01', 'full').location]"
+                      "value": "[reference('privateDnsZone', '2024-06-01', 'full').location]"
                     }
                   }
                 }
@@ -8012,7 +8012,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "7907389961578779292"
+                      "templateHash": "6927397674460939464"
                     },
                     "name": "Private DNS Zones",
                     "description": "This module deploys a Private DNS zone.",
@@ -8077,7 +8077,7 @@
                     },
                     "privateDnsZone": {
                       "type": "Microsoft.Network/privateDnsZones",
-                      "apiVersion": "2020-06-01",
+                      "apiVersion": "2024-06-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]"
@@ -8123,7 +8123,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.93.31351",
-                              "templateHash": "2426664930993560639"
+                              "templateHash": "7935296883010131007"
                             },
                             "name": "Private DNS Zone Virtual Network Link",
                             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -8175,12 +8175,12 @@
                             "privateDnsZone": {
                               "existing": true,
                               "type": "Microsoft.Network/privateDnsZones",
-                              "apiVersion": "2020-06-01",
+                              "apiVersion": "2024-06-01",
                               "name": "[parameters('privateDnsZoneName')]"
                             },
                             "virtualNetworkLink": {
                               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-                              "apiVersion": "2020-06-01",
+                              "apiVersion": "2024-06-01",
                               "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -8219,7 +8219,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('virtualNetworkLink', '2020-06-01', 'full').location]"
+                              "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
                             }
                           }
                         }
@@ -8256,7 +8256,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateDnsZone', '2020-06-01', 'full').location]"
+                      "value": "[reference('privateDnsZone', '2024-06-01', 'full').location]"
                     }
                   }
                 }
@@ -8294,7 +8294,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "7907389961578779292"
+                      "templateHash": "6927397674460939464"
                     },
                     "name": "Private DNS Zones",
                     "description": "This module deploys a Private DNS zone.",
@@ -8359,7 +8359,7 @@
                     },
                     "privateDnsZone": {
                       "type": "Microsoft.Network/privateDnsZones",
-                      "apiVersion": "2020-06-01",
+                      "apiVersion": "2024-06-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]"
@@ -8405,7 +8405,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.93.31351",
-                              "templateHash": "2426664930993560639"
+                              "templateHash": "7935296883010131007"
                             },
                             "name": "Private DNS Zone Virtual Network Link",
                             "description": "This module deploys a Private DNS Zone Virtual Network Link.",
@@ -8457,12 +8457,12 @@
                             "privateDnsZone": {
                               "existing": true,
                               "type": "Microsoft.Network/privateDnsZones",
-                              "apiVersion": "2020-06-01",
+                              "apiVersion": "2024-06-01",
                               "name": "[parameters('privateDnsZoneName')]"
                             },
                             "virtualNetworkLink": {
                               "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
-                              "apiVersion": "2020-06-01",
+                              "apiVersion": "2024-06-01",
                               "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -8501,7 +8501,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('virtualNetworkLink', '2020-06-01', 'full').location]"
+                              "value": "[reference('virtualNetworkLink', '2024-06-01', 'full').location]"
                             }
                           }
                         }
@@ -8538,7 +8538,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('privateDnsZone', '2020-06-01', 'full').location]"
+                      "value": "[reference('privateDnsZone', '2024-06-01', 'full').location]"
                     }
                   }
                 }
@@ -8694,7 +8694,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "13534585109338129475"
+              "templateHash": "7089616774495447601"
             },
             "name": "AVD LZA management plane",
             "description": "This module deploys AVD workspace, host pool, application group scaling plan",
@@ -11247,7 +11247,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "7171654494888850114"
+                      "templateHash": "4385633039380296561"
                     },
                     "name": "Workspace",
                     "description": "This module deploys an Azure Virtual Desktop Workspace.",
@@ -11658,7 +11658,7 @@
                             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                           },
                           "location": {
-                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2024-03-01', 'Full').location)]"
                           },
                           "privateDnsZoneGroupName": {
                             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
@@ -14495,7 +14495,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10554191325518595239"
+              "templateHash": "10869016739980645147"
             }
           },
           "parameters": {
@@ -16224,7 +16224,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "14616528108278942259"
+                      "templateHash": "5052089415637685759"
                     }
                   },
                   "parameters": {
@@ -16370,7 +16370,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.33.93.31351",
-                              "templateHash": "10860312797222506854"
+                              "templateHash": "16238346170268272034"
                             },
                             "name": "Key Vaults",
                             "description": "This module deploys a Key Vault.",
@@ -17516,7 +17516,7 @@
                               "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('name'))]",
                               "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
                               "properties": {
-                                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                                "roleDefinitionId": "[coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -18406,7 +18406,7 @@
                                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                                   },
                                   "location": {
-                                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+                                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2024-03-01', 'Full').location)]"
                                   },
                                   "lock": {
                                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
@@ -20133,7 +20133,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "10860312797222506854"
+              "templateHash": "16238346170268272034"
             },
             "name": "Key Vaults",
             "description": "This module deploys a Key Vault.",
@@ -21279,7 +21279,7 @@
               "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('name'))]",
               "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('name')), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId, coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)]",
               "properties": {
-                "roleDefinitionId": "[if(contains(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), variables('builtInRoleNames')[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName], if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
+                "roleDefinitionId": "[coalesce(tryGet(variables('builtInRoleNames'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName), if(contains(coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/'), coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName, subscriptionResourceId('Microsoft.Authorization/roleDefinitions', coalesce(parameters('roleAssignments'), createArray())[copyIndex()].roleDefinitionIdOrName)))]",
                 "principalId": "[coalesce(parameters('roleAssignments'), createArray())[copyIndex()].principalId]",
                 "description": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'description')]",
                 "principalType": "[tryGet(coalesce(parameters('roleAssignments'), createArray())[copyIndex()], 'principalType')]",
@@ -22169,7 +22169,7 @@
                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                   },
                   "location": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2024-03-01', 'Full').location)]"
                   },
                   "lock": {
                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
@@ -26912,7 +26912,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1078178153470490340"
+              "templateHash": "8619049573819403821"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -27182,7 +27182,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "13156695704748320501"
+                      "templateHash": "11421348829572406411"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account.",
@@ -28033,7 +28033,7 @@
                             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                           },
                           "location": {
-                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2024-03-01', 'Full').location)]"
                           },
                           "privateDnsZoneGroupName": {
                             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
@@ -29871,7 +29871,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "1078178153470490340"
+              "templateHash": "8619049573819403821"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -30141,7 +30141,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.33.93.31351",
-                      "templateHash": "13156695704748320501"
+                      "templateHash": "11421348829572406411"
                     },
                     "name": "Storage Accounts",
                     "description": "This module deploys a Storage Account.",
@@ -30992,7 +30992,7 @@
                             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                           },
                           "location": {
-                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+                            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2024-03-01', 'Full').location)]"
                           },
                           "privateDnsZoneGroupName": {
                             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
