@@ -47,7 +47,7 @@ function New-Log {
         $script:logFile = "$Script:Name-$date.log"
     
         if ((Test-Path $path ) -eq $false) {
-                $null = New-Item -Path $path -type directory
+                $null = New-Item -Path $path -ItemType directory
         }
     
         $script:Log = Join-Path $path $logfile
@@ -354,13 +354,13 @@ try {
         }
         If ($FsLogixStorageAccountKey -ne '') {                
                 $SAName = $FSLogixStorageFQDN.Split('.')[0]
-                Write-Log -Message "Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
+                Write-Log -Message "Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Info'
                 $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$FSLogixStorageFQDN /user:localhost\$SAName /pass:$FSLogixStorageAccountKey" -Wait -PassThru
                 If ($CMDKey.ExitCode -ne 0) {
-                        Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'ERROR'
+                        Write-Log -Message "CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Error'
                 }
                 Else {
-                        Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Type 'INFO'
+                        Write-Log -Message "Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager" -Category 'Info'
                 }
                 $Settings += @(
                         # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject
@@ -436,7 +436,7 @@ try {
                 foreach ($File in $Files) {
                         Add-MpPreference -ExclusionPath $File
                 }
-                Write-Log -Message 'Enabled Defender exlusions for FSLogix paths' -Type 'INFO'
+                Write-Log -Message 'Enabled Defender exlusions for FSLogix paths' -Category 'Info'
 
                 $Processes = @(
                         "%ProgramFiles%\FSLogix\Apps\frxccd.exe",
@@ -447,7 +447,7 @@ try {
                 foreach ($Process in $Processes) {
                         Add-MpPreference -ExclusionProcess $Process
                 }
-                Write-Log -Message 'Enabled Defender exlusions for FSLogix processes' -Type 'INFO'
+                Write-Log -Message 'Enabled Defender exlusions for FSLogix processes' -Category 'Info'
         }
 
 
@@ -457,13 +457,13 @@ try {
         $BootInstaller = 'AVD-Bootloader.msi'
         Get-WebFile -FileName $BootInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrxrH'
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $BootInstaller /quiet /qn /norestart /passive" -Wait -Passthru
-        Write-Log -Message 'Installed AVD Bootloader' -Type 'INFO'
+        Write-Log -Message 'Installed AVD Bootloader' -Category 'Info'
         Start-Sleep -Seconds 5
 
         $AgentInstaller = 'AVD-Agent.msi'
         Get-WebFile -FileName $AgentInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrmXv'
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $AgentInstaller /quiet /qn /norestart /passive REGISTRATIONTOKEN=$HostPoolRegistrationToken" -Wait -PassThru
-        Write-Log -Message 'Installed AVD Agent' -Type 'INFO'
+        Write-Log -Message 'Installed AVD Agent' -Category 'Info'
         Start-Sleep -Seconds 5
 
         ##############################################################
@@ -474,6 +474,6 @@ try {
         }
 }
 catch {
-        Write-Log -Message $_ -Type 'ERROR'
+        Write-Log -Message $_ -Category 'Error'
         throw
 }
