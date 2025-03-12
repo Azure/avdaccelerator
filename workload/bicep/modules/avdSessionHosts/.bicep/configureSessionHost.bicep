@@ -82,7 +82,7 @@ var varNvidiaVmSize = contains(varNvidiaVmSizes, vmSize)
 // Deployments //
 // =========== //
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-03' existing = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
   name: last(split(hostPoolResourceId, '/'))
   scope: resourceGroup(split(hostPoolResourceId, '/')[4])
 }
