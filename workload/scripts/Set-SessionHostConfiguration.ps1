@@ -384,6 +384,8 @@ try {
                         Set-RegistryValue -Path 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
                         Write-Log -Message "Unloading default user hive."
                         $null = cmd /c REG UNLOAD "HKLM\DefaultUser" '2>&1'
+                        [GC]::Collect()
+                        [GC]::WaitForPendingFinalizers()
                 }
                 $LocalAdministrator = (Get-LocalUser | Where-Object { $_.SID -like '*-500' }).Name
                 $LocalGroups = 'FSLogix Profile Exclude List', 'FSLogix ODFC Exclude List'
