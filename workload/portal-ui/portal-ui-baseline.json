@@ -23,7 +23,7 @@
 							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
 							"request": {
 								"method": "GET",
-								"path": "/v1.0/servicePrincipals?$filter=equals(appId, '9cdead84-a844-4324-93f2-b2e6bb768d07')"
+								"path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"
 							}
 						},
 						{
@@ -32,7 +32,7 @@
 							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
 							"request": {
 								"method": "GET",
-								"path": "/v1.0/servicePrincipals?$filter=equals(appId, '50e95039-b200-4007-bc97-8d5790743a63')"
+								"path": "/v1.0/servicePrincipals?$filter=appId eq '50e95039-b200-4007-bc97-8d5790743a63'"
 							}
 						},
 						{
