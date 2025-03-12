@@ -298,7 +298,7 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
       friendlyName: workSpaceFriendlyName
       location: managementPlaneLocation
       applicationGroupReferences: [
-        applicationGroups[0].outputs.resourceId
+        '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
       ]
       tags: tags
       publicNetworkAccess: deployAvdPrivateLinkService ? workspacePublicNetworkAccess : null
@@ -322,6 +322,10 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
       ]: []
       diagnosticSettings: varDiagnosticSettings
   }
+  dependsOn: [
+    hostPool
+    applicationGroups
+  ]
 }
 
 // Scaling plan.
