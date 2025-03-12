@@ -88,8 +88,8 @@ param useSharedImage bool
 @sys.description('Source custom image ID.')
 param avdImageTemplateDefinitionId string
 
-@sys.description('Local administrator username.')
-param vmLocalUserName string
+// @sys.description('Local administrator username.')
+// param vmLocalUserName string
 
 @sys.description('Name of keyvault that contains credentials.')
 param wrklKvName string
@@ -195,7 +195,8 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         vTpmEnabled: vTpmEnabled
         imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
         osDisk: !empty(customOsDiskSizeGB ) ? varCustomOsDiskProperties : varOsDiskProperties
-        adminUsername: vmLocalUserName
+        //adminUsername: vmLocalUserName
+        adminUsername: keyVault.getSecret('vmLocalUserName')
         adminPassword: keyVault.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
