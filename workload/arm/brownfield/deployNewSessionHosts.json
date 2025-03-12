@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "9866270491130820411"
+      "templateHash": "12300850645337003783"
     }
   },
   "parameters": {
@@ -2321,13 +2321,13 @@
     {
       "copy": {
         "name": "sessionHosts",
-        "count": "[length(range(0, variables('varSessionHostBatchCount')))]",
+        "count": "[length(range(1, variables('varSessionHostBatchCount')))]",
         "mode": "serial",
         "batchSize": 10
       },
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
-      "name": "[format('SH-Batch-{0}-{1}', sub(range(0, variables('varSessionHostBatchCount'))[copyIndex()], 1), parameters('time'))]",
+      "name": "[format('SH-Batch-{0}-{1}', range(1, variables('varSessionHostBatchCount'))[copyIndex()], parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -2345,7 +2345,7 @@
             "value": "[parameters('availabilityZones')]"
           },
           "batchId": {
-            "value": "[sub(range(0, variables('varSessionHostBatchCount'))[copyIndex()], 1)]"
+            "value": "[sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1)]"
           },
           "computeObjectsRgName": {
             "value": "[parameters('computeRgResourceGroupName')]"
@@ -2353,8 +2353,8 @@
           "configureFslogix": {
             "value": "[parameters('configureFslogix')]"
           },
-          "count": "[if(and(equals(range(0, variables('varSessionHostBatchCount'))[copyIndex()], variables('varSessionHostBatchCount')), greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0)), createObject('value', variables('varMaxSessionHostsDivisionRemainderValue')), createObject('value', variables('varMaxSessionHostsPerTemplate')))]",
-          "countIndex": "[if(equals(range(0, variables('varSessionHostBatchCount'))[copyIndex()], 1), createObject('value', parameters('countIndex')), createObject('value', add(mul(sub(range(0, variables('varSessionHostBatchCount'))[copyIndex()], 1), variables('varMaxSessionHostsPerTemplate')), parameters('countIndex'))))]",
+          "count": "[if(and(equals(range(1, variables('varSessionHostBatchCount'))[copyIndex()], variables('varSessionHostBatchCount')), greater(variables('varMaxSessionHostsDivisionRemainderValue'), 0)), createObject('value', variables('varMaxSessionHostsDivisionRemainderValue')), createObject('value', variables('varMaxSessionHostsPerTemplate')))]",
+          "countIndex": "[if(equals(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), createObject('value', parameters('countIndex')), createObject('value', add(mul(sub(range(1, variables('varSessionHostBatchCount'))[copyIndex()], 1), variables('varMaxSessionHostsPerTemplate')), parameters('countIndex'))))]",
           "createIntuneEnrollment": {
             "value": "[parameters('createIntuneEnrollment')]"
           },
@@ -2458,7 +2458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "4558259705943271965"
+              "templateHash": "7109823568683958744"
             }
           },
           "parameters": {
@@ -2754,11 +2754,11 @@
             {
               "copy": {
                 "name": "sessionHosts",
-                "count": "[length(range(1, parameters('count')))]"
+                "count": "[length(range(0, parameters('count')))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-{0}-{1}-{2}', parameters('batchId'), sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('SH-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -2768,7 +2768,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
+                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
@@ -2776,7 +2776,7 @@
                   "timeZone": {
                     "value": "[parameters('timeZone')]"
                   },
-                  "zone": "[if(equals(parameters('availability'), 'AvailabilityZones'), createObject('value', variables('varZones')[mod(sub(range(1, parameters('count'))[copyIndex()], 1), length(variables('varZones')))]), createObject('value', 0))]",
+                  "zone": "[if(equals(parameters('availability'), 'AvailabilityZones'), createObject('value', variables('varZones')[mod(range(0, parameters('count'))[copyIndex()], length(variables('varZones')))]), createObject('value', 0))]",
                   "managedIdentities": "[if(or(contains(parameters('identityServiceProvider'), 'EntraID'), parameters('deployMonitoring')), createObject('value', createObject('systemAssigned', true())), createObject('value', null()))]",
                   "encryptionAtHost": {
                     "value": "[parameters('encryptionAtHost')]"
@@ -2818,7 +2818,7 @@
                   "nicConfigurations": {
                     "value": [
                       {
-                        "name": "[format('nic-01-{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]",
+                        "name": "[format('nic-01-{0}{1}', parameters('namePrefix'), padLeft(add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]",
                         "deleteOption": "Delete",
                         "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
                         "ipConfigurations": "[if(not(empty(parameters('asgResourceId'))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'), 'applicationSecurityGroups', createArray(createObject('id', parameters('asgResourceId'))))), createArray(createObject('name', 'ipconfig01', 'subnetResourceId', parameters('subnetId'))))]"
@@ -6436,12 +6436,12 @@
             {
               "copy": {
                 "name": "sessionHostsAntimalwareExtension",
-                "count": "[length(range(1, parameters('count')))]"
+                "count": "[length(range(0, parameters('count')))]"
               },
               "condition": "[parameters('deployAntiMalwareExt')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-Antimal-{0}-{1}-{2}', parameters('batchId'), sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('SH-Antimal-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -6454,7 +6454,7 @@
                     "value": "[parameters('location')]"
                   },
                   "virtualMachineName": {
-                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
+                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
                   "name": {
                     "value": "MicrosoftAntiMalware"
@@ -6653,12 +6653,12 @@
             {
               "copy": {
                 "name": "ama",
-                "count": "[length(range(1, parameters('count')))]"
+                "count": "[length(range(0, parameters('count')))]"
               },
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-Mon-{0}-{1}-{2}', parameters('batchId'), sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('SH-Mon-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -6671,7 +6671,7 @@
                     "value": "[parameters('location')]"
                   },
                   "virtualMachineName": {
-                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
+                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
                   "name": {
                     "value": "AzureMonitorWindowsAgent"
@@ -6857,12 +6857,12 @@
             {
               "copy": {
                 "name": "dataCollectionRuleAssociation",
-                "count": "[length(range(1, parameters('count')))]"
+                "count": "[length(range(0, parameters('count')))]"
               },
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('DCR-Asso-{0}-{1}-{2}', parameters('batchId'), sub(range(1, parameters('count'))[copyIndex()], 1), parameters('time'))]",
+              "name": "[format('DCR-Asso-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -6872,7 +6872,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "virtualMachineName": {
-                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
+                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
                   "dataCollectionRuleId": {
                     "value": "[parameters('dataCollectionRuleId')]"
@@ -6924,11 +6924,11 @@
             {
               "copy": {
                 "name": "sessionHostConfiguration",
-                "count": "[length(range(1, parameters('count')))]"
+                "count": "[length(range(0, parameters('count')))]"
               },
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
-              "name": "[format('SH-Config-{0}-{1}-{2}', parameters('batchId'), range(1, parameters('count'))[copyIndex()], parameters('time'))]",
+              "name": "[format('SH-Config-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
               "properties": {
@@ -6962,7 +6962,7 @@
                     "value": "[parameters('location')]"
                   },
                   "name": {
-                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(1, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
+                    "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
                   "scriptName": {
                     "value": "[parameters('sessionHostConfigurationScript')]"
