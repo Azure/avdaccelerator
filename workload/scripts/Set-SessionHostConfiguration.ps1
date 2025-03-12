@@ -75,6 +75,52 @@ function Get-WebFile {
         until((Test-Path $FileName) -or $Counter -eq 9)
 }
 
+Function Set-RegistryValue {
+        [CmdletBinding()]
+        param (
+            [Parameter()]
+            [string]
+            $Name,
+            [Parameter()]
+            [string]
+            $Path,
+            [Parameter()]
+            [string]$PropertyType,
+            [Parameter()]
+            $Value
+        )
+        Begin {
+            Write-Log -message "[Set-RegistryValue]: Setting Registry Value: $Name"
+        }
+        Process {
+            # Create the registry Key(s) if necessary.
+            If (!(Test-Path -Path $Path)) {
+                Write-Log -message "[Set-RegistryValue]: Creating Registry Key: $Path"
+                New-Item -Path $Path -Force | Out-Null
+            }
+            # Check for existing registry setting
+            $RemoteValue = Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue
+            If ($RemoteValue) {
+                # Get current Value
+                $CurrentValue = Get-ItemPropertyValue -Path $Path -Name $Name
+                Write-Log -message "[Set-RegistryValue]: Current Value of $($Path)\$($Name) : $CurrentValue"
+                If ($Value -ne $CurrentValue) {
+                    Write-Log -message "[Set-RegistryValue]: Setting Value of $($Path)\$($Name) : $Value"
+                    Set-ItemProperty -Path $Path -Name $Name -Value $Value -Force | Out-Null
+                } Else {
+                    Write-Log -message "[Set-RegistryValue]: Value of $($Path)\$($Name) is already set to $Value"
+                }           
+            }
+            Else {
+                Write-Log -message "[Set-RegistryValue]: Setting Value of $($Path)\$($Name) : $Value"
+                New-ItemProperty -Path $Path -Name $Name -PropertyType $PropertyType -Value $Value -Force | Out-Null
+            }
+            Start-Sleep -Milliseconds 500
+        }
+        End {
+        }
+    }
+
 $ErrorActionPreference = 'Stop'
 
 try {
@@ -310,7 +356,7 @@ try {
                 )
                 # Disable the Recycle Bin
                 Reg LOAD HKLM\DefaultUser "$env:SystemDrive\Users\Default User\NtUser.dat"
-                Set-RegistryValue -Key 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -Type DWord -Value 1
+                Set-RegistryValue -Key 'HKLM:\DefaultUser\Software\Microsoft\Windows\CurrentVersion\Policies\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1
                 Write-Log -Message "Unloading default user hive."
                 $null = cmd /c REG UNLOAD "HKLM\DefaultUser" '2>&1'
         }
@@ -333,32 +379,15 @@ try {
 
         # Set registry settings
         foreach ($Setting in $Settings) {
-                # Create registry key(s) if necessary
-                if (!(Test-Path -Path $Setting.Path)) {
-                        New-Item -Path $Setting.Path -Force
-                }
-
-                # Checks for existing registry setting
-                $Value = Get-ItemProperty -Path $Setting.Path -Name $Setting.Name -ErrorAction 'SilentlyContinue'
-                $LogOutputValue = 'Path: ' + $Setting.Path + ', Name: ' + $Setting.Name + ', PropertyType: ' + $Setting.PropertyType + ', Value: ' + $Setting.Value
-
-                # Creates the registry setting when it does not exist
-                if (!$Value) {
-                        New-ItemProperty -Path $Setting.Path -Name $Setting.Name -PropertyType $Setting.PropertyType -Value $Setting.Value -Force
-                        Write-Log -Message "Added registry setting: $LogOutputValue" -Type 'INFO'
-                }
-                # Updates the registry setting when it already exists
-                elseif ($Value.$($Setting.Name) -ne $Setting.Value) {
-                        Set-ItemProperty -Path $Setting.Path -Name $Setting.Name -Value $Setting.Value -Force
-                        Write-Log -Message "Updated registry setting: $LogOutputValue" -Type 'INFO'
-                }
-                # Writes log output when registry setting has the correct value
-                else {
-                        Write-Log -Message "Registry setting exists with correct value: $LogOutputValue" -Type 'INFO'    
-                }
-                Start-Sleep -Seconds 1
+                Set-RegistryValue -Name $Setting.Name -Path $Setting.Path -PropertyType $Setting.PropertyType -Value $Setting.Value -Verbose
         }
 
+        # Resize OS Disk
+        Write-Log -message "Resizing OS Disk"
+        $driveLetter = $env:SystemDrive.Substring(0,1)
+        $size = Get-PartitionSupportedSize -DriveLetter $driveLetter
+        Resize-Partition -DriveLetter $driveLetter -Size $size.SizeMax
+        Write-Log -message "OS Disk Resized"
 
         ##############################################################
         # Add Defender Exclusions for FSLogix 
