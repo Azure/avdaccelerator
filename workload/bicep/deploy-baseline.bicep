@@ -1560,7 +1560,7 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
 @batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
-    name: 'SH-Batch-${i-1}-${time}'
+    name: 'SH-Batch-${i}-${time}'
     params: {
       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateAppAttachDeployment)
         ? '${networking.outputs.applicationSecurityGroupResourceId}'
