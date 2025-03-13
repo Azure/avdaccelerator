@@ -151,22 +151,6 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-
-
-//param avdHostPoolCustomName string = 'vdpool-app1-${toLower(deploymentEnvironment)}-use2-001'
-var remoteHostPoolName = replace(hostPoolName, 'app1', 'rpapp1')
-
-//param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
-var remoteHostPoolFriendlyName = replace(hostPoolFriendlyName, 'ARPA-H', 'ARPA-H RemoteApps')
-
-//param avdApplicationGroupCustomName string = 'vdag-desktop-app1-${toLower(deploymentEnvironment)}-use2-001'
-var remoteAppApplicationGroupName = replace(applicationGroupName, 'desktop', 'remoteapp')
-
-//avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - Test'
-var remoteAppApplicationGroupFriendlyName = replace(applicationGroupName, 'ARPA-H', 'ARPA-H RemoteApps')
-
-var preferredRemoteAppGroupType = 'RailApplications'
-
 var varApplicationGroups = [
   {
     name: applicationGroupName
@@ -175,64 +159,38 @@ var varApplicationGroups = [
     applicationGroupType: (preferredAppGroupType == 'Desktop') ? 'Desktop' : 'RemoteApp'
   }
 ]
-
-var varRemoteApplicationGroups = [
-  {
-    name: remoteAppApplicationGroupName
-    friendlyName: remoteAppApplicationGroupFriendlyName
-    location: managementPlaneLocation
-    applicationGroupType: 'RemoteApp'
-  }
-]
-
 var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
-// var varRAppApplicationGroupsStandardApps = (preferredAppGroupType == 'RailApplications') ? [
-//   {
-//     name: 'Task Manager'
-//     description: 'Task Manager'
-//     friendlyName: 'Task Manager'
-//     showInPortal: true
-//     filePath: 'C:\\Windows\\system32\\taskmgr.exe'
-//   }
-//   {
-//     name: 'WordPad'
-//     description: 'WordPad'
-//     friendlyName: 'WordPad'
-//     showInPortal: true
-//     filePath: 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'
-//   }
-//   {
-//     name: 'Microsoft Edge'
-//     description: 'Microsoft Edge'
-//     friendlyName: 'Edge'
-//     showInPortal: true
-//     filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-//   }
-//   {
-//     name: 'Remote Desktop Connection'
-//     description: 'Remote Desktop Connection'
-//     friendlyName: 'Remote Desktop'
-//     showInPortal: true
-//     filePath: 'C:\\WINDOWS\\system32\\mtsc.exe'
-//   }
-// ]: []
-var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailApplications') ? [
+var varRAppApplicationGroupsStandardApps = (preferredAppGroupType == 'RailApplications') ? [
   {
-    name: 'Microsoft Edge - itas.nih.gov'
+    name: 'Task Manager'
+    description: 'Task Manager'
+    friendlyName: 'Task Manager'
+    showInPortal: true
+    filePath: 'C:\\Windows\\system32\\taskmgr.exe'
+  }
+  {
+    name: 'WordPad'
+    description: 'WordPad'
+    friendlyName: 'WordPad'
+    showInPortal: true
+    filePath: 'C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe'
+  }
+  {
+    name: 'Microsoft Edge'
     description: 'Microsoft Edge'
-    friendlyName: 'ITAS'
+    friendlyName: 'Edge'
     showInPortal: true
     filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
-    commandLineSetting: 'Require'
-    commandLineArguments: 'microsoft-edge:https://itas.nih.gov'
   }
   {
-      name: 'Microsoft Edge'
-      description: 'Microsoft Edge'
-      friendlyName: 'Edge'
-      showInPortal: true
-      filePath: 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'
+    name: 'Remote Desktop Connection'
+    description: 'Remote Desktop Connection'
+    friendlyName: 'Remote Desktop'
+    showInPortal: true
+    filePath: 'C:\\WINDOWS\\system32\\mtsc.exe'
   }
+]: []
+var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplications') ? [
   {
     name: 'Microsoft Excel'
     description: 'Microsoft Excel'
@@ -261,17 +219,8 @@ var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailAp
     showInPortal: true
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
   }
-  {
-    name: 'Microsoft Outlook'
-    description: 'Microsoft Word'
-    friendlyName: 'Outlook (new)'
-    showInPortal: true
-    filePath: 'shell:AppsFolder\\Microsoft.OutlookForWindows_8wekyb3d8bbwe!Microsoft.OutlookForWindows'
-  }
 ]: []
-
-//var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
-
+var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
   {
     workspaceResourceId: alaWorkspaceResourceId
@@ -279,10 +228,10 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
 ]: []
 
 // =========== //
-// Deployments Commercial//
+// Deployments//
 // =========== //
 // Hostpool creation.
-module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
+module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main-arpah.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'HostPool-${time}'
   params: {
@@ -297,43 +246,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     preferredAppGroupType: preferredAppGroupType
     personalDesktopAssignmentType: personalAssignType
     keyVaultResourceId: keyVaultResourceId
-    tags: tags
-    publicNetworkAccess: deployAvdPrivateLinkService ? hostPoolPublicNetworkAccess : null
-    privateEndpoints: deployAvdPrivateLinkService ? [
-      {
-        name: privateEndpointConnectionName
-        subnetResourceId: privateEndpointSubnetResourceId
-        privateDnsZoneResourceIds: [
-          avdVnetPrivateDnsZoneConnectionResourceId
-        ]
-      }
-    ]: []
-    diagnosticSettings: varDiagnosticSettings
-    agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
-        maintenanceWindows: hostPoolAgentUpdateSchedule
-        maintenanceWindowTimeZone: computeTimeZone
-        type: 'Scheduled'
-        useSessionHostLocalTime: true
-    }: {}
-  }
-}
-
-// remote applications host pool creation.
-module hostPoolRemoteApps '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
-  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-  name: 'HostPoolRA-${time}'
-  params: {
-    name: remoteHostPoolName
-    friendlyName: remoteHostPoolFriendlyName
-    location: managementPlaneLocation
-    hostPoolType: hostPoolType
-    startVMOnConnect: startVmOnConnect
-    customRdpProperty: varHostPoolRdpPropertiesDomainServiceCheck
-    loadBalancerType: hostPoolLoadBalancerType
-    maxSessionLimit: hostPoolMaxSessions
-    preferredAppGroupType: preferredRemoteAppGroupType
-    personalDesktopAssignmentType: personalAssignType
-    keyVaultResourceId: keyVaultResourceId
+    hostPoolRegistrationTokenSecretName: 'HostPoolRegistrationTokenDeveloper'
     tags: tags
     publicNetworkAccess: deployAvdPrivateLinkService ? hostPoolPublicNetworkAccess : null
     privateEndpoints: deployAvdPrivateLinkService ? [
@@ -364,9 +277,9 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     friendlyName: applicationGroup.friendlyName
     location: applicationGroup.location
     applicationGroupType: applicationGroup.applicationGroupType
-    hostpoolName: hostPoolName
+    hostpoolName: hostPool.outputs.name
     tags: tags
-    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsOfficeApps : []
+    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsApps : []
     roleAssignments: !empty(securityPrincipalId) ? [
       {      
         roleDefinitionIdOrName: 'Desktop Virtualization User'
@@ -376,32 +289,6 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
-    hostPool
-  ]
-}]
-
-// RemoteApp application groups.
-module remoteApplicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/application-group/main.bicep' = [for applicationGroup in varRemoteApplicationGroups: {
-  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-  name: '${applicationGroup.name}-${time}'
-  params: {
-    name: applicationGroup.name
-    friendlyName: applicationGroup.friendlyName
-    location: applicationGroup.location
-    applicationGroupType: applicationGroup.applicationGroupType
-    hostpoolName: remoteHostPoolName
-    tags: tags
-    applications: (applicationGroup.applicationGroupType == 'RemoteApp')  ? varRAppApplicationGroupsOfficeApps : []
-    roleAssignments: !empty(securityPrincipalId) ? [
-      {      
-        roleDefinitionIdOrName: 'Desktop Virtualization User'
-        principalId: securityPrincipalId
-      }
-    ]: []
-    diagnosticSettings: varDiagnosticSettings
-  }
-  dependsOn: [
-    hostPoolRemoteApps
   ]
 }]
 
@@ -415,7 +302,6 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
       location: managementPlaneLocation
       applicationGroupReferences: [
         '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
-        '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${remoteAppApplicationGroupName}'
       ]
       tags: tags
       publicNetworkAccess: deployAvdPrivateLinkService ? workspacePublicNetworkAccess : null
@@ -441,9 +327,7 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
   }
   dependsOn: [
     hostPool
-    hostPoolRemoteApps
     applicationGroups
-    remoteApplicationGroups
   ]
 }
 
@@ -460,30 +344,14 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       schedules: scalingPlanSchedules
       hostPoolReferences: [
         {
-        hostPoolArmPath: '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${hostPoolName}'
+        hostPoolArmPath: hostPool.outputs.resourceId
         scalingPlanEnabled: true
-        }
-        {
-          hostPoolArmPath: '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${remoteHostPoolName}'
-          scalingPlanEnabled: true
         }
       ]
       tags: tags
       diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
-    hostPool
-    hostPoolRemoteApps
-    applicationGroups
-    remoteApplicationGroups
     workSpace
   ]
 }
-
-@sys.description('The name of the desktop host pool.')
-output desktopHostPoolName string = hostPoolName
-
-@sys.description('The name of the remote app host pool.')
-output remoteAppHostPoolName string = remoteHostPoolName
-
-
