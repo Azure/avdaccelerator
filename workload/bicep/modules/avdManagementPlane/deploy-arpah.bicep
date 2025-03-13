@@ -261,6 +261,13 @@ var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailAp
     showInPortal: true
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
   }
+  {
+    name: 'Microsoft Outlook'
+    description: 'Microsoft Word'
+    friendlyName: 'Outlook (new)'
+    showInPortal: true
+    filePath: 'shell:AppsFolder\\Microsoft.OutlookForWindows_8wekyb3d8bbwe!Microsoft.OutlookForWindows'
+  }
 ]: []
 
 //var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
