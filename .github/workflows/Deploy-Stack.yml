@@ -50,6 +50,6 @@ jobs:
         # Name: 'SessionDesktop'
         # FriendlyName: 'ARPA-H Developer Windows Desktop'
       with:
-        inlineScript: ./.github/workflows/scripts/DeploymentStack.ps1 -SubcriptionId ${{ secrets.AZURE_SUB_ID }} -DeploymentStackName 'Test-Depl-Statck' -Location 'eastus2' -TemplateFile './workload/bicep/test/deploy-stack.bicep' -ParametersFile './workload/bicep/test/deploy-stack.parameters.json'
+        inlineScript: ./.github/workflows/scripts/DeploymentStack.ps1 -subscriptionId ${{ secrets.AZURE_SUB_ID }} -DeploymentStackName 'Test-Depl-Statck' -Location 'eastus2' -TemplateFile './workload/bicep/test/deploy-stack.bicep' -ParametersFile './workload/bicep/test/deploy-stack.parameters.json'
         azPSVersion: "latest"
         errorActionPreference: continue

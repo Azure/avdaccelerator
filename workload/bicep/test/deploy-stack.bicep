@@ -2,7 +2,7 @@
 
 param resourceGroupLocation string 
 param storageAccountName string
-param avdWorkloadSubsId string
+param subscriptionId string
 param storageObjectsRgName string
 
 // resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
@@ -16,7 +16,7 @@ param storageObjectsRgName string
 
 module storage 'modules/storage.bicep' = {
   name: 'test-deployment-stack-storage'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${storageObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   params: {
     resourceGroupLocation: resourceGroupLocation
     //subscriptionId: avdWorkloadSubsId
