@@ -488,7 +488,7 @@
 									"visible": "[equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered')]"
 								},
 								{
-									"name": "diskZeroTrust",
+									"name": "customerManagedKeys",
 									"type": "Microsoft.Common.CheckBox",
 									"label": "Enable Customer-Managed Keys on OS Disk",
 									"defaultValue": "[if(empty(filter(steps('basics').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id))), false, true)]",
@@ -504,7 +504,7 @@
 										"allowedValues": "[steps('basics').diskEncryptionSetsApi.transformed.list]",
 										"required": true
 									},
-									"visible": "[steps('sessionHosts').security.diskZeroTrust]"
+									"visible": "[and(not(empty(steps('basics').diskEncryptionSetsApi.value)), steps('sessionHosts').security.customerManagedKeys)]"
 								},
 								{
 									"name": "deployAntiMalwareExt",
@@ -1002,8 +1002,8 @@
 				"secureBootEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.secureBootEnabled, false)]",
 				"vTpmEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.vTpmEnabled, false)]",
 				"asgResourceId": "[if(empty(steps('sessionHosts').security.asg), '', first(map(steps('sessionHosts').security.asg.value, (asg) => asg.id)))]",
-				"encryptionAtHost": "[steps('sessionHosts').security.encryptionAtHost]",
-				"diskEncryptionSetResourceId": "[if(steps('sessionHosts').security.diskZeroTrust, steps('sessionHosts').security.diskEncryptionSet, '')]",
+				"encryptionAtHost": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), steps('sessionHosts').security.encryptionAtHost, false)]",
+				"diskEncryptionSetResourceId": "[if(steps('sessionHosts').security.customerManagedKeys, steps('sessionHosts').security.diskEncryptionSet, '')]",
 				"deployAntiMalwareExt": "[steps('sessionHosts').security.deployAntiMalwareExt]",
 				"identityServiceProvider": "[steps('sessionHosts').identityAndAccounts.identityServiceProvider]",
 				"createIntuneEnrollment": "[steps('sessionHosts').identityAndAccounts.intuneEnrollment]",
