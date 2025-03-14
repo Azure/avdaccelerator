@@ -9,6 +9,10 @@ on:
           options: 
           - Test
           - Prod
+        deployment_stack_name: 
+          type: string
+          description: Name of deployment stack to delete
+          default: 'Test-DevHostPool-Stack'
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -42,7 +46,7 @@ jobs:
     - name: Test deploy deployment stack ${{ github.event.inputs.environment }} environment
       uses: azure/powershell@v2
       with:
-        inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperHostPool.ps1 -DeploymentStackName 'Test-Depl-Stack' -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-arpah.parameters.json' `
+        inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperHostPool.ps1 -DeploymentStackName ${{ github.event.inputs.deployment_stack_name }} -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-arpah.parameters.json' `
           avdSessionHostCustomNamePrefix=${{ env.SESSION_HOST_PREFIX }} deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} imageGallerySubscriptionId=${{ secrets.IMAGE_GALLERY_SUB_ID }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} ` 
           existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdOuPath="${{ secrets.AD_OU }}" ` 
           securityPrincipalId="${{ secrets.SECURITY_PRINCIPAL_ID }}"
