@@ -43,16 +43,25 @@ jobs:
     #     parameters: ./workload/bicep/parameters/deploy-baseline-developer-arpah.parameters.json deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} imageGallerySubscriptionId=${{ secrets.IMAGE_GALLERY_SUB_ID }} avdVmLocalUserName=${{ secrets.AVD_ADMIN }} avdVmLocalUserPassword=${{ secrets.AVD_ADMINPASS }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdDomainJoinUserName=${{ secrets.AD_JOIN_USER }} avdDomainJoinUserPassword=${{ secrets.AD_JOIN_PASS }} avdOuPath="${{ secrets.AD_OU }}" storageOuPath="${{ secrets.AD_OU }}" storageFilePrivateEndpointStaticIp="${{ secrets.STORAGEFILEPRIVATEENDPOINTSTATICIP }}" securityPrincipalId="${{ secrets.SECURITY_PRINCIPAL_ID }}" securityPrincipalName="${{ secrets.SECURITY_PRINCIPAL_NAME }}" avdVnetPrivateDnsZoneFilesId= avdVnetPrivateDnsZoneKeyvaultId=
     #     failOnStdErr: false
 
+    # - name: Test deploy deployment stack ${{ github.event.inputs.environment }} environment
+    #   uses: azure/powershell@v2
+    #   with:
+    #     inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperHostPool.ps1 -DeploymentStackName ${{ github.event.inputs.deployment_stack_name }} -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-arpah.parameters.json' `
+    #       avdSessionHostCustomNamePrefix=${{ env.SESSION_HOST_PREFIX }} deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} imageGallerySubscriptionId=${{ secrets.IMAGE_GALLERY_SUB_ID }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} ` 
+    #       existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdOuPath="${{ secrets.AD_OU }}" ` 
+    #       securityPrincipalId="${{ secrets.SECURITY_PRINCIPAL_ID }}"
+    #     azPSVersion: "latest"
+    #     errorActionPreference: stop
+
     - name: Test deploy deployment stack ${{ github.event.inputs.environment }} environment
       uses: azure/powershell@v2
       with:
         inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperHostPool.ps1 -DeploymentStackName ${{ github.event.inputs.deployment_stack_name }} -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-arpah.parameters.json' `
-          avdSessionHostCustomNamePrefix=${{ env.SESSION_HOST_PREFIX }} deploymentEnvironment=${{ github.event.inputs.environment }} avdWorkloadSubsId=${{ secrets.AZURE_SUB_ID }} imageGallerySubscriptionId=${{ secrets.IMAGE_GALLERY_SUB_ID }} avdEnterpriseAppObjectId=${{ secrets.AZURE_AVD_OBJECTID }} ` 
-          existingVnetAvdSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} existingVnetPrivateEndpointSubnetResourceId=${{ secrets.AVD_SUBNET_ID }} identityDomainName=${{ secrets.AD_NAME}} avdOuPath="${{ secrets.AD_OU }}" ` 
-          securityPrincipalId="${{ secrets.SECURITY_PRINCIPAL_ID }}"
+          -avdSessionHostCustomNamePrefix ${{ env.SESSION_HOST_PREFIX }} -deploymentEnvironment ${{ github.event.inputs.environment }} -avdWorkloadSubsId ${{ secrets.AZURE_SUB_ID }} -imageGallerySubscriptionId ${{ secrets.IMAGE_GALLERY_SUB_ID }} -avdEnterpriseAppObjectId ${{ secrets.AZURE_AVD_OBJECTID }} ` 
+          -existingVnetAvdSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -existingVnetPrivateEndpointSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -identityDomainName ${{ secrets.AD_NAME}} -avdOuPath "${{ secrets.AD_OU }}" ` 
+          -securityPrincipalId "${{ secrets.SECURITY_PRINCIPAL_ID }}"
         azPSVersion: "latest"
         errorActionPreference: stop
-
     # - name: Update AVD Application Group Display Name in the ${{ github.event.inputs.environment }} environment
     #   uses: azure/powershell@v2
     #   env:
