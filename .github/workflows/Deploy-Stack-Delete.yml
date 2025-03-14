@@ -32,7 +32,7 @@ jobs:
       uses: azure/powershell@v2
       with:
         inlineScript: |
-          Remove-AzSubscriptionDeploymentStack -Name ${{ github.event.inputs.deployment_stack_name }} -ActionOnUnmanage "deleteAll" -Force
+          Remove-AzSubscriptionDeploymentStack -Name ${{ github.event.inputs.deployment_stack_name }} -ActionOnUnmanage "deleteResources" -Force
         azPSVersion: "latest"
 
     # - name: Test deploy deployment stack ${{ github.event.inputs.environment }} environment
