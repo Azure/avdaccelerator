@@ -1,0 +1,48 @@
+name: Delete Deployment Stack
+
+on:
+    workflow_dispatch:
+      inputs:
+        environment:
+          type: choice
+          description: Choose environment to deploy
+          options: 
+          - Test
+          - Prod
+        deployment_stack_name: 
+          type: string
+          description: Name of deployment stack to delete
+          default: 'Test-Depl-Statck'
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }} 
+        enable-AzPSSession: true
+    
+    - name: Run Azure PowerShell inline script
+      uses: azure/powershell@v2
+      with:
+        inlineScript: |
+          Remove-AzSubscriptionDeploymentStack -Name ${{ github.event.inputs.deployment_stack_name }} -ActionOnUnmanage "deleteAll"
+        azPSVersion: "latest"
+
+    # - name: Test deploy deployment stack ${{ github.event.inputs.environment }} environment
+    #   uses: azure/powershell@v2
+    #   # env:
+    #     # ResourceGroupName: 'avd-nih-arpah-developer-${{ github.event.inputs.environment }}-use2-service-objects'
+    #     # ApplicationGroupName: 'vdag-desktop-developer-${{ github.event.inputs.environment }}-use2-001'
+    #     # Name: 'SessionDesktop'
+    #     # FriendlyName: 'ARPA-H Developer Windows Desktop'
+    #   with:
+    #     inlineScript: ./.github/workflows/scripts/DeploymentStack.ps1 -subscriptionId ${{ secrets.AZURE_SUB_ID }} -DeploymentStackName 'Test-Depl-Statck' -Location 'eastus2' -TemplateFile './workload/bicep/test/deploy-stack.bicep' -ParametersFile './workload/bicep/test/deploy-stack.parameters.json'
+    #     azPSVersion: "latest"
+    #     errorActionPreference: stop
