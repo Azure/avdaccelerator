@@ -6,13 +6,13 @@
       "value": "eastus2"
     },
     "storageAccountName": {
-      "value": "stdeploystacktester"
+      "value": "stdeploystacktester123"
     },
     "subscriptionId": {
       "value": ""
     },
     "storageObjectsRgName": {
-      "value": "rg-depl-stack-tester"
+      "value": "rg-depl-stack-tester-again"
     }
   }
 }
