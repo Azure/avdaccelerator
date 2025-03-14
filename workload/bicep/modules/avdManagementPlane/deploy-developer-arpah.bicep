@@ -231,7 +231,44 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
 // Deployments//
 // =========== //
 // Hostpool creation.
-module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main-arpah.bicep' = {
+// module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main-arpah.bicep' = {
+//   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+//   name: 'HostPool-${time}'
+//   params: {
+//     name: hostPoolName
+//     friendlyName: hostPoolFriendlyName
+//     location: managementPlaneLocation
+//     hostPoolType: hostPoolType
+//     startVMOnConnect: startVmOnConnect
+//     customRdpProperty: varHostPoolRdpPropertiesDomainServiceCheck
+//     loadBalancerType: hostPoolLoadBalancerType
+//     maxSessionLimit: hostPoolMaxSessions
+//     preferredAppGroupType: preferredAppGroupType
+//     personalDesktopAssignmentType: personalAssignType
+//     keyVaultResourceId: keyVaultResourceId
+//     hostPoolRegistrationTokenSecretName: 'HostPoolRegistrationTokenDeveloper'
+//     tags: tags
+//     publicNetworkAccess: deployAvdPrivateLinkService ? hostPoolPublicNetworkAccess : null
+//     privateEndpoints: deployAvdPrivateLinkService ? [
+//       {
+//         name: privateEndpointConnectionName
+//         subnetResourceId: privateEndpointSubnetResourceId
+//         privateDnsZoneResourceIds: [
+//           avdVnetPrivateDnsZoneConnectionResourceId
+//         ]
+//       }
+//     ]: []
+//     diagnosticSettings: varDiagnosticSettings
+//     agentUpdate: !empty(hostPoolAgentUpdateSchedule) ? {
+//         maintenanceWindows: hostPoolAgentUpdateSchedule
+//         maintenanceWindowTimeZone: computeTimeZone
+//         type: 'Scheduled'
+//         useSessionHostLocalTime: true
+//     }: {}
+//   }
+// }
+
+module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'HostPool-${time}'
   params: {
@@ -246,7 +283,6 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     preferredAppGroupType: preferredAppGroupType
     personalDesktopAssignmentType: personalAssignType
     keyVaultResourceId: keyVaultResourceId
-    hostPoolRegistrationTokenSecretName: 'HostPoolRegistrationTokenDeveloper'
     tags: tags
     publicNetworkAccess: deployAvdPrivateLinkService ? hostPoolPublicNetworkAccess : null
     privateEndpoints: deployAvdPrivateLinkService ? [
