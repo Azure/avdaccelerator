@@ -886,7 +886,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       countIndex: i == 1
         ? avdSessionHostCountIndex
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
-      domainJoinUserName: keyVaultExisting.getSecret('avdDomainJoinUserName')
+      domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
       wrklKvName: varWrklKvName
       serviceObjectsRgName: varServiceObjectsRgName
       identityDomainName: identityDomainName
