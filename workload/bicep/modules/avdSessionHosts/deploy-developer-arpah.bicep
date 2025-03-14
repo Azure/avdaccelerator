@@ -98,6 +98,7 @@ param wrklKvName string
 param identityDomainName string
 
 @sys.description('AVD session host domain join credentials.')
+@secure()
 param domainJoinUserName string
 
 @sys.description('OU path to join AVd VMs.')

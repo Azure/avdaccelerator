@@ -1,5 +1,5 @@
-metadata name = 'AVD Accelerator - Baseline Deployment'
-metadata description = 'AVD Accelerator - Deployment Baseline'
+metadata name = 'AVD Accelerator - Developer Host Pool Deployment'
+metadata description = 'AVD Accelerator - Deployment Developer Host Pool'
 
 targetScope = 'subscription'
 
@@ -54,9 +54,6 @@ param securityPrincipalId string = ''
 
 @sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainName string = 'none'
-
-@sys.description('AVD session host domain join user principal name. (Default: none)')
-param avdDomainJoinUserName string = 'none'
 
 @sys.description('OU path to join AVd VMs. (Default: "")')
 param avdOuPath string = ''
@@ -128,12 +125,6 @@ param deployPrivateEndpointKeyvaultStorage bool = false
 
 @sys.description('Deploys the private link for AVD. Requires resource provider registration or re-registration. (Default: false)')
 param deployAvdPrivateLinkService bool = false
-
-@sys.description('Create new  Azure private DNS zones for private endpoints. (Default: true)')
-param createPrivateDnsZones bool = false
-
-@sys.description('Use existing Azure private DNS zone for key vault privatelink.vaultcore.azure.net or privatelink.vaultcore.usgovcloudapi.net. (Default: "")')
-param avdVnetPrivateDnsZoneKeyvaultId string = ''
 
 @sys.description('Deploy Fslogix setup. (Default: true)')
 param createAvdFslogixDeployment bool = true
@@ -820,7 +811,7 @@ module managementPLane './modules/avdManagementPlane/deploy-developer-arpah.bice
 }
 
 // retrieve existing resources
-resource keyVaultExisting 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+resource keyVaultExisting 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: varWrklKvName
   scope: resourceGroup('${avdWorkloadSubsId}', '${varServiceObjectsRgName}')
 }
@@ -862,9 +853,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
       ztKvPrivateEndpointName: varZtKvPrivateEndpointName
       privateEndpointsubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
       deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
-      keyVaultprivateDNSResourceId: createPrivateDnsZones
-        ? privateDnsZoneKeyVault.id
-        : avdVnetPrivateDnsZoneKeyvaultId
+      keyVaultprivateDNSResourceId: privateDnsZoneKeyVault.id
       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
       enableKvPurgeProtection: enableKvPurgeProtection
       kvTags: varZtKeyvaultTag
@@ -897,7 +886,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       countIndex: i == 1
         ? avdSessionHostCountIndex
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
-      domainJoinUserName: avdDomainJoinUserName
+      domainJoinUserName: keyVaultExisting.getSecret('avdDomainJoinUserName')
       wrklKvName: varWrklKvName
       serviceObjectsRgName: varServiceObjectsRgName
       identityDomainName: identityDomainName

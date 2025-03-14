@@ -12,7 +12,7 @@
           "value": true
       },
       "avdSessionHostCustomNamePrefix": {
-          "value": "arpahavd"
+          "value": "avddhp"
       },
       "avdSessionHostLocation": {
           "value": "eastus2"
@@ -20,26 +20,14 @@
       "avdManagementPlaneLocation": {
           "value": "eastus2"
       },
-      "avdDeployMonitoring": {
-          "value": true
-      },   
       "avdWorkloadSubsId": {
           "value": "<<subscriptionId>>"
       },
       "avdApplicationGroupCustomFriendlyName": {
           "value": "ARPA-H Developer Windows Desktop"
       },
-      "deployPrivateEndpointKeyvaultStorage": {
-          "value": true
-      },
       "avdEnterpriseAppObjectId": {
           "value": false
-      },
-      "avdVmLocalUserName": {
-          "value": "<<localUserName>>"
-      },
-      "avdVmLocalUserPassword": {
-          "value": "<<localUserPassword>>"
       },
       "avdIdentityServiceProvider": {
           "value": "ADDS"
@@ -49,17 +37,8 @@
       },            
       "securityPrincipalId": {
           "value": ""
-      },        
-      "securityPrincipalName": {
-          "value": ""
-      },       
+      },              
       "identityDomainName": {
-          "value": ""
-      },
-      "avdDomainJoinUserName": {
-          "value": ""
-      },
-      "avdDomainJoinUserPassword": {
           "value": ""
       },
       "avdOuPath": {
@@ -112,15 +91,6 @@
       },
       "customDnsIps": {
           "value": ""
-      },
-      "createPrivateDnsZones": {
-          "value": false
-      },
-      "avdVnetPrivateDnsZoneFilesId": {
-          "value": "<<PrivateDnsZoneFilesId>>"
-      },
-      "avdVnetPrivateDnsZoneKeyvaultId": {
-          "value": "<<PrivateDnsZoneKeyvaultId>>"
       },
       "vNetworkGatewayOnHub": {
           "value": false
@@ -188,38 +158,8 @@
       "goldenImageId": {
           "value": "GoldenImageAVDArpaHDeveloper/versions/latest"
       },
-      "storageOuPath": {
-          "value": ""
-      },
       "createResourceTags": {
           "value": false
-      },
-      "deployAlaWorkspace": {
-          "value": true
-      },  
-      "alaExistingWorkspaceResourceId": {
-          "value": ""
-      },           
-      "avdAlaWorkspaceDataRetention": {
-          "value": 90
-      },
-      "enableAcceleratedNetworking": {
-          "value": true
-      },
-      "diskEncryptionKeyExpirationInDays": {
-          "value": 60
-      },
-      "diskZeroTrust": {
-          "value": false
-      },
-      "enableKvPurgeProtection": {
-          "value": true
-      },
-      "deployGpuPolicies": {
-          "value": false
-      },
-      "storageFilePrivateEndpointStaticIp": {
-          "value": ""
       }
   }
 }
