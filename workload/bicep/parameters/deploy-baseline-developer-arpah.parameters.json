@@ -68,44 +68,14 @@
       "avdDeployScalingPlan": {
           "value": true
       },
-      "createAvdVnet": {
-          "value": false
-      },
       "existingVnetAvdSubnetResourceId": {
           "value": ""
       },
       "existingVnetPrivateEndpointSubnetResourceId": {
           "value": ""
       },
-      "existingHubVnetResourceId": {
-          "value": ""
-      },
-      "avdVnetworkAddressPrefixes": {
-          "value": ""
-      },
-      "vNetworkAvdSubnetAddressPrefix": {
-          "value": ""
-      },
-      "vNetworkPrivateEndpointSubnetAddressPrefix": {
-          "value": ""
-      },
-      "customDnsIps": {
-          "value": ""
-      },
-      "vNetworkGatewayOnHub": {
-          "value": false
-      },
       "createAvdFslogixDeployment": {
           "value": true
-      },
-      "createAppAttachDeployment": {
-          "value": false
-      },
-      "fslogixFileShareQuotaSize": {
-          "value": 1
-      },
-      "appAttachFileShareQuotaSize": {
-          "value": 1
       },
       "avdDeploySessionHosts": {
           "value": true
@@ -119,15 +89,6 @@
       "availabilityZonesCompute": {
           "value": true
       },
-      "zoneRedundantStorage": {
-          "value": false
-      },
-      "fslogixStoragePerformance": {
-          "value": "Premium"
-      },
-      "appAttachStoragePerformance": {
-          "value": "Premium"
-      },
       "avdSessionHostsSize": {
           "value": "Standard_E4s_v5"
       },
@@ -136,9 +97,6 @@
       },
       "avdOsImage": {
           "value": "win11_23h2_office"
-      },
-      "managementVmOsImage": {
-          "value": "winServer_2022_Datacenter_smalldisk_g2"
       },
       "securityType": {
           "value": "TrustedLaunch"
