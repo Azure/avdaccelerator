@@ -865,61 +865,61 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
     ]
   }  
 
-// // Session hosts
-// @batchSize(3)
-// module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
-//   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
-//     name: 'SH-Batch-${i - 1}-${time}'
-//     params: {
-//       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
-//       timeZone: varTimeZoneSessionHosts
-//       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment)
-//         ? '${applicationSecurityGroupExisting.id}'
-//         : ''
-//       identityServiceProvider: avdIdentityServiceProvider
-//       createIntuneEnrollment: createIntuneEnrollment
-//       batchId: i - 1
-//       computeObjectsRgName: varComputeObjectsRgName
-//       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
-//         ? varMaxSessionHostsDivisionRemainderValue
-//         : varMaxSessionHostsPerTemplate
-//       countIndex: i == 1
-//         ? avdSessionHostCountIndex
-//         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
-//       domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
-//       wrklKvName: varWrklKvName
-//       serviceObjectsRgName: varServiceObjectsRgName
-//       identityDomainName: identityDomainName
-//       avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
-//       sessionHostOuPath: avdOuPath
-//       diskType: avdSessionHostDiskType
-//       customOsDiskSizeGB: customOsDiskSizeGb
-//       location: avdSessionHostLocation
-//       namePrefix: varSessionHostNamePrefix
-//       vmSize: avdSessionHostsSize
-//       enableAcceleratedNetworking: enableAcceleratedNetworking
-//       securityType: securityType == 'Standard' ? '' : securityType
-//       secureBootEnabled: secureBootEnabled
-//       vTpmEnabled: vTpmEnabled
-//       subnetId: existingVnetAvdSubnetResourceId
-//       useAvailabilityZones: availabilityZonesCompute
-//       subscriptionId: avdWorkloadSubsId
-//       encryptionAtHost: diskZeroTrust
-//       createAvdFslogixDeployment: createAvdFslogixDeployment
-//       fslogixSharePath: varFslogixSharePath
-//       fslogixStorageFqdn: varFslogixStorageFqdn
-//       sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
-//       sessionHostConfigurationScript: varSessionHostConfigurationScript
-//       marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
-//       useSharedImage: useSharedImage
-//       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-//       deployMonitoring: false
-//       alaWorkspaceResourceId: logAnalyticsWorkspaceExisting.id
-//       dataCollectionRuleId: dataCollectionRulesExisting.id
-//       deployAntiMalwareExt: deployAntiMalwareExt
-//     }
-//     dependsOn: [
-//       managementPLane
-//     ]
-//   }
-// ]
+// Session hosts
+@batchSize(3)
+module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
+  for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
+    name: 'SH-Batch-${i - 1}-${time}'
+    params: {
+      diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
+      timeZone: varTimeZoneSessionHosts
+      asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment)
+        ? '${applicationSecurityGroupExisting.id}'
+        : ''
+      identityServiceProvider: avdIdentityServiceProvider
+      createIntuneEnrollment: createIntuneEnrollment
+      batchId: i - 1
+      computeObjectsRgName: varComputeObjectsRgName
+      count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
+        ? varMaxSessionHostsDivisionRemainderValue
+        : varMaxSessionHostsPerTemplate
+      countIndex: i == 1
+        ? avdSessionHostCountIndex
+        : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
+      domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
+      wrklKvName: varWrklKvName
+      serviceObjectsRgName: varServiceObjectsRgName
+      identityDomainName: identityDomainName
+      avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
+      sessionHostOuPath: avdOuPath
+      diskType: avdSessionHostDiskType
+      customOsDiskSizeGB: customOsDiskSizeGb
+      location: avdSessionHostLocation
+      namePrefix: varSessionHostNamePrefix
+      vmSize: avdSessionHostsSize
+      enableAcceleratedNetworking: enableAcceleratedNetworking
+      securityType: securityType == 'Standard' ? '' : securityType
+      secureBootEnabled: secureBootEnabled
+      vTpmEnabled: vTpmEnabled
+      subnetId: existingVnetAvdSubnetResourceId
+      useAvailabilityZones: availabilityZonesCompute
+      subscriptionId: avdWorkloadSubsId
+      encryptionAtHost: diskZeroTrust
+      createAvdFslogixDeployment: createAvdFslogixDeployment
+      fslogixSharePath: varFslogixSharePath
+      fslogixStorageFqdn: varFslogixStorageFqdn
+      sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
+      sessionHostConfigurationScript: varSessionHostConfigurationScript
+      marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
+      useSharedImage: useSharedImage
+      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+      deployMonitoring: false
+      alaWorkspaceResourceId: logAnalyticsWorkspaceExisting.id
+      dataCollectionRuleId: dataCollectionRulesExisting.id
+      deployAntiMalwareExt: deployAntiMalwareExt
+    }
+    dependsOn: [
+      managementPLane
+    ]
+  }
+]
