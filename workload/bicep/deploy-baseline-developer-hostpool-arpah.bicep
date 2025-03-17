@@ -837,33 +837,33 @@ resource logAnalyticsWorkspaceExisting 'Microsoft.OperationalInsights/workspaces
 }
 
 // Zero trust
-module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDeploySessionHosts) {
-    scope: subscription(avdWorkloadSubsId)
-    name: 'Zero-Trust-${time}'
-    params: {
-      location: avdSessionHostLocation
-      subscriptionId: avdWorkloadSubsId
-      diskZeroTrust: diskZeroTrust
-      serviceObjectsRgName: varServiceObjectsRgName
-      computeObjectsRgName: varComputeObjectsRgName
-      vaultSku: any(varWrklKeyVaultSku)
-      diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
-      diskEncryptionSetName: varDiskEncryptionSetName
-      ztKvName: varZtKvName
-      ztKvPrivateEndpointName: varZtKvPrivateEndpointName
-      privateEndpointsubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
-      deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
-      keyVaultprivateDNSResourceId: privateDnsZoneKeyVault.id
-      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-      enableKvPurgeProtection: enableKvPurgeProtection
-      kvTags: varZtKeyvaultTag
-    }
-    dependsOn: [
-      //baselineResourceGroups
-      //baselineStorageResourceGroup
-      //identity
-    ]
-  }  
+// module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDeploySessionHosts) {
+//     scope: subscription(avdWorkloadSubsId)
+//     name: 'Zero-Trust-${time}'
+//     params: {
+//       location: avdSessionHostLocation
+//       subscriptionId: avdWorkloadSubsId
+//       diskZeroTrust: diskZeroTrust
+//       serviceObjectsRgName: varServiceObjectsRgName
+//       computeObjectsRgName: varComputeObjectsRgName
+//       vaultSku: any(varWrklKeyVaultSku)
+//       diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays
+//       diskEncryptionSetName: varDiskEncryptionSetName
+//       ztKvName: varZtKvName
+//       ztKvPrivateEndpointName: varZtKvPrivateEndpointName
+//       privateEndpointsubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
+//       deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
+//       keyVaultprivateDNSResourceId: privateDnsZoneKeyVault.id
+//       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//       enableKvPurgeProtection: enableKvPurgeProtection
+//       kvTags: varZtKeyvaultTag
+//     }
+//     dependsOn: [
+//       //baselineResourceGroups
+//       //baselineStorageResourceGroup
+//       //identity
+//     ]
+//   }  
 
 // // Session hosts
 // @batchSize(3)
