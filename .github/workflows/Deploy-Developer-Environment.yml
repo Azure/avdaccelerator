@@ -1,0 +1,24 @@
+name: Deploy Developer AVD to NIH Environment
+
+on:
+    workflow_dispatch:
+      inputs:
+        environment:
+          type: choice
+          description: Choose environment to deploy
+          options: 
+          - Test
+          - Prod
+        deployment_stack_name: 
+          type: string
+          description: Name of deployment stack to delete
+          default: 'Test-DevHostPool-Stack'
+jobs:
+  deploy-developer-hostpool:
+    name: Plan epac-dev
+    uses: ./.github/workflows/Deploy-Developer-HostPool.yml
+    with:
+      environment: ${{ github.event.inputs.environment }}
+      deployment_stack_name: ${{ github.event.inputs.deployment_stack_name }}
+    secrets: inherit
+    

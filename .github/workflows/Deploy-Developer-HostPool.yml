@@ -1,0 +1,62 @@
+name: Deploy Developer HostPool to NIH Environment
+
+on:
+  # for running manually  
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: choice
+        description: Choose environment to deploy
+        options: 
+        - Test
+        - Prod
+      deployment_stack_name: 
+        type: string
+        description: Name of deployment stack to delete
+        default: 'Test-DevHostPool-Stack'
+  
+  # for running as part of a workflow_call
+  workflow_call:
+    inputs:
+      environment:
+        required: true
+        type: string
+      deployment_stack_name:
+        required: true
+        type: string
+    # outputs:
+      # deployPolicyChanges:
+      #   description: "The result of evaluating if a policy deployment is required"
+      #   value: ${{ jobs.plan.outputs.deployPolicyChanges }}
+      # deployRoleChanges:
+      #   description: "The result of evaluating if a role deployment is required"
+      #   value: ${{ jobs.plan.outputs.deployRoleChanges }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    env:
+      SESSION_HOST_PREFIX: ${{ inputs.environment == 'Prod' && 'avddhpp' || 'avddhpt' }}
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }} 
+        enable-AzPSSession: true
+
+    - name: Test deploy deployment stack ${{ inputs.environment }} environment
+      uses: azure/powershell@v2
+      with:
+        inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperHostPool.ps1 -DeploymentStackName ${{ inputs.deployment_stack_name }} -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-arpah.parameters.json' `
+          -avdSessionHostCustomNamePrefix ${{ env.SESSION_HOST_PREFIX }} -deploymentEnvironment ${{ inputs.environment }} -avdWorkloadSubsId ${{ secrets.AZURE_SUB_ID }} -imageGallerySubscriptionId ${{ secrets.IMAGE_GALLERY_SUB_ID }} -avdEnterpriseAppObjectId ${{ secrets.AZURE_AVD_OBJECTID }} ` 
+          -existingVnetAvdSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -existingVnetPrivateEndpointSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -identityDomainName ${{ secrets.AD_NAME}} -avdOuPath "${{ secrets.AD_OU }}" ` 
+          -securityPrincipalId "${{ secrets.SECURITY_PRINCIPAL_ID }}"
+        azPSVersion: "latest"
+        errorActionPreference: stop
