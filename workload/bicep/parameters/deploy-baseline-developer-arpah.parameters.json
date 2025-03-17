@@ -81,7 +81,7 @@
           "value": true
       },
       "avdDeploySessionHostsCount": {
-          "value": 4
+          "value": 1
       },
       "avdSessionHostCountIndex": {
           "value": 0
@@ -117,6 +117,9 @@
           "value": "devopsGoldenImageAvdArpah/versions/latest"
       },
       "createResourceTags": {
+          "value": false
+      },
+      "deployAntiMalwareExt":{
           "value": false
       }
   }
