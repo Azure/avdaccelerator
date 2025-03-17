@@ -114,7 +114,7 @@
           "value": "<<subscriptionId>>"
       },
       "goldenImageId": {
-          "value": "devopsGoldenImageAvdArpah/versions/2.2.4"
+          "value": "GoldenImageAVDArpaH/versions/2.2.4"
       },
       "createResourceTags": {
           "value": false
