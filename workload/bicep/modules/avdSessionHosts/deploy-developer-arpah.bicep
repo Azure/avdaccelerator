@@ -263,7 +263,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: false
         settings: {
-            AntimalwareEnabled: false
+            AntimalwareEnabled: true
             RealtimeProtectionEnabled: 'true'
             ScheduledScanSettings: {
                 isEnabled: 'true'

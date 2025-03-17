@@ -436,7 +436,7 @@ var varFslogixFileShareName = avdUseCustomNaming
     ? fslogixFileShareCustomName 
     : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
 var varFslogixStorageName = avdUseCustomNaming 
-    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}developer' 
+    ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
 var varFslogixStorageFqdn = createAvdFslogixDeployment 
     ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
