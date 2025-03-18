@@ -1,126 +1,127 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-      "deploymentPrefix": {
-          "value": "AVDX"
-      },
-      "deploymentEnvironment": {
-          "value": "test"
-      },
-      "avdUseCustomNaming": {
-          "value": true
-      },
-      "avdSessionHostCustomNamePrefix": {
-          "value": "avddhp"
-      },
-      "avdSessionHostLocation": {
-          "value": "eastus2"
-      },
-      "avdManagementPlaneLocation": {
-          "value": "eastus2"
-      },
-      "avdWorkloadSubsId": {
-          "value": "<<subscriptionId>>"
-      },
-      "avdApplicationGroupCustomFriendlyName": {
-          "value": "ARPA-H Developer Windows Desktop"
-      },
-      "avdEnterpriseAppObjectId": {
-          "value": false
-      },
-      "avdIdentityServiceProvider": {
-          "value": "ADDS"
-      },     
-      "createIntuneEnrollment": {
-          "value": false
-      },            
-      "securityPrincipalId": {
-          "value": ""
-      },              
-      "identityDomainName": {
-          "value": ""
-      },
-      "avdOuPath": {
-          "value": ""
-      },
-      "avdHostPoolType": {
-          "value": "Pooled"
-      },
-      "hostPoolPreferredAppGroupType": {
-          "value": "Desktop"
-      },
-      "avdPersonalAssignType": {
-          "value": "Automatic"
-      },
-      "avdHostPoolLoadBalancerType": {
-          "value": "BreadthFirst"
-      },
-      "hostPoolMaxSessions": {
-          "value": 4
-      },
-      "avdStartVmOnConnect": {
-          "value": true
-      },
-      "avdHostPoolRdpProperties": {
-          "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;enablerdsaadauth:i:1"
-      },
-      "avdDeployScalingPlan": {
-          "value": true
-      },
-      "existingVnetAvdSubnetResourceId": {
-          "value": ""
-      },
-      "existingVnetPrivateEndpointSubnetResourceId": {
-          "value": ""
-      },
-      "createAvdFslogixDeployment": {
-          "value": true
-      },
-      "avdDeploySessionHosts": {
-          "value": true
-      },
-      "avdDeploySessionHostsCount": {
-          "value": 1
-      },
-      "avdSessionHostCountIndex": {
-          "value": 0
-      },
-      "availabilityZonesCompute": {
-          "value": true
-      },
-      "avdSessionHostsSize": {
-          "value": "Standard_E4s_v5"
-      },
-      "avdSessionHostDiskType": {
-          "value": "Premium_LRS"
-      },
-      "avdOsImage": {
-          "value": "win11_23h2_office"
-      },
-      "securityType": {
-          "value": "TrustedLaunch"
-      },
-      "secureBootEnabled": {
-          "value": true
-      },
-      "vTpmEnabled": {
-          "value": true
-      },
-      "useSharedImage": {
-          "value": true
-      },
-      "imageGallerySubscriptionId": {
-          "value": "<<subscriptionId>>"
-      },
-      "goldenImageId": {
-          "value": "devopsGoldenImageAvdArpah/versions/latest"
-      },
-      "createResourceTags": {
-          "value": false
-      },
-      "deployAntiMalwareExt":{
-          "value": true
-      }
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "deploymentPrefix": {
+            "value": "AVDX"
+        },
+        "deploymentEnvironment": {
+            "value": "test"
+        },
+        "avdUseCustomNaming": {
+            "value": true
+        },
+        "avdSessionHostCustomNamePrefix": {
+            "value": "avddhp"
+        },
+        "avdSessionHostLocation": {
+            "value": "eastus2"
+        },
+        "avdManagementPlaneLocation": {
+            "value": "eastus2"
+        },
+        "avdWorkloadSubsId": {
+            "value": "<<subscriptionId>>"
+        },
+        "avdApplicationGroupCustomFriendlyName": {
+            "value": "ARPA-H on NIH Network"
+        },
+        "avdEnterpriseAppObjectId": {
+            "value": false
+        },
+        "avdIdentityServiceProvider": {
+            "value": "ADDS"
+        },     
+        "createIntuneEnrollment": {
+            "value": false
+        },            
+        "securityPrincipalId": {
+            "value": ""
+        },              
+        "identityDomainName": {
+            "value": ""
+        },
+        "avdOuPath": {
+            "value": ""
+        },
+        "avdHostPoolType": {
+            "value": "Pooled"
+        },
+        "hostPoolPreferredAppGroupType": {
+            "value": "Desktop"
+        },
+        "avdPersonalAssignType": {
+            "value": "Automatic"
+        },
+        "avdHostPoolLoadBalancerType": {
+            "value": "BreadthFirst"
+        },
+        "hostPoolMaxSessions": {
+            "value": 4
+        },
+        "avdStartVmOnConnect": {
+            "value": true
+        },
+        "avdHostPoolRdpProperties": {
+            "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;enablerdsaadauth:i:1"
+        },
+        "avdDeployScalingPlan": {
+            "value": true
+        },
+        "existingVnetAvdSubnetResourceId": {
+            "value": ""
+        },
+        "existingVnetPrivateEndpointSubnetResourceId": {
+            "value": ""
+        },
+        "createAvdFslogixDeployment": {
+            "value": true
+        },
+        "avdDeploySessionHosts": {
+            "value": true
+        },
+        "avdDeploySessionHostsCount": {
+            "value": 1
+        },
+        "avdSessionHostCountIndex": {
+            "value": 0
+        },
+        "availabilityZonesCompute": {
+            "value": true
+        },
+        "avdSessionHostsSize": {
+            "value": "Standard_E4s_v5"
+        },
+        "avdSessionHostDiskType": {
+            "value": "Premium_LRS"
+        },
+        "avdOsImage": {
+            "value": "win11_23h2_office"
+        },
+        "securityType": {
+            "value": "TrustedLaunch"
+        },
+        "secureBootEnabled": {
+            "value": true
+        },
+        "vTpmEnabled": {
+            "value": true
+        },
+        "useSharedImage": {
+            "value": true
+        },
+        "imageGallerySubscriptionId": {
+            "value": "<<subscriptionId>>"
+        },
+        "goldenImageId": {
+            "value": "devopsGoldenImageAvdArpah/versions/latest"
+        },
+        "createResourceTags": {
+            "value": false
+        },
+        "deployAntiMalwareExt":{
+            "value": true
+        }
+    }
   }
-}
+  

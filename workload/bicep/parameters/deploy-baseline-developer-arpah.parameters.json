@@ -23,9 +23,6 @@
       "avdWorkloadSubsId": {
           "value": "<<subscriptionId>>"
       },
-      "avdApplicationGroupCustomFriendlyName": {
-          "value": "ARPA-H on NIH Network"
-      },
       "avdEnterpriseAppObjectId": {
           "value": false
       },
@@ -43,30 +40,6 @@
       },
       "avdOuPath": {
           "value": ""
-      },
-      "avdHostPoolType": {
-          "value": "Pooled"
-      },
-      "hostPoolPreferredAppGroupType": {
-          "value": "Desktop"
-      },
-      "avdPersonalAssignType": {
-          "value": "Automatic"
-      },
-      "avdHostPoolLoadBalancerType": {
-          "value": "BreadthFirst"
-      },
-      "hostPoolMaxSessions": {
-          "value": 4
-      },
-      "avdStartVmOnConnect": {
-          "value": true
-      },
-      "avdHostPoolRdpProperties": {
-          "value": "audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2;enablerdsaadauth:i:1"
-      },
-      "avdDeployScalingPlan": {
-          "value": true
       },
       "existingVnetAvdSubnetResourceId": {
           "value": ""
