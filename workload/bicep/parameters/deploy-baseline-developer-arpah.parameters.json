@@ -23,9 +23,6 @@
       "avdWorkloadSubsId": {
           "value": "<<subscriptionId>>"
       },
-      "avdEnterpriseAppObjectId": {
-          "value": false
-      },
       "avdIdentityServiceProvider": {
           "value": "ADDS"
       },     
