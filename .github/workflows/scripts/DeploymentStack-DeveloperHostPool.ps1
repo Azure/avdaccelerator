@@ -13,10 +13,10 @@
     [string]$identityDomainName, 
     [string]$avdOuPath,
     [string]$securityPrincipalId,
-    [bool]$update_existing_stack
+    [string]$update_existing_stack
 )
 
-if ($update_existing_stack -eq $true) {
+if ($update_existing_stack -eq 'true') {
     Write-Host "Updating existing stack"
     Set-AzSubscriptionDeploymentStack -Name $DeploymentStackName -Location $Location -TemplateFile $TemplateFile -TemplateParameterFile $ParametersFile -P -ActionOnUnmanage "detachAll" -DenySettingsMode "none" `
         -avdSessionHostCustomNamePrefix $avdSessionHostCustomNamePrefix -deploymentEnvironment $deploymentEnvironment -avdWorkloadSubsId $avdWorkloadSubsId -imageGallerySubscriptionId $imageGallerySubscriptionId `
