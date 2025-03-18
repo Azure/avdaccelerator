@@ -29,9 +29,6 @@
       "createIntuneEnrollment": {
           "value": false
       },            
-      "securityPrincipalId": {
-          "value": ""
-      },              
       "identityDomainName": {
           "value": ""
       },
