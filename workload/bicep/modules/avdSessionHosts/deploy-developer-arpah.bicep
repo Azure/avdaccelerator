@@ -243,7 +243,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
             } : {}
         }
         // antimalware
-        extensionAntiMalwareConfig:{
+        extensionAntiMalwareConfig: {
             enabled: deployAntiMalwareExt
             settings: {
                 AntimalwareEnabled: true
