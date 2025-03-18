@@ -13,6 +13,11 @@ on:
           type: string
           description: Name of deployment stack to delete
           default: 'Test-DevHostPool-Stack'
+        update_existing_stack: 
+          type: boolean
+          description: Update existing stack if it exists
+          default: false
+          
 jobs:
   deploy-developer-hostpool:
     name: deploy developer hostpool
@@ -20,6 +25,7 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
       deployment_stack_name: '${{ inputs.deployment_stack_name }}-HostPool'
+      update_existing_stack: ${{ inputs.update_existing_stack }}
     secrets: inherit
   
   deploy-developer-sessionhosts:

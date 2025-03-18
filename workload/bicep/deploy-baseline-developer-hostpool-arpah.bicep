@@ -249,7 +249,7 @@ param avdHostPoolCustomName string = 'vdpool-developer-${toLower(deploymentEnvir
 
 @maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
-param avdHostPoolCustomFriendlyName string = 'ARPA-H Developer on NIH Network - ${deploymentEnvironment}'
+param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentEnvironment}'
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
@@ -261,7 +261,7 @@ param avdApplicationGroupCustomName string = 'vdag-desktop-developer-${toLower(d
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
-param avdApplicationGroupCustomFriendlyName string = 'ARPA-H Developer on NIH Network - ${deploymentPrefix}'
+param avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentPrefix}'
 
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')

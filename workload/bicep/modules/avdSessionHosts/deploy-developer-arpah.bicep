@@ -175,7 +175,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 }
 
 // Session hosts
-module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpah.bicep' = [for i in range(1, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-${batchId}-${i - 1}-${time}'
     params: {
@@ -242,6 +242,25 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
                mdmId: '0000000a-0000-0000-c000-000000000000'
             } : {}
         }
+        // antimalware
+        extensionAntiMalwareConfig:{
+            enabled: deployAntiMalwareExt
+            settings: {
+                AntimalwareEnabled: true
+                RealtimeProtectionEnabled: 'true'
+                ScheduledScanSettings: {
+                    isEnabled: 'true'
+                    day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+                    time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+                    scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
+                }
+                Exclusions: createAvdFslogixDeployment ? {
+                    Extensions: '*.vhd;*.vhdx'
+                    Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
+                    Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+                } : {}
+            }
+        }
         tags: tags
     }
     dependsOn: [
@@ -250,38 +269,38 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
 }]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
-    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
-    params: {
-        location: location
-        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        name: 'MicrosoftAntiMalware'
-        publisher: 'Microsoft.Azure.Security'
-        type: 'IaaSAntimalware'
-        typeHandlerVersion: '1.7'
-        autoUpgradeMinorVersion: true
-        enableAutomaticUpgrade: false
-        settings: {
-            AntimalwareEnabled: true
-            RealtimeProtectionEnabled: 'true'
-            ScheduledScanSettings: {
-                isEnabled: 'true'
-                day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
-                time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
-                scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
-            }
-            Exclusions: createAvdFslogixDeployment ? {
-                Extensions: '*.vhd;*.vhdx'
-                Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
-                Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-            } : {}
-        }
-    }
-    dependsOn: [
-        sessionHosts
-    ]
-}]
+// module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
+//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//     name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
+//     params: {
+//         location: location
+//         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//         name: 'MicrosoftAntiMalware'
+//         publisher: 'Microsoft.Azure.Security'
+//         type: 'IaaSAntimalware'
+//         typeHandlerVersion: '1.7'
+//         autoUpgradeMinorVersion: true
+//         enableAutomaticUpgrade: false
+//         settings: {
+//             AntimalwareEnabled: true
+//             RealtimeProtectionEnabled: 'true'
+//             ScheduledScanSettings: {
+//                 isEnabled: 'true'
+//                 day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+//                 time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+//                 scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
+//             }
+//             Exclusions: createAvdFslogixDeployment ? {
+//                 Extensions: '*.vhd;*.vhdx'
+//                 Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
+//                 Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+//             } : {}
+//         }
+//     }
+//     dependsOn: [
+//         sessionHosts
+//     ]
+// }]
 
 // Call to the ALA workspace
 resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
@@ -310,7 +329,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         }
     }
     dependsOn: [
-        sessionHostsAntimalwareExtension
+        //sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -325,7 +344,8 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
     }
     dependsOn: [
         monitoring
-        sessionHostsAntimalwareExtension
+        //sessionHostsAntimalwareExtension
+        sessionHosts
         alaWorkspace
     ]
 }]
