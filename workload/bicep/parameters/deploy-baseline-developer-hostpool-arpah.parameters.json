@@ -8,6 +8,9 @@
         "deploymentEnvironment": {
             "value": "test"
         },
+        "hostPoolPersona":{
+          "value": "Developer"
+        },
         "avdUseCustomNaming": {
             "value": true
         },
@@ -32,9 +35,6 @@
         "avdIdentityServiceProvider": {
             "value": "ADDS"
         },     
-        "createIntuneEnrollment": {
-            "value": false
-        },            
         "securityPrincipalId": {
             "value": ""
         },              
@@ -68,59 +68,11 @@
         "avdDeployScalingPlan": {
             "value": true
         },
-        "existingVnetAvdSubnetResourceId": {
-            "value": ""
-        },
         "existingVnetPrivateEndpointSubnetResourceId": {
             "value": ""
         },
-        "createAvdFslogixDeployment": {
-            "value": true
-        },
-        "avdDeploySessionHosts": {
-            "value": true
-        },
-        "avdDeploySessionHostsCount": {
-            "value": 1
-        },
-        "avdSessionHostCountIndex": {
-            "value": 0
-        },
-        "availabilityZonesCompute": {
-            "value": true
-        },
-        "avdSessionHostsSize": {
-            "value": "Standard_E4s_v5"
-        },
-        "avdSessionHostDiskType": {
-            "value": "Premium_LRS"
-        },
-        "avdOsImage": {
-            "value": "win11_23h2_office"
-        },
-        "securityType": {
-            "value": "TrustedLaunch"
-        },
-        "secureBootEnabled": {
-            "value": true
-        },
-        "vTpmEnabled": {
-            "value": true
-        },
-        "useSharedImage": {
-            "value": true
-        },
-        "imageGallerySubscriptionId": {
-            "value": "<<subscriptionId>>"
-        },
-        "goldenImageId": {
-            "value": "devopsGoldenImageAvdArpah/versions/latest"
-        },
         "createResourceTags": {
             "value": false
-        },
-        "deployAntiMalwareExt":{
-            "value": true
         }
     }
   }

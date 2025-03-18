@@ -8,6 +8,9 @@
       "deploymentEnvironment": {
           "value": "test"
       },
+      "hostPoolPersona":{
+          "value": "Developer"
+      },
       "avdUseCustomNaming": {
           "value": true
       },
