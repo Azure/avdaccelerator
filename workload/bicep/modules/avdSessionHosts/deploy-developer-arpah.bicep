@@ -331,6 +331,7 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
     dependsOn: [
         //sessionHostsAntimalwareExtension
         alaWorkspace
+        sessionHosts
     ]
 }]
 
