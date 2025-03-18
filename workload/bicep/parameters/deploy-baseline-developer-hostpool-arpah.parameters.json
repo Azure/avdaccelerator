@@ -14,9 +14,6 @@
         "avdUseCustomNaming": {
             "value": true
         },
-        "avdSessionHostCustomNamePrefix": {
-            "value": "avddhp"
-        },
         "avdSessionHostLocation": {
             "value": "eastus2"
         },
@@ -38,12 +35,6 @@
         "securityPrincipalId": {
             "value": ""
         },              
-        "identityDomainName": {
-            "value": ""
-        },
-        "avdOuPath": {
-            "value": ""
-        },
         "avdHostPoolType": {
             "value": "Pooled"
         },

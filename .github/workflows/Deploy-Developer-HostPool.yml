@@ -56,9 +56,8 @@ jobs:
       uses: azure/powershell@v2
       with:
         inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperHostPool.ps1 -DeploymentStackName ${{ inputs.deployment_stack_name }} -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-hostpool-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-hostpool-arpah.parameters.json' `
-          -avdSessionHostCustomNamePrefix ${{ env.SESSION_HOST_PREFIX }} -deploymentEnvironment ${{ inputs.environment }} -avdWorkloadSubsId ${{ secrets.AZURE_SUB_ID }} -imageGallerySubscriptionId ${{ secrets.IMAGE_GALLERY_SUB_ID }} -avdEnterpriseAppObjectId ${{ secrets.AZURE_AVD_OBJECTID }} ` 
-          -existingVnetAvdSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -existingVnetPrivateEndpointSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -identityDomainName ${{ secrets.AD_NAME}} -avdOuPath "${{ secrets.AD_OU }}" ` 
-          -securityPrincipalId "${{ secrets.DEVELOPER_SECURITY_PRINCIPAL_ID }}" -update_existing_stack ${{ inputs.update_existing_stack }}
+          -deploymentEnvironment ${{ inputs.environment }} -avdWorkloadSubsId ${{ secrets.AZURE_SUB_ID }} -avdEnterpriseAppObjectId ${{ secrets.AZURE_AVD_OBJECTID }} ` 
+          -existingVnetPrivateEndpointSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -securityPrincipalId "${{ secrets.DEVELOPER_SECURITY_PRINCIPAL_ID }}" -update_existing_stack ${{ inputs.update_existing_stack }}
         azPSVersion: "latest"
         errorActionPreference: stop
 

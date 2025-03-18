@@ -219,13 +219,13 @@ param avdUseCustomNaming bool = true
 @sys.description('AVD service resources resource group custom name. (Default: rg-avd-app1-dev-use2-service-objects)')
 param avdServiceObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-service-objects'
 
-@maxLength(90)
-@sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
-param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-network'
+// @maxLength(90)
+// @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-network)')
+// param avdNetworkObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-network'
 
-@maxLength(90)
-@sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
-param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pool-compute'
+// @maxLength(90)
+// @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-pool-compute)')
+// param avdComputeObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-pool-compute'
 
 // @maxLength(90)
 // @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
@@ -239,9 +239,9 @@ param avdMonitoringRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvi
 @sys.description('AVD Azure log analytics workspace custom name. (Default: log-avd-app1-dev-use2)')
 param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-log'
 
-@maxLength(80)
-@sys.description('AVD application security custom name. (Default: asg-app1-dev-use2-001)')
-param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploymentEnvironment)}-use2-001'
+// @maxLength(80)
+// @sys.description('AVD application security custom name. (Default: asg-app1-dev-use2-001)')
+// param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom name. (Default: vdws-app1-dev-use2-001)')
@@ -275,12 +275,12 @@ param avdApplicationGroupCustomFriendlyName string = 'ARPA-H on NIH Network - ${
 // @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
 // param avdSessionHostCustomNamePrefix string = 'vmapp1duse2'
 
-@maxLength(2)
-@sys.description('AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)')
-param storageAccountPrefixCustomName string = 'st'
+// @maxLength(2)
+// @sys.description('AVD FSLogix and MSIX app attach storage account prefix custom name. (Default: st)')
+// param storageAccountPrefixCustomName string = 'st'
 
-@sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
-param fslogixFileShareCustomName string = 'fslogix-pc-app1-${toLower(deploymentEnvironment)}-use2-001'
+// @sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
+// param fslogixFileShareCustomName string = 'fslogix-pc-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(6)
 @sys.description('AVD keyvault prefix custom name (with Zero Trust to store credentials to domain join and local admin). (Default: kv-sec)')
@@ -290,9 +290,9 @@ param avdWrklKvPrefixCustomName string = 'kv-sec'
 // @sys.description('AVD disk encryption set custom name. (Default: des-zt)')
 // param ztDiskEncryptionSetCustomNamePrefix string = 'des-zt'
 
-@maxLength(6)
-@sys.description('AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)')
-param ztKvPrefixCustomName string = 'kv-key'
+// @maxLength(6)
+// @sys.description('AVD key vault custom name for zero trust and store store disk encryption key (Default: kv-key)')
+// param ztKvPrefixCustomName string = 'kv-key'
 
 //
 // Resource tagging
@@ -372,10 +372,10 @@ param enableTelemetry bool = true
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varAzureCloudName = environment().name
 var varDeploymentEnvironmentLowercase = toLower(deploymentEnvironment)
-var varDeploymentEnvironmentComputeStorage = (deploymentEnvironment == 'Dev') 
-    ? 'd' 
-    : ((deploymentEnvironment == 'Test') ? 't' : ((deploymentEnvironment == 'Prod') ? 'p' : ''))
-var varNamingUniqueStringThreeChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 3)
+// var varDeploymentEnvironmentComputeStorage = (deploymentEnvironment == 'Dev') 
+//     ? 'd' 
+//     : ((deploymentEnvironment == 'Test') ? 't' : ((deploymentEnvironment == 'Prod') ? 'p' : ''))
+// var varNamingUniqueStringThreeChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 3)
 var varNamingUniqueStringTwoChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 2)
 var varSessionHostLocationAcronym = varLocations[varSessionHostLocationLowercase].acronym
 var varManagementPlaneLocationAcronym = varLocations[varManagementPlaneLocationLowercase].acronym
