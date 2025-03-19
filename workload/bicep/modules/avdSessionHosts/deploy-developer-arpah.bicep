@@ -170,7 +170,7 @@ var varCustomOsDiskProperties = {
 // var devSecurityGroupPrincipalId = '19cfe65e-52b6-49e5-8155-02843498171d'
 
 var varVirtualMachineContributorRole = {
-    id: 'f9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+    id: '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
     name: 'Virtual Machine Contributor'
   }
 
