@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
       "deploymentPrefix": {
-          "value": "AVDD"
+          "value": "AVDX"
       },
       "deploymentEnvironment": {
           "value": "test"
