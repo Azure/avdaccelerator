@@ -288,6 +288,13 @@ param winRM array = []
 @description('Optional. The configuration profile of automanage. Either \'/providers/Microsoft.Automanage/bestPractices/AzureBestPracticesProduction\', \'providers/Microsoft.Automanage/bestPractices/AzureBestPracticesDevTest\' or the resource Id of custom profile.')
 param configurationProfile string = ''
 
+// ARPA-H added
+@description('Role definition resource id (Virtual Machine Contributor)')
+param roleDefinitionResourceId string
+
+@description('ARPA-H Entra security group')
+param principalId string
+
 // var publicKeysFormatted = [
 //   for publicKey in publicKeys: {
 //     path: publicKey.path
@@ -593,6 +600,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   dependsOn: [
     vm_nic
   ]
+}
+
+// add role assignment directory on vm
+resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+    scope: vm
+    name: guid(vm.id, principalId, roleDefinitionResourceId)
+    properties: {
+      roleDefinitionId: roleDefinitionResourceId
+      principalId: principalId
+      principalType: 'Group'
+    }
 }
 
 resource vm_configurationProfileAssignment 'Microsoft.Automanage/configurationProfileAssignments@2022-05-04' =

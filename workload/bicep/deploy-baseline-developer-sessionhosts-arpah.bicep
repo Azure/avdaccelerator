@@ -267,6 +267,10 @@ param enableKvPurgeProtection bool = true
 @sys.description('Deploys anti malware extension on session hosts. (Default: true)')
 param deployAntiMalwareExt bool = true
 
+// This is the object id for the 'ARPA-H AVD Default' MS Entra Group
+@sys.description('Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
+param securityPrincipalId string = ''
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -473,6 +477,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       alaWorkspaceResourceId: logAnalyticsWorkspaceExisting.id
       dataCollectionRuleId: dataCollectionRulesExisting.id
       deployAntiMalwareExt: deployAntiMalwareExt
+      securityPrincipalId: securityPrincipalId
     }
   }
 ]

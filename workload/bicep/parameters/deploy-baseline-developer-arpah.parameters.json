@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
       "deploymentPrefix": {
-          "value": "AVDX"
+          "value": "AVDD"
       },
       "deploymentEnvironment": {
           "value": "test"
@@ -91,6 +91,9 @@
       },
       "deployAntiMalwareExt":{
           "value": true
+      },
+      "securityPrincipalId": {
+            "value": ""
       }
   }
 }

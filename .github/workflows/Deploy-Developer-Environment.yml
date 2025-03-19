@@ -34,4 +34,5 @@ jobs:
     with:
       environment: ${{ inputs.environment }}
       deployment_stack_name: '${{ inputs.deployment_stack_name }}-SessionHosts'
+      update_existing_stack: ${{ inputs.update_existing_stack }}
     secrets: inherit

@@ -140,6 +140,9 @@ param dataCollectionRuleId string
 @sys.description('Deploys anti malware extension on session hosts.')
 param deployAntiMalwareExt bool
 
+@sys.description('The ARPA-H Developer Entra ID security group')
+param securityPrincipalId string
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -163,6 +166,13 @@ var varCustomOsDiskProperties = {
     managedDisk: varManagedDisk
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
 }
+
+// var devSecurityGroupPrincipalId = '19cfe65e-52b6-49e5-8155-02843498171d'
+
+var varVirtualMachineContributorRole = {
+    id: 'f9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+    name: 'Virtual Machine Contributor'
+  }
 
 // =========== //
 // Deployments //
@@ -262,11 +272,26 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
             }
         }
         tags: tags
+        principalId: securityPrincipalId
+        roleDefinitionResourceId:'/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineContributorRole.id}'
     }
     dependsOn: [
         keyVault
     ]
 }]
+
+// resource roleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = [for i in range(1, count): {
+//     scope: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//     name: guid(storageAccount.id, devSecurityGroupPrincipalId, roleDefinitionResourceId)
+//     properties: {
+//       //roleDefinitionId: roleDefinitionResourceId
+//       roleDefinitionId: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineUserLoginRole.id}'
+//       principalId: '19cfe65e-52b6-49e5-8155-02843498171d'
+//       principalType: 'Group'
+//     }
+// }]
+
+
 
 // Add antimalware extension to session host.
 // module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
