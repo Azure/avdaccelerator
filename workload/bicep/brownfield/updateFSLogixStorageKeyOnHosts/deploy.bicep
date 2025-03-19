@@ -1,3 +1,9 @@
+targetScope = 'resourceGroup'
+
+// ========== //
+// Parameters //
+// ========== //
+
 param vmNames array = []
 param location string = resourceGroup().location
 param storageAccountResourceId string
@@ -5,7 +11,15 @@ param storageAccountResourceId string
 param storageAccountKey int
 param timeStamp string = utcNow('yyyyMMddHHmm')
 
-var keyIndex = storageAccountKey - 1
+// =========== //
+// Variable declaration //
+// =========== //
+
+var varKeyIndex = storageAccountKey - 1
+
+// =========== //
+// Deployments //
+// =========== //
 
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
     name: last(split(storageAccountResourceId, '/'))
@@ -46,7 +60,7 @@ Start-Process -FilePath 'cmdkey.exe' -ArgumentList "/add:$($StorageAccountName).
             }
             {
                 name: 'StorageAccountKey'
-                value: storageAccount.listKeys().keys[keyIndex].value
+                value: storageAccount.listKeys().keys[varKeyIndex].value
             }
         ]
         timeoutInSeconds: 30
