@@ -329,10 +329,10 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
 }]
 
 // need to retrieve an existing workspace to add the app group to
-// resource workspaceExisting 'Microsoft.DesktopVirtualization/workspaces@2024-04-08-preview' existing = {
-//   name: workSpaceName
-//   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-// }
+resource workspaceExisting 'Microsoft.DesktopVirtualization/workspaces@2024-04-08-preview' existing = {
+  name: workSpaceName
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+}
 
 // update ws
 // resource workspaceUpdate 'Microsoft.DesktopVirtualization/workspaces@2024-04-08-preview' = {
@@ -365,11 +365,11 @@ module updateWorkspace '.bicep/updateAVDWorkspace.bicep' =  {
   name: 'updateAVDWorkspace'
   params: {
     workSpaceName: workSpaceName
-    properties: {
+    properties: union(workspaceExisting.properties, {
       applicationGroupReferences: [
         '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
       ]
-    }
+    })
     location: managementPlaneLocation
   }
   dependsOn: [
@@ -377,6 +377,26 @@ module updateWorkspace '.bicep/updateAVDWorkspace.bicep' =  {
     applicationGroups
   ]
 }
+
+// module updateSubnet '.bicep/updateSubnet.bicep' = {
+//   name: 'update-subnet-with-nsg-and-route-table-${varExistingAvdVnetName}-${varExistingSubnetName}'
+//   scope: resourceGroup('${workloadSubsId}', '${vnetResourceGroupName}')
+//   //scope: resourceGroup(vnetResourceGroupName)
+//   params: {
+//       vnetName: varExistingAvdVnetName
+//       subnetName: varExistingSubnetName
+//       // Update the nsg
+//       properties: union(existingSubnet.properties, {
+//         networkSecurityGroup: {
+//           id: networksecurityGroupAvd.outputs.resourceId
+//         }
+//         routeTable: {
+//           id: routeTableAvd.outputs.resourceId
+//         }
+//       })
+//     }
+
+// }
 
 // Workspace.
 // module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/main.bicep' = {
