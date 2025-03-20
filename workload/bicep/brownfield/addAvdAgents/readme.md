@@ -24,7 +24,7 @@ This solution will deploy the AVD agents to a VM.
 ```powershell
 New-AzSubscriptionDeployment `
     -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/addAvdAgents/deploy.bicep' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/bicep/brownfield/addAvdAgents/deploy.bicep' `
     -vmLocation '<VM location>' `
     -vmResourceId '<resource ID of the VM where the AVD agents will be installed>' `
     -hostPoolResourceId '<resource ID of the host pool to which the VM will be registered>' `
@@ -39,7 +39,7 @@ New-AzSubscriptionDeployment `
 ```azurecli
 az deployment sub create \
     --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/addAvdAgents/deploy.bicep' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/bicep/brownfield/addAvdAgents/deploy.bicep' \
     --parameters \
         vmLocation '<VM location>' \
         vmResourceId '<resource ID of the VM where the AVD agents will be installed>' \

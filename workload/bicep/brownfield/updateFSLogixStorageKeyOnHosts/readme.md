@@ -20,7 +20,7 @@ This solution will update the FSLogix Storage Account Key on Session Hosts to su
 ```powershell
 New-AzResourceGroupDeployment `
     -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/deployUpdateFSLogixStorageAccountKeyOnHosts.json' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployUpdateFSLogixStorageAccountKeyOnHosts.json' `
     -storageAccountResourceId '<FSLogix Storage Account Resource ID' `
     -storageAccountKey <Key - Either 1 or 2> `
     -vmNames @(comma separated list of Virtual Machines) `
