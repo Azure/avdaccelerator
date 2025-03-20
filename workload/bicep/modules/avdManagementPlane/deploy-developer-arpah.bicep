@@ -55,8 +55,8 @@ param scalingPlanSchedules array
 @sys.description('AVD workspace name.')
 param workSpaceName string
 
-@sys.description('AVD workspace friendly name.')
-param workSpaceFriendlyName string
+// @sys.description('AVD workspace friendly name.')
+// param workSpaceFriendlyName string
 
 @sys.description('AVD host pool Custom RDP properties.')
 param hostPoolRdpProperties string
@@ -82,11 +82,11 @@ param deployAvdPrivateLinkService bool
 @sys.description('Name of the Private Endpoint for the Connection')
 param privateEndpointConnectionName string
 
-@sys.description('Name of the Private Endpoint for the Discovery')
-param privateEndpointDiscoveryName string
+// @sys.description('Name of the Private Endpoint for the Discovery')
+// param privateEndpointDiscoveryName string
 
-@sys.description('Name of the Private Endpoint for the Workspace')
-param privateEndpointWorkspaceName string
+// @sys.description('Name of the Private Endpoint for the Workspace')
+// param privateEndpointWorkspaceName string
 
 @sys.description('The subnet resource ID that the private endpoint should be deployed in.')
 param privateEndpointSubnetResourceId string
@@ -94,8 +94,8 @@ param privateEndpointSubnetResourceId string
 @sys.description('The ResourceID of the AVD Private DNS Zone for Connection. (privatelink.wvd.azure.com)')
 param avdVnetPrivateDnsZoneConnectionResourceId string
 
-@sys.description('The ResourceID of the AVD Private DNS Zone for Discovery. (privatelink-global.wvd.azure.com)')
-param avdVnetPrivateDnsZoneDiscoveryResourceId string
+// @sys.description('The ResourceID of the AVD Private DNS Zone for Discovery. (privatelink-global.wvd.azure.com)')
+// param avdVnetPrivateDnsZoneDiscoveryResourceId string
 
 @allowed([
   'Disabled' // Blocks public access and requires both clients and session hosts to use the private endpoints
@@ -106,12 +106,12 @@ param avdVnetPrivateDnsZoneDiscoveryResourceId string
 @sys.description('Enables or Disables public network access on the host pool. (Default: EnabledForClientsOnly.)')
 param hostPoolPublicNetworkAccess string = 'EnabledForClientsOnly'
 
-@allowed([
-  'Disabled'
-  'Enabled'
-])
-@sys.description('Default to Enabled. Enables or Disables public network access on the workspace.')
-param workspacePublicNetworkAccess string = 'Enabled'
+// @allowed([
+//   'Disabled'
+//   'Enabled'
+// ])
+// @sys.description('Default to Enabled. Enables or Disables public network access on the workspace.')
+// param workspacePublicNetworkAccess string = 'Enabled'
 
 @allowed([
   'Automatic'
@@ -438,6 +438,6 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
-    workSpace
+    updateWorkspace
   ]
 }

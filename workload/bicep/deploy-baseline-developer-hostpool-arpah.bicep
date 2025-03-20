@@ -74,12 +74,12 @@ param hostPoolPreferredAppGroupType string = 'Desktop'
 @sys.description('Enables or Disables public network access on the host pool. (Default: Enabled.)')
 param hostPoolPublicNetworkAccess string = 'Enabled'
 
-@allowed([
-'Disabled'
-'Enabled'
-])
-@sys.description('Default to Enabled. Enables or Disables public network access on the workspace.')
-param workspacePublicNetworkAccess string = 'Enabled'
+// @allowed([
+// 'Disabled'
+// 'Enabled'
+// ])
+// @sys.description('Default to Enabled. Enables or Disables public network access on the workspace.')
+// param workspacePublicNetworkAccess string = 'Enabled'
 
 @allowed([
     'Automatic'
@@ -150,9 +150,9 @@ param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvi
 //param avdWorkSpaceCustomName string = 'vdws-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
 param avdWorkSpaceCustomName string = 'vdws-app1-${toLower(deploymentEnvironment)}-use2-001'
 
-@maxLength(64)
-@sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
-param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentEnvironment}'
+// @maxLength(64)
+// @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
+// param avdWorkSpaceCustomFriendlyName string = 'ARPA-H on NIH Network - ${deploymentEnvironment}'
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
@@ -266,9 +266,9 @@ var varMonitoringRgName = avdUseCustomNaming
     ? avdMonitoringRgCustomName 
     : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
 var varWorkSpaceName = avdUseCustomNaming ? avdWorkSpaceCustomName : 'vdws-${varManagementPlaneNamingStandard}-001'
-var varWorkSpaceFriendlyName = avdUseCustomNaming 
-    ? avdWorkSpaceCustomFriendlyName 
-    : 'Workspace ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
+// var varWorkSpaceFriendlyName = avdUseCustomNaming 
+//     ? avdWorkSpaceCustomFriendlyName 
+//     : 'Workspace ${deploymentPrefix} ${deploymentEnvironment} ${avdManagementPlaneLocation} 001'
 var varHostPoolName = avdUseCustomNaming ? avdHostPoolCustomName : 'vdpool-${varManagementPlaneNamingStandard}-001'
 var varHostFriendlyName = avdUseCustomNaming 
     ? avdHostPoolCustomFriendlyName 
@@ -285,8 +285,8 @@ var varScalingPlanName = avdUseCustomNaming
     ? avdScalingPlanCustomName 
     : 'vdscaling-${varManagementPlaneNamingStandard}-001'
 var varPrivateEndPointConnectionName = 'pe-${varHostPoolName}-connection'
-var varPrivateEndPointDiscoveryName = 'pe-${varWorkSpaceName}-discovery'
-var varPrivateEndPointWorkspaceName = 'pe-${varWorkSpaceName}-global'
+// var varPrivateEndPointDiscoveryName = 'pe-${varWorkSpaceName}-discovery'
+// var varPrivateEndPointWorkspaceName = 'pe-${varWorkSpaceName}-global'
 var varScalingPlanExclusionTag = 'exclude-${varScalingPlanName}'
 var varScalingPlanWeekdaysScheduleName = 'Weekdays-${varManagementPlaneNamingStandard}'
 var varScalingPlanWeekendScheduleName = 'Weekend-${varManagementPlaneNamingStandard}'
@@ -601,7 +601,7 @@ module managementPLane './modules/avdManagementPlane/deploy-developer-arpah.bice
       workSpaceName: varWorkSpaceName
       osImage: avdOsImage
       keyVaultResourceId: keyVaultExisting.id
-      workSpaceFriendlyName: varWorkSpaceFriendlyName
+      //workSpaceFriendlyName: varWorkSpaceFriendlyName
       computeTimeZone: varTimeZoneSessionHosts
       hostPoolName: varHostPoolName
       hostPoolFriendlyName: varHostFriendlyName
@@ -628,13 +628,13 @@ module managementPLane './modules/avdManagementPlane/deploy-developer-arpah.bice
       hostPoolAgentUpdateSchedule: varHostPoolAgentUpdateSchedule
       deployAvdPrivateLinkService: deployAvdPrivateLinkService
       hostPoolPublicNetworkAccess: hostPoolPublicNetworkAccess
-      workspacePublicNetworkAccess: workspacePublicNetworkAccess
+      //workspacePublicNetworkAccess: workspacePublicNetworkAccess
       privateEndpointSubnetResourceId: existingVnetPrivateEndpointSubnetResourceId
-      avdVnetPrivateDnsZoneDiscoveryResourceId: ''
+      //avdVnetPrivateDnsZoneDiscoveryResourceId: ''
       avdVnetPrivateDnsZoneConnectionResourceId: ''
       privateEndpointConnectionName: varPrivateEndPointConnectionName
-      privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
-      privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
+      // privateEndpointDiscoveryName: varPrivateEndPointDiscoveryName
+      // privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
     }
 }
 
