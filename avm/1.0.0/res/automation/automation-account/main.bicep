@@ -489,7 +489,7 @@ module automationAccount_privateEndpoints 'br/public:avm/res/network/private-end
       enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
-        '2020-06-01',
+        '2024-06-01',
         'Full'
       ).location
       lock: privateEndpoint.?lock ?? lock

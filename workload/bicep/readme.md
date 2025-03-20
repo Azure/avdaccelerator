@@ -13,7 +13,6 @@ A full list of parameter details can be found for the relevant deployment type h
 ```bash
 az deployment create \
   --template-file workload/bicep/deploy-baseline.bicep \
-  --parameters @workload/bicep/parameters/deploy-baseline-parameters-example.json \
   --parameters avdWorkloadSubsId=<subscriptionId> \
   --parameters deploymentPrefix=<deploymentPrefix> \
   --parameters avdVmLocalUserName=<localUserName> \
@@ -24,7 +23,7 @@ az deployment create \
   --parameters avdDomainJoinUserPassword=<DomainJoinUserPassword \
   --parameters existingHubVnetResourceId=<hubVnetResourceId>  \
   --parameters customDnsIps=<customDNSservers>  \
-  --parameters avdEnterpriseAppObjectId=<wvdAppObjectId> \
+  --parameters avdServicePrincipalObjectId=<wvdAppObjectId> \
   --parameters avdVnetPrivateDnsZone=true \
   --parameters avdVnetPrivateDnsZoneFilesId="<PrivateDnsZoneFilesId>" \
   --parameters avdVnetPrivateDnsZoneKeyvaultId="<PrivateDnsZoneKeyvaultId>" \
@@ -40,7 +39,6 @@ $avdVmLocalUserPassword = Read-Host -Prompt "Local user password" -AsSecureStrin
 $avdDomainJoinUserPassword = Read-Host -Prompt "Domain join password" -AsSecureString
 New-AzSubscriptionDeployment `
   -TemplateFile workload/bicep/deploy-baseline.bicep `
-  -TemplateParameterFile workload/bicep/parameters/deploy-baseline-parameters-example.json `
   -avdWorkloadSubsId "<subscriptionId>" `
   -deploymentPrefix "<deploymentPrefix>" `
   -avdVmLocalUserName "<localUserName>" `
@@ -51,7 +49,7 @@ New-AzSubscriptionDeployment `
   -avdDomainJoinUserPassword $avdDomainJoinUserPassword `
   -existingHubVnetResourceId "<hubVnetResourceId>"  `
   -customDnsIps "<customDNSservers>"  `
-  -avdEnterpriseAppObjectId "<wvdAppObjectId>" `
+  -avdServicePrincipalObjectId "<wvdAppObjectId>" `
   -avdVnetPrivateDnsZone $true `
   -avdVnetPrivateDnsZoneFilesId "<PrivateDnsZoneFilesId>" `
   -avdVnetPrivateDnsZoneKeyvaultId "<PrivateDnsZoneKeyvaultId>" `
@@ -67,7 +65,6 @@ New-AzSubscriptionDeployment `
 ```bash
 az deployment create \
   --template-file workload/bicep/deploy-custom-image.bicep \
-  --parameters @workload/bicep/parameters/deploy-custom-image-parameters-example.json \
   --parameters sharedServicesSubId="<subscriptionId>" \
   --deploymentLocation="eastus" \
   --imageVersionPrimaryLocation="eastus" \
@@ -79,7 +76,6 @@ az deployment create \
 ```powershell
 New-AzSubscriptionDeployment `
   -TemplateFile workload/bicep/deploy-custom-image.bicep `
-  -TemplateParameterFile workload/bicep/parameters/deploy-custom-image-parameters-example.json `
   -sharedServicesSubId "<subscriptionId>" `
   -deploymentLocation "eastus" `
   -imageVersionPrimaryLocation "eastus" `
