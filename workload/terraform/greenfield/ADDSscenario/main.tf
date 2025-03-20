@@ -39,7 +39,7 @@ module "avm_res_desktopvirtualization_hostpool" {
   version = "0.1.4"
 
   virtual_desktop_host_pool_location                 = azurerm_resource_group.this.location
-  virtual_desktop_host_pool_name                     = "${var.hostpool}-${var.prefix}-${var.environment}-${var.avdLocation}"
+  virtual_desktop_host_pool_name                     = "${var.hostpool}-${var.prefix}-${var.environment}"
   virtual_desktop_host_pool_type                     = "Pooled" // "Personal" or "Pooled"
   virtual_desktop_host_pool_resource_group_name      = azurerm_resource_group.this.name
   virtual_desktop_host_pool_load_balancer_type       = "BreadthFirst" // "DepthFirst" or "BreadthFirst"
@@ -85,7 +85,7 @@ module "avm_res_desktopvirtualization_applicationgroup" {
   source                                                = "Azure/avm-res-desktopvirtualization-applicationgroup/azurerm"
   enable_telemetry                                      = var.enable_telemetry
   version                                               = "0.1.2"
-  virtual_desktop_application_group_name                = "${var.dag}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
+  virtual_desktop_application_group_name                = "${var.dag}-${var.prefix}-${var.environment}-01"
   virtual_desktop_application_group_type                = "Desktop"
   virtual_desktop_application_group_host_pool_id        = module.avm_res_desktopvirtualization_hostpool.resource.id
   virtual_desktop_application_group_resource_group_name = azurerm_resource_group.this.name
@@ -97,13 +97,18 @@ module "avm_res_desktopvirtualization_applicationgroup" {
 # Create Azure Virtual Desktop workspace
 module "avm_res_desktopvirtualization_workspace" {
   source              = "Azure/avm-res-desktopvirtualization-workspace/azurerm"
-  version             = "0.1.2"
+  version             = "0.2.0"
   enable_telemetry    = var.enable_telemetry
   resource_group_name = azurerm_resource_group.this.name
-  location            = azurerm_resource_group.this.location
-  description         = "${var.prefix} Workspace"
-  name                = "${var.workspace}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
-  tags                = local.tags
+  # location            = azurerm_resource_group.this.location
+  # description         = "${var.prefix} Workspace"
+  # name                = "${var.workspace}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
+
+  virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
+  virtual_desktop_workspace_location            = azurerm_resource_group.this.location
+  virtual_desktop_workspace_name                = "${var.workspace}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
+
+  tags = local.tags
 }
 
 resource "azurerm_virtual_desktop_workspace_application_group_association" "workappgrassoc" {
@@ -123,13 +128,11 @@ data "azurerm_role_definition" "power_role" {
 }
 
 resource "azurerm_role_assignment" "new" {
+  name               = random_uuid.example.result
   principal_id       = data.azuread_service_principal.spn.object_id
   scope              = data.azurerm_subscription.primary.id
   role_definition_id = data.azurerm_role_definition.power_role.id
 
-  lifecycle {
-    ignore_changes = [role_definition_id]
-  }
 }
 
 # This ensures we have unique CAF compliant names for our resources.
