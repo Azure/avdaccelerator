@@ -873,7 +873,7 @@
                                     "defaultValue": 1,
                                     "toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
                                     "min": 1,
-                                    "max": 9999,
+                                    "max": 4999,
                                     "showStepMarkers": true,
                                     "constraints": {
                                         "required": true
@@ -1939,6 +1939,7 @@
 							"type": "Microsoft.Common.CheckBox",
 							"visible": true,
 							"label": "Deploy monitoring",
+							"defaultValue": true,
 							"toolTip": "Deploy monitoring settings and if selected deploy Azure log analytics workspace."
 						},
 						{
