@@ -328,44 +328,94 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
   ]
 }]
 
-// Workspace.
-module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/main.bicep' = {
+// need to retrieve an existing workspace to add the app group to
+// resource workspaceExisting 'Microsoft.DesktopVirtualization/workspaces@2024-04-08-preview' existing = {
+//   name: workSpaceName
+//   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+// }
+
+// update ws
+// resource workspaceUpdate 'Microsoft.DesktopVirtualization/workspaces@2024-04-08-preview' = {
+//   name: workSpaceName
+//   //scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+//   properties: {
+//     applicationGroupReferences: [
+//       '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
+//     ]
+//   }
+//   dependsOn: [
+//     hostPool
+//     applicationGroups
+//   ]
+// }
+
+// resource workspaceUpdate2 'Microsoft.DesktopVirtualization/workspaces@2021-09-03-preview' = {
+//   name: workspaceExisting.name
+//   location: workspaceExisting.location
+  
+//   properties: {
+//     applicationGroupReferences: [
+//       '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
+//     ]
+//   }
+// }
+
+module updateWorkspace '.bicep/updateAVDWorkspace.bicep' =  {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
-  name: 'Workspace-${time}'
+  name: 'updateAVDWorkspace'
   params: {
-      name: workSpaceName
-      friendlyName: workSpaceFriendlyName
-      location: managementPlaneLocation
+    workSpaceName: workSpaceName
+    properties: {
       applicationGroupReferences: [
         '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
       ]
-      tags: tags
-      publicNetworkAccess: deployAvdPrivateLinkService ? workspacePublicNetworkAccess : null
-      privateEndpoints: deployAvdPrivateLinkService ? [
-        {
-          name: privateEndpointWorkspaceName
-          subnetResourceId: privateEndpointSubnetResourceId
-          service: 'feed'
-          privateDnsZoneResourceIds: [
-            avdVnetPrivateDnsZoneConnectionResourceId
-          ]
-        }
-        {
-          name: privateEndpointDiscoveryName
-          subnetResourceId: privateEndpointSubnetResourceId
-          service: 'global'
-          privateDnsZoneResourceIds: [
-            avdVnetPrivateDnsZoneDiscoveryResourceId
-          ]
-        }
-      ]: []
-      diagnosticSettings: varDiagnosticSettings
+    }
+    location: managementPlaneLocation
   }
   dependsOn: [
     hostPool
     applicationGroups
   ]
 }
+
+// Workspace.
+// module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/main.bicep' = {
+//   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+//   name: 'Workspace-${time}'
+//   params: {
+//       name: workSpaceName
+//       friendlyName: workSpaceFriendlyName
+//       location: managementPlaneLocation
+//       applicationGroupReferences: [
+//         '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
+//       ]
+//       tags: tags
+//       publicNetworkAccess: deployAvdPrivateLinkService ? workspacePublicNetworkAccess : null
+//       privateEndpoints: deployAvdPrivateLinkService ? [
+//         {
+//           name: privateEndpointWorkspaceName
+//           subnetResourceId: privateEndpointSubnetResourceId
+//           service: 'feed'
+//           privateDnsZoneResourceIds: [
+//             avdVnetPrivateDnsZoneConnectionResourceId
+//           ]
+//         }
+//         {
+//           name: privateEndpointDiscoveryName
+//           subnetResourceId: privateEndpointSubnetResourceId
+//           service: 'global'
+//           privateDnsZoneResourceIds: [
+//             avdVnetPrivateDnsZoneDiscoveryResourceId
+//           ]
+//         }
+//       ]: []
+//       diagnosticSettings: varDiagnosticSettings
+//   }
+//   dependsOn: [
+//     hostPool
+//     applicationGroups
+//   ]
+// }
 
 // Scaling plan.
 module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-plan/main.bicep' =  if (deployScalingPlan)  {
