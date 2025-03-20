@@ -364,11 +364,11 @@ module updateWorkspace '.bicep/updateAVDWorkspace.bicep' =  {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'updateAVDWorkspace'
   params: {
-    workSpaceName: workSpaceName
+    workSpaceName: workspaceExisting.name
     properties: union(workspaceExisting.properties, {
-      applicationGroupReferences: [
+      applicationGroupReferences: union(workspaceExisting.properties.applicationGroupReferences, [
         '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
-      ]
+      ])
     })
     location: managementPlaneLocation
   }
