@@ -230,4 +230,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (identi
   ]
 }
 
+// =========== //
+// Outputs //
+// =========== //
 output storageAccountResourceId string = storageAndFile.outputs.resourceId

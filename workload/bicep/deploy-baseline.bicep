@@ -57,7 +57,7 @@ param avdVmLocalUserPassword string
 @sys.description('Required, The service providing domain services for Azure Virtual Desktop. (Default: ADDS)')
 param avdIdentityServiceProvider string = 'ADDS'
 
-@sys.description('Required, Eronll session hosts on Intune. (Default: false)')
+@sys.description('Required, Enroll session hosts on Intune. (Default: false)')
 param createIntuneEnrollment bool = false
 
 @sys.description('Optional. Identity ID(s) to grant RBAC role to access AVD application group and NTFS permissions. (Default: [])')
@@ -980,12 +980,13 @@ var varTagsWithValues = union(
   empty(costCenterTag) ? {} : { CostCenter: costCenterTag }
 )
 var varCustomResourceTags = createResourceTags ? varTagsWithValues : {}
-var varAllComputeStorageTags = avdIdentityServiceProvider != 'EntraID'
+var varAllComputeStorageTags = contains(avdIdentityServiceProvider, 'EntraID')
   ? {
+      IdentityServiceProvider: avdIdentityServiceProvider
+  }: {
       DomainName: identityDomainName
       IdentityServiceProvider: avdIdentityServiceProvider
     }
-  : {}
 var varAvdDefaultTags = {
   'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
   Environment: deploymentEnvironment
