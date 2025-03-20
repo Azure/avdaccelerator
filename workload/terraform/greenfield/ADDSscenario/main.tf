@@ -100,10 +100,6 @@ module "avm_res_desktopvirtualization_workspace" {
   version             = "0.2.0"
   enable_telemetry    = var.enable_telemetry
   resource_group_name = azurerm_resource_group.this.name
-  # location            = azurerm_resource_group.this.location
-  # description         = "${var.prefix} Workspace"
-  # name                = "${var.workspace}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
-
   virtual_desktop_workspace_resource_group_name = azurerm_resource_group.this.name
   virtual_desktop_workspace_location            = azurerm_resource_group.this.location
   virtual_desktop_workspace_name                = "${var.workspace}-${var.prefix}-${var.environment}-${var.avdLocation}-01"
@@ -133,6 +129,9 @@ resource "azurerm_role_assignment" "new" {
   scope              = data.azurerm_subscription.primary.id
   role_definition_id = data.azurerm_role_definition.power_role.id
 
+  lifecycle {
+    ignore_changes = [role_definition_id]
+  }
 }
 
 # This ensures we have unique CAF compliant names for our resources.
