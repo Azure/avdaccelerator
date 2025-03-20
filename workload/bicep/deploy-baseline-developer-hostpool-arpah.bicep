@@ -147,7 +147,8 @@ param avdAlaWorkspaceCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvi
 
 @maxLength(64)
 @sys.description('AVD workspace custom name. (Default: vdws-app1-dev-use2-001)')
-param avdWorkSpaceCustomName string = 'vdws-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
+//param avdWorkSpaceCustomName string = 'vdws-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
+param avdWorkSpaceCustomName string = 'vdws-app1-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD workspace custom friendly (Display) name. (Default: App1 - Dev - East US 2 - 001)')
