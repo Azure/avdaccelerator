@@ -42,11 +42,11 @@ var builtInRoleNames = {
   )
 }
 
-resource privateDnsZone 'Microsoft.Network/privateDnsZones@2020-06-01' existing = {
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' existing = {
   name: privateDnsZoneName
 }
 
-resource A 'Microsoft.Network/privateDnsZones/A@2020-06-01' = {
+resource A 'Microsoft.Network/privateDnsZones/A@2024-06-01' = {
   name: name
   parent: privateDnsZone
   properties: {
@@ -60,11 +60,9 @@ resource A_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' 
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(A.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+      roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
             ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType

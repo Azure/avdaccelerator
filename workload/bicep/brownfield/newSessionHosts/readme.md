@@ -30,7 +30,7 @@ This solution will deploy new session hosts to an existing host pool.
 ```powershell
 New-AzDeployment `
     -Location '<Azure location>' `
-    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/deployNewSessionHostsToHostPools.json' `
+    -TemplateFile 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployNewSessionHosts.json' `
     -computeSubscriptionId '<Subscription ID>' `
     -computeRgResourceGroupName '<AVD pool compute resource group>' `
     -countIndex '<Current count of session hosts in the host pool>' `
@@ -50,7 +50,7 @@ New-AzDeployment `
 ```azurecli
 az deployment sub create \
     --location '<Azure location>' \
-    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/brownfield/deployNewSessionHostsToHostPools.json' \
+    --template-uri 'https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/arm/brownfield/deployNewSessionHosts.json' \
     --parameters \
         computeSubscriptionId '<Subscription ID>' \
         computeRgResourceGroupName '<AVD pool compute resource group>' \

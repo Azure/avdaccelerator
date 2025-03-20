@@ -88,7 +88,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2024-04-08-preview' = {
+resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2023-09-05' = {
   name: name
   location: location
   tags: tags
@@ -103,13 +103,13 @@ resource scalingPlan 'Microsoft.DesktopVirtualization/scalingPlans@2024-04-08-pr
   }
 }
 
-resource scalingPlanSchedulePersonal 'Microsoft.DesktopVirtualization/scalingPlans/personalSchedules@2024-04-08-preview' = [for schedule in schedules: if (hostPoolType == 'Personal') {
+resource scalingPlanSchedulePersonal 'Microsoft.DesktopVirtualization/scalingPlans/personalSchedules@2023-09-05' = [for schedule in schedules: if (hostPoolType == 'Personal') {
   name: '${schedule.name}'
   parent: scalingPlan
   properties: schedule
 }]
 
-resource scalingPlanSchedulePooled 'Microsoft.DesktopVirtualization/scalingPlans/pooledSchedules@2024-04-08-preview' = [for schedule in schedules: if (hostPoolType == 'Pooled') {
+resource scalingPlanSchedulePooled 'Microsoft.DesktopVirtualization/scalingPlans/pooledSchedules@2023-09-05' = [for schedule in schedules: if (hostPoolType == 'Pooled') {
   name: '${schedule.name}'
   parent: scalingPlan
   properties: schedule
