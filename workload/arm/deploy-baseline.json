@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "17834241792536323862"
+      "templateHash": "7399147155959350092"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -104,7 +104,7 @@
       "type": "bool",
       "defaultValue": false,
       "metadata": {
-        "description": "Required, Eronll session hosts on Intune. (Default: false)"
+        "description": "Required, Enroll session hosts on Intune. (Default: false)"
       }
     },
     "avdSecurityGroups": {
@@ -1719,7 +1719,7 @@
     "varCreateVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
     "varTagsWithValues": "[union(if(empty(parameters('workloadNameTag')), createObject(), createObject('WorkloadName', parameters('workloadNameTag'))), if(empty(parameters('workloadTypeTag')), createObject(), createObject('WorkloadType', parameters('workloadTypeTag'))), if(empty(parameters('dataClassificationTag')), createObject(), createObject('DataClassification', parameters('dataClassificationTag'))), if(empty(parameters('departmentTag')), createObject(), createObject('Department', parameters('departmentTag'))), if(empty(parameters('workloadCriticalityTag')), createObject(), createObject('Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')))), if(empty(parameters('applicationNameTag')), createObject(), createObject('ApplicationName', parameters('applicationNameTag'))), if(empty(parameters('workloadSlaTag')), createObject(), createObject('ServiceClass', parameters('workloadSlaTag'))), if(empty(parameters('opsTeamTag')), createObject(), createObject('OpsTeam', parameters('opsTeamTag'))), if(empty(parameters('ownerTag')), createObject(), createObject('Owner', parameters('ownerTag'))), if(empty(parameters('costCenterTag')), createObject(), createObject('CostCenter', parameters('costCenterTag'))))]",
     "varCustomResourceTags": "[if(parameters('createResourceTags'), variables('varTagsWithValues'), createObject())]",
-    "varAllComputeStorageTags": "[if(not(equals(parameters('avdIdentityServiceProvider'), 'EntraID')), createObject('DomainName', parameters('identityDomainName'), 'IdentityServiceProvider', parameters('avdIdentityServiceProvider')), createObject())]",
+    "varAllComputeStorageTags": "[if(contains(parameters('avdIdentityServiceProvider'), 'EntraID'), createObject('IdentityServiceProvider', parameters('avdIdentityServiceProvider')), createObject('DomainName', parameters('identityDomainName'), 'IdentityServiceProvider', parameters('avdIdentityServiceProvider')))]",
     "varAvdDefaultTags": {
       "cm-resource-parent": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DesktopVirtualization/hostpools/{2}', parameters('avdWorkloadSubsId'), variables('varServiceObjectsRgName'), variables('varHostPoolName'))]",
       "Environment": "[parameters('deploymentEnvironment')]",
