@@ -256,7 +256,7 @@ var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailAp
   }
   {
     name: 'Microsoft Outlook'
-    description: 'Microsoft Word'
+    description: 'Microsoft Word (legacy)'
     friendlyName: 'Outlook'
     showInPortal: true
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
