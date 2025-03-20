@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "10574466962800161019"
+      "templateHash": "17834241792536323862"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -116,9 +116,9 @@
     },
     "identityDomainName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
-        "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"\")"
+        "description": "FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: \"none\")"
       }
     },
     "identityDomainGuid": {
@@ -130,16 +130,16 @@
     },
     "avdDomainJoinUserName": {
       "type": "string",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
-        "description": "AVD session host domain join user principal name. (Default: \"\")"
+        "description": "AVD session host domain join user principal name. (Default: \"none\")"
       }
     },
     "avdDomainJoinUserPassword": {
       "type": "securestring",
-      "defaultValue": "",
+      "defaultValue": "none",
       "metadata": {
-        "description": "AVD session host domain join password. (Default: \"\")"
+        "description": "AVD session host domain join password. (Default: \"none\")"
       }
     },
     "avdOuPath": {
@@ -1444,7 +1444,7 @@
     "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-key-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varZtKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varZtKvName'))]",
     "varFslogixSharePath": "[if(parameters('createAvdFslogixDeployment'), format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/EntraID-Storage-Features/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "Set-SessionHostConfiguration.ps1",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateAppAttachDeployment'), true())), true(), false())]",
@@ -32865,7 +32865,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "138393869324195559"
+              "templateHash": "14644484978386040734"
             }
           },
           "parameters": {
@@ -32884,7 +32884,7 @@
             "diskEncryptionSetResourceId": {
               "type": "string",
               "metadata": {
-                "description": "AVD disk encryption set resource ID to enable server side encyption."
+                "description": "AVD disk encryption set resource ID to enable server side encryption."
               }
             },
             "subnetId": {

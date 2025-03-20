@@ -1,4 +1,4 @@
-using '../deploy-baseline.bicep'
+using './deploy-baseline.bicep'
 
 param avdSessionHostLocation = ''
 param avdManagementPlaneLocation = ''

@@ -10,7 +10,7 @@ param location string
 @sys.description('Resource Group name for the session hosts.')
 param computeObjectsRgName string
 
-@sys.description('AVD disk encryption set resource ID to enable server side encyption.')
+@sys.description('AVD disk encryption set resource ID to enable server side encryption.')
 param diskEncryptionSetResourceId string
 
 @sys.description('AVD subnet ID.')

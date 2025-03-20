@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.33.93.31351",
-      "templateHash": "15293617322517070724"
+      "templateHash": "9665906661952777717"
     }
   },
   "parameters": {
@@ -702,7 +702,7 @@
     "varTimeZoneSessionHosts": "[variables('varLocations')[variables('varSessionHostLocationLowercase')].timeZone]",
     "varSessionHostLocationLowercase": "[toLower(replace(parameters('location'), ' ', ''))]",
     "varFslogixSharePath": "[if(parameters('configureFslogix'), format('\\\\{0}.file.{1}\\{2}', last(split(parameters('fslogixStorageAccountResourceId'), '/')), environment().suffixes.storage, parameters('fslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/EntraID-Storage-Features/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "Set-SessionHostConfiguration.ps1",
     "varAvdDefaultTags": {
@@ -2458,7 +2458,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.33.93.31351",
-              "templateHash": "138393869324195559"
+              "templateHash": "14644484978386040734"
             }
           },
           "parameters": {
@@ -2477,7 +2477,7 @@
             "diskEncryptionSetResourceId": {
               "type": "string",
               "metadata": {
-                "description": "AVD disk encryption set resource ID to enable server side encyption."
+                "description": "AVD disk encryption set resource ID to enable server side encryption."
               }
             },
             "subnetId": {

@@ -63,18 +63,18 @@ param createIntuneEnrollment bool = false
 @sys.description('Optional. Identity ID(s) to grant RBAC role to access AVD application group and NTFS permissions. (Default: [])')
 param avdSecurityGroups array = []
 
-@sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
-param identityDomainName string = ''
+@sys.description('FQDN of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "none")')
+param identityDomainName string = 'none'
 
 @sys.description('GUID of on-premises AD domain, used for FSLogix storage configuration and NTFS setup. (Default: "")')
 param identityDomainGuid string = ''
 
-@sys.description('AVD session host domain join user principal name. (Default: "")')
-param avdDomainJoinUserName string = ''
+@sys.description('AVD session host domain join user principal name. (Default: "none")')
+param avdDomainJoinUserName string = 'none'
 
-@sys.description('AVD session host domain join password. (Default: "")')
+@sys.description('AVD session host domain join password. (Default: "none")')
 @secure()
-param avdDomainJoinUserPassword string = ''
+param avdDomainJoinUserPassword string = 'none'
 
 @sys.description('OU path to join AVd VMs. (Default: "")')
 param avdOuPath string = ''

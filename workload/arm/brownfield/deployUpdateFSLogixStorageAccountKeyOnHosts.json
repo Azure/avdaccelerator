@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "9584988491906376211"
+      "version": "0.33.93.31351",
+      "templateHash": "16128536374539072804"
     }
   },
   "parameters": {
@@ -33,7 +33,7 @@
     }
   },
   "variables": {
-    "keyIndex": "[sub(parameters('storageAccountKey'), 1)]"
+    "varKeyIndex": "[sub(parameters('storageAccountKey'), 1)]"
   },
   "resources": [
     {
@@ -60,7 +60,7 @@
           },
           {
             "name": "StorageAccountKey",
-            "value": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-05-01').keys[variables('keyIndex')].value]"
+            "value": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-05-01').keys[variables('varKeyIndex')].value]"
           }
         ],
         "timeoutInSeconds": 30,

@@ -1,4 +1,4 @@
-using '../deploy-baseline.bicep'
+using './deploy-baseline.bicep'
 
 param deploymentPrefix = 'AVD1'
 param deploymentEnvironment = 'Dev'
@@ -13,10 +13,10 @@ param avdVmLocalUserPassword = ''
 param avdIdentityServiceProvider = 'ADDS'
 param createIntuneEnrollment = false
 param avdSecurityGroups = []
-param identityDomainName = ''
+param identityDomainName = 'none'
 param identityDomainGuid = ''
-param avdDomainJoinUserName = ''
-param avdDomainJoinUserPassword = ''
+param avdDomainJoinUserName = 'none'
+param avdDomainJoinUserPassword = 'none'
 param avdOuPath = ''
 param avdHostPoolType = 'Pooled'
 param hostPoolPreferredAppGroupType = 'Desktop'
@@ -122,6 +122,7 @@ param workloadSlaTag = 'Contoso-SLA'
 param opsTeamTag = 'workload-admins@Contoso.com'
 param ownerTag = 'workload-owner@Contoso.com'
 param costCenterTag = 'Contoso-CC'
+param time = ? /* TODO : please fix the value assigned to this parameter `utcNow()` */
 param enableTelemetry = true
 param enableKvPurgeProtection = true
 param deployAntiMalwareExt = true
