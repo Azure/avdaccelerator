@@ -42,7 +42,6 @@ param hostPoolResourceId string
 // Additional parameter for screen capture functionallity -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose' powershell script will need to be updated too
 
 var fslogixStorageAccountName = fslogix ? last(split(fslogixStorageAccountResourceId, '/')) : ''
-
 var varBaseScriptArguments = '-IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken "${hostPool.listRegistrationTokens().value[0].token}" -AmdVmSize ${varAmdVmSize} -NvidiaVmSize ${varNvidiaVmSize}'
 var varBaseFSLogixScriptArguments = '-FslogixFileShare "${fslogixSharePath}"'
 var varFSLogixScriptArguments = identityServiceProvider == 'EntraID'
@@ -51,7 +50,6 @@ var varFSLogixScriptArguments = identityServiceProvider == 'EntraID'
       ? '${varBaseFSLogixScriptArguments} -IdentityDomainName ${identityDomainName}'
       : varBaseFSLogixScriptArguments
 var varScriptArguments = fslogix ? '${varBaseScriptArguments} ${varFSLogixScriptArguments}' : varBaseScriptArguments
-
 var varAmdVmSizes = [
   'Standard_NV4as_v4'
   'Standard_NV8as_v4'
@@ -78,10 +76,10 @@ var varNvidiaVmSizes = [
   'Standard_NV72ads_A10_v5'
 ]
 var varNvidiaVmSize = contains(varNvidiaVmSizes, vmSize)
+
 // =========== //
 // Deployments //
 // =========== //
-
 resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
   name: last(split(hostPoolResourceId, '/'))
   scope: resourceGroup(split(hostPoolResourceId, '/')[4])
