@@ -239,7 +239,8 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
         // ADDS or EntraDS domain join.
         extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+            //enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+            enabled: false
             settings: {
                 name: identityDomainName
                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
