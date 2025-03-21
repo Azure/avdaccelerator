@@ -90,7 +90,7 @@
           "value": false
       },
       "deployAntiMalwareExt":{
-          "value": false
+          "value": true
       },
       "securityPrincipalId": {
             "value": ""

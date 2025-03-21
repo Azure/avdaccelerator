@@ -143,6 +143,10 @@ param deployAntiMalwareExt bool
 @sys.description('The ARPA-H Developer Entra ID security group')
 param securityPrincipalId string
 
+@description('Optional. Required if name is specified. Password of the user specified in user parameter.')
+@secure()
+param domainJoinPassword string = ''
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -354,9 +358,8 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         }
     }
     dependsOn: [
-        //sessionHostsAntimalwareExtension
+        sessionHostsAntimalwareExtension
         alaWorkspace
-        sessionHosts
     ]
 }]
 
@@ -369,9 +372,12 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
         dataCollectionRuleId: dataCollectionRuleId
     }
     dependsOn: [
+        // monitoring
+        // //sessionHostsAntimalwareExtension
+        // sessionHosts
+        // alaWorkspace
         monitoring
-        //sessionHostsAntimalwareExtension
-        sessionHosts
+        sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
@@ -398,3 +404,49 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
         monitoring
     ]
 }]
+
+// extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
+//         extensionDomainJoinConfig: {
+//             enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+//             settings: {
+//                 name: identityDomainName
+//                 ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+//                 user: domainJoinUserName
+//                 restart: 'true'
+//                 options: '3'
+
+//             }
+//         }
+
+module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    //name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
+    name: 'Dom-Join-${batchId}-${i}-${time}'
+    params: {
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      name: 'DomainJoin'
+      location: location
+      publisher: 'Microsoft.Compute'
+      type: 'JsonADDomainExtension'
+      typeHandlerVersion: '1.3'
+      autoUpgradeMinorVersion: true
+      enableAutomaticUpgrade: false
+      settings: {
+            name: identityDomainName
+            ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+            user: domainJoinUserName
+            restart: 'true'
+            options: '3'
+        }
+      
+      supressFailures: false
+      tags: tags
+      protectedSettings: {
+        Password: domainJoinPassword
+        //Password: secure(keyVault.getSecret('domainJoinUserPassword'))
+        }
+    }
+    dependsOn: [
+        sessionHostConfiguration
+    ]
+  }]
