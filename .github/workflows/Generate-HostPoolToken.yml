@@ -24,7 +24,25 @@ jobs:
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }} 
         enable-AzPSSession: true
-    
+
+    - name: Public IP
+      id: ip
+      uses: haythem/public-ip@v1.3
+  
+    - name: Print Public IP
+      run: |
+        echo ${{ steps.ip.outputs.ipv4 }}
+        echo ${{ steps.ip.outputs.ipv6 }}
+
+    # - name: Install Azure CLI
+    #   run: |
+    #     python -m pip install --upgrade pip
+    #     pip install azure-cli
+
+    - name: Add temporary network rule
+      run: |
+        az keyvault network-rule add --name ${{ secrets.KEY_VAULT }} --ip-address ${{ steps.ip.outputs.ipv4 }}
+
     - name: Generate Host Pool Token ${{ github.event.inputs.environment }} environment
       uses: azure/powershell@v2
       env:
@@ -36,3 +54,7 @@ jobs:
         inlineScript: ./.github/workflows/scripts/Generate-HostPoolToken.ps1 -HostPoolResourceGroupName ${{ env.HostPoolResourceGroupName }} -HostPoolName ${{ env.HostPoolName }} -KeyVaultName ${{ secrets.KEY_VAULT }}
         azPSVersion: "latest"
         errorActionPreference: stop
+
+    - name: Remove temporary network rule
+      run: |
+        az keyvault network-rule remove --name ${{ secrets.KEY_VAULT }} --ip-address ${{ steps.ip.outputs.ipv4 }}
