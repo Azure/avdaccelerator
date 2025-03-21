@@ -1,0 +1,38 @@
+name: Generate Host Pool Token and save to Key Vault
+
+on:
+    workflow_dispatch:
+      inputs:
+        environment:
+          type: choice
+          description: Choose environment to deploy
+          options: 
+          - Test
+          - Prod
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.environment }}
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@main
+
+    - name: Log into Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }} 
+        enable-AzPSSession: true
+    
+    - name: Generate Host Pool Token ${{ github.event.inputs.environment }} environment
+      uses: azure/powershell@v2
+      env:
+        HostPoolResourceGroupName: 'avd-nih-arpah-${{ github.event.inputs.environment }}-use2-service-objects'
+        HostPoolName: 'vdpool-developer-${{ github.event.inputs.environment }}-use2-001'
+        KeyVaultName: 'SessionDesktop'
+  
+      with:
+        inlineScript: ./.github/workflows/scripts/Generate-HostPoolToken.ps1 -HostPoolResourceGroupName ${{ env.HostPoolResourceGroupName }} -HostPoolName ${{ env.HostPoolName }} -KeyVaultName ${{ secrets.KEY_VAULT }}
+        azPSVersion: "latest"
+        errorActionPreference: stop
