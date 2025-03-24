@@ -14,6 +14,9 @@ param subId string
 @sys.description('Resource Group Name where to deploy Azure NetApp Files.')
 param storageObjectsRgName string
 
+@sys.description('Resource Group Name for management VM and keyvault.')
+param serviceObjectsRgName string
+
 @sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
 param identityServiceProvider string
 
@@ -159,17 +162,17 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
 
 // Custom Extension call in on the DSC script to set NTFS permissions. 
 module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+    scope: resourceGroup('${subId}', '${serviceObjectsRgName}')
     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
     params: {
         location: location
         virtualMachineName: managementVmName
         file: storageToDomainScript
         scriptArguments: varStorageToDomainScriptArgs
-        adminUserPassword: (identityServiceProvider == 'EntraID') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : 
+        adminUserPassword: (identityServiceProvider == 'EntraID') ? keyVaultget.getSecret('vmLocalUserPassword') : ''
         baseScriptUri: storageToDomainScriptUri
     }
     dependsOn: [
-        storageAndFile
+        azureNetAppFiles
     ]
 }
