@@ -212,7 +212,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
 }
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (identityServiceProvider != 'EntraID') {
+module addShareToDomainScript '../sharedModules/smbUtilities.bicep' = if (identityServiceProvider != 'EntraID') {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Add-${storagePurpose}-Storage-Setup-${time}'
   params: {

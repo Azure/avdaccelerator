@@ -144,6 +144,9 @@ param existingVnetAvdSubnetResourceId string = ''
 @sys.description('Existing virtual network subnet for private endpoints. (Default: "")')
 param existingVnetPrivateEndpointSubnetResourceId string = ''
 
+@sys.description('Existing virtual network subnet for ANF. (Default: "")')
+param existingVnetAnfSubnetResourceId string = ''
+
 @sys.description('Existing hub virtual network for perring. (Default: "")')
 param existingHubVnetResourceId string = ''
 
@@ -155,6 +158,9 @@ param vNetworkAvdSubnetAddressPrefix string = '10.10.1.0/24'
 
 @sys.description('private endpoints virtual network subnet address prefix. (Default: 10.10.2.0/27)')
 param vNetworkPrivateEndpointSubnetAddressPrefix string = '10.10.2.0/27'
+
+@sys.description('ANF virtual network subnet address prefix. (Default: 10.10.3.0/26)')
+param vNetworkAnfSubnetAddressPrefix string = '10.10.3.0/26'
 
 @sys.description('custom DNS servers IPs. (Default: "")')
 param customDnsIps string = ''
@@ -187,7 +193,14 @@ param avdVnetPrivateDnsZoneKeyvaultId string = ''
 param vNetworkGatewayOnHub bool = false
 
 @sys.description('Deploy Fslogix setup. (Default: true)')
-param createAvdFslogixDeployment bool = true
+param createFslogixDeployment bool = true
+
+@allowed([
+  'ANF' // Azure NetApp Files
+  'AzureFiles' // Storage account
+])
+@sys.description('Type of storage service to deploy for FSLogix. (Default: AzureFiles)')
+param smbStorageType string = 'AzureFiles'
 
 @sys.description('Deploy App Attach setup. (Default: false)')
 param createAppAttachDeployment bool = false
@@ -255,15 +268,23 @@ param zoneRedundantStorage bool = false
   'Standard'
   'Premium'
 ])
-@sys.description('Storage account SKU for FSLogix storage. Recommended tier is Premium (Default: Premium)')
-param fslogixStoragePerformance string = 'Premium'
+@sys.description('SKU for FSLogix storage. Recommended tier is Premium for storage account. (Default: Premium)')
+param fslogixStorageAccountPerformance string = 'Premium'
 
 @allowed([
   'Standard'
   'Premium'
 ])
-@sys.description('Storage account SKU for App Attach storage. Recommended tier is Premium. (Default: Premium)')
-param appAttachStoragePerformance string = 'Premium'
+@sys.description('SKU for App Attach storage. Recommended tier is Premium for storage account. (Default: Premium)')
+param appAttachStorageAccountPerformance string = 'Premium'
+
+@allowed([
+  'Standard'
+  'Premium'
+  'Ultra'
+])
+@sys.description('SKU for App Attach and FSLogix ANF storage. (Default: Standard)')
+param anfPerformance string = 'Standard'
 
 @sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
 param diskZeroTrust bool = false
@@ -311,7 +332,7 @@ param avdCustomImageDefinitionId string = ''
 @sys.description('Management VM image SKU (Default: winServer_2022_Datacenter_smalldisk_g2)')
 param managementVmOsImage string = 'winServer_2022_Datacenter_smalldisk_g2'
 
-@sys.description('OU name for Azure Storage Account. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
+@sys.description('OU name for Azure Storage Account or Azure Netapp Files. It is recommended to create a new AD Organizational Unit (OU) in AD and disable password expiration policy on computer accounts or service logon accounts accordingly.  (Default: "")')
 param storageOuPath string = ''
 
 // Custom Naming
@@ -356,12 +377,20 @@ param avdVnetworkSubnetCustomName string = 'snet-avd-app1-dev-use2-001'
 param privateEndpointVnetworkSubnetCustomName string = 'snet-pe-app1-dev-use2-001'
 
 @maxLength(80)
+@sys.description('ANF virtual network subnet custom name. (Default: snet-anf-app1-dev-use2-001)')
+param anfVnetworkSubnetCustomName string = 'snet-anf-app1-dev-use2-001'
+
+@maxLength(80)
 @sys.description('AVD network security group custom name. (Default: nsg-avd-app1-dev-use2-001)')
 param avdNetworksecurityGroupCustomName string = 'nsg-avd-app1-dev-use2-001'
 
 @maxLength(80)
 @sys.description('Private endpoint network security group custom name. (Default: nsg-pe-app1-dev-use2-001)')
 param privateEndpointNetworksecurityGroupCustomName string = 'nsg-pe-app1-dev-use2-001'
+
+@maxLength(80)
+@sys.description('ANF network security group custom name. (Default: nsg-anf-app1-dev-use2-001)')
+param anfNetworksecurityGroupCustomName string = 'nsg-anf-app1-dev-use2-001'
 
 @maxLength(80)
 @sys.description('AVD route table custom name. (Default: route-avd-app1-dev-use2-001)')
@@ -414,6 +443,9 @@ param avdSessionHostCustomNamePrefix string = 'vmapp1duse2'
 @maxLength(2)
 @sys.description('AVD FSLogix and App Attach storage account prefix custom name. (Default: st)')
 param storageAccountPrefixCustomName string = 'st'
+
+@sys.description('AVD FSLogix and App Attach storage account prefix custom name. (Default: anf-acc-app1-dev-use2-001)')
+param anfAccountCustomName string = 'anf-acc-app1-dev-use2-001'
 
 @sys.description('FSLogix file share name. (Default: fslogix-pc-app1-dev-001)')
 param fslogixFileShareCustomName string = 'fslogix-pc-app1-dev-use2-001'
@@ -586,12 +618,18 @@ var varVnetAvdSubnetName = avdUseCustomNaming
 var varVnetPrivateEndpointSubnetName = avdUseCustomNaming
   ? privateEndpointVnetworkSubnetCustomName
   : 'snet-pe-${varComputeStorageResourcesNamingStandard}-001'
+var varVnetAnfSubnetName = avdUseCustomNaming 
+  ? anfVnetworkSubnetCustomName 
+  : 'snet-anf-${varComputeStorageResourcesNamingStandard}-001'
 var varAvdNetworksecurityGroupName = avdUseCustomNaming
   ? avdNetworksecurityGroupCustomName
   : 'nsg-avd-${varComputeStorageResourcesNamingStandard}-001'
 var varPrivateEndpointNetworksecurityGroupName = avdUseCustomNaming
   ? privateEndpointNetworksecurityGroupCustomName
   : 'nsg-pe-${varComputeStorageResourcesNamingStandard}-001'
+var varAnfNetworksecurityGroupName = avdUseCustomNaming
+  ? anfNetworksecurityGroupCustomName 
+  : 'nsg-anf-${varComputeStorageResourcesNamingStandard}-001'
 var varAvdRouteTableName = avdUseCustomNaming
   ? avdRouteTableCustomName
   : 'route-avd-${varComputeStorageResourcesNamingStandard}-001'
@@ -649,10 +687,10 @@ var varAppAttachFileShareName = avdUseCustomNaming
 var varFslogixStorageName = avdUseCustomNaming
   ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
   : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-var varFslogixStorageFqdn = createAvdFslogixDeployment
-  ? '${varFslogixStorageName}.file.${environment().suffixes.storage}'
-  : ''
-var varAppAttachStorageFqdn = '${varAppAttachStorageName}.file.${environment().suffixes.storage}'
+var varAnfAccountName = avdUseCustomNaming ? anfAccountCustomName : 'anf-acc-${varComputeStorageResourcesNamingStandard}-001'
+var varAnfCapacityPoolName = 'anf-cpool-${varComputeStorageResourcesNamingStandard}-001'
+var varFslogixStorageFqdn = createFslogixDeployment ? ((smbStorageType == 'AzureFiles') ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' : (smbStorageType == 'ANF') ? '${varFslogixFileShareName}.<subnet-name>.<vnet-name>.${avdSessionHostLocation}.netapp.azure.com' : '') : ''
+var varAppAttachStorageFqdn = createAppAttachDeployment ? ((smbStorageType == 'AzureFiles') ? '${varAppAttachStorageName}.file.${environment().suffixes.storage}' : (smbStorageType == 'ANF') ? '${varAppAttachFileShareName}.<subnet-name>.<vnet-name>.${avdSessionHostLocation}.netapp.azure.com' : '') : ''
 var varAppAttachStorageName = avdUseCustomNaming
   ? '${storageAccountPrefixCustomName}appa${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
   : 'stappa${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
@@ -666,19 +704,19 @@ var varZtKvName = avdUseCustomNaming
   : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
-var varFslogixSharePath = createAvdFslogixDeployment
+var varFslogixSharePath = createFslogixDeployment
   ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
   : ''
 var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
-var varCreateStorageDeployment = (createAvdFslogixDeployment || varCreateAppAttachDeployment == true) ? true : false
+var varCreateStorageDeployment = (createFslogixDeployment || varCreateAppAttachDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage
-  ? '${fslogixStoragePerformance}_ZRS'
-  : '${fslogixStoragePerformance}_LRS'
+  ? '${fslogixStorageAccountPerformance}_ZRS'
+  : '${fslogixStorageAccountPerformance}_LRS'
 var varAppAttachStorageSku = zoneRedundantStorage
-  ? '${appAttachStoragePerformance}_ZRS'
-  : '${appAttachStoragePerformance}_LRS'
+  ? '${fslogixStorageAccountPerformance}_ZRS'
+  : '${fslogixStorageAccountPerformance}_LRS'
 var varMgmtVmSpecs = {
   osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
   osDiskType: 'Standard_LRS'
@@ -1095,7 +1133,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     computeObjectsRgName: varComputeObjectsRgName
     serviceObjectsRgName: varServiceObjectsRgName
     dataCollectionRulesName: varDataCollectionRulesName
-    storageObjectsRgName: (createAvdFslogixDeployment || createAppAttachDeployment) ? varStorageObjectsRgName : ''
+    storageObjectsRgName: (createFslogixDeployment || createAppAttachDeployment) ? varStorageObjectsRgName : ''
     networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
     monitoringRgName: varMonitoringRgName
     deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
@@ -1113,11 +1151,11 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
 }
 
 // Networking
-module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createAvdFslogixDeployment || varCreateAppAttachDeployment) {
+module networking './modules/networking/deploy.bicep' = if (createAvdVnet || createPrivateDnsZones || avdDeploySessionHosts || createFslogixDeployment || varCreateAppAttachDeployment) {
   name: 'Networking-${time}'
   params: {
     createVnet: createAvdVnet
-    deployAsg: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateAppAttachDeployment) ? true : false
+    deployAsg: (avdDeploySessionHosts || createFslogixDeployment || varCreateAppAttachDeployment) ? true : false
     existingAvdSubnetResourceId: existingVnetAvdSubnetResourceId
     createPrivateDnsZones: (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService)
       ? createPrivateDnsZones
@@ -1126,6 +1164,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     computeObjectsRgName: varComputeObjectsRgName
     networkObjectsRgName: varNetworkObjectsRgName
     avdNetworksecurityGroupName: varAvdNetworksecurityGroupName
+    anfNetworksecurityGroupName: varAnfNetworksecurityGroupName
     privateEndpointNetworksecurityGroupName: varPrivateEndpointNetworksecurityGroupName
     avdRouteTableName: varAvdRouteTableName
     privateEndpointRouteTableName: varPrivateEndpointRouteTableName
@@ -1135,16 +1174,19 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     remoteVnetPeeringName: varRemoteVnetPeeringName
     vnetAvdSubnetName: varVnetAvdSubnetName
     vnetPrivateEndpointSubnetName: varVnetPrivateEndpointSubnetName
+    vnetAnfSubnetName: varVnetAnfSubnetName
     createVnetPeering: varCreateVnetPeering
     deployDDoSNetworkProtection: deployDDoSNetworkProtection
     ddosProtectionPlanName: varDDosProtectionPlanName
     deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService) ? true : false //adding logic that will be used when also including AVD control plane PEs
+    deployAnfSubnet: smbStorageType == 'ANF' ? true : false
     deployAvdPrivateLinkService: deployAvdPrivateLinkService
     vNetworkGatewayOnHub: vNetworkGatewayOnHub
     existingHubVnetResourceId: existingHubVnetResourceId
     location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     vnetAvdSubnetAddressPrefix: vNetworkAvdSubnetAddressPrefix
     vnetPrivateEndpointSubnetAddressPrefix: vNetworkPrivateEndpointSubnetAddressPrefix
+    vnetAnfSubnetAddressPrefix: vNetworkAnfSubnetAddressPrefix
     workloadSubsId: avdWorkloadSubsId
     dnsServers: varDnsServers
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
@@ -1390,14 +1432,14 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
 }
 
 // Management VM deployment
-module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (avdIdentityServiceProvider != 'EntraID' && (createAvdFslogixDeployment || varCreateAppAttachDeployment)) {
+module managementVm './modules/sharedModules/managementVm.bicep' = if (avdIdentityServiceProvider != 'EntraID' && (createFslogixDeployment || varCreateAppAttachDeployment)) {
   name: 'Storage-MGMT-VM-${time}'
   params: {
     diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
     identityServiceProvider: avdIdentityServiceProvider
     managementVmName: varManagementVmName
     computeTimeZone: varTimeZoneSessionHosts
-    applicationSecurityGroupResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateAppAttachDeployment)
+    applicationSecurityGroupResourceId: (avdDeploySessionHosts || createFslogixDeployment || varCreateAppAttachDeployment)
       ? '${networking.outputs.applicationSecurityGroupResourceId}'
       : ''
     domainJoinUserName: avdDomainJoinUserName
@@ -1429,13 +1471,13 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
 }
 
 // FSLogix storage
-module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
+module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createFslogixDeployment) {
   name: 'Storage-FSLogix-${time}'
   params: {
     storagePurpose: 'fslogix'
     vmLocalUserName: avdVmLocalUserName
     fileShareName: varFslogixFileShareName
-    fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+    fileShareMultichannel: (fslogixStorageAccountPerformance == 'Premium') ? true : false
     storageSku: varFslogixStorageSku
     fileShareQuotaSize: fslogixFileShareQuotaSize
     storageAccountFqdn: varFslogixStorageFqdn
@@ -1490,7 +1532,7 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
     storagePurpose: 'AppAttach'
     vmLocalUserName: avdVmLocalUserName
     fileShareName: varAppAttachFileShareName
-    fileShareMultichannel: (appAttachStoragePerformance == 'Premium') ? true : false
+    fileShareMultichannel: (fslogixStorageAccountPerformance == 'Premium') ? true : false
     storageSku: varAppAttachStorageSku
     fileShareQuotaSize: appAttachFileShareQuotaSize
     storageAccountFqdn: varAppAttachStorageFqdn
@@ -1563,14 +1605,14 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i}-${time}'
     params: {
-      asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateAppAttachDeployment)
+      asgResourceId: (avdDeploySessionHosts || createFslogixDeployment || varCreateAppAttachDeployment)
         ? '${networking.outputs.applicationSecurityGroupResourceId}'
         : ''
       availability: availability
       availabilityZones: availabilityZones
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
-      configureFslogix: createAvdFslogixDeployment
+      configureFslogix: createFslogixDeployment
       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
         ? varMaxSessionHostsDivisionRemainderValue
         : varMaxSessionHostsPerTemplate

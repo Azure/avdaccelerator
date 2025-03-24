@@ -103,7 +103,7 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 }
 
 // Provision temporary VM and add it to domain.
-module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = {
+module managementVm '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = {
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
     name: 'MGMT-VM-${time}'
     params: {

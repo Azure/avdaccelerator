@@ -80,6 +80,9 @@ param storageService string
 @sys.description('Sets purpose of the storage account.')
 param storagePurpose string
 
+@sys.description('Identity name array to grant RBAC role to access AVD application group and NTFS permissions.')
+param securityPrincipalName string
+
 //parameters for domain join
 @sys.description('Sets location of DSC Agent.')
 param dscAgentPackageLocation string
@@ -98,7 +101,9 @@ param managedIdentityClientId string
 // =========== //
 var varAzureCloudName = environment().name
 var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
-var varStorageToDomainScriptArgs = '-StorageService ${storageService} -DscPath ${dscAgentPackageLocation} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageFqdn ${StorageFqdn} '
+var varSecurityPrincipalName = !empty(securityPrincipalName) ? securityPrincipalName : 'none'
+// var varStorageFqdn = azureNetAppFiles ?????????????
+// var varStorageToDomainScriptArgs = '-StorageService ${storageService} -DscPath ${dscAgentPackageLocation} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${subId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${subId} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageFqdn ${varStorageFqdn} '
 var varKvSubId = split(kvResourceId, '/')[2]
 var varKvRgName = split(kvResourceId, '/')[4]
 var varKvName = split(kvResourceId, '/')[8]
@@ -161,18 +166,18 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
 }
 
 // Custom Extension call in on the DSC script to set NTFS permissions. 
-module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
-    scope: resourceGroup('${subId}', '${serviceObjectsRgName}')
-    name: 'Add-${storagePurpose}-Storage-Setup-${time}'
-    params: {
-        location: location
-        virtualMachineName: managementVmName
-        file: storageToDomainScript
-        scriptArguments: varStorageToDomainScriptArgs
-        adminUserPassword: (identityServiceProvider == 'EntraID') ? keyVaultget.getSecret('vmLocalUserPassword') : ''
-        baseScriptUri: storageToDomainScriptUri
-    }
-    dependsOn: [
-        azureNetAppFiles
-    ]
-}
+// module addShareToDomainScript '../sharedModules/smbUtilities.bicep' = {
+//     scope: resourceGroup('${subId}', '${serviceObjectsRgName}')
+//     name: 'Add-${storagePurpose}-Storage-Setup-${time}'
+//     params: {
+//         location: location
+//         virtualMachineName: managementVmName
+//         file: storageToDomainScript
+//         scriptArguments: varStorageToDomainScriptArgs
+//         adminUserPassword: (identityServiceProvider == 'EntraID') ? keyVaultget.getSecret('vmLocalUserPassword') : ''
+//         baseScriptUri: storageToDomainScriptUri
+//     }
+//     dependsOn: [
+//         azureNetAppFiles
+//     ]
+// }
