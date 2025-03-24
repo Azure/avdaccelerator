@@ -8,9 +8,13 @@
 param(
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
+	[string] $StorageService,
+
+	[Parameter(Mandatory = $false)]
+	[ValidateNotNullOrEmpty()]
 	[string] $StorageAccountName,
 
-	[Parameter(Mandatory = $true)]
+	[Parameter(Mandatory = $false)]
 	[ValidateNotNullOrEmpty()]
 	[string] $StorageAccountRG,
 
@@ -52,7 +56,7 @@ param(
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
-	[string] $StorageAccountFqdn,
+	[string] $StorageFqdn,
 
 	[Parameter(Mandatory = $true)]
 	[ValidateNotNullOrEmpty()]
@@ -81,7 +85,7 @@ Install-Module -Name Az.Storage -Force
 Install-Module -Name Az.Network -Force
 Install-Module -Name Az.Resources -Force
 
-if ($IdentityServiceProvider -eq 'ADDS') {
+if ($IdentityServiceProvider -eq 'ADDS' && $StorageService -eq 'AzureFiles') {
 	Write-Log "Installing AzFilesHybrid module"
 	$AzFilesZipLocation = Get-ChildItem -Path $PSScriptRoot -Filter "AzFilesHybrid*.zip"
 	Expand-Archive $AzFilesZipLocation.FullName -DestinationPath $PSScriptRoot -Force
@@ -90,7 +94,7 @@ if ($IdentityServiceProvider -eq 'ADDS') {
 	& $AzFilesHybridPath
 }
 
-if ($IdentityServiceProvider -eq 'ADDS') {
+if ($IdentityServiceProvider -eq 'ADDS' && $StorageService -eq 'AzureFiles') {
 	# Please note: ActiveDirectory powershell module is only available on AD joined machines.
 	# To install it, RSAT administrative tools must be installed on the VM which will
 	# install the ActiveDirectory powershell module. AzFilesHybrid module takes care of
@@ -114,7 +118,7 @@ Connect-AzAccount -Identity -AccountId $ClientId
 Write-Log "Setting Azure subscription to $SubscriptionId"
 Select-AzSubscription -SubscriptionId $SubscriptionId
 
-if ($IdentityServiceProvider -eq 'ADDS') {
+if ($IdentityServiceProvider -eq 'ADDS' && $StorageService -eq 'AzureFiles') {
 	Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
 	if ( $CustomOuPath -eq 'true') {
 		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitDistinguishedName $OUName -OverwriteExistingADObject
@@ -134,12 +138,12 @@ if ($StoragePurpose -eq 'fslogix') {
 if ($StoragePurpose -eq 'AppAttach') {
 	$DriveLetter = 'X'
 }
-Write-Log "Mounting $StoragePurpose storage account on Drive $DriveLetter"
+Write-Log "Mounting $StoragePurpose storage on Drive $DriveLetter"
 
-$FileShareLocation = '\\' + $StorageAccountFqdn + '\' + $ShareName
-$connectTestResult = Test-NetConnection -ComputerName $StorageAccountFqdn -Port 445
+$FileShareLocation = '\\' + $StorageFqdn + '\' + $ShareName
+$connectTestResult = Test-NetConnection -ComputerName $StorageFqdn -Port 445
 
-Write-Log "Test connection access to port 445 for $StorageAccountFqdn was $connectTestResult"
+Write-Log "Test connection access to port 445 for $StorageFqdn was $connectTestResult"
 
 Try {
 	Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"

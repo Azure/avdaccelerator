@@ -14,8 +14,8 @@ param subId string
 @sys.description('Resource Group Name where to deploy Azure NetApp Files.')
 param storageObjectsRgName string
 
-// @sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
-// param identityServiceProvider string
+@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
+param identityServiceProvider string
 
 @sys.description('ANF account name.')
 param anfAccountName string
@@ -44,8 +44,8 @@ param kvResourceId string
 @sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
-// @sys.description('AVD session host local admin credentials.')
-// param vmLocalUserName string
+@sys.description('AVD session host local admin credentials.')
+param vmLocalUserName string
 
 @sys.description('ANF performance tier.')
 param anfPerformance string
@@ -56,46 +56,46 @@ param capacityPoolSize int = 4
 @sys.description('ANF volume quota size in GiBs.')
 param volumeSize int
 
-// @sys.description('Script name for adding storage account to Active Directory.')
-// param storageToDomainScript string
+@sys.description('Script name for adding storage account to Active Directory.')
+param storageToDomainScript string
 
-// @sys.description('URI for the script for adding the storage account to Active Directory.')
-// param storageToDomainScriptUri string
+@sys.description('URI for the script for adding the storage account to Active Directory.')
+param storageToDomainScriptUri string
 
 @sys.description('Tags to be applied to resources')
 param tags object = {}
 
-// @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
-// param managementVmName string
+@sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
+param managementVmName string
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
+
+@sys.description('Storage service provider.')
+param storageService string
 
 @sys.description('Sets purpose of the storage account.')
 param storagePurpose string
 
 //parameters for domain join
-// @sys.description('Sets location of DSC Agent.')
-// param dscAgentPackageLocation string
+@sys.description('Sets location of DSC Agent.')
+param dscAgentPackageLocation string
 
-// @sys.description('Custom OU path for storage.')
-// param storageCustomOuPath string
+@sys.description('Custom OU path for storage.')
+param storageCustomOuPath string
 
 @sys.description('OU Storage Path')
 param ouStgPath string = ''
 
-// @sys.description('Managed Identity Client ID')
-// param managedIdentityClientId string
-
-// @sys.description('storage account FDQN.')
-// param storageAccountFqdn string
+@sys.description('Managed Identity Client ID')
+param managedIdentityClientId string
 
 // =========== //
 // Variable declaration //
 // =========== //
-// var varAzureCloudName = environment().name
-// var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
-//var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
+var varAzureCloudName = environment().name
+var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
+var varStorageToDomainScriptArgs = '-StorageService ${storageService} -DscPath ${dscAgentPackageLocation} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageFqdn ${StorageFqdn} '
 var varKvSubId = split(kvResourceId, '/')[2]
 var varKvRgName = split(kvResourceId, '/')[4]
 var varKvName = split(kvResourceId, '/')[8]

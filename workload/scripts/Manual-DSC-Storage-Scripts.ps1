@@ -1,13 +1,17 @@
 param (
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $DscPath,  
+        [string] $StorageService,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
+        [string] $DscPath,  
+
+        [Parameter(Mandatory = $false)]
+        [ValidateNotNullOrEmpty()]
         [string] $StorageAccountName,
 
-        [Parameter(Mandatory = $true)]
+        [Parameter(Mandatory = $false)]
         [ValidateNotNullOrEmpty()]
         [string] $StorageAccountRG,
 
@@ -57,11 +61,12 @@ param (
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
-        [string] $StorageAccountFqdn,
+        [string] $StorageFqdn,
 
         [Parameter(Mandatory = $true)]
         [ValidateNotNullOrEmpty()]
         [string] $StoragePurpose
+
 )
 
 if ($IdentityServiceProvider -ne 'EntraIDKerberos') {
@@ -133,7 +138,7 @@ function Set-EscapeCharacters {
 }
 $AdminUserPasswordEscaped = Set-EscapeCharacters $AdminUserPassword
 
-$DscCompileCommand = "./Configuration.ps1 -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageAccountFqdn """ + $StorageAccountFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -Verbose"
+$DscCompileCommand = "./Configuration.ps1 -StorageService """ + $StorageService + """ -StorageAccountName """ + $StorageAccountName + """ -StorageAccountRG """ + $StorageAccountRG + """ -StoragePurpose """ + $StoragePurpose + """ -StorageFqdn """ + $StorageFqdn + """ -ShareName """ + $ShareName + """ -SubscriptionId """ + $SubscriptionId + """ -ClientId """ + $ClientId + """ -SecurityPrincipalName """ + $SecurityPrincipalName + """ -DomainName """ + $DomainName + """ -IdentityServiceProvider """ + $IdentityServiceProvider + """ -AzureCloudEnvironment """ + $AzureCloudEnvironment + """ -CustomOuPath " + $CustomOuPath + " -OUName """ + $OUName + """ -AdminUserName """ + $AdminUserName + """ -AdminUserPassword """ + $AdminUserPasswordEscaped + """ -Verbose"
 
 Write-Host "Executing the command $DscCompileCommand" 
 Invoke-Expression -Command $DscCompileCommand
