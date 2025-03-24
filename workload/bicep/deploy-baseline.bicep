@@ -1470,7 +1470,57 @@ module managementVm './modules/sharedModules/managementVm.bicep' = if (avdIdenti
   ]
 }
 
-// FSLogix storage
+// FSLogix Azure NetApp Files
+module anf './modules/azureNetappFiles/deploy.bicep' = if (createFslogixDeployment && (smbStorageType == 'ANF')) {
+  name: 'Storage-FSLogix-${time}'
+  params: {
+    storagePurpose: 'fslogix'
+    anfAccountName: varAnfAccountName
+    anfCapacityPoolName: varAnfCapacityPoolName
+    anfVolumeName: varFslogixFileShareName
+    dnsServers: customDnsIps
+    volumeSize: fslogixFileShareQuotaSize
+    anfPerformance: anfPerformance
+    anfSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAnfSubnetName}' : existingVnetAnfSubnetResourceId
+    // vmLocalUserName: avdVmLocalUserName
+    // fileShareName: varFslogixFileShareName
+    // fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+    // storageSku: varFslogixStorageSku
+    // fileShareQuotaSize: fslogixFileShareQuotaSize
+    // storageAccountFqdn: varFslogixStorageFqdn
+    // storageAccountName: varFslogixStorageName
+    // storageToDomainScript: varStorageToDomainScript
+    // storageToDomainScriptUri: varStorageToDomainScriptUri
+    // identityServiceProvider: avdIdentityServiceProvider
+    // dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+    // storageCustomOuPath: varStorageCustomOuPath
+    // managementVmName: varManagementVmName
+    // deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+    ouStgPath: varOuStgPath
+    // managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
+    // securityPrincipalName: !empty(securityPrincipalName) ? securityPrincipalName : ''
+    domainJoinUserName: avdDomainJoinUserName
+    kvResourceId: wrklKeyVault.outputs.resourceId
+    serviceObjectsRgName: varServiceObjectsRgName
+    identityDomainName: identityDomainName
+    // identityDomainGuid: identityDomainGuid
+    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+    storageObjectsRgName: varStorageObjectsRgName
+    subId: avdWorkloadSubsId
+    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    // alaWorkspaceResourceId: avdDeployMonitoring
+    //   ? (deployAlaWorkspace
+    //       ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+    //       : alaExistingWorkspaceResourceId)
+    //   : ''
+  }
+  dependsOn: [
+    baselineStorageResourceGroup
+    managementVm
+  ]
+}
+
+// FSLogix Azure Files
 module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createFslogixDeployment) {
   name: 'Storage-FSLogix-${time}'
   params: {
@@ -1525,7 +1575,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
   ]
 }
 
-// App Attach storage
+// App Attach Azure Files
 module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateAppAttachDeployment) {
   name: 'Storage-AppA-${time}'
   params: {
