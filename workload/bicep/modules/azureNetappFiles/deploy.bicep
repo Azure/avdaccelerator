@@ -47,9 +47,6 @@ param kvResourceId string
 @sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
 
-@sys.description('AVD session host local admin credentials.')
-param vmLocalUserName string
-
 @sys.description('ANF performance tier.')
 param anfPerformance string
 
@@ -100,10 +97,9 @@ param managedIdentityClientId string
 // Variable declaration //
 // =========== //
 var varAzureCloudName = environment().name
-var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
 var varSecurityPrincipalName = !empty(securityPrincipalName) ? securityPrincipalName : 'none'
 // var varStorageFqdn = azureNetAppFiles ?????????????
-// var varStorageToDomainScriptArgs = '-StorageService ${storageService} -DscPath ${dscAgentPackageLocation} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${subId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${subId} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageFqdn ${varStorageFqdn} '
+// var varStorageToDomainScriptArgs = '-StorageService ${storageService} -DscPath ${dscAgentPackageLocation} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${subId} -AdminUserName ${domainJoinUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${subId} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageFqdn ${varStorageFqdn} '
 var varKvSubId = split(kvResourceId, '/')[2]
 var varKvRgName = split(kvResourceId, '/')[4]
 var varKvName = split(kvResourceId, '/')[8]
@@ -174,7 +170,7 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
 //         virtualMachineName: managementVmName
 //         file: storageToDomainScript
 //         scriptArguments: varStorageToDomainScriptArgs
-//         adminUserPassword: (identityServiceProvider == 'EntraID') ? keyVaultget.getSecret('vmLocalUserPassword') : ''
+//         adminUserPassword: keyVaultget.getSecret('domainJoinUserName')
 //         baseScriptUri: storageToDomainScriptUri
 //     }
 //     dependsOn: [

@@ -34,6 +34,9 @@ param avdNetworksecurityGroupName string
 @sys.description('Private endpoint Network Security Group Name')
 param privateEndpointNetworksecurityGroupName string
 
+@sys.description('ANF Network Security Group Name')
+param anfNetworksecurityGroupName string
+
 @sys.description('Created if a new VNet for AVD is created. Application Security Group (ASG) for the session hosts.')
 param applicationSecurityGroupName string
 
@@ -67,6 +70,9 @@ param deployDDoSNetworkProtection bool
 @sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
 param deployPrivateEndpointSubnet bool
 
+@sys.description('Deploy with ANf subnet.')
+param deployAnfSubnet bool
+
 @sys.description('Optional. Deploys private endpoints for the AVD Private Link Service. (Default: false)')
 param deployAvdPrivateLinkService bool
 
@@ -79,11 +85,17 @@ param vnetAvdSubnetName string
 @sys.description('Private endpoint subnet Name.')
 param vnetPrivateEndpointSubnetName string
 
+@sys.description('ANF subnet Name.')
+param vnetAnfSubnetName string
+
 @sys.description('AVD VNet subnet address prefix.')
 param vnetAvdSubnetAddressPrefix string
 
 @sys.description('Private endpoint VNet subnet address prefix.')
 param vnetPrivateEndpointSubnetAddressPrefix string
+
+@sys.description('ANF VNet subnet address prefix.')
+param vnetAnfSubnetAddressPrefix string
 
 @sys.description('custom DNS servers IPs')
 param dnsServers array
@@ -286,9 +298,7 @@ var varDefaultStaticRoutes = (varAzureCloudName == 'AzureCloud')
               }
             ]
           : []
-
 var varStaticRoutes = union(varDefaultStaticRoutes, customStaticRoutes)
-
 var privateDnsZoneNames = {
   AutomationAgentService: 'privatelink.agentsvc.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
   Automation: 'privatelink.azure-automation.${privateDnsZoneSuffixes_AzureAutomation[environment().name]}'
@@ -303,7 +313,6 @@ var privateDnsZoneNames = {
   MonitorODS: 'privatelink.ods.opinsights.${privateDnsZoneSuffixes_Monitor[environment().name]}'
   MonitorOMS: 'privatelink.oms.opinsights.${privateDnsZoneSuffixes_Monitor[environment().name]}'
 }
-
 var privateDnsZoneSuffixes_AzureAutomation = {
   AzureCloud: 'net'
   AzureUSGovernment: 'us'
@@ -316,6 +325,50 @@ var privateDnsZoneSuffixes_Monitor = {
   AzureCloud: 'azure.com'
   AzureUSGovernment: 'azure.us'
 }
+var varAvdSubnet = [
+  {
+    name: vnetAvdSubnetName
+    addressPrefix: vnetAvdSubnetAddressPrefix
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
+    routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
+  }
+]
+var varPrivateEndpointSubnet = [
+  {
+    name: vnetPrivateEndpointSubnetName
+    addressPrefix: vnetPrivateEndpointSubnetAddressPrefix
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    networkSecurityGroupResourceId: (createVnet && deployPrivateEndpointSubnet)
+      ? networksecurityGroupPrivateEndpoint.outputs.resourceId
+      : ''
+    routeTableResourceId: (createVnet && deployPrivateEndpointSubnet)
+      ? routeTablePrivateEndpoint.outputs.resourceId
+      : ''
+  }
+]
+var varAnfSubnet = [
+  {
+    name: vnetAnfSubnetName
+    addressPrefix: vnetAnfSubnetAddressPrefix
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    networkSecurityGroupResourceId: (createVnet && deployAnfSubnet)
+      ? networksecurityGroupAnf.outputs.resourceId
+      : ''
+    delegations: [
+      {
+        name: 'delegation'
+        properties: {
+          serviceName: 'Microsoft.NetApp/volumes'
+        }
+      }
+    ]
+  }
+]
+var varSubnets = createVnet ? (!(deployPrivateEndpointSubnet && deployAnfSubnet) ? varAvdSubnet : (deployPrivateEndpointSubnet && !deployAnfSubnet) ? union(varAvdSubnet,varPrivateEndpointSubnet) : (!deployPrivateEndpointSubnet && deployAnfSubnet) ? union(varAvdSubnet,varAnfSubnet) : (deployPrivateEndpointSubnet && deployAnfSubnet) ? union(varAvdSubnet, varPrivateEndpointSubnet, varAnfSubnet) : []): []
 
 // =========== //
 // Deployments //
@@ -476,6 +529,20 @@ module networksecurityGroupPrivateEndpoint '../../../../avm/1.0.0/res/network/ne
   dependsOn: []
 }
 
+// ANF network security group.
+module networksecurityGroupAnf '../../../../avm/1.0.0/res/network/network-security-group/main.bicep' = if (createVnet && deployAnfSubnet) {
+  scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
+  name: 'NSG-ANF-${time}'
+  params: {
+    name: anfNetworksecurityGroupName
+    location: location
+    tags: tags
+    diagnosticSettings: varDiagnosticSettings
+    securityRules: []
+  }
+  dependsOn: []
+}
+
 // Application security group.
 module applicationSecurityGroup '../../../../avm/1.0.0/res/network/application-security-group/main.bicep' = if (deployAsg) {
   scope: resourceGroup('${workloadSubsId}', '${computeObjectsRgName}')
@@ -554,49 +621,7 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
           }
         ]
       : []
-    subnets: deployPrivateEndpointSubnet
-      ? [
-          {
-            name: vnetAvdSubnetName
-            addressPrefix: vnetAvdSubnetAddressPrefix
-            privateEndpointNetworkPolicies: 'Disabled'
-            privateLinkServiceNetworkPolicies: 'Enabled'
-            networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
-            routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
-          }
-          {
-            name: vnetPrivateEndpointSubnetName
-            addressPrefix: vnetPrivateEndpointSubnetAddressPrefix
-            privateEndpointNetworkPolicies: 'Disabled'
-            privateLinkServiceNetworkPolicies: 'Enabled'
-            networkSecurityGroupResourceId: (createVnet && deployPrivateEndpointSubnet)
-              ? networksecurityGroupPrivateEndpoint.outputs.resourceId
-              : ''
-            routeTableResourceId: (createVnet && deployPrivateEndpointSubnet)
-              ? routeTablePrivateEndpoint.outputs.resourceId
-              : ''
-          }
-        ]
-      : [
-          {
-            name: vnetAvdSubnetName
-            addressPrefix: vnetAvdSubnetAddressPrefix
-            privateEndpointNetworkPolicies: 'Disabled'
-            privateLinkServiceNetworkPolicies: 'Enabled'
-            networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
-            routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
-            serviceEndpoints: [
-              {
-                service: 'Microsoft.Storage'
-                locations: ['${location}']
-              }
-              {
-                service: 'Microsoft.KeyVault'
-                locations: ['${location}']
-              }
-            ]
-          }
-        ]
+    subnets: varSubnets
     ddosProtectionPlanResourceId: deployDDoSNetworkProtection ? ddosProtectionPlan.outputs.resourceId : ''
     tags: tags
     diagnosticSettings: varDiagnosticSettings
@@ -605,6 +630,7 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
     ? [
         networksecurityGroupAvd
         networksecurityGroupPrivateEndpoint
+        networksecurityGroupAnf
         routeTableAvd
         routeTablePrivateEndpoint
       ]
