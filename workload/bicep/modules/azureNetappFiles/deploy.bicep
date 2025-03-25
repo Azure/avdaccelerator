@@ -180,3 +180,27 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
 //         azureNetAppFiles
 //     ]
 // }
+
+// =========== //
+// Outputs //
+// =========== //
+// output resourceId string = netAppAccount.id
+
+// @description('The name of the Resource Group the NetApp account was created in.')
+// output resourceGroupName string = resourceGroup().name
+
+// @description('The location the resource was deployed into.')
+// output location string = netAppAccount.location
+
+// @description('The resource IDs of the created capacity pools & their volumes.')
+// output capacityPoolResourceIds {
+//   resourceId: string
+//   volumeResourceIds: string[]
+// }[] = [
+//   for (capacityPools, index) in (capacityPools ?? []): {
+//     resourceId: netAppAccount_capacityPools[index].outputs.resourceId
+//     volumeResourceIds: netAppAccount_capacityPools[index].outputs.volumeResourceIds
+//   }
+// ]
+
+// output volumeResourceIds array = azureNetAppFiles.outputs.capacityPools[0].volumes

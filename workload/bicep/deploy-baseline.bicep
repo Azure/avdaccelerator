@@ -670,15 +670,14 @@ var varSessionHostNamePrefix = avdUseCustomNaming
   : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 //var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
-
 var varFslogixFileShareName = storageService == 'AzureFiles'
   ? (avdUseCustomNaming 
       ? fslogixFileShareCustomName
       : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001')
   : storageService == 'ANF'
-    ? 'fsl${varDeploymentPrefixLowercase}01'
+    ? 'fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentLowercase}${varSessionHostLocationAcronym}001'
     : ''
-
+var varAnfSmbServerNamePrefix = 'anf${varDeploymentPrefixLowercase}${varDeploymentEnvironmentLowercase}'
 var varAppAttachFileShareName = storageService == 'AzureFiles'
   ? (avdUseCustomNaming 
       ? appAttachFileShareCustomName 
@@ -707,8 +706,12 @@ var varZtKvName = avdUseCustomNaming
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 //
 var varFslogixSharePath = createFslogixDeployment
-  ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
-  : ''
+  ? (storageService == 'AzureFiles' 
+    ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
+    : (storageService == 'ANF' 
+      ? 'ddddd' 
+      : '') ) : ''
+
 var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
@@ -1495,7 +1498,7 @@ module anf './modules/azureNetappFiles/deploy.bicep' = if (createFslogixDeployme
     anfAccountName: varAnfAccountName
     anfCapacityPoolName: varAnfCapacityPoolName
     anfVolumeName: varFslogixFileShareName
-    anfSmbServerNamePrefix: varFslogixFileShareName
+    anfSmbServerNamePrefix: varAnfSmbServerNamePrefix
     dnsServers: customDnsIps
     volumeSize: fslogixFileShareQuotaSize
     anfPerformance: fslogixStoragePerformance
