@@ -325,7 +325,7 @@ var privateDnsZoneSuffixes_Monitor = {
   AzureCloud: 'azure.com'
   AzureUSGovernment: 'azure.us'
 }
-var varAvdSubnet = [
+var varAvdSubnet = deployPrivateEndpointSubnet ? [ 
   {
     name: vnetAvdSubnetName
     addressPrefix: vnetAvdSubnetAddressPrefix
@@ -333,6 +333,25 @@ var varAvdSubnet = [
     privateLinkServiceNetworkPolicies: 'Enabled'
     networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
     routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
+  }
+] : [
+  {
+    name: vnetAvdSubnetName
+    addressPrefix: vnetAvdSubnetAddressPrefix
+    privateEndpointNetworkPolicies: 'Disabled'
+    privateLinkServiceNetworkPolicies: 'Enabled'
+    networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
+    routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
+    serviceEndpoints: [
+      {
+        service: 'Microsoft.Storage'
+        locations: ['${location}']
+      }
+      {
+        service: 'Microsoft.KeyVault'
+        locations: ['${location}']
+      }
+    ]
   }
 ]
 var varPrivateEndpointSubnet = [
@@ -368,7 +387,7 @@ var varAnfSubnet = [
     ]
   }
 ]
-var varSubnets = createVnet ? (!(deployPrivateEndpointSubnet && deployAnfSubnet) ? varAvdSubnet : (deployPrivateEndpointSubnet && !deployAnfSubnet) ? union(varAvdSubnet,varPrivateEndpointSubnet) : (!deployPrivateEndpointSubnet && deployAnfSubnet) ? union(varAvdSubnet,varAnfSubnet) : (deployPrivateEndpointSubnet && deployAnfSubnet) ? union(varAvdSubnet, varPrivateEndpointSubnet, varAnfSubnet) : []): []
+var varSubnets = union(varAvdSubnet,(deployAnfSubnet ? varAnfSubnet : []),(deployPrivateEndpointSubnet ? varPrivateEndpointSubnet : [])) 
 
 // =========== //
 // Deployments //

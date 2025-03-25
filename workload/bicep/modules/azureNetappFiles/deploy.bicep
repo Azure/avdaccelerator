@@ -29,6 +29,9 @@ param anfCapacityPoolName string
 @sys.description('ANF volume name.')
 param anfVolumeName string
 
+@sys.description('ANF SMB prefix.')
+param anfSmbServerNamePrefix string
+
 @sys.description('ANF subnet ID.')
 param anfSubnetId string
 
@@ -118,16 +121,16 @@ resource keyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 // Provision the Azure NetApp Files.
 module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.bicep' = {
     scope: resourceGroup('${subId}', '${storageObjectsRgName}')
-    name: 'Storage-${storagePurpose}-${time}'
+    name: 'Storage-ANF-${storagePurpose}-${time}'
     params: {
         name: anfAccountName
         adName: anfAccountName
         domainName: identityDomainName
         domainJoinUser: domainJoinUserName
         domainJoinPassword: keyVaultget.getSecret('domainJoinUserPassword')
-        domainJoinOU: ouStgPath
+        //domainJoinOU: replace(ouStgPath, '"', '\\"')
         dnsServers: dnsServers
-        smbServerNamePrefix: anfAccountName
+        smbServerNamePrefix: anfSmbServerNamePrefix
         location: location
         // aesEncryption: *************
         // customerManagedKey: *************

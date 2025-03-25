@@ -240,7 +240,7 @@ param avdDeploySessionHostsCount int = 1
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 1)')
 param avdSessionHostCountIndex int = 1
 
-@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level.')
+@sys.description('When set to AvailabilityZones, VMs and storage are distributed across availability zones, when set to None, VMs and storage will be deployed at regional level.')
 @allowed([
   'None'
   'AvailabilityZones'
@@ -255,9 +255,6 @@ param availability string = 'None'
 ])
 param availabilityZones array = ['1', '2', '3']
 
-@sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
-param zoneRedundantStorage bool = false
-
 // @sys.description('Deploys a VMSS Flex group and associates session hosts with it for availability purposes. (Default: true)')
 // param deployVmssFlex bool = true
 
@@ -267,24 +264,18 @@ param zoneRedundantStorage bool = false
 @allowed([
   'Standard'
   'Premium'
+  'Ultra'
 ])
-@sys.description('SKU for FSLogix storage. Recommended tier is Premium for storage account. (Default: Premium)')
-param fslogixStorageAccountPerformance string = 'Premium'
-
-@allowed([
-  'Standard'
-  'Premium'
-])
-@sys.description('SKU for App Attach storage. Recommended tier is Premium for storage account. (Default: Premium)')
-param appAttachStorageAccountPerformance string = 'Premium'
+@sys.description('SKU for FSLogix storage. Recommended tier is Premium for storage account and Standard for ANF. (Default: Premium)')
+param fslogixStoragePerformance string = 'Premium'
 
 @allowed([
   'Standard'
   'Premium'
   'Ultra'
 ])
-@sys.description('SKU for App Attach and FSLogix ANF storage. (Default: Standard)')
-param anfPerformance string = 'Standard'
+@sys.description('SKU for App Attach storage. RRecommended tier is Premium for storage account and Standard for ANF. (Default: Premium)')
+param appAttachStoragePerformance string = 'Premium'
 
 @sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
 param diskZeroTrust bool = false
@@ -444,6 +435,7 @@ param avdSessionHostCustomNamePrefix string = 'vmapp1duse2'
 @sys.description('AVD FSLogix and App Attach storage account prefix custom name. (Default: st)')
 param storageAccountPrefixCustomName string = 'st'
 
+//@maxLength(10)
 @sys.description('AVD FSLogix and App Attach storage account prefix custom name. (Default: anf-acc-app1-dev-use2-001)')
 param anfAccountCustomName string = 'anf-acc-app1-dev-use2-001'
 
@@ -678,12 +670,22 @@ var varSessionHostNamePrefix = avdUseCustomNaming
   : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 //var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
-var varFslogixFileShareName = avdUseCustomNaming
-  ? fslogixFileShareCustomName
-  : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
-var varAppAttachFileShareName = avdUseCustomNaming
-  ? appAttachFileShareCustomName
-  : 'appa-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
+
+var varFslogixFileShareName = storageService == 'AzureFiles'
+  ? (avdUseCustomNaming 
+      ? fslogixFileShareCustomName
+      : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001')
+  : storageService == 'ANF'
+    ? 'fsl${varDeploymentPrefixLowercase}01'
+    : ''
+
+var varAppAttachFileShareName = storageService == 'AzureFiles'
+  ? (avdUseCustomNaming 
+      ? appAttachFileShareCustomName 
+      : 'appa-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001')
+    : storageService == 'ANF'
+      ? 'appa${varDeploymentPrefixLowercase}01'
+      : ''
 var varFslogixStorageName = avdUseCustomNaming
   ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
   : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
@@ -711,12 +713,21 @@ var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/m
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
 var varCreateStorageDeployment = (createFslogixDeployment || varCreateAppAttachDeployment == true) ? true : false
-var varFslogixStorageSku = zoneRedundantStorage
-  ? '${fslogixStorageAccountPerformance}_ZRS'
-  : '${fslogixStorageAccountPerformance}_LRS'
-var varAppAttachStorageSku = zoneRedundantStorage
-  ? '${fslogixStorageAccountPerformance}_ZRS'
-  : '${fslogixStorageAccountPerformance}_LRS'
+var varFslogixStoragePerformance = fslogixStoragePerformance =='Ultra'
+  ? 'Premium'
+  : fslogixStoragePerformance
+var varAppAttachStoragePerformance = appAttachStoragePerformance =='Ultra'
+  ? 'Premium'
+  : appAttachStoragePerformance
+var varStorageAccountAvailability = availability == 'AvailabilityZones'
+  ? true
+  : false
+var varFslogixStorageSku = (varStorageAccountAvailability && storageService == 'AzureFiles')
+  ? '${varFslogixStoragePerformance}_ZRS'
+  : '${varFslogixStoragePerformance}_LRS'
+var varAppAttachStorageSku = varStorageAccountAvailability
+  ? '${varAppAttachStoragePerformance}_ZRS'
+  : '${varAppAttachStoragePerformance}_LRS'
 var varMgmtVmSpecs = {
   osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
   osDiskType: 'Standard_LRS'
@@ -994,8 +1005,14 @@ var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceIm
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.3/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
+
+
+
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
+
+
+
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
@@ -1472,15 +1489,16 @@ module managementVm './modules/sharedModules/managementVm.bicep' = if (avdIdenti
 
 // FSLogix Azure NetApp Files
 module anf './modules/azureNetappFiles/deploy.bicep' = if (createFslogixDeployment && (storageService == 'ANF')) {
-  name: 'Storage-FSLogix-${time}'
+  name: 'Storage-FSLogix-ANF-${time}'
   params: {
     storagePurpose: 'fslogix'
     anfAccountName: varAnfAccountName
     anfCapacityPoolName: varAnfCapacityPoolName
     anfVolumeName: varFslogixFileShareName
+    anfSmbServerNamePrefix: varFslogixFileShareName
     dnsServers: customDnsIps
     volumeSize: fslogixFileShareQuotaSize
-    anfPerformance: anfPerformance
+    anfPerformance: fslogixStoragePerformance
     anfSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAnfSubnetName}' : existingVnetAnfSubnetResourceId
     // vmLocalUserName: avdVmLocalUserName
     // fileShareName: varFslogixFileShareName
@@ -1495,7 +1513,7 @@ module anf './modules/azureNetappFiles/deploy.bicep' = if (createFslogixDeployme
     managementVmName: varManagementVmName
     storageService: storageService
     // deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
-    ouStgPath: varOuStgPath
+    ouStgPath:  !empty(storageOuPath) ? storageOuPath : varDefaultStorageOuPath
     managedIdentityClientId: varCreateStorageDeployment ? identity.outputs.managedIdentityStorageClientId : ''
     securityPrincipalName: !empty(varSecurityPrincipalName) ? varSecurityPrincipalName : ''
     domainJoinUserName: avdDomainJoinUserName
@@ -1520,13 +1538,13 @@ module anf './modules/azureNetappFiles/deploy.bicep' = if (createFslogixDeployme
 }
 
 // FSLogix Azure Files
-module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createFslogixDeployment) {
-  name: 'Storage-FSLogix-${time}'
+module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createFslogixDeployment && (storageService != 'ANF')) {
+  name: 'Storage-FSLogix-ST-${time}'
   params: {
     storagePurpose: 'fslogix'
     vmLocalUserName: avdVmLocalUserName
     fileShareName: varFslogixFileShareName
-    fileShareMultichannel: (fslogixStorageAccountPerformance == 'Premium') ? true : false
+    fileShareMultichannel: (varFslogixStoragePerformance == 'Premium') ? true : false
     storageSku: varFslogixStorageSku
     fileShareQuotaSize: fslogixFileShareQuotaSize
     storageAccountFqdn: varFslogixStorageFqdn
@@ -1575,13 +1593,13 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
 }
 
 // App Attach Azure Files
-module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateAppAttachDeployment) {
+module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createFslogixDeployment && (storageService != 'ANF')) {
   name: 'Storage-AppA-${time}'
   params: {
     storagePurpose: 'AppAttach'
     vmLocalUserName: avdVmLocalUserName
     fileShareName: varAppAttachFileShareName
-    fileShareMultichannel: (fslogixStorageAccountPerformance == 'Premium') ? true : false
+    fileShareMultichannel: (varAppAttachStoragePerformance == 'Premium') ? true : false
     storageSku: varAppAttachStorageSku
     fileShareQuotaSize: appAttachFileShareQuotaSize
     storageAccountFqdn: varAppAttachStorageFqdn
