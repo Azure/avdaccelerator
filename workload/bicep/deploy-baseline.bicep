@@ -1392,7 +1392,18 @@ module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogix
     storageAccountPrefixCustomName: storageAccountPrefixCustomName
     anfAccountCustomName: anfAccountCustomName
     deployMonitoring: avdDeployMonitoring
-
+    managedIdentityClientId: ((createFslogixDeployment || createAppAttachDeployment == true) ? true : false) && avdIdentityServiceProvider != 'EntraID'
+    ? identity.outputs.managedIdentityStorageClientId
+    : ''
+    privateDnsZoneFilesResourceId: createPrivateDnsZones
+    ? networking.outputs.azureFilesDnsZoneResourceId
+    : avdVnetPrivateDnsZoneFilesId
+    serviceObjectsRgName: varServiceObjectsRgName
+    alaWorkspaceResourceId: avdDeployMonitoring
+    ? (deployAlaWorkspace
+        ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+        : alaExistingWorkspaceResourceId)
+    : ''
     deploymentEnvironmentOneCharacter: varDeploymentEnvironmentOneCharacter
     computeStorageResourcesNamingStandard: varComputeStorageResourcesNamingStandard
     fslogixFileShareQuotaSize: fslogixFileShareQuotaSize

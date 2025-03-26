@@ -105,6 +105,7 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
             }
         ]
         tags: tags
+        
     }
 }
 

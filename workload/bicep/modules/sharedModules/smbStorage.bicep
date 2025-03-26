@@ -50,6 +50,15 @@ param deploymentEnvironmentOneCharacter string
 @description('The resource ID of the Key Vault.')
 param keyVaultResourceId string
 
+@description('The Azure Log Analytics workspace resource ID.')
+param alaWorkspaceResourceId string
+
+@description('The private DNS zone files resource ID.')
+param privateDnsZoneFilesResourceId string
+
+@description('The client ID of the managed identity.')
+param managedIdentityClientId string
+
 @description('The FSLogix file share quota size in GiBs.')
 param fslogixFileShareQuotaSize int
 
@@ -71,20 +80,20 @@ param vmsSubnetResourceId string
 @description('Subnet resource ID for private endpoints.')
 param privateEndpointSubnetResourceId string
 
-@description('The existing VNet AVD subnet resource ID.')
-param existingVnetAvdSubnetResourceId string = ''
-
 @description('The availability setting (AvailabilityZones or other).')
 param availability string
 
 @description('The custom DNS IPs.')
-param dnsServers array = []
+param dnsServers string
 
 @description('The AVD identity service provider (e.g., EntraDS).')
 param avdIdentityServiceProvider string
 
 @description('The AVD domain join username.')
 param avdDomainJoinUserName string
+
+@description('The AVD VM local username.')
+param vmLocalUserName string
 
 @description('The service objects resource group name.')
 param serviceObjectsRgName string
@@ -125,9 +134,6 @@ param identityDomainGuid string = ''
 @description('Indicates whether to deploy private endpoints for Key Vault and storage.')
 param deployPrivateEndpointKeyvaultStorage bool
 
-@description('Indicates whether to deploy monitoring.')
-param deployMonitoring bool
-
 @description('Indicates whether to deploy AVD session hosts.')
 param avdDeploySessionHosts bool
 
@@ -136,18 +142,6 @@ param createFslogixDeployment bool
 
 @description('Indicates whether to create App Attach deployment.')
 param createAppAttachDeployment bool
-
-@description('Indicates whether to create private DNS zones.')
-param createPrivateDnsZones bool
-
-@description('The AVD VNet private DNS zone files ID.')
-param avdVnetPrivateDnsZoneFilesId string = ''
-
-@description('The existing ALA workspace resource ID.')
-param alaExistingWorkspaceResourceId string = ''
-
-@description('Indicates whether to deploy ALA workspace.')
-param deployAlaWorkspace bool
 
 @description('The deployment timestamp.')
 param time string = utcNow()
@@ -273,12 +267,6 @@ var varMgmtVmSpecs = {
 // Deployments //
 // =========== //
 
-// Call on the KV.
-resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-    name: wrklKvName
-    scope: resourceGroup('${subId}', '${serviceObjectsRgName}')
-}
-
 // Azure NetApp Files
 module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') && (!contains(avdIdentityServiceProvider, 'EntraID'))) {
     name: 'Storage-ANF-${time}'
@@ -296,7 +284,6 @@ module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') &&
       domainJoinUserName: avdDomainJoinUserName
       keyVaultResourceId: keyVaultResourceId
       identityDomainName: identityDomainName
-      // identityDomainGuid: identityDomainGuid
       location: location
       storageObjectsRgName: varStorageObjectsRgName
       subId: subId
@@ -308,7 +295,7 @@ module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') &&
       //   : ''
     }
     dependsOn: [
-
+        managementVm
     ]
   }
 
@@ -317,10 +304,10 @@ module fslogixAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (create
     name: 'Storage-FSLogix-ST-${time}'
     params: {
         storagePurpose: 'fslogix'
-        vmLocalUserName: avdVmLocalUserName
+        vmLocalUserName: vmLocalUserName
         fileShareName: varFslogixFileShareName
         fileShareMultichannel: (varFslogixStoragePerformance == 'Premium') ? true : false
-        storageSku: varFslogixStorageSku
+        sku: varFslogixStorageSku
         fileShareQuotaSize: fslogixFileShareQuotaSize
         storageAccountFqdn: varFslogixStorageFqdn
         storageAccountName: varFslogixStorageName
@@ -331,36 +318,24 @@ module fslogixAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (create
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+        keyVaultResourceId: keyVaultResourceId
         ouStgPath: varOuStgPath
-        managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
-        ? identity.outputs.managedIdentityStorageClientId
-        : ''
+        managedIdentityClientId: managedIdentityClientId
         securityPrincipalName: varSecurityPrincipalName
         domainJoinUserName: avdDomainJoinUserName
-        wrklKvName: varWrklKvName
-        serviceObjectsRgName: varServiceObjectsRgName
+        serviceObjectsRgName: serviceObjectsRgName
         identityDomainName: identityDomainName
         identityDomainGuid: identityDomainGuid
-        location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+        location: location
         storageObjectsRgName: varStorageObjectsRgName
-        privateEndpointSubnetId: privateEndpointSubnetResourceId
-        vmsSubnetId: createAvdVnet
-        ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
-        : existingVnetAvdSubnetResourceId
-        vnetPrivateDnsZoneFilesId: createPrivateDnsZones
-        ? networking.outputs.azureFilesDnsZoneResourceId
-        : avdVnetPrivateDnsZoneFilesId
+        privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+        vmsSubnetResourceId: vmsSubnetResourceId
+        privateDnsZoneFilesResourceId: privateDnsZoneFilesResourceId
         subId: subId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-        alaWorkspaceResourceId: deployMonitoring
-        ? (deployAlaWorkspace
-            ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-            : alaExistingWorkspaceResourceId)
-        : ''
+        alaWorkspaceResourceId: alaWorkspaceResourceId
     }
     dependsOn: [
-        baselineStorageResourceGroup
-        wrklKeyVault
         managementVm
     ]
 }
@@ -370,7 +345,7 @@ module appAttachAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (crea
     name: 'Storage-AppA-${time}'
     params: {
         storagePurpose: 'AppAttach'
-        vmLocalUserName: avdVmLocalUserName
+        vmLocalUserName: vmLocalUserName
         fileShareName: varAppAttachFileShareName
         fileShareMultichannel: (varAppAttachStoragePerformance == 'Premium') ? true : false
         storageSku: varAppAttachStorageSku
@@ -385,36 +360,22 @@ module appAttachAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (crea
         managementVmName: varManagementVmName
         deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
         ouStgPath: varOuStgPath
-        managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
-        ? identity.outputs.managedIdentityStorageClientId
-        : ''
+        managedIdentityClientId: managedIdentityClientId
         securityPrincipalName: varSecurityPrincipalName
         domainJoinUserName: avdDomainJoinUserName
-        wrklKvName: varWrklKvName
-        serviceObjectsRgName: varServiceObjectsRgName
+        keyVaultResourceId: keyVaultResourceId
+        serviceObjectsRgName: serviceObjectsRgName
         identityDomainName: identityDomainName
         identityDomainGuid: identityDomainGuid
-        location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+        location: location
         storageObjectsRgName: varStorageObjectsRgName
-        privateEndpointSubnetId: privateEndpointSubnetResourceId
-        vmsSubnetId: createAvdVnet
-        ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
-        : existingVnetAvdSubnetResourceId
-        vnetPrivateDnsZoneFilesId: createPrivateDnsZones
-        ? networking.outputs.azureFilesDnsZoneResourceId
-        : avdVnetPrivateDnsZoneFilesId
-        subId: subId
+        privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+        vmsSubnetResourceId: vmsSubnetResourceId
+        privateDnsZoneFilesResourceId: privateDnsZoneFilesResourceId
         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-        alaWorkspaceResourceId: deployMonitoring
-        ? (deployAlaWorkspace
-            ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-            : alaExistingWorkspaceResourceId)
-        : ''
+        alaWorkspaceResourceId: alaWorkspaceResourceId
     }
     dependsOn: [
-        fslogixAzureFilesStorage
-        baselineStorageResourceGroup
-        wrklKeyVault
         managementVm
     ]
 }
@@ -431,7 +392,7 @@ module managementVm './modules/sharedModules/managementVm.bicep' = if (avdIdenti
         ? '${networking.outputs.applicationSecurityGroupResourceId}'
         : ''
       domainJoinUserName: avdDomainJoinUserName
-      wrklKvName: varWrklKvName
+      keyVaultResourceId: keyVaultResourceId
       serviceObjectsRgName: varServiceObjectsRgName
       identityDomainName: identityDomainName
       ouPath: varMgmtVmSpecs.ouPath
