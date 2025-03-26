@@ -173,11 +173,11 @@ var varCustomOsDiskProperties = {
 
 // var devSecurityGroupPrincipalId = '19cfe65e-52b6-49e5-8155-02843498171d'
 
-var varVirtualMachineContributorRole = {
-    id: '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
-    name: 'Virtual Machine Contributor'
+var varCustomDeveloperRole = {
+    id: '71d5079f-3e16-4911-b7c2-4bdb44d3eb63'
+    name: 'ARPA-H-AVD-Developer-Role'
   }
-
+  
 // =========== //
 // Deployments //
 // =========== //
@@ -278,7 +278,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
         }
         tags: tags
         principalId: securityPrincipalId
-        roleDefinitionResourceId:'/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varVirtualMachineContributorRole.id}'
+        roleDefinitionResourceId:'/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${varCustomDeveloperRole.id}'
     }
     dependsOn: [
         keyVault
