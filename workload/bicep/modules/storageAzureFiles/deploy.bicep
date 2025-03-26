@@ -9,7 +9,7 @@ targetScope = 'subscription'
 // ========== //
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+param subId string
 
 @sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
@@ -27,10 +27,10 @@ param storageAccountName string
 param fileShareName string
 
 @sys.description('Private endpoint subnet ID.')
-param privateEndpointSubnetId string
+param privateEndpointSubnetResourceId string
 
 @sys.description('VMs subnet ID.')
-param vmsSubnetId string
+param vmsSubnetResourceId string
 
 @sys.description('Location where to deploy resources.')
 param location string
@@ -44,8 +44,8 @@ param identityDomainName string
 @sys.description('AD domain GUID.')
 param identityDomainGuid string
 
-@sys.description('Keyvault name to get credentials from.')
-param wrklKvName string
+@sys.description('Key Vault Resource ID.')
+param keyVaultResourceId string
 
 @sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
@@ -60,7 +60,7 @@ param storageSku string
 param fileShareQuotaSize int
 
 @sys.description('Use Azure private DNS zones for private endpoints.')
-param vnetPrivateDnsZoneFilesId string
+param privateDnsZoneFilesResourceId string
 
 @sys.description('Script name for adding storage account to Active Directory.')
 param storageToDomainScript string
@@ -69,7 +69,7 @@ param storageToDomainScript string
 param storageToDomainScriptUri string
 
 @sys.description('Tags to be applied to resources')
-param tags object
+param tags object = {}
 
 @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
@@ -108,12 +108,14 @@ param storageAccountFqdn string
 // =========== //
 // Variable declaration //
 // =========== //
-
+var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
+var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
+var varKeyVaultName = split(keyVaultResourceId, '/')[8]
 var varAzureCloudName = environment().name
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var varSecurityPrincipalName = !empty(securityPrincipalName) ? securityPrincipalName : 'none'
 var varAdminUserName = contains(identityServiceProvider, 'EntraID') ? vmLocalUserName : domainJoinUserName
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${subId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
   ? [
       {
@@ -128,13 +130,13 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
 
 // Call on the KV.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-  name: wrklKvName
-  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  name: varKeyVaultName
+  scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
 
 // Provision the storage account and Azure Files.
 module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bicep' = {
-  scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
+  scope: resourceGroup('${subId}', '${storageObjectsRgName}')
   name: 'Storage-${storagePurpose}-${time}'
   params: {
     name: storageAccountName
@@ -168,7 +170,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
         defaultAction: 'Deny'
         virtualNetworkRules: [
             {
-                id: vmsSubnetId
+                id: vmsSubnetResourceId
                 action: 'Allow'
             }
         ]
@@ -196,12 +198,12 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
       ? [
           {
             name: varWrklStoragePrivateEndpointName
-            subnetResourceId: privateEndpointSubnetId
+            subnetResourceId: privateEndpointSubnetResourceId
             customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
             service: 'file'
-            privateDnsZoneGroupName: split(vnetPrivateDnsZoneFilesId, '/')[8]
+            privateDnsZoneGroupName: split(privateDnsZoneFilesResourceId, '/')[8]
             privateDnsZoneResourceIds: [
-              vnetPrivateDnsZoneFilesId
+              privateDnsZoneFilesResourceId
             ]
           }
         ]
@@ -213,7 +215,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
 module addShareToDomainScript '../sharedModules/smbUtilities.bicep' = if (identityServiceProvider != 'EntraID') {
-  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  scope: resourceGroup('${subId}', '${serviceObjectsRgName}')
   name: 'Add-${storagePurpose}-Storage-Setup-${time}'
   params: {
     location: location

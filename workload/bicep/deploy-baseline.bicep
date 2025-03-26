@@ -1385,13 +1385,26 @@ module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogix
     storageService: storageService
     useCustomNaming: avdUseCustomNaming
     availability: availability
+    domainJoinUserName: avdDomainJoinUserName
+    vmLocalUserName: avdVmLocalUserName
+    diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
+    sessionHostTimeZone: varTimeZoneSessionHosts
     createFslogixDeployment: createFslogixDeployment
+    securityType: securityType == 'Standard' ? '' : securityType
+    secureBootEnabled: secureBootEnabled
+    vTpmEnabled: vTpmEnabled
+    encryptionAtHost: diskZeroTrust
+    storageManagedIdentityResourceId: ((createFslogixDeployment || createAppAttachDeployment == true) ? true : false) && avdIdentityServiceProvider != 'EntraID'
+    ? identity.outputs.managedIdentityStorageResourceId
+    : ''
+    applicationSecurityGroupResourceId: (avdDeploySessionHosts || createFslogixDeployment || varCreateAppAttachDeployment)
+    ? '${networking.outputs.applicationSecurityGroupResourceId}'
+    : ''
     createAppAttachDeployment: createAppAttachDeployment
     fslogixFileShareCustomName: fslogixFileShareCustomName
     appAttachFileShareCustomName: appAttachFileShareCustomName
     storageAccountPrefixCustomName: storageAccountPrefixCustomName
     anfAccountCustomName: anfAccountCustomName
-    deployMonitoring: avdDeployMonitoring
     managedIdentityClientId: ((createFslogixDeployment || createAppAttachDeployment == true) ? true : false) && avdIdentityServiceProvider != 'EntraID'
     ? identity.outputs.managedIdentityStorageClientId
     : ''
