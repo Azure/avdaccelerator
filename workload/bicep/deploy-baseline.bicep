@@ -567,7 +567,7 @@ param enableDefForArm bool = true
 var varDeploymentPrefixLowercase = toLower(deploymentPrefix)
 var varAzureCloudName = environment().name
 var varDeploymentEnvironmentLowercase = toLower(deploymentEnvironment)
-var varDeploymentEnvironmentComputeStorage = (deploymentEnvironment == 'Dev')
+var varDeploymentEnvironmentOneCharacter = (deploymentEnvironment == 'Dev')
   ? 'd'
   : ((deploymentEnvironment == 'Test') ? 't' : ((deploymentEnvironment == 'Prod') ? 'p' : ''))
 var varNamingUniqueStringTwoChar = take('${uniqueString(avdWorkloadSubsId, varDeploymentPrefixLowercase, time)}', 2)
@@ -666,7 +666,7 @@ var varWrklKeyVaultSku = (varAzureCloudName == 'AzureCloud' || varAzureCloudName
   : (varAzureCloudName == 'AzureChinaCloud' ? 'standard' : null)
 var varSessionHostNamePrefix = avdUseCustomNaming
   ? avdSessionHostCustomNamePrefix
-  : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
+  : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentOneCharacter}${varSessionHostLocationAcronym}'
 //var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
 var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
 var varAlaWorkspaceName = avdUseCustomNaming
@@ -1425,6 +1425,10 @@ module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogix
     useCustomNaming: avdUseCustomNaming
     fslogixFileShareCustomName: fslogixFileShareCustomName
     appAttachFileShareCustomName: appAttachFileShareCustomName
+    storageAccountPrefixCustomName: storageAccountPrefixCustomName
+    anfAccountCustomName: anfAccountCustomName
+    deploymentEnvironmentOneCharacter: varDeploymentEnvironmentOneCharacter
+    computeStorageResourcesNamingStandard: varComputeStorageResourcesNamingStandard
     fslogixFileShareQuotaSize: fslogixFileShareQuotaSize
     appAttachFileShareQuotaSize: appAttachFileShareQuotaSize
     fslogixStoragePerformance: fslogixStoragePerformance

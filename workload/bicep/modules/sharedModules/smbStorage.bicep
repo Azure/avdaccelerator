@@ -25,11 +25,24 @@ param storageService string
 @description('Indicates whether to use custom naming for AVD.')
 param useCustomNaming bool
 
+@description('The naming standard for compute storage resources coming from the main template.')
+param computeStorageResourcesNamingStandard string
+
 @description('The custom name for the FSLogix file share.')
 param fslogixFileShareCustomName string = ''
 
 @description('The custom name for the App Attach file share.')
 param appAttachFileShareCustomName string = ''
+
+@maxLength(2)
+@sys.description('AVD FSLogix and App Attach storage account prefix custom name.')
+param storageAccountPrefixCustomName string = 'st'
+
+@description('The custom name for the ANF account.')
+param anfAccountCustomName string = ''
+
+@description('Deployment prefix one character.')
+param deploymentEnvironmentOneCharacter string
 
 @description('The FSLogix file share quota size in GiBs.')
 param fslogixFileShareQuotaSize int
@@ -178,7 +191,7 @@ var varFslogixAnfVolume = createFslogixDeployment ? [
         protocolTypes: [
             'CIFS'
         ]
-        subnetResourceId: 
+        subnetResourceId: anfSubnetResourceId
         creationToken: varFslogixFileShareName
         smbContinuouslyAvailable: true
         securityStyle: 'ntfs'
@@ -198,7 +211,7 @@ var varAppAttchAnfVolume = createAppAttachDeployment ? [
         protocolTypes: [
             'CIFS'
         ]
-        subnetResourceId: anfSubnetId
+        subnetResourceId: anfSubnetResourceId
         creationToken: varAppAttachFileShareName
         smbContinuouslyAvailable: true
         securityStyle: 'ntfs'
@@ -206,16 +219,16 @@ var varAppAttchAnfVolume = createAppAttachDeployment ? [
     ] : []
 var varAnfVolumes = union(varFslogixAnfVolume, varAppAttchAnfVolume)
 var varFslogixStorageName = useCustomNaming
-  ? '${storageAccountPrefixCustomName}fsl${deploymentPrefix}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-  : 'stfsl${deploymentPrefix}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-var varAnfAccountName = useCustomNaming ? anfAccountCustomName : 'anf-acc-${varComputeStorageResourcesNamingStandard}-001'
-var varAnfCapacityPoolName = 'anf-cpool-${varComputeStorageResourcesNamingStandard}-001'
+  ? '${storageAccountPrefixCustomName}fsl${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
+  : 'stfsl${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
+var varAnfAccountName = useCustomNaming ? anfAccountCustomName : 'anf-acc-${computeStorageResourcesNamingStandard}-001'
+var varAnfCapacityPoolName = 'anf-cpool-${computeStorageResourcesNamingStandard}-001'
 var varFslogixStorageFqdn = createFslogixDeployment ? ((storageService == 'AzureFiles') ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' : (storageService == 'ANF') ? '${varFslogixFileShareName}.<subnet-name>.<vnet-name>.${avdSessionHostLocation}.netapp.azure.com' : '') : ''
 var varAppAttachStorageFqdn = createAppAttachDeployment ? ((storageService == 'AzureFiles') ? '${varAppAttachStorageName}.file.${environment().suffixes.storage}' : (storageService == 'ANF') ? '${varAppAttachFileShareName}.<subnet-name>.<vnet-name>.${avdSessionHostLocation}.netapp.azure.com' : '') : ''
 var varAppAttachStorageName = useCustomNaming
-  ? '${storageAccountPrefixCustomName}appa${deploymentPrefix}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-  : 'stappa${deploymentPrefix}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-var varManagementVmName = 'vmmgmt${deploymentPrefix}${varDeploymentEnvironmentComputeStorage}${locationAcronym}'
+  ? '${storageAccountPrefixCustomName}appa${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
+  : 'stappa${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
+var varManagementVmName = 'vmmgmt${deploymentPrefix}${deploymentEnvironmentOneCharacter}${locationAcronym}'
 var varFslogixSharePath = createFslogixDeployment
   ? (storageService == 'AzureFiles' 
     ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
@@ -228,7 +241,7 @@ var varAppAttachSharePath = createAppAttachDeployment
     : (storageService == 'ANF' 
       ? anf.outputs.anfAppAttachVolumeResourceId 
       : '') ) : ''
-var varCreateStorageDeployment = (createFslogixDeployment || varCreateAppAttachDeployment == true) ? true : false
+var varCreateStorageDeployment = (createFslogixDeployment || createAppAttachDeployment == true) ? true : false
 var varFslogixStoragePerformance = fslogixStoragePerformance =='Ultra'
     ? 'Premium'
     : fslogixStoragePerformance
@@ -249,7 +262,6 @@ var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
-var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 
 
@@ -275,13 +287,13 @@ resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' exist
 module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') && (!contains(avdIdentityServiceProvider, 'EntraID'))) {
     name: 'Storage-FSLogix-ANF-${time}'
     params: {
-      anfAccountName: varAnfAccountName
-      anfCapacityPoolName: varAnfCapacityPoolName
-      anfVolumes: varAnfVolumes
-      anfSmbServerNamePrefix: varAnfSmbServerNamePrefix
+      accountName: varAnfAccountName
+      capacityPoolName: varAnfCapacityPoolName
+      volumes: varAnfVolumes
+      smbServerNamePrefix: varAnfSmbServerNamePrefix
       capacityPoolSize: varAnfCapacityPoolSize
       dnsServers: customDnsIps
-      anfPerformance: fslogixStoragePerformance
+      performance: fslogixStoragePerformance
       createFslogixStorage: createFslogixDeployment
       createAppAttachStorage: createAppAttachDeployment
       // vmLocalUserName: avdVmLocalUserName
