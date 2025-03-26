@@ -178,7 +178,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
       shares: [
         {
           name: fileShareName
-          shareQuota: fileShareQuotaSize * 100 //Portal UI steps scale
+          shareQuota: fileShareQuotaSize
         }
       ]
       protocolSettings: fileShareMultichannel

@@ -26,14 +26,17 @@ param anfAccountName string
 @sys.description('Capacity pool volume name.')
 param anfCapacityPoolName string
 
-@sys.description('ANF volume name.')
-param anfVolumeName string
+@sys.description('Capacity pool volume name.')
+param createFslogixStorage bool
+
+@sys.description('Capacity pool volume name.')
+param createAppAttachStorage bool
+
+@sys.description('ANF volumes.')
+param anfVolumes array
 
 @sys.description('ANF SMB prefix.')
 param anfSmbServerNamePrefix string
-
-@sys.description('ANF subnet ID.')
-param anfSubnetId string
 
 @sys.description('DNS servers IPs.')
 param dnsServers string
@@ -56,9 +59,6 @@ param anfPerformance string
 @sys.description('ANF capacity pool size in TiBs.')
 param capacityPoolSize int = 4
 
-@sys.description('ANF volume quota size in GiBs.')
-param volumeSize int
-
 @sys.description('Script name for adding storage account to Active Directory.')
 param storageToDomainScript string
 
@@ -76,9 +76,6 @@ param time string = utcNow()
 
 @sys.description('Storage service provider.')
 param storageService string
-
-@sys.description('Sets purpose of the storage account.')
-param storagePurpose string
 
 @sys.description('Identity name array to grant RBAC role to access AVD application group and NTFS permissions.')
 param securityPrincipalName string
@@ -121,7 +118,7 @@ resource keyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
 // Provision the Azure NetApp Files.
 module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.bicep' = {
     scope: resourceGroup('${subId}', '${storageObjectsRgName}')
-    name: 'Storage-ANF-${storagePurpose}-${time}'
+    name: 'Storage-ANF-${time}'
     params: {
         name: anfAccountName
         adName: anfAccountName
@@ -138,32 +135,13 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
             {
                 name: anfCapacityPoolName
                 serviceLevel: anfPerformance
-                size: capacityPoolSize * 1099511627776 // Convert TiBs to bytes 
-                encryptionType: 'Single'
-                volumes: [
-                    {
-                        name: anfVolumeName
-                        coolAccess: false
-                        encryptionKeySource: 'Microsoft.NetApp'
-                        zones: []
-                        serviceLevel: anfPerformance
-                        networkFeatures: 'Standard'
-                        usageThreshold: volumeSize * 1073741824 // Convert GiBs to bytes
-                        protocolTypes: [
-                            'CIFS'
-                        ]
-                        subnetResourceId: anfSubnetId
-                        creationToken: anfVolumeName
-                        smbContinuouslyAvailable: true
-                        securityStyle: 'ntfs'
-                    }
-                ]
+                size: capacityPoolSize * 1073741824
+                volumes: anfVolumes
             }
         ]
         tags: tags
     }
 }
-
 // Custom Extension call in on the DSC script to set NTFS permissions. 
 // module addShareToDomainScript '../sharedModules/smbUtilities.bicep' = {
 //     scope: resourceGroup('${subId}', '${serviceObjectsRgName}')
@@ -184,23 +162,11 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
 // =========== //
 // Outputs //
 // =========== //
-// output resourceId string = netAppAccount.id
-
-// @description('The name of the Resource Group the NetApp account was created in.')
-// output resourceGroupName string = resourceGroup().name
-
-// @description('The location the resource was deployed into.')
-// output location string = netAppAccount.location
-
-// @description('The resource IDs of the created capacity pools & their volumes.')
-// output capacityPoolResourceIds {
-//   resourceId: string
-//   volumeResourceIds: string[]
-// }[] = [
-//   for (capacityPools, index) in (capacityPools ?? []): {
-//     resourceId: netAppAccount_capacityPools[index].outputs.resourceId
-//     volumeResourceIds: netAppAccount_capacityPools[index].outputs.volumeResourceIds
-//   }
-// ]
-
-// output volumeResourceIds array = azureNetAppFiles.outputs.capacityPools[0].volumes
+output anfFslogixVolumeResourceId string = createFslogixStorage 
+    ? azureNetAppFiles.outputs.capacityPoolResourceIds[0].volumeResourceIds[0] 
+    : ''
+output anfAppAttachVolumeResourceId string = (createAppAttachStorage && createFslogixStorage)
+    ? azureNetAppFiles.outputs.capacityPoolResourceIds[1].volumeResourceIds[1] 
+    : ((createAppAttachStorage && !createFslogixStorage) 
+        ? azureNetAppFiles.outputs.capacityPoolResourceIds[0].volumeResourceIds[0] 
+        : '')

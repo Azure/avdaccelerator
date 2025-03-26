@@ -205,11 +205,11 @@ param storageService string = 'AzureFiles'
 @sys.description('Deploy App Attach setup. (Default: false)')
 param createAppAttachDeployment bool = false
 
-@sys.description('Fslogix file share size. (Default: 1)')
-param fslogixFileShareQuotaSize int = 1
+@sys.description('Fslogix file share size in GB. (Default: 100)')
+param fslogixFileShareQuotaSize int = 100
 
-@sys.description('App Attach file share size. (Default: 1)')
-param appAttachFileShareQuotaSize int = 1
+@sys.description('App Attach file share size in GB. (Default: 100)')
+param appAttachFileShareQuotaSize int = 100
 
 @sys.description('Deploy new session hosts. (Default: true)')
 param avdDeploySessionHosts bool = true
@@ -685,6 +685,47 @@ var varAppAttachFileShareName = storageService == 'AzureFiles'
     : storageService == 'ANF'
       ? 'appa${varDeploymentPrefixLowercase}01'
       : ''
+var varFslogixAnfVolume = createFslogixDeployment ? [
+  {
+    name: varFslogixFileShareName
+    coolAccess: false
+    encryptionKeySource: 'Microsoft.NetApp'
+    zones: [] // availability == 'AvailabilityZones'
+      //? availabilityZones
+      //: []
+    serviceLevel: fslogixStoragePerformance
+    networkFeatures: 'Standard'
+    usageThreshold: fslogixFileShareQuotaSize * 1073741824 // Convert GiBs to bytes
+    protocolTypes: [
+        'CIFS'
+    ]
+    subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAnfSubnetName}' : existingVnetAnfSubnetResourceId
+    creationToken: varFslogixFileShareName
+    smbContinuouslyAvailable: true
+    securityStyle: 'ntfs'
+  }
+] : []
+var varAppAttchAnfVolume = createAppAttachDeployment ? [
+  {
+    name: varAppAttachFileShareName
+    coolAccess: false
+    encryptionKeySource: 'Microsoft.NetApp'
+    zones: [] // availability == 'AvailabilityZones'
+      //? availabilityZones
+      //: []
+    serviceLevel: appAttachStoragePerformance
+    networkFeatures: 'Standard'
+    usageThreshold: appAttachFileShareQuotaSize * 1073741824 // Convert GiBs to bytes
+    protocolTypes: [
+        'CIFS'
+    ]
+    subnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAnfSubnetName}' : existingVnetAnfSubnetResourceId
+    creationToken: varAppAttachFileShareName
+    smbContinuouslyAvailable: true
+    securityStyle: 'ntfs'
+  }
+] : []
+var varAnfVolumes = union(varFslogixAnfVolume, varAppAttchAnfVolume)
 var varFslogixStorageName = avdUseCustomNaming
   ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
   : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
@@ -704,14 +745,18 @@ var varZtKvName = avdUseCustomNaming
   ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
   : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
-//
 var varFslogixSharePath = createFslogixDeployment
   ? (storageService == 'AzureFiles' 
     ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
     : (storageService == 'ANF' 
-      ? 'ddddd' 
+      ? anf.outputs.anfFslogixVolumeResourceId 
       : '') ) : ''
-
+var varAppAttachSharePath = createAppAttachDeployment
+  ? (storageService == 'AzureFiles' 
+    ? '\\\\${varAppAttachStorageName}.file.${environment().suffixes.storage}\\${varAppAttachFileShareName}' 
+    : (storageService == 'ANF' 
+      ? anf.outputs.anfAppAttachVolumeResourceId 
+      : '') ) : ''
 var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
@@ -1079,7 +1124,9 @@ var varResourceGroups = [
       : union(varAvdDefaultTags, varAllComputeStorageTags)
   }
 ]
-
+var varAnfCapacityPoolSize = ((createFslogixDeployment ? fslogixFileShareQuotaSize : 0) + (createAppAttachDeployment ? appAttachFileShareQuotaSize : 0)) > 4096 
+  ? ((createFslogixDeployment ? fslogixFileShareQuotaSize : 0) + (createAppAttachDeployment ? appAttachFileShareQuotaSize : 0)) 
+  : 4096
 // security Principals (you can add support for more than one because it is an array. Future)
 var varSecurityPrincipalId = !empty(avdSecurityGroups) ? avdSecurityGroups[0].objectId : ''
 var varSecurityPrincipalName = !empty(avdSecurityGroups) ? avdSecurityGroups[0].displayName : ''
@@ -1490,19 +1537,19 @@ module managementVm './modules/sharedModules/managementVm.bicep' = if (avdIdenti
   ]
 }
 
-// FSLogix Azure NetApp Files
-module anf './modules/azureNetappFiles/deploy.bicep' = if (createFslogixDeployment && (storageService == 'ANF')) {
+// Azure NetApp Files
+module anf './modules/azureNetappFiles/deploy.bicep' = if ((createFslogixDeployment || createAppAttachDeployment) && (storageService == 'ANF') && (!contains(avdIdentityServiceProvider, 'EntraID'))) {
   name: 'Storage-FSLogix-ANF-${time}'
   params: {
-    storagePurpose: 'fslogix'
     anfAccountName: varAnfAccountName
     anfCapacityPoolName: varAnfCapacityPoolName
-    anfVolumeName: varFslogixFileShareName
+    anfVolumes: varAnfVolumes
     anfSmbServerNamePrefix: varAnfSmbServerNamePrefix
+    capacityPoolSize: varAnfCapacityPoolSize
     dnsServers: customDnsIps
-    volumeSize: fslogixFileShareQuotaSize
     anfPerformance: fslogixStoragePerformance
-    anfSubnetId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAnfSubnetName}' : existingVnetAnfSubnetResourceId
+    createFslogixStorage: createFslogixDeployment
+    createAppAttachStorage: createAppAttachDeployment
     // vmLocalUserName: avdVmLocalUserName
     // fileShareName: varFslogixFileShareName
     // fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
