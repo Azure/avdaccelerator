@@ -1375,76 +1375,46 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
   ]
 }
 
-// Management VM deployment
-module managementVm './modules/sharedModules/managementVm.bicep' = if (avdIdentityServiceProvider != 'EntraID' && (createFslogixDeployment || varCreateAppAttachDeployment)) {
-  name: 'Storage-MGMT-VM-${time}'
-  params: {
-    diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
-    identityServiceProvider: avdIdentityServiceProvider
-    managementVmName: varManagementVmName
-    computeTimeZone: varTimeZoneSessionHosts
-    applicationSecurityGroupResourceId: (avdDeploySessionHosts || createFslogixDeployment || varCreateAppAttachDeployment)
-      ? '${networking.outputs.applicationSecurityGroupResourceId}'
-      : ''
-    domainJoinUserName: avdDomainJoinUserName
-    wrklKvName: varWrklKvName
-    serviceObjectsRgName: varServiceObjectsRgName
-    identityDomainName: identityDomainName
-    ouPath: varMgmtVmSpecs.ouPath
-    osDiskType: varMgmtVmSpecs.osDiskType
-    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
-    mgmtVmSize: varMgmtVmSpecs.mgmtVmSize
-    subnetId: varMgmtVmSpecs.subnetId
-    enableAcceleratedNetworking: varMgmtVmSpecs.enableAcceleratedNetworking
-    securityType: securityType == 'Standard' ? '' : securityType
-    secureBootEnabled: secureBootEnabled
-    vTpmEnabled: vTpmEnabled
-    vmLocalUserName: avdVmLocalUserName
-    workloadSubsId: avdWorkloadSubsId
-    encryptionAtHost: diskZeroTrust
-    storageManagedIdentityResourceId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
-      ? identity.outputs.managedIdentityStorageResourceId
-      : ''
-    osImage: varMgmtVmSpecs.osImage
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-  }
-  dependsOn: [
-    baselineStorageResourceGroup
-    wrklKeyVault
-  ]
-}
-
 // FSLogix and/or App Attach deployment
 module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogixDeployment || createAppAttachDeployment) {
   name: 'SMB-Storage-${time}'
-  scope: resourceGroup('${avdWorkloadSubsId}', '${varStorageObjectsRgName}')
+  scope: subscription('${avdWorkloadSubsId}')
   params: {
     deploymentPrefix: varDeploymentPrefixLowercase
     deploymentEnvironment: varDeploymentEnvironmentLowercase
     storageService: storageService
     useCustomNaming: avdUseCustomNaming
+    availability: availability
+    createFslogixDeployment: createFslogixDeployment
+    createAppAttachDeployment: createAppAttachDeployment
     fslogixFileShareCustomName: fslogixFileShareCustomName
     appAttachFileShareCustomName: appAttachFileShareCustomName
     storageAccountPrefixCustomName: storageAccountPrefixCustomName
     anfAccountCustomName: anfAccountCustomName
+    deployMonitoring: avdDeployMonitoring
+
     deploymentEnvironmentOneCharacter: varDeploymentEnvironmentOneCharacter
     computeStorageResourcesNamingStandard: varComputeStorageResourcesNamingStandard
     fslogixFileShareQuotaSize: fslogixFileShareQuotaSize
     appAttachFileShareQuotaSize: appAttachFileShareQuotaSize
     fslogixStoragePerformance: fslogixStoragePerformance
     appAttachStoragePerformance: appAttachStoragePerformance
-    anfSubnetResourceId: createAvdVnet ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAnfSubnetName}' : existingVnetAnfSubnetResourceId
+    anfSubnetResourceId: createAvdVnet 
+      ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAnfSubnetName}' 
+      : existingVnetAnfSubnetResourceId
     vmsSubnetResourceId: createAvdVnet
-    ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
+      ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
+      : existingVnetAvdSubnetResourceId
+    privateEndpointSubnetResourceId: createAvdVnet
+    ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
     : existingVnetAvdSubnetResourceId
-    privateEndpointSubnetId:
     location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     locationAcronym: avdDeploySessionHosts ? varSessionHostLocationAcronym : avdManagementPlaneLocation
-
+    managementVmOsImage: managementVmOsImage
+    keyVaultResourceId: wrklKeyVault.outputs.resourceId
   }
   dependsOn: [
-    baselineResourceGroups
-    monitoringDiagnosticSettings
+    baselineStorageResourceGroup
   ]
 }
 
