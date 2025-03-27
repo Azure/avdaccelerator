@@ -42,7 +42,7 @@ param location string
 param identityDomainName string
 
 @sys.description('Organizational Unit (OU) storage path for domain join.')
-param ouStgPath string
+param storageOuPath string
 
 @sys.description('Keyvault resource ID to get credentials from.')
 param keyVaultResourceId string
@@ -69,7 +69,6 @@ var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
 var varKeyVaultName = split(keyVaultResourceId, '/')[8]
 
-
 // =========== //
 // Deployments //
 // =========== //
@@ -90,7 +89,7 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
         domainName: identityDomainName
         domainJoinUser: domainJoinUserName
         domainJoinPassword: keyVaultget.getSecret('domainJoinUserPassword')
-        //domainJoinOU: replace(ouStgPath, '"', '\\"')
+        //domainJoinOU: replace(storageOuPath, '"', '\\"')
         dnsServers: dnsServers
         smbServerNamePrefix: smbServerNamePrefix
         location: location

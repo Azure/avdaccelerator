@@ -1,4 +1,7 @@
 targetScope = 'subscription'
+metadata name = 'AVD LZA storage management VM'
+metadata description = 'This module deploys a management VM to join Azure Files to domain and for tools.'
+metadata owner = 'Azure/avdaccelerator'
 
 // ========== //
 // Parameters //
@@ -19,7 +22,7 @@ param identityServiceProvider string
 @sys.description('Resource Group Name for Azure Files.')
 param serviceObjectsRgName string
 
-@sys.description('AVD subnet ID.')
+@sys.description('Subnet resource ID.')
 param subnetResourceId string
 
 @sys.description('Enable accelerated networking on the session host VMs.')
@@ -85,14 +88,15 @@ param time string = utcNow()
 var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
 var varKeyVaultName = split(keyVaultResourceId, '/')[8]
-var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
-    storageAccountType: osDiskType
-} : {
-    diskEncryptionSet: {
-        id: diskEncryptionSetResourceId
+var varManagedDisk = empty(diskEncryptionSetResourceId) 
+    ? {
+        storageAccountType: osDiskType
+    } : {
+        diskEncryptionSet: {
+            id: diskEncryptionSetResourceId
+        }
+        storageAccountType: osDiskType
     }
-    storageAccountType: osDiskType
-}
 
 // =========== //
 // Deployments //
@@ -103,7 +107,6 @@ resource keyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
     name: varKeyVaultName
     scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
-
 
 // Provision temporary VM and add it to domain.
 module managementVm '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = {
@@ -162,10 +165,14 @@ module managementVm '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         allowExtensionOperations: true
         extensionDomainJoinPassword: keyVaultget.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: contains(identityServiceProvider, 'EntraID') ? false: true
+            enabled: contains(identityServiceProvider, 'EntraID') 
+                ? false
+                : true
             settings: {
                 name: identityDomainName
-                ouPath: !empty(ouPath) ? ouPath : null
+                ouPath: !empty(ouPath) 
+                    ? ouPath 
+                    : null
                 user: domainJoinUserName
                 restart: 'true'
                 options: '3'
@@ -173,7 +180,9 @@ module managementVm '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
         }
         // Entra ID Join.
         extensionAadJoinConfig: {
-            enabled: contains(identityServiceProvider, 'EntraID') ? true: false
+            enabled: contains(identityServiceProvider, 'EntraID') 
+                ? true
+                : false
         }
         tags: tags
     }

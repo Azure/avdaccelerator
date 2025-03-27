@@ -146,7 +146,7 @@ param createResourceTags bool
 param baseScriptUri string
 
 @description('The security principal name.')
-param varSecurityPrincipalName string = ''
+param securityPrincipalName string = ''
 
 @description('The identity domain name.')
 param identityDomainName string
@@ -170,26 +170,27 @@ param time string = utcNow()
 // Variable declaration //
 // =========== //
 var varNamingUniqueStringThreeChar = take('${uniqueString(subId, deploymentPrefix, time)}', 3)
-var varAnfCapacityPoolSize = ((createFslogixDeployment ? fslogixFileShareQuotaSize : 0) + (createAppAttachDeployment ? appAttachFileShareQuotaSize : 0)) > 4096 
-  ? ((createFslogixDeployment ? fslogixFileShareQuotaSize : 0) + (createAppAttachDeployment ? appAttachFileShareQuotaSize : 0)) 
+var varAnfCapacityPoolSize = ((createFslogixDeployment ? fslogixFileShareQuotaSize : 0) + (createAppAttachDeployment
+    ? appAttachFileShareQuotaSize
+    : 0)) > 4096
+    ? ((createFslogixDeployment ? fslogixFileShareQuotaSize : 0) + (createAppAttachDeployment
+        ? appAttachFileShareQuotaSize
+        : 0))
   : 4096
 var varFslogixFileShareName = storageService == 'AzureFiles'
-  ? (useCustomNaming 
+  ? (useCustomNaming
       ? fslogixFileShareCustomName
       : 'fslogix-pc-${deploymentPrefix}-${deploymentEnvironment}-${locationAcronym}-001')
-  : storageService == 'ANF'
-    ? 'fsl${deploymentPrefix}${deploymentEnvironment}${locationAcronym}001'
-    : ''
+  : storageService == 'ANF' ? 'fsl${deploymentPrefix}${deploymentEnvironment}${locationAcronym}001' : ''
 var varAnfSmbServerNamePrefix = 'anf${deploymentPrefix}${deploymentEnvironment}'
 var varAppAttachFileShareName = storageService == 'AzureFiles'
-    ? (useCustomNaming 
-        ? appAttachFileShareCustomName 
-        : 'appa-${deploymentPrefix}-${deploymentEnvironment}-${locationAcronym}-001')
-    : storageService == 'ANF'
-        ? 'appa${deploymentPrefix}01'
-        : ''
-var varFslogixAnfVolume = createFslogixDeployment ? [
-    {
+  ? (useCustomNaming
+      ? appAttachFileShareCustomName
+      : 'appa-${deploymentPrefix}-${deploymentEnvironment}-${locationAcronym}-001')
+  : storageService == 'ANF' ? 'appa${deploymentPrefix}01' : ''
+var varFslogixAnfVolume = createFslogixDeployment
+  ? [
+      {
         name: varFslogixFileShareName
         coolAccess: false
         encryptionKeySource: 'Microsoft.NetApp'
@@ -200,16 +201,18 @@ var varFslogixAnfVolume = createFslogixDeployment ? [
         networkFeatures: 'Standard'
         usageThreshold: fslogixFileShareQuotaSize * 1073741824 // Convert GiBs to bytes
         protocolTypes: [
-            'CIFS'
+          'CIFS'
         ]
         subnetResourceId: anfSubnetResourceId
         creationToken: varFslogixFileShareName
         smbContinuouslyAvailable: true
         securityStyle: 'ntfs'
-    }
-    ] : []
-var varAppAttchAnfVolume = createAppAttachDeployment ? [
-    {
+      }
+    ]
+  : []
+var varAppAttchAnfVolume = createAppAttachDeployment
+  ? [
+      {
         name: varAppAttachFileShareName
         coolAccess: false
         encryptionKeySource: 'Microsoft.NetApp'
@@ -220,65 +223,82 @@ var varAppAttchAnfVolume = createAppAttachDeployment ? [
         networkFeatures: 'Standard'
         usageThreshold: appAttachFileShareQuotaSize * 1073741824 // Convert GiBs to bytes
         protocolTypes: [
-            'CIFS'
+          'CIFS'
         ]
         subnetResourceId: anfSubnetResourceId
         creationToken: varAppAttachFileShareName
         smbContinuouslyAvailable: true
         securityStyle: 'ntfs'
-    }
-    ] : []
+      }
+    ]
+  : []
 var varAnfVolumes = union(varFslogixAnfVolume, varAppAttchAnfVolume)
 var varFslogixStorageName = useCustomNaming
   ? '${storageAccountPrefixCustomName}fsl${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
   : 'stfsl${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
-var varAnfAccountName = useCustomNaming ? anfAccountCustomName : 'anf-acc-${computeStorageResourcesNamingStandard}-001'
+var varAnfAccountName = useCustomNaming 
+  ? anfAccountCustomName 
+  : 'anf-acc-${computeStorageResourcesNamingStandard}-001'
 var varAnfCapacityPoolName = 'anf-cpool-${computeStorageResourcesNamingStandard}-001'
-var varFslogixStorageFqdn = createFslogixDeployment 
-  ? ((storageService == 'AzureFiles') 
-    ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
-    : (storageService == 'ANF') 
-      ? '${varFslogixFileShareName}.<subnet-name>.<vnet-name>.${location}.netapp.azure.com' 
-      : '') 
+var varFslogixStorageFqdn = createFslogixDeployment
+  ? ((storageService == 'AzureFiles')
+      ? '${varFslogixStorageName}.file.${environment().suffixes.storage}'
+      : (storageService == 'ANF')
+          ? '${varFslogixFileShareName}.<subnet-name>.<vnet-name>.${location}.netapp.azure.com'
+          : '')
   : ''
-var varAppAttachStorageFqdn = createAppAttachDeployment ? ((storageService == 'AzureFiles') ? '${varAppAttachStorageName}.file.${environment().suffixes.storage}' : (storageService == 'ANF') ? '${varAppAttachFileShareName}.<subnet-name>.<vnet-name>.${location}.netapp.azure.com' : '') : ''
+var varAppAttachStorageFqdn = createAppAttachDeployment
+  ? ((storageService == 'AzureFiles')
+      ? '${varAppAttachStorageName}.file.${environment().suffixes.storage}'
+      : (storageService == 'ANF')
+          ? '${varAppAttachFileShareName}.<subnet-name>.<vnet-name>.${location}.netapp.azure.com'
+          : '')
+  : ''
 var varAppAttachStorageName = useCustomNaming
   ? '${storageAccountPrefixCustomName}appa${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
   : 'stappa${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
 var varManagementVmName = 'vmmgmt${deploymentPrefix}${deploymentEnvironmentOneCharacter}${locationAcronym}'
 var varFslogixFileSharePath = createFslogixDeployment
-  ? (storageService == 'AzureFiles' 
-    ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
-    : (storageService == 'ANF' 
-      ? anf.outputs.anfFslogixVolumeResourceId 
-      : '') ) : ''
+  ? (storageService == 'AzureFiles'
+      ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
+      : (storageService == 'ANF' 
+        ? anf.outputs.anfFslogixVolumeResourceId 
+        : ''))
+  : ''
 var varAppAttachFileSharePath = createAppAttachDeployment
-  ? (storageService == 'AzureFiles' 
-    ? '\\\\${varAppAttachStorageName}.file.${environment().suffixes.storage}\\${varAppAttachFileShareName}' 
-    : (storageService == 'ANF' 
-      ? anf.outputs.anfAppAttachVolumeResourceId 
-      : '') ) : ''
-var varFslogixStoragePerformance = fslogixStoragePerformance =='Ultra'
-    ? 'Premium'
-    : fslogixStoragePerformance
-var varAppAttachStoragePerformance = appAttachStoragePerformance =='Ultra'
-    ? 'Premium'
-    : appAttachStoragePerformance
-var varStorageAccountAvailability = availability == 'AvailabilityZones'
-    ? true
-    : false
+  ? (storageService == 'AzureFiles'
+      ? '\\\\${varAppAttachStorageName}.file.${environment().suffixes.storage}\\${varAppAttachFileShareName}'
+      : (storageService == 'ANF' 
+        ? anf.outputs.anfAppAttachVolumeResourceId 
+        : ''))
+  : ''
+var varFslogixStoragePerformance = fslogixStoragePerformance == 'Ultra' 
+  ? 'Premium' 
+  : fslogixStoragePerformance
+var varAppAttachStoragePerformance = appAttachStoragePerformance == 'Ultra' 
+  ? 'Premium' 
+  : appAttachStoragePerformance
+var varStorageAccountAvailability = availability == 'AvailabilityZones' 
+  ? true 
+  : false
 var varFslogixStorageSku = (varStorageAccountAvailability && storageService == 'AzureFiles')
-    ? '${varFslogixStoragePerformance}_ZRS'
-    : '${varFslogixStoragePerformance}_LRS'
+  ? '${varFslogixStoragePerformance}_ZRS'
+  : '${varFslogixStoragePerformance}_LRS'
 var varAppAttachStorageSku = varStorageAccountAvailability
-    ? '${varAppAttachStoragePerformance}_ZRS'
-    : '${varAppAttachStoragePerformance}_LRS'
+  ? '${varAppAttachStoragePerformance}_ZRS'
+  : '${varAppAttachStoragePerformance}_LRS'
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.3/DSCStorageScripts.zip'
 var varStorageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
-var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
-var varDefaultStorageOuPath = (identityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
-var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
+var varOuStgPath = !empty(storageOuPath) 
+  ? '"${storageOuPath}"' 
+  : '"${varDefaultStorageOuPath}"'
+var varDefaultStorageOuPath = (identityServiceProvider == 'EntraDS') 
+  ? 'AADDC Computers' 
+  : 'Computers'
+var varStorageCustomOuPath = !empty(storageOuPath) 
+  ? 'true' 
+  : 'false'
 var varMarketPlaceGalleryWindows = loadJsonContent('../../../variables/osMarketPlaceImages.json')
 // =========== //
 // Deployments //
@@ -310,124 +330,140 @@ module managementVm './managementVm.bicep' = if (identityServiceProvider != 'Ent
     encryptionAtHost: encryptionAtHost
     storageManagedIdentityResourceId: storageManagedIdentityResourceId
     osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
-    tags: createResourceTags ? union(customResourceTags, defaultTags) : defaultTags
+    tags: createResourceTags 
+      ? union(customResourceTags, defaultTags) 
+      : defaultTags
   }
-  dependsOn: [
-  ]
+  dependsOn: []
 }
 
 // Azure NetApp Files
-module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') && (!contains(identityServiceProvider, 'EntraID'))) {
-    name: 'Storage-ANF-${time}'
-    params: {
-      accountName: varAnfAccountName
-      capacityPoolName: varAnfCapacityPoolName
-      volumes: varAnfVolumes
-      smbServerNamePrefix: varAnfSmbServerNamePrefix
-      capacityPoolSize: varAnfCapacityPoolSize
-      dnsServers: dnsServers
-      performance: fslogixStoragePerformance
-      createFslogixStorage: createFslogixDeployment
-      createAppAttachStorage: createAppAttachDeployment
-      ouStgPath:  !empty(storageOuPath) ? storageOuPath : varDefaultStorageOuPath
-      domainJoinUserName: domainJoinUserName
-      keyVaultResourceId: keyVaultResourceId
-      identityDomainName: identityDomainName
-      location: location
-      storageObjectsRgName: storageObjectsRgName
-      subId: subId
-      tags: createResourceTags ? union(customResourceTags, defaultTags) : defaultTags
-      // alaWorkspaceResourceId: deployMonitoring
-      //   ? (deployAlaWorkspace
-      //       ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-      //       : alaExistingWorkspaceResourceId)
-      //   : ''
-    }
-    dependsOn: [
-        managementVm
-    ]
+module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') && (!contains(
+  identityServiceProvider,
+  'EntraID'
+))) {
+  name: 'Storage-ANF-${time}'
+  params: {
+    accountName: varAnfAccountName
+    capacityPoolName: varAnfCapacityPoolName
+    volumes: varAnfVolumes
+    smbServerNamePrefix: varAnfSmbServerNamePrefix
+    capacityPoolSize: varAnfCapacityPoolSize
+    dnsServers: dnsServers
+    performance: fslogixStoragePerformance
+    createFslogixStorage: createFslogixDeployment
+    createAppAttachStorage: createAppAttachDeployment
+    storageOuPath: !empty(storageOuPath) 
+      ? storageOuPath 
+      : varDefaultStorageOuPath
+    domainJoinUserName: domainJoinUserName
+    keyVaultResourceId: keyVaultResourceId
+    identityDomainName: identityDomainName
+    location: location
+    storageObjectsRgName: storageObjectsRgName
+    subId: subId
+    tags: createResourceTags 
+      ? union(customResourceTags, defaultTags) 
+      : defaultTags
+    // alaWorkspaceResourceId: deployMonitoring
+    //   ? (deployAlaWorkspace
+    //       ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+    //       : alaExistingWorkspaceResourceId)
+    //   : ''
   }
+  dependsOn: [
+    managementVm
+  ]
+}
 
 // FSLogix Azure Files
 module fslogixAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (createFslogixDeployment && (storageService != 'ANF')) {
-    name: 'Storage-FSLogix-ST-${time}'
-    params: {
-        storagePurpose: 'fslogix'
-        vmLocalUserName: vmLocalUserName
-        fileShareName: varFslogixFileShareName
-        fileShareMultichannel: (varFslogixStoragePerformance == 'Premium') ? true : false
-        storageSku: varFslogixStorageSku
-        fileShareQuotaSize: fslogixFileShareQuotaSize
-        storageAccountFqdn: varFslogixStorageFqdn
-        storageAccountName: varFslogixStorageName
-        storageToDomainScript: varStorageToDomainScript
-        storageToDomainScriptUri: varStorageToDomainScriptUri
-        identityServiceProvider: identityServiceProvider
-        dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
-        storageCustomOuPath: varStorageCustomOuPath
-        managementVmName: varManagementVmName
-        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
-        keyVaultResourceId: keyVaultResourceId
-        ouStgPath: varOuStgPath
-        managedIdentityClientId: managedIdentityClientId
-        securityPrincipalName: varSecurityPrincipalName
-        domainJoinUserName: domainJoinUserName
-        serviceObjectsRgName: serviceObjectsRgName
-        identityDomainName: identityDomainName
-        identityDomainGuid: identityDomainGuid
-        location: location
-        storageObjectsRgName: storageObjectsRgName
-        privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
-        vmsSubnetResourceId: vmsSubnetResourceId
-        privateDnsZoneFilesResourceId: privateDnsZoneFilesResourceId
-        subId: subId
-        tags: createResourceTags ? union(customResourceTags, defaultTags) : defaultTags
-        alaWorkspaceResourceId: alaWorkspaceResourceId
-    }
-    dependsOn: [
-        managementVm
-    ]
+  name: 'Storage-FSLogix-ST-${time}'
+  params: {
+    storagePurpose: 'fslogix'
+    vmLocalUserName: vmLocalUserName
+    fileShareName: varFslogixFileShareName
+    fileShareMultichannel: (varFslogixStoragePerformance == 'Premium') 
+      ? true 
+      : false
+    storageSku: varFslogixStorageSku
+    fileShareQuotaSize: fslogixFileShareQuotaSize
+    storageAccountFqdn: varFslogixStorageFqdn
+    storageAccountName: varFslogixStorageName
+    storageToDomainScript: varStorageToDomainScript
+    storageToDomainScriptUri: varStorageToDomainScriptUri
+    identityServiceProvider: identityServiceProvider
+    dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+    storageCustomOuPath: varStorageCustomOuPath
+    managementVmName: varManagementVmName
+    deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+    keyVaultResourceId: keyVaultResourceId
+    storageOuPath: varOuStgPath
+    managedIdentityClientId: managedIdentityClientId
+    securityPrincipalName: securityPrincipalName
+    domainJoinUserName: domainJoinUserName
+    serviceObjectsRgName: serviceObjectsRgName
+    identityDomainName: identityDomainName
+    identityDomainGuid: identityDomainGuid
+    location: location
+    storageObjectsRgName: storageObjectsRgName
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    vmsSubnetResourceId: vmsSubnetResourceId
+    privateDnsZoneFilesResourceId: privateDnsZoneFilesResourceId
+    subId: subId
+    tags: createResourceTags 
+      ? union(customResourceTags, defaultTags) 
+      : defaultTags
+    alaWorkspaceResourceId: alaWorkspaceResourceId
+  }
+  dependsOn: [
+    managementVm
+  ]
 }
-  
-    // App Attach Azure Files
+
+// App Attach Azure Files
 module appAttachAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (createFslogixDeployment && (storageService != 'ANF')) {
-    name: 'Storage-AppA-${time}'
-    params: {
-        storagePurpose: 'AppAttach'
-        vmLocalUserName: vmLocalUserName
-        fileShareName: varAppAttachFileShareName
-        fileShareMultichannel: (varAppAttachStoragePerformance == 'Premium') ? true : false
-        storageSku: varAppAttachStorageSku
-        fileShareQuotaSize: appAttachFileShareQuotaSize
-        storageAccountFqdn: varAppAttachStorageFqdn
-        storageAccountName: varAppAttachStorageName
-        storageToDomainScript: varStorageToDomainScript
-        storageToDomainScriptUri: varStorageToDomainScriptUri
-        identityServiceProvider: identityServiceProvider
-        dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
-        storageCustomOuPath: varStorageCustomOuPath
-        managementVmName: varManagementVmName
-        deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
-        ouStgPath: varOuStgPath
-        managedIdentityClientId: managedIdentityClientId
-        securityPrincipalName: varSecurityPrincipalName
-        domainJoinUserName: domainJoinUserName
-        keyVaultResourceId: keyVaultResourceId
-        serviceObjectsRgName: serviceObjectsRgName
-        identityDomainName: identityDomainName
-        identityDomainGuid: identityDomainGuid
-        location: location
-        storageObjectsRgName: storageObjectsRgName
-        privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
-        vmsSubnetResourceId: vmsSubnetResourceId
-        privateDnsZoneFilesResourceId: privateDnsZoneFilesResourceId
-        subId: subId
-        tags: createResourceTags ? union(customResourceTags, defaultTags) : defaultTags
-        alaWorkspaceResourceId: alaWorkspaceResourceId
-    }
-    dependsOn: [
-        managementVm
-    ]
+  name: 'Storage-AppA-${time}'
+  params: {
+    storagePurpose: 'AppAttach'
+    vmLocalUserName: vmLocalUserName
+    fileShareName: varAppAttachFileShareName
+    fileShareMultichannel: (varAppAttachStoragePerformance == 'Premium') 
+      ? true 
+      : false
+    storageSku: varAppAttachStorageSku
+    fileShareQuotaSize: appAttachFileShareQuotaSize
+    storageAccountFqdn: varAppAttachStorageFqdn
+    storageAccountName: varAppAttachStorageName
+    storageToDomainScript: varStorageToDomainScript
+    storageToDomainScriptUri: varStorageToDomainScriptUri
+    identityServiceProvider: identityServiceProvider
+    dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+    storageCustomOuPath: varStorageCustomOuPath
+    managementVmName: varManagementVmName
+    deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+    storageOuPath: varOuStgPath
+    managedIdentityClientId: managedIdentityClientId
+    securityPrincipalName: securityPrincipalName
+    domainJoinUserName: domainJoinUserName
+    keyVaultResourceId: keyVaultResourceId
+    serviceObjectsRgName: serviceObjectsRgName
+    identityDomainName: identityDomainName
+    identityDomainGuid: identityDomainGuid
+    location: location
+    storageObjectsRgName: storageObjectsRgName
+    privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
+    vmsSubnetResourceId: vmsSubnetResourceId
+    privateDnsZoneFilesResourceId: privateDnsZoneFilesResourceId
+    subId: subId
+    tags: createResourceTags 
+      ? union(customResourceTags, defaultTags) 
+      : defaultTags
+    alaWorkspaceResourceId: alaWorkspaceResourceId
+  }
+  dependsOn: [
+    managementVm
+  ]
 }
 
 // =========== //
@@ -435,10 +471,10 @@ module appAttachAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (crea
 // =========== //
 
 output fslogixFileSharePath string = varFslogixFileSharePath
-output appAttachFileSharePath string = varFslogixFileSharePath
-output fslogixStorageAccountResourceId string = createFslogixDeployment 
-  ? fslogixAzureFilesStorage.outputs.storageAccountResourceId 
+output appAttachFileSharePath string = varAppAttachFileSharePath
+output fslogixStorageAccountResourceId string = createFslogixDeployment
+  ? fslogixAzureFilesStorage.outputs.storageAccountResourceId
   : ''
-output appAttachStorageAccountResourceId string = createAppAttachDeployment 
-  ? appAttachAzureFilesStorage.outputs.storageAccountResourceId 
+output appAttachStorageAccountResourceId string = createAppAttachDeployment
+  ? appAttachAzureFilesStorage.outputs.storageAccountResourceId
   : ''

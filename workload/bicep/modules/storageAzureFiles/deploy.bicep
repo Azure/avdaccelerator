@@ -94,7 +94,7 @@ param dscAgentPackageLocation string
 param storageCustomOuPath string
 
 @sys.description('OU Storage Path')
-param ouStgPath string
+param storageOuPath string
 
 @sys.description('Managed Identity Client ID')
 param managedIdentityClientId string
@@ -108,14 +108,17 @@ param storageAccountFqdn string
 // =========== //
 // Variable declaration //
 // =========== //
+
 var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
 var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
 var varKeyVaultName = split(keyVaultResourceId, '/')[8]
 var varAzureCloudName = environment().name
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
 var varSecurityPrincipalName = !empty(securityPrincipalName) ? securityPrincipalName : 'none'
-var varAdminUserName = contains(identityServiceProvider, 'EntraID') ? vmLocalUserName : domainJoinUserName
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${subId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
+var varAdminUserName = contains(identityServiceProvider, 'EntraID') 
+  ? vmLocalUserName 
+  : domainJoinUserName
+var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${subId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${storageOuPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
   ? [
       {
@@ -124,6 +127,7 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
       }
     ]
   : []
+  
 // =========== //
 // Deployments //
 // =========== //
@@ -143,9 +147,15 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
     location: location
     skuName: storageSku
     allowBlobPublicAccess: false
-    publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
-    kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
-    largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled' : 'Disabled'
+    publicNetworkAccess: deployPrivateEndpoint 
+      ? 'Disabled' 
+      : 'Enabled'
+    kind: (storageSku == 'Premium_LRS' || storageSku == 'Premium_ZRS') 
+      ? 'FileStorage' 
+      : 'StorageV2'
+    largeFileSharesState: (storageSku == 'Standard_LRS' || storageSku == 'Standard_ZRS') 
+      ? 'Enabled' 
+      : 'Disabled'
     azureFilesIdentityBasedAuthentication: identityServiceProvider != 'EntraID'
       ? {
           directoryServiceOptions: identityServiceProvider == 'EntraDS'
@@ -235,4 +245,5 @@ module addShareToDomainScript '../sharedModules/smbUtilities.bicep' = if (identi
 // =========== //
 // Outputs //
 // =========== //
+
 output storageAccountResourceId string = storageAndFile.outputs.resourceId

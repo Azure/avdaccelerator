@@ -147,7 +147,7 @@ param existingVnetPrivateEndpointSubnetResourceId string = ''
 @sys.description('Existing virtual network subnet for ANF. (Default: "")')
 param existingVnetAnfSubnetResourceId string = ''
 
-@sys.description('Existing hub virtual network for perring. (Default: "")')
+@sys.description('Existing hub virtual network for peering. (Default: "")')
 param existingHubVnetResourceId string = ''
 
 @sys.description('AVD virtual network address prefixes. (Default: 10.10.0.0/16)')
@@ -1404,6 +1404,7 @@ module storage './modules/sharedModules/storage.bicep' = if (varCreateStorageDep
     identityDomainName: identityDomainName
     storageObjectsRgName: varStorageObjectsRgName
     baseScriptUri: varBaseScriptUri
+    securityPrincipalName: varSecurityPrincipalName
     diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
     sessionHostTimeZone: varTimeZoneSessionHosts
     createFslogixDeployment: createFslogixDeployment
