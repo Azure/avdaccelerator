@@ -472,9 +472,9 @@ module appAttachAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (crea
 
 output fslogixFileSharePath string = varFslogixFileSharePath
 output appAttachFileSharePath string = varAppAttachFileSharePath
-output fslogixStorageAccountResourceId string = createFslogixDeployment
+output fslogixStorageAccountResourceId string = (createFslogixDeployment && (storageService == 'AzureFiles'))
   ? fslogixAzureFilesStorage.outputs.storageAccountResourceId
   : ''
-output appAttachStorageAccountResourceId string = createAppAttachDeployment
+output appAttachStorageAccountResourceId string = (createAppAttachDeployment && (storageService == 'AzureFiles'))
   ? appAttachAzureFilesStorage.outputs.storageAccountResourceId
   : ''

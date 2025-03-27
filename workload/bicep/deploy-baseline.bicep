@@ -1400,7 +1400,7 @@ module storage './modules/sharedModules/storage.bicep' = if (varCreateStorageDep
       : 'Standard_D2ads_v5'
     createResourceTags: createResourceTags
     deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
-    dnsServers: varAllDnsServers
+    dnsServers: customDnsIps
     identityDomainName: identityDomainName
     storageObjectsRgName: varStorageObjectsRgName
     baseScriptUri: varBaseScriptUri
