@@ -1007,6 +1007,7 @@ var varResourceGroups = [
 // security Principals (you can add support for more than one because it is an array. Future)
 var varSecurityPrincipalId = !empty(avdSecurityGroups) ? avdSecurityGroups[0].objectId : ''
 var varSecurityPrincipalName = !empty(avdSecurityGroups) ? avdSecurityGroups[0].displayName : ''
+var varCreateStorageDeployment = (createFslogixDeployment || createAppAttachDeployment) ? true : false
 
 // =========== //
 // Deployments //
@@ -1077,8 +1078,12 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     computeObjectsRgName: varComputeObjectsRgName
     serviceObjectsRgName: varServiceObjectsRgName
     dataCollectionRulesName: varDataCollectionRulesName
-    storageObjectsRgName: (createFslogixDeployment || createAppAttachDeployment) ? varStorageObjectsRgName : ''
-    networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
+    storageObjectsRgName: varCreateStorageDeployment 
+      ? varStorageObjectsRgName 
+      : ''
+    networkObjectsRgName: createAvdVnet 
+      ? varNetworkObjectsRgName 
+      : ''
     monitoringRgName: varMonitoringRgName
     deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
     alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
@@ -1376,7 +1381,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
 }
 
 // FSLogix and/or App Attach deployment
-module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogixDeployment || createAppAttachDeployment) {
+module storage './modules/sharedModules/storage.bicep' = if (varCreateStorageDeployment) {
   name: 'SMB-Storage-${time}'
   scope: subscription('${avdWorkloadSubsId}')
   params: {
@@ -1387,6 +1392,18 @@ module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogix
     availability: availability
     domainJoinUserName: avdDomainJoinUserName
     vmLocalUserName: avdVmLocalUserName
+    identityServiceProvider: avdIdentityServiceProvider
+    avdSessionHostsOuPath: avdOuPath
+    storageOuPath: storageOuPath
+    managementVmSize: avdDeploySessionHosts 
+      ? avdSessionHostsSize
+      : 'Standard_D2ads_v5'
+    createResourceTags: createResourceTags
+    deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
+    dnsServers: varAllDnsServers
+    identityDomainName: identityDomainName
+    storageObjectsRgName: varStorageObjectsRgName
+    baseScriptUri: varBaseScriptUri
     diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
     sessionHostTimeZone: varTimeZoneSessionHosts
     createFslogixDeployment: createFslogixDeployment
@@ -1394,7 +1411,7 @@ module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogix
     secureBootEnabled: secureBootEnabled
     vTpmEnabled: vTpmEnabled
     encryptionAtHost: diskZeroTrust
-    storageManagedIdentityResourceId: ((createFslogixDeployment || createAppAttachDeployment == true) ? true : false) && avdIdentityServiceProvider != 'EntraID'
+    storageManagedIdentityResourceId: ((varCreateStorageDeployment) && avdIdentityServiceProvider != 'EntraID')
     ? identity.outputs.managedIdentityStorageResourceId
     : ''
     applicationSecurityGroupResourceId: (avdDeploySessionHosts || createFslogixDeployment || varCreateAppAttachDeployment)
@@ -1405,7 +1422,7 @@ module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogix
     appAttachFileShareCustomName: appAttachFileShareCustomName
     storageAccountPrefixCustomName: storageAccountPrefixCustomName
     anfAccountCustomName: anfAccountCustomName
-    managedIdentityClientId: ((createFslogixDeployment || createAppAttachDeployment == true) ? true : false) && avdIdentityServiceProvider != 'EntraID'
+    managedIdentityClientId: (varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID')
     ? identity.outputs.managedIdentityStorageClientId
     : ''
     privateDnsZoneFilesResourceId: createPrivateDnsZones
@@ -1436,6 +1453,9 @@ module smbStorage './modules/sharedModules/smbStorage.bicep' = if (createFslogix
     locationAcronym: avdDeploySessionHosts ? varSessionHostLocationAcronym : avdManagementPlaneLocation
     managementVmOsImage: managementVmOsImage
     keyVaultResourceId: wrklKeyVault.outputs.resourceId
+    customResourceTags: varCustomResourceTags
+    defaultTags: varAvdDefaultTags
+    identityDomainGuid: identityDomainGuid
   }
   dependsOn: [
     baselineStorageResourceGroup
@@ -1491,9 +1511,11 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       domainJoinUserPrincipalName: avdDomainJoinUserName
       enableAcceleratedNetworking: enableAcceleratedNetworking
       encryptionAtHost: diskZeroTrust
-      fslogixSharePath: varFslogixSharePath
-      fslogixStorageAccountResourceId: avdIdentityServiceProvider == 'EntraID'
-        ? fslogixAzureFilesStorage.outputs.storageAccountResourceId
+      fslogixSharePath: createFslogixDeployment
+        ? storage.outputs.fslogixFileSharePath
+        : ''
+      fslogixStorageAccountResourceId: (avdIdentityServiceProvider == 'EntraID' && createFslogixDeployment)
+        ? storage.outputs.fslogixStorageAccountResourceId
         : ''
       hostPoolResourceId: managementPLane.outputs.hostPoolResourceId
       identityDomainName: identityDomainName

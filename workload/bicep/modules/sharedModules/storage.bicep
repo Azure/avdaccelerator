@@ -37,7 +37,6 @@ param appAttachFileShareCustomName string = ''
 @description('The OS image for the management VM.')
 param managementVmOsImage string
 
-@maxLength(2)
 @sys.description('AVD FSLogix and App Attach storage account prefix custom name.')
 param storageAccountPrefixCustomName string = 'st'
 
@@ -89,7 +88,6 @@ param diskEncryptionSetResourceId string
 @description('Indicates whether encryption at host is enabled for the VM.')
 param encryptionAtHost bool
 
-
 @description('The resource ID of the managed identity for storage.')
 param storageManagedIdentityResourceId string
 
@@ -111,41 +109,41 @@ param availability string
 @description('The custom DNS IPs.')
 param dnsServers string
 
-@description('The AVD identity service provider (e.g., EntraDS).')
-param avdIdentityServiceProvider string
+@description('The identity service provider (e.g., EntraDS).')
+param identityServiceProvider string
 
-@description('The AVD domain join username.')
+@description('The domain join username.')
 param domainJoinUserName string
 
-@description('The AVD VM local username.')
+@description('The VM local username.')
 param vmLocalUserName string
 
 @description('The service objects resource group name.')
 param serviceObjectsRgName string
 
 @description('The storage objects resource group name.')
-param varStorageObjectsRgName string
+param storageObjectsRgName string
 
-@description('The AVD session hosts size.')
-param avdSessionHostsSize string
+@description('The VM size for the management VM.')
+param managementVmSize string
 
-@description('The AVD OU path.')
-param avdOuPath string
+@description('The OU path for AVD session hosts.')
+param avdSessionHostsOuPath string
 
 @description('The storage OU path.')
 param storageOuPath string = ''
 
 @description('The custom resource tags.')
-param varCustomResourceTags object = {}
+param customResourceTags object = {}
 
 @description('The AVD default tags.')
-param varAvdDefaultTags object = {}
+param defaultTags object = {}
 
 @description('Indicates whether to create resource tags.')
 param createResourceTags bool
 
 @description('The base script URI.')
-param varBaseScriptUri string
+param baseScriptUri string
 
 @description('The security principal name.')
 param varSecurityPrincipalName string = ''
@@ -158,9 +156,6 @@ param identityDomainGuid string = ''
 
 @description('Indicates whether to deploy private endpoints for Key Vault and storage.')
 param deployPrivateEndpointKeyvaultStorage bool
-
-@description('Indicates whether to deploy AVD session hosts.')
-param avdDeploySessionHosts bool
 
 @description('Indicates whether to create FSLogix deployment.')
 param createFslogixDeployment bool
@@ -251,19 +246,18 @@ var varAppAttachStorageName = useCustomNaming
   ? '${storageAccountPrefixCustomName}appa${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
   : 'stappa${deploymentPrefix}${deploymentEnvironmentOneCharacter}${varNamingUniqueStringThreeChar}'
 var varManagementVmName = 'vmmgmt${deploymentPrefix}${deploymentEnvironmentOneCharacter}${locationAcronym}'
-var varFslogixSharePath = createFslogixDeployment
+var varFslogixFileSharePath = createFslogixDeployment
   ? (storageService == 'AzureFiles' 
     ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}' 
     : (storageService == 'ANF' 
       ? anf.outputs.anfFslogixVolumeResourceId 
       : '') ) : ''
-var varAppAttachSharePath = createAppAttachDeployment
+var varAppAttachFileSharePath = createAppAttachDeployment
   ? (storageService == 'AzureFiles' 
     ? '\\\\${varAppAttachStorageName}.file.${environment().suffixes.storage}\\${varAppAttachFileShareName}' 
     : (storageService == 'ANF' 
       ? anf.outputs.anfAppAttachVolumeResourceId 
       : '') ) : ''
-var varCreateStorageDeployment = (createFslogixDeployment || createAppAttachDeployment == true) ? true : false
 var varFslogixStoragePerformance = fslogixStoragePerformance =='Ultra'
     ? 'Premium'
     : fslogixStoragePerformance
@@ -280,21 +274,21 @@ var varAppAttachStorageSku = varStorageAccountAvailability
     ? '${varAppAttachStoragePerformance}_ZRS'
     : '${varAppAttachStoragePerformance}_LRS'
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.3/DSCStorageScripts.zip'
-var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
+var varStorageToDomainScriptUri = '${baseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
 var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
-var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
+var varDefaultStorageOuPath = (identityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varMarketPlaceGalleryWindows = loadJsonContent('../../../variables/osMarketPlaceImages.json')
 // =========== //
 // Deployments //
 // =========== //
 // Management VM deployment
-module managementVm './managementVm.bicep' = if (avdIdentityServiceProvider != 'EntraID' && (createFslogixDeployment || createAppAttachDeployment)) {
+module managementVm './managementVm.bicep' = if (identityServiceProvider != 'EntraID' && (createFslogixDeployment || createAppAttachDeployment)) {
   name: 'Storage-MGMT-VM-${time}'
   params: {
     diskEncryptionSetResourceId: diskEncryptionSetResourceId
-    identityServiceProvider: avdIdentityServiceProvider
+    identityServiceProvider: identityServiceProvider
     vmName: varManagementVmName
     computeTimeZone: sessionHostTimeZone
     applicationSecurityGroupResourceId: applicationSecurityGroupResourceId
@@ -302,10 +296,10 @@ module managementVm './managementVm.bicep' = if (avdIdentityServiceProvider != '
     keyVaultResourceId: keyVaultResourceId
     serviceObjectsRgName: serviceObjectsRgName
     identityDomainName: identityDomainName
-    ouPath: avdOuPath
+    ouPath: avdSessionHostsOuPath
     osDiskType: 'Standard_LRS'
     location: location
-    vmSize: avdSessionHostsSize //'Standard_D2ads_v5'
+    vmSize: managementVmSize
     subnetResourceId: vmsSubnetResourceId
     enableAcceleratedNetworking: true
     securityType: securityType
@@ -316,14 +310,14 @@ module managementVm './managementVm.bicep' = if (avdIdentityServiceProvider != '
     encryptionAtHost: encryptionAtHost
     storageManagedIdentityResourceId: storageManagedIdentityResourceId
     osImage: varMarketPlaceGalleryWindows[managementVmOsImage]
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+    tags: createResourceTags ? union(customResourceTags, defaultTags) : defaultTags
   }
   dependsOn: [
   ]
 }
 
 // Azure NetApp Files
-module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') && (!contains(avdIdentityServiceProvider, 'EntraID'))) {
+module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') && (!contains(identityServiceProvider, 'EntraID'))) {
     name: 'Storage-ANF-${time}'
     params: {
       accountName: varAnfAccountName
@@ -340,9 +334,9 @@ module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') &&
       keyVaultResourceId: keyVaultResourceId
       identityDomainName: identityDomainName
       location: location
-      storageObjectsRgName: varStorageObjectsRgName
+      storageObjectsRgName: storageObjectsRgName
       subId: subId
-      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+      tags: createResourceTags ? union(customResourceTags, defaultTags) : defaultTags
       // alaWorkspaceResourceId: deployMonitoring
       //   ? (deployAlaWorkspace
       //       ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
@@ -368,7 +362,7 @@ module fslogixAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (create
         storageAccountName: varFslogixStorageName
         storageToDomainScript: varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
-        identityServiceProvider: avdIdentityServiceProvider
+        identityServiceProvider: identityServiceProvider
         dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
@@ -382,12 +376,12 @@ module fslogixAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (create
         identityDomainName: identityDomainName
         identityDomainGuid: identityDomainGuid
         location: location
-        storageObjectsRgName: varStorageObjectsRgName
+        storageObjectsRgName: storageObjectsRgName
         privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
         vmsSubnetResourceId: vmsSubnetResourceId
         privateDnsZoneFilesResourceId: privateDnsZoneFilesResourceId
         subId: subId
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        tags: createResourceTags ? union(customResourceTags, defaultTags) : defaultTags
         alaWorkspaceResourceId: alaWorkspaceResourceId
     }
     dependsOn: [
@@ -409,7 +403,7 @@ module appAttachAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (crea
         storageAccountName: varAppAttachStorageName
         storageToDomainScript: varStorageToDomainScript
         storageToDomainScriptUri: varStorageToDomainScriptUri
-        identityServiceProvider: avdIdentityServiceProvider
+        identityServiceProvider: identityServiceProvider
         dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
         storageCustomOuPath: varStorageCustomOuPath
         managementVmName: varManagementVmName
@@ -423,12 +417,12 @@ module appAttachAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (crea
         identityDomainName: identityDomainName
         identityDomainGuid: identityDomainGuid
         location: location
-        storageObjectsRgName: varStorageObjectsRgName
+        storageObjectsRgName: storageObjectsRgName
         privateEndpointSubnetResourceId: privateEndpointSubnetResourceId
         vmsSubnetResourceId: vmsSubnetResourceId
         privateDnsZoneFilesResourceId: privateDnsZoneFilesResourceId
         subId: subId
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+        tags: createResourceTags ? union(customResourceTags, defaultTags) : defaultTags
         alaWorkspaceResourceId: alaWorkspaceResourceId
     }
     dependsOn: [
@@ -439,3 +433,12 @@ module appAttachAzureFilesStorage '../storageAzureFiles/deploy.bicep' = if (crea
 // =========== //
 //   Outputs   //
 // =========== //
+
+output fslogixFileSharePath string = varFslogixFileSharePath
+output appAttachFileSharePath string = varFslogixFileSharePath
+output fslogixStorageAccountResourceId string = createFslogixDeployment 
+  ? fslogixAzureFilesStorage.outputs.storageAccountResourceId 
+  : ''
+output appAttachStorageAccountResourceId string = createAppAttachDeployment 
+  ? appAttachAzureFilesStorage.outputs.storageAccountResourceId 
+  : ''
