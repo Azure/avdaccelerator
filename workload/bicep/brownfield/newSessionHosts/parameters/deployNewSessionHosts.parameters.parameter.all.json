@@ -1,0 +1,160 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": ""
+    },
+    "computeRgResourceGroupName": {
+      "value": ""
+    },
+    "deploymentPrefix": {
+      "value": ""
+    },
+    "deploymentEnvironment": {
+      "value": "dev"
+    },
+    "hostPoolResourceId": {
+      "value": ""
+    },
+    "customNaming": {
+      "value": false
+    },
+    "sessionHostCustomNamePrefix": {
+      "value": ""
+    },
+    "count": {
+      "value": 1
+    },
+    "countIndex": {
+      "value": 0
+    },
+    "diskType": {
+      "value": "Premium_LRS"
+    },
+    "customOsDiskSizeGB": {
+      "value": 0
+    },
+    "vmSize": {
+      "value": ""
+    },
+    "enableAcceleratedNetworking": {
+      "value": false
+    },
+    "availability": {
+      "value": "AvailabilityZones"
+    },
+    "availabilityZones": {
+      "value": [
+        "1",
+        "2",
+        "3"
+      ]
+    },
+    "useSharedImage": {
+      "value": false
+    },
+    "mpImageOffer": {
+      "value": "office-365"
+    },
+    "mpImageSku": {
+      "value": "win11-24h2-avd-m365"
+    },
+    "customImageDefinitionId": {
+      "value": ""
+    },
+    "asgResourceId": {
+      "value": ""
+    },
+    "securityType": {
+      "value": "TrustedLaunch"
+    },
+    "secureBootEnabled": {
+      "value": true
+    },
+    "vTpmEnabled": {
+      "value": true
+    },
+    "encryptionAtHost": {
+      "value": true
+    },
+    "diskEncryptionSetResourceId": {
+      "value": ""
+    },
+    "deployAntiMalwareExt": {
+      "value": false
+    },
+    "identityServiceProvider": {
+      "value": ""
+    },
+    "createIntuneEnrollment": {
+      "value": false
+    },
+    "identityDomainName": {
+      "value": ""
+    },
+    "sessionHostOuPath": {
+      "value": ""
+    },
+    "domainJoinUserPrincipalName": {
+      "value": ""
+    },
+    "keyVaultResourceId": {
+      "value": ""
+    },
+    "subnetResourceId": {
+      "value": ""
+    },
+    "enableMonitoring": {
+      "value": false
+    },
+    "dataCollectionRuleId": {
+      "value": ""
+    },
+    "configureFslogix": {
+      "value": false
+    },
+    "fslogixStorageAccountResourceId": {
+      "value": ""
+    },
+    "fslogixFileShareName": {
+      "value": ""
+    },
+    "createResourceTags": {
+      "value": false
+    },
+    "applicationNameTag": {
+      "value": ""
+    },
+    "costCenterTag": {
+      "value": ""
+    },
+    "dataClassificationTag": {
+      "value": ""
+    },
+    "departmentTag": {
+      "value": ""
+    },
+    "opsTeamTag": {
+      "value": ""
+    },
+    "ownerTag": {
+      "value": ""
+    },
+    "workloadNameTag": {
+      "value": ""
+    },
+    "workloadTypeTag": {
+      "value": ""
+    },
+    "workloadCriticalityTag": {
+      "value": ""
+    },
+    "workloadCriticalityCustomValueTag": {
+      "value": ""
+    },
+    "workloadSlaTag": {
+      "value": ""
+    }
+  }
+}

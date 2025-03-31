@@ -39,31 +39,34 @@ If you are having deployment challenges, refer to the [LZA baseline troubleshoot
 
 ## Azure Virtual Desktop - LZA Optional Deployments
 
-### Brownfield scenarios
+### Brownfield, add-ons and tools
 
-The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
+The brownfield, add-ons and tools section, contains templates to deploy additional features for Azure Virtual Desktop when infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
 
+### Brownfield
 - [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
 - [Deploy AVD agents to VM](./workload/bicep/brownfield/addAvdAgents/readme.md)
-- [Alerts](./workload/bicep/brownfield/alerts/readme.md)
+- [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
+
+### Add-ons and tools
+- [AVD Client (Remote Desktop) Kiosk](https://github.com/Azure/AVDClientKiosk)
+- [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
 - [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
 - [AVD Session Host Replacer](https://github.com/Azure/AVDSessionHostReplacer)
 - [Custom Image Templates Prerequisites](./workload/bicep/brownfield/customImageTemplatesPrerequisites/readme.md)
 - [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
-- [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
-- [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
-- [AVD Client (Remote Desktop) Kiosk](https://github.com/Azure/AVDClientKiosk)
 
 ### Specialized AVD use cases
 
 - [Secure enclaves for research, such as AI](https://github.com/Azure/HubAndSpokeResearchEnclave)
 
-### Monitoring workbooks
+### Monitoring and alerts
 
 - [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
 - [Error Reporting Workbook](./workload/workbooks/errorReporting/readme.md)
 - [Error Tracking Workbook](./workload/workbooks/errorTracking/readme.md)
+- [Alerts](./workload/bicep/brownfield/alerts/readme.md)
 
 ### Custom image build
 

@@ -450,7 +450,7 @@
                         {
                             "name": "logAnalyticsWorkspaceSelection",
                             "type": "Microsoft.Solutions.ResourceSelector",
-                            "visible": "[steps('monitoring').existingLogAnalyticsWorkspace]",
+                            "visible": "[and(steps('monitoring').existingLogAnalyticsWorkspace, steps('monitoring').monitoringAndAlerting)]",
                             "label": "Log analytics workspace",
                             "resourceType": "Microsoft.OperationalInsights/workspaces",
                             "options": {}

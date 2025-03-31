@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.13.18514",
-      "templateHash": "7426845977522939193"
+      "version": "0.33.93.31351",
+      "templateHash": "4385633039380296561"
     },
     "name": "Workspace",
     "description": "This module deploys an Azure Virtual Desktop Workspace.",
@@ -357,7 +357,7 @@
     },
     "workspace": {
       "type": "Microsoft.DesktopVirtualization/workspaces",
-      "apiVersion": "2024-04-08-preview",
+      "apiVersion": "2023-09-05",
       "name": "[parameters('name')]",
       "location": "[parameters('location')]",
       "tags": "[parameters('tags')]",
@@ -417,7 +417,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
           "location": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2024-03-01', 'Full').location)]"
           },
           "privateDnsZoneGroupName": {
             "value": "[tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'privateDnsZoneGroupName')]"
@@ -1077,7 +1077,7 @@
       "metadata": {
         "description": "The location of the workspace."
       },
-      "value": "[reference('workspace', '2024-04-08-preview', 'full').location]"
+      "value": "[reference('workspace', '2023-09-05', 'full').location]"
     }
   }
 }

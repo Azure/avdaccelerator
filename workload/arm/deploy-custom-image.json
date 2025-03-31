@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "12991191461115376458"
+      "version": "0.34.44.8038",
+      "templateHash": "3806508458741125004"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -894,8 +894,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "17832108042529526083"
+              "version": "0.34.44.8038",
+              "templateHash": "5574722192240323807"
             },
             "name": "Resource Groups",
             "description": "This module deploys a Resource Group.",
@@ -1027,8 +1027,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "13361380975228545358"
+              "version": "0.34.44.8038",
+              "templateHash": "12750570876186914433"
             }
           },
           "parameters": {
@@ -1162,8 +1162,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4949725037835210878"
+              "version": "0.34.44.8038",
+              "templateHash": "11657260805865946801"
             },
             "name": "User Assigned Identities",
             "description": "This module deploys a User Assigned Identity.",
@@ -1416,8 +1416,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2452193429452217414"
+              "version": "0.34.44.8038",
+              "templateHash": "298383569508499170"
             },
             "name": "Role Assignments (Resource Group scope)",
             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -1588,8 +1588,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2452193429452217414"
+              "version": "0.34.44.8038",
+              "templateHash": "298383569508499170"
             },
             "name": "Role Assignments (Resource Group scope)",
             "description": "This module deploys a Role Assignment at a Resource Group scope.",
@@ -1760,8 +1760,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "14126579568998252740"
+              "version": "0.34.44.8038",
+              "templateHash": "8476574171169837262"
             },
             "name": "Azure Compute Galleries",
             "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery).",
@@ -2074,8 +2074,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "10810652457093201326"
+                      "version": "0.34.44.8038",
+                      "templateHash": "3301279441949286765"
                     },
                     "name": "Compute Galleries Applications",
                     "description": "This module deploys an Azure Compute Gallery Application.",
@@ -2428,8 +2428,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "4110134105629269996"
+                      "version": "0.34.44.8038",
+                      "templateHash": "11756759756344020131"
                     },
                     "name": "Compute Galleries Image Definitions",
                     "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -2935,8 +2935,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4110134105629269996"
+              "version": "0.34.44.8038",
+              "templateHash": "11756759756344020131"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition.",
@@ -3399,8 +3399,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "2672506188372779155"
+              "version": "0.34.44.8038",
+              "templateHash": "2323289411287396743"
             },
             "name": "Virtual Machine Image Templates",
             "description": "This module deploys a Virtual Machine Image Template that can be consumed by Azure Image Builder (AIB).",
@@ -4117,8 +4117,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4856541365330529232"
+              "version": "0.34.44.8038",
+              "templateHash": "8971404674064738552"
             },
             "name": "Log Analytics Workspaces",
             "description": "This module deploys a Log Analytics Workspace.",
@@ -4350,8 +4350,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "17358515953093451973"
+                      "version": "0.34.44.8038",
+                      "templateHash": "4384156253703622371"
                     },
                     "name": "Log Analytics Workspace Storage Insight Configs",
                     "description": "This module deploys a Log Analytics Workspace Storage Insight Config.",
@@ -4519,13 +4519,7 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "diagnosticSettings": {
-            "value": [
-              {
-                "workspaceResourceId": "[if(empty(parameters('alertsDistributionGroup')), '', if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, parameters('existingLogAnalyticsWorkspaceResourceId')))]"
-              }
-            ]
-          },
+          "diagnosticSettings": "[if(parameters('enableMonitoringAlerts'), createObject('value', createArray(createObject('workspaceResourceId', if(empty(parameters('alertsDistributionGroup')), '', if(empty(parameters('existingLogAnalyticsWorkspaceResourceId')), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Log-Analytics-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, parameters('existingLogAnalyticsWorkspaceResourceId')))))), createObject('value', createArray()))]",
           "name": {
             "value": "[variables('varAutomationAccountName')]"
           },
@@ -4595,8 +4589,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "994675065106978625"
+              "version": "0.34.44.8038",
+              "templateHash": "13651865514986653890"
             },
             "name": "Automation Accounts",
             "description": "This module deploys an Azure Automation Account.",
@@ -5341,8 +5335,8 @@
                 "disableLocalAuth": "[parameters('disableLocalAuth')]"
               },
               "dependsOn": [
-                "cMKKeyVault::cMKKey",
-                "cMKKeyVault"
+                "cMKKeyVault",
+                "cMKKeyVault::cMKKey"
               ]
             },
             "automationAccount_lock": {
@@ -5447,8 +5441,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "15637148690708434772"
+                      "version": "0.34.44.8038",
+                      "templateHash": "3658522857864678576"
                     },
                     "name": "Automation Account Credential",
                     "description": "This module deploys Azure Automation Account Credential.",
@@ -5603,8 +5597,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "15192444331380437877"
+                      "version": "0.34.44.8038",
+                      "templateHash": "8188890335834665181"
                     },
                     "name": "Automation Account Modules",
                     "description": "This module deploys an Azure Automation Account Module.",
@@ -5742,8 +5736,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "12347404838819859886"
+                      "version": "0.34.44.8038",
+                      "templateHash": "18138414380263278543"
                     },
                     "name": "Automation Account Schedules",
                     "description": "This module deploys an Azure Automation Account Schedule.",
@@ -5921,8 +5915,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "13684684173486774594"
+                      "version": "0.34.44.8038",
+                      "templateHash": "15224946706292447671"
                     },
                     "name": "Automation Account Runbooks",
                     "description": "This module deploys an Azure Automation Account Runbook.",
@@ -6121,8 +6115,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "13410368199864240864"
+                      "version": "0.34.44.8038",
+                      "templateHash": "5403126960771484558"
                     },
                     "name": "Automation Account Job Schedules",
                     "description": "This module deploys an Azure Automation Account Job Schedule.",
@@ -6249,8 +6243,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "2873995502006074287"
+                      "version": "0.34.44.8038",
+                      "templateHash": "8098174796941643834"
                     },
                     "name": "Automation Account Variables",
                     "description": "This module deploys an Azure Automation Account Variable.",
@@ -6364,8 +6358,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "13052313367230626139"
+                      "version": "0.34.44.8038",
+                      "templateHash": "3438664015858123192"
                     },
                     "name": "Log Analytics Workspace Linked Services",
                     "description": "This module deploys a Log Analytics Workspace Linked Service.",
@@ -6680,8 +6674,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "9209894420478503247"
+                      "version": "0.34.44.8038",
+                      "templateHash": "4244185494071451980"
                     },
                     "name": "Automation Account Software Update Configurations",
                     "description": "This module deploys an Azure Automation Account Software Update Configuration.",
@@ -7112,7 +7106,7 @@
                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
                   },
                   "location": {
-                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+                    "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2024-06-01', 'Full').location)]"
                   },
                   "lock": {
                     "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"
@@ -7834,8 +7828,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "15192444331380437877"
+              "version": "0.34.44.8038",
+              "templateHash": "8188890335834665181"
             },
             "name": "Automation Account Modules",
             "description": "This module deploys an Azure Automation Account Module.",
@@ -7982,8 +7976,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "6539982218709542037"
+              "version": "0.34.44.8038",
+              "templateHash": "5995579594382776904"
             },
             "name": "Action Groups",
             "description": "This module deploys an Action Group.",
@@ -8352,8 +8346,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "5681214311989020148"
+              "version": "0.34.44.8038",
+              "templateHash": "202898675797449665"
             },
             "name": "Scheduled Query Rules",
             "description": "This module deploys a Scheduled Query Rule.",
