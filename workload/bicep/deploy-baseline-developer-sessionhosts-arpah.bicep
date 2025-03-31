@@ -174,7 +174,8 @@ param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploym
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
-param avdHostPoolCustomName string = 'vdpool-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
+//param avdHostPoolCustomName string = 'vdpool-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
+param avdHostPoolCustomName string = 'vdpool-${toLower(hostPoolPersona)}-${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(11)
 @sys.description('AVD session host prefix custom name. (Default: vmapp1duse2)')
@@ -270,6 +271,13 @@ param deployAntiMalwareExt bool = true
 // This is the object id for the 'ARPA-H AVD Default' MS Entra Group
 @sys.description('Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
 param securityPrincipalId string = ''
+
+@allowed([
+    'Personal'
+    'Pooled'
+])
+@sys.description('AVD host pool type. (Default: Pooled)')
+param avdHostPoolType string = 'Pooled'
 
 // =========== //
 // Variable declaration //

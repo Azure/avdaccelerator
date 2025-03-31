@@ -94,6 +94,9 @@
       },
       "securityPrincipalId": {
             "value": ""
+      },
+      "avdHostPoolType": {
+        "value": "Pooled"
       }
   }
 }
