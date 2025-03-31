@@ -64,7 +64,7 @@ param (
         [string] $StoragePurpose
 )
 
-if ($IdentityServiceProvider -ne 'EntraID') {
+if ($IdentityServiceProvider -ne 'EntraIDKerberos') {
         # The $AdminUserName might be in UPN format instead of NTLM format
         # If that happens, Add-LocalGroupMember succeeds, but Get-LocalGroupMember fails
         [string]$CheckAdminUserName = $AdminUserName
@@ -88,7 +88,7 @@ if ($IdentityServiceProvider -ne 'EntraID') {
         }
 }
 else {
-        Write-Host "Using EntraID, no domain join account to add to local Administrators group"
+        Write-Host "Using EntraIDKerberos, no domain join account to add to local Administrators group"
 }
 
 Write-Host "Downloading the DSCStorageScripts.zip from $DscPath"

@@ -108,110 +108,129 @@ param storageAccountFqdn string
 // =========== //
 // Variable declaration //
 // =========== //
+
 var varAzureCloudName = environment().name
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
-var varDirectoryServiceOptions = (identityServiceProvider == 'EntraDS') ? 'AADDS': (identityServiceProvider == 'EntraID') ? 'AADKERB': 'None'
-var varSecurityPrincipalName = !empty(securityPrincipalName)? securityPrincipalName : 'none'
-var varAdminUserName = (identityServiceProvider == 'EntraID') ? vmLocalUserName : domainJoinUserName
+var varSecurityPrincipalName = !empty(securityPrincipalName) ? securityPrincipalName : 'none'
+var varAdminUserName = contains(identityServiceProvider, 'EntraID') ? vmLocalUserName : domainJoinUserName
 var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
-var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
-    {
+var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
+  ? [
+      {
         workspaceResourceId: alaWorkspaceResourceId
-        logCategoriesAndGroups: [] 
-    }
-]: []
+        logCategoriesAndGroups: []
+      }
+    ]
+  : []
 // =========== //
 // Deployments //
 // =========== //
 
 // Call on the KV.
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-    name: wrklKvName
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  name: wrklKvName
+  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
 }
 
 // Provision the storage account and Azure Files.
 module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
-    name: 'Storage-${storagePurpose}-${time}'
-    params: {
-        name: storageAccountName
-        location: location
-        skuName: storageSku
-        allowBlobPublicAccess: false
-        publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
-        kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
-        largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled': 'Disabled'
-        azureFilesIdentityBasedAuthentication: {
-            directoryServiceOptions: varDirectoryServiceOptions
-            activeDirectoryProperties: (identityServiceProvider == 'EntraID') ? {
+  scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
+  name: 'Storage-${storagePurpose}-${time}'
+  params: {
+    name: storageAccountName
+    location: location
+    skuName: storageSku
+    allowBlobPublicAccess: false
+    publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
+    kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
+    largeFileSharesState: (storageSku == 'Standard_LRS') || (storageSku == 'Standard_ZRS') ? 'Enabled' : 'Disabled'
+    azureFilesIdentityBasedAuthentication: identityServiceProvider != 'EntraID'
+      ? {
+          directoryServiceOptions: identityServiceProvider == 'EntraDS'
+            ? 'AADDS'
+            : identityServiceProvider == 'EntraIDKerberos' ? 'AADKERB' : 'none'
+          activeDirectoryProperties: (identityServiceProvider == 'EntraIDKerberos')
+            ? {
                 domainGuid: identityDomainGuid
                 domainName: identityDomainName
-            } : {}
+              }
+            : {}
         }
-        accessTier: 'Hot'
-        networkAcls: deployPrivateEndpoint ? {
-            bypass: 'AzureServices'
-            defaultAction: 'Deny'
-            virtualNetworkRules: []
-            ipRules: []
-        } : {
-            bypass: 'AzureServices'
-            defaultAction: 'Deny'
-            virtualNetworkRules: [
-                {
-                    id: vmsSubnetId
-                    action: 'Allow'
-                }
-            ]
-            ipRules: []
-        }
-        fileServices: {
-            shares: [
-                {
-                    name: fileShareName
-                    shareQuota: fileShareQuotaSize * 100 //Portal UI steps scale
-                }
-            ]
-            protocolSettings: fileShareMultichannel ? {
-                smb: {
-                    multichannel: {
-                        enabled: fileShareMultichannel
-                    }
-                }
-            } : {}
-            diagnosticSettings: varDiagnosticSettings
-        }
-        privateEndpoints: deployPrivateEndpoint ? [
+      : null
+    accessTier: 'Hot'
+    networkAcls: deployPrivateEndpoint ? {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: []
+        ipRules: []
+    } : {
+        bypass: 'AzureServices'
+        defaultAction: 'Deny'
+        virtualNetworkRules: [
             {
-                name: varWrklStoragePrivateEndpointName
-                subnetResourceId: privateEndpointSubnetId
-                customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
-                service: 'file'
-                privateDnsZoneGroupName: split(vnetPrivateDnsZoneFilesId, '/')[8]
-                privateDnsZoneResourceIds: [
-                    vnetPrivateDnsZoneFilesId
-                ]
+                id: vmsSubnetId
+                action: 'Allow'
             }
-        ] : []
-        tags: tags
-        diagnosticSettings: varDiagnosticSettings
+        ]
+        ipRules: []
     }
+    fileServices: {
+      shares: [
+        {
+          name: fileShareName
+          shareQuota: fileShareQuotaSize * 100 //Portal UI steps scale
+        }
+      ]
+      protocolSettings: fileShareMultichannel
+        ? {
+            smb: {
+              multichannel: {
+                enabled: fileShareMultichannel
+              }
+            }
+          }
+        : {}
+      diagnosticSettings: varDiagnosticSettings
+    }
+    privateEndpoints: deployPrivateEndpoint
+      ? [
+          {
+            name: varWrklStoragePrivateEndpointName
+            subnetResourceId: privateEndpointSubnetId
+            customNetworkInterfaceName: 'nic-01-${varWrklStoragePrivateEndpointName}'
+            service: 'file'
+            privateDnsZoneGroupName: split(vnetPrivateDnsZoneFilesId, '/')[8]
+            privateDnsZoneResourceIds: [
+              vnetPrivateDnsZoneFilesId
+            ]
+          }
+        ]
+      : []
+    tags: tags
+    diagnosticSettings: varDiagnosticSettings
+  }
 }
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-    name: 'Add-${storagePurpose}-Storage-Setup-${time}'
-    params: {
-        location: location
-        virtualMachineName: managementVmName
-        file: storageToDomainScript
-        scriptArguments: varStorageToDomainScriptArgs
-        adminUserPassword: (identityServiceProvider == 'EntraID') ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword') : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
-        baseScriptUri: storageToDomainScriptUri
-    }
-    dependsOn: [
-        storageAndFile
-    ]
+module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (identityServiceProvider != 'EntraID') {
+  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+  name: 'Add-${storagePurpose}-Storage-Setup-${time}'
+  params: {
+    location: location
+    virtualMachineName: managementVmName
+    file: storageToDomainScript
+    scriptArguments: varStorageToDomainScriptArgs
+    adminUserPassword: contains(identityServiceProvider, 'EntraID')
+      ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
+      : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
+    baseScriptUri: storageToDomainScriptUri
+  }
+  dependsOn: [
+    storageAndFile
+  ]
 }
+
+// =========== //
+// Outputs //
+// =========== //
+output storageAccountResourceId string = storageAndFile.outputs.resourceId

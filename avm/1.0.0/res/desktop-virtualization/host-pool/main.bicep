@@ -176,7 +176,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   name: name
   location: location
   tags: tags
@@ -255,7 +255,7 @@ module hostPool_privateEndpoints 'br/public:avm/res/network/private-endpoint:0.4
       enableTelemetry: privateEndpoint.?enableTelemetry ?? enableTelemetry
       location: privateEndpoint.?location ?? reference(
         split(privateEndpoint.subnetResourceId, '/subnets/')[0],
-        '2020-06-01',
+        '2024-03-01',
         'Full'
       ).location
 //      lock: privateEndpoint.?lock ?? lock

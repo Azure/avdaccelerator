@@ -4,14 +4,17 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@sys.description('AVD disk encryption set resource ID to enable server side encyption.')
+@sys.description('Location where to deploy compute services.')
+param location string
+
+@sys.description('Resource Group name for the session hosts.')
+param computeObjectsRgName string
+
+@sys.description('AVD disk encryption set resource ID to enable server side encryption.')
 param diskEncryptionSetResourceId string
 
 @sys.description('AVD subnet ID.')
 param subnetId string
-
-@sys.description('Location where to deploy compute services.')
-param location string
 
 @sys.description('Virtual machine time zone.')
 param timeZone string
@@ -21,12 +24,6 @@ param batchId int
 
 @sys.description('AVD Session Host prefix.')
 param namePrefix string
-
-@sys.description('Resource Group name for the session hosts.')
-param computeObjectsRgName string
-
-@sys.description('Name of AVD service objects RG.')
-param serviceObjectsRgName string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param subscriptionId string
@@ -44,7 +41,10 @@ param count int
 param countIndex int
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true).')
-param useAvailabilityZones bool
+param availability string
+
+@sys.description('Defines the Availability Zones for the VMs.')
+param availabilityZones array = []
 
 // @sys.description('VMSS flex name.')
 // param vmssFlexNamePrefix string
@@ -77,28 +77,31 @@ param vTpmEnabled bool
 param diskType string
 
 @sys.description('Optional. Define custom OS disk size if larger than image size.')
-param customOsDiskSizeGB string = ''
-
-@sys.description('Market Place OS image.')
-param marketPlaceGalleryWindows object
+param customOsDiskSizeGB int = 0
 
 @sys.description('Set to deploy image from Azure Compute Gallery.')
 param useSharedImage bool
 
+@sys.description('AVD OS image publisher.')
+param mpImagePublisher string = 'MicrosoftWindowsDesktop'
+
+@sys.description('AVD OS image SKU.')
+param mpImageOffer string = ''
+
+@sys.description('AVD OS image SKU.')
+param mpImageSku string = ''
+
 @sys.description('Source custom image ID.')
-param avdImageTemplateDefinitionId string
+param customImageDefinitionId string
 
-@sys.description('Local administrator username.')
-param vmLocalUserName string
-
-@sys.description('Name of keyvault that contains credentials.')
-param wrklKvName string
+@sys.description('The Resource ID of keyvault that contains credentials.')
+param keyVaultResourceId string
 
 @sys.description('Identity domain name.')
 param identityDomainName string
 
 @sys.description('AVD session host domain join credentials.')
-param domainJoinUserName string
+param domainJoinUserPrincipalName string
 
 @sys.description('OU path to join AVd VMs.')
 param sessionHostOuPath string
@@ -106,14 +109,17 @@ param sessionHostOuPath string
 @sys.description('Application Security Group (ASG) for the session hosts.')
 param asgResourceId string
 
-@sys.description('Deploy Fslogix setup.')
-param createAvdFslogixDeployment bool
+@sys.description('Configure Fslogix on session hosts.')
+param configureFslogix bool
 
 @sys.description('Path for the FSlogix share.')
 param fslogixSharePath string
 
-@sys.description('FSLogix storage account FDQN.')
-param fslogixStorageFqdn string
+@sys.description('FSLogix storage account resource ID.')
+param fslogixStorageAccountResourceId string
+
+@sys.description('Host pool resource ID.')
+param hostPoolResourceId string
 
 @sys.description('URI for AVD session host configuration script URI.')
 param sessionHostConfigurationScriptUri string
@@ -123,9 +129,6 @@ param sessionHostConfigurationScript string
 
 @sys.description('Tags to be applied to resources')
 param tags object
-
-@sys.description('Log analytics workspace for diagnostic logs.')
-param alaWorkspaceResourceId string
 
 @sys.description('Deploy AVD monitoring resources and setings.')
 param deployMonitoring bool
@@ -142,26 +145,30 @@ param deployAntiMalwareExt bool
 // =========== //
 // Variable declaration //
 // =========== //
-var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
-    storageAccountType: diskType
-} : {
-    diskEncryptionSetResourceId: diskEncryptionSetResourceId
-    storageAccountType: diskType
-}
+var varManagedDisk = empty(diskEncryptionSetResourceId)
+  ? {
+      storageAccountType: diskType
+    }
+  : {
+      diskEncryptionSetResourceId: diskEncryptionSetResourceId
+      storageAccountType: diskType
+    }
 var varOsDiskProperties = {
-    createOption: 'FromImage'
-    deleteOption: 'Delete'
-    caching: 'ReadWrite'
-    managedDisk: varManagedDisk
-    //diskSizeGB: 128
+  createOption: 'FromImage'
+  deleteOption: 'Delete'
+  caching: 'ReadWrite'
+  managedDisk: varManagedDisk
+
 }
 var varCustomOsDiskProperties = {
-    createOption: 'FromImage'
-    deleteOption: 'Delete'
-    caching: 'ReadWrite'
-    managedDisk: varManagedDisk
-    diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
+  createOption: 'FromImage'
+  deleteOption: 'Delete'
+  caching: 'ReadWrite'
+  managedDisk: varManagedDisk
+  diskSizeGB: customOsDiskSizeGB != 0 ? customOsDiskSizeGB : null
 }
+
+var varZones = [for zone in availabilityZones: int(zone)]
 
 // =========== //
 // Deployments //
@@ -169,184 +176,202 @@ var varCustomOsDiskProperties = {
 
 // call on the keyvault
 resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
-    name: wrklKvName
-    scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
+  name: last(split(keyVaultResourceId, '/'))
+  scope: resourceGroup(split(keyVaultResourceId, '/')[4])
 }
 
 // Session hosts
-module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [for i in range(1, count): {
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = [
+  for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${i - 1}-${time}'
+    name: 'SH-${batchId + 1}-${i + countIndex}-${time}'
     params: {
-        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        location: location
-        timeZone: timeZone
-        zone: useAvailabilityZones ? (i % 3 + 1) : 0
-        managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
+      name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      location: location
+      timeZone: timeZone
+      zone: availability == 'AvailabilityZones' ? varZones[i % length(varZones)] : 0
+      managedIdentities: contains(identityServiceProvider, 'EntraID') || deployMonitoring
+        ? {
             systemAssigned: true
-        }: null
-        encryptionAtHost: encryptionAtHost
-        //virtualMachineScaleSetResourceId: useVmssFlex ? '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}': ''
-        osType: 'Windows'
-        licenseType: 'Windows_Client'
-        vmSize: vmSize
-        securityType: (securityType == 'Standard') ? '' : securityType
-        secureBootEnabled: secureBootEnabled
-        vTpmEnabled: vTpmEnabled
-        imageReference: useSharedImage ? json('{\'id\': \'${avdImageTemplateDefinitionId}\'}') : marketPlaceGalleryWindows
-        osDisk: !empty(customOsDiskSizeGB ) ? varCustomOsDiskProperties : varOsDiskProperties
-        adminUsername: vmLocalUserName
-        adminPassword: keyVault.getSecret('vmLocalUserPassword')
-        nicConfigurations: [
-            {
-                name: 'nic-01-${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-                deleteOption: 'Delete'
-                enableAcceleratedNetworking: enableAcceleratedNetworking
-                ipConfigurations: !empty(asgResourceId) ? [
+          }
+        : null
+      encryptionAtHost: encryptionAtHost
+      //virtualMachineScaleSetResourceId: useVmssFlex ? '/subscriptions/${subscriptionId}/resourceGroups/${computeObjectsRgName}/providers/Microsoft.Compute/virtualMachineScaleSets/${vmssFlexNamePrefix}-${padLeft(((1 + (i + countIndex) / maxVmssFlexMembersCount)), 3, '0')}': ''
+      osType: 'Windows'
+      licenseType: 'Windows_Client'
+      vmSize: vmSize
+      securityType: (securityType == 'Standard') ? '' : securityType
+      secureBootEnabled: secureBootEnabled
+      vTpmEnabled: vTpmEnabled
+      imageReference: useSharedImage
+        ? {
+            id: customImageDefinitionId
+          }
+        : {
+            publisher: mpImagePublisher
+            offer: mpImageOffer
+            sku: mpImageSku
+            version: 'latest'
+          }
+      osDisk: customOsDiskSizeGB != 0 ? varCustomOsDiskProperties : varOsDiskProperties
+      adminUsername: keyVault.getSecret('vmLocalUserName')
+      adminPassword: keyVault.getSecret('vmLocalUserPassword')
+      nicConfigurations: [
+        {
+          name: 'nic-01-${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+          deleteOption: 'Delete'
+          enableAcceleratedNetworking: enableAcceleratedNetworking
+          ipConfigurations: !empty(asgResourceId)
+            ? [
+                {
+                  name: 'ipconfig01'
+                  subnetResourceId: subnetId
+                  applicationSecurityGroups: [
                     {
-                        name: 'ipconfig01'
-                        subnetResourceId: subnetId
-                        applicationSecurityGroups: [
-                            {
-                                id: asgResourceId
-                            }
-                        ]
+                      id: asgResourceId
                     }
-                ] : [
-                    {
-                        name: 'ipconfig01'
-                        subnetResourceId: subnetId
-                    }
-                ]
-            }
-        ]
-        // ADDS or EntraDS domain join.
-        extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
-        extensionDomainJoinConfig: {
-            enabled: (identityServiceProvider == 'EntraDS' || identityServiceProvider == 'ADDS') ? true : false
+                  ]
+                }
+              ]
+            : [
+                {
+                  name: 'ipconfig01'
+                  subnetResourceId: subnetId
+                }
+              ]
+        }
+      ]
+      // ADDS or EntraDS domain join.
+      extensionDomainJoinPassword: contains(identityServiceProvider, 'DS')
+        ? keyVault.getSecret('domainJoinUserPassword')
+        : null
+      extensionDomainJoinConfig: contains(identityServiceProvider, 'DS')
+        ? {
+            enabled: true
             settings: {
-                name: identityDomainName
-                ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
-                user: domainJoinUserName
-                restart: 'true'
-                options: '3'
-
+              name: identityDomainName
+              ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
+              user: domainJoinUserPrincipalName
+              restart: 'true'
+              options: '3'
             }
-        }
-        // Microsoft Entra ID Join.
-        extensionAadJoinConfig: {
-            enabled: (identityServiceProvider == 'EntraID') ? true : false
-            settings: createIntuneEnrollment ? {
-               mdmId: '0000000a-0000-0000-c000-000000000000'
-            } : {}
-        }
-        tags: tags
+          }
+        : null
+      // Microsoft Entra ID Join.
+      extensionAadJoinConfig: contains(identityServiceProvider, 'EntraID')
+        ? {
+            enabled: contains(identityServiceProvider, 'EntraID') ? true : false
+            settings: createIntuneEnrollment
+              ? {
+                  mdmId: '0000000a-0000-0000-c000-000000000000'
+                }
+              : {}
+          }
+        : null
+      tags: tags
     }
     dependsOn: [
-        keyVault
+      keyVault
     ]
-}]
+  }
+]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
+  for i in range(0, count): if (deployAntiMalwareExt) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
+    name: 'SH-Antimal-${batchId + 1}-${i + countIndex}-${time}'
     params: {
-        location: location
-        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        name: 'MicrosoftAntiMalware'
-        publisher: 'Microsoft.Azure.Security'
-        type: 'IaaSAntimalware'
-        typeHandlerVersion: '1.3'
-        autoUpgradeMinorVersion: true
-        enableAutomaticUpgrade: false
-        settings: {
-            AntimalwareEnabled: true
-            RealtimeProtectionEnabled: 'true'
-            ScheduledScanSettings: {
-                isEnabled: 'true'
-                day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
-                time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
-                scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
-            }
-            Exclusions: createAvdFslogixDeployment ? {
-                Extensions: '*.vhd;*.vhdx'
-                Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
-                Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
-            } : {}
+      location: location
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      name: 'MicrosoftAntiMalware'
+      publisher: 'Microsoft.Azure.Security'
+      type: 'IaaSAntimalware'
+      typeHandlerVersion: '1.3'
+      autoUpgradeMinorVersion: true
+      enableAutomaticUpgrade: false
+      settings: {
+        AntimalwareEnabled: true
+        RealtimeProtectionEnabled: 'true'
+        ScheduledScanSettings: {
+          isEnabled: 'true'
+          day: '7' // Day of the week for scheduled scan (1-Sunday, 2-Monday, ..., 7-Saturday)
+          time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
+          scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
         }
+        Exclusions: configureFslogix
+          ? {
+              Extensions: '*.vhd;*.vhdx'
+              Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
+              Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
+            }
+          : {}
+      }
     }
     dependsOn: [
-        sessionHosts
+      sessionHosts
     ]
-}]
-
-// Call to the ALA workspace
-resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!empty(alaWorkspaceResourceId) && deployMonitoring) {
-    scope: az.resourceGroup(split(alaWorkspaceResourceId, '/')[2], split(alaWorkspaceResourceId, '/')[4])
-    name: last(split(alaWorkspaceResourceId, '/'))!
-}
+  }
+]
 
 // Add monitoring extension to session host
-module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
+module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
+  for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${batchId}-${i - 1}-${time}'
+    name: 'SH-Mon-${batchId + 1}-${i + countIndex}-${time}'
     params: {
-        location: location
-        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        name: 'AzureMonitorWindowsAgent'
-        publisher: 'Microsoft.Azure.Monitor'
-        type: 'AzureMonitorWindowsAgent'
-        typeHandlerVersion: '1.0'
-        autoUpgradeMinorVersion: true
-        enableAutomaticUpgrade: true
-        settings: {
-            workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
-        }
-        protectedSettings: {
-            workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
-        }
+      location: location
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      name: 'AzureMonitorWindowsAgent'
+      publisher: 'Microsoft.Azure.Monitor'
+      type: 'AzureMonitorWindowsAgent'
+      typeHandlerVersion: '1.0'
+      autoUpgradeMinorVersion: true
+      enableAutomaticUpgrade: true
     }
     dependsOn: [
-        sessionHostsAntimalwareExtension
-        alaWorkspace
+      sessionHostsAntimalwareExtension
     ]
-}]
+  }
+]
 
 // Data collection rule association
-module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
+module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [
+  for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
+    name: 'DCR-Asso-${batchId + 1}-${i + countIndex}-${time}'
     params: {
-        virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        dataCollectionRuleId: dataCollectionRuleId
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      dataCollectionRuleId: dataCollectionRuleId
     }
     dependsOn: [
-        monitoring
-        sessionHostsAntimalwareExtension
-        alaWorkspace
+      ama
+      sessionHostsAntimalwareExtension
     ]
-}]
+  }
+]
 
 // Apply AVD session host configurations
-module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
+module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
+  for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Config-${batchId}-${i}-${time}'
+    name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
     params: {
-        location: location
-        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
-        baseScriptUri: sessionHostConfigurationScriptUri
-        scriptName: sessionHostConfigurationScript
-        fslogix: createAvdFslogixDeployment
-        identityDomainName: identityDomainName
-        vmSize: vmSize
-        fslogixFileShare: fslogixSharePath
-        fslogixStorageFqdn: fslogixStorageFqdn
-        identityServiceProvider: identityServiceProvider
+      baseScriptUri: sessionHostConfigurationScriptUri
+      fslogix: configureFslogix
+      fslogixSharePath: fslogixSharePath
+      fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
+      hostPoolResourceId: hostPoolResourceId
+      identityDomainName: identityDomainName
+      identityServiceProvider: identityServiceProvider
+      location: location
+      name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      scriptName: sessionHostConfigurationScript
+      vmSize: vmSize
     }
     dependsOn: [
-        sessionHosts
-        monitoring
+      sessionHosts
+      ama
     ]
-}]
+  }
+]

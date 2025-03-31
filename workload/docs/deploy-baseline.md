@@ -6,20 +6,20 @@
 
 - **Basics** blade
   - **Subscription** - The subscription where the accelerator is going to deploy the resources.
-  - **Region** – The desired Azure Region to be used for the deployment. Management Plane and Session Host Locations will be selected separately. 
+  - **Region** – The desired Azure Region to be used for the deployment. Management Plane and Session Host Locations will be selected separately.
   - **Prefix** – A prefix of maximum 4 characters that will be appended to the names of Resource Groups and Azure resources within the Resource Groups.
   - **Environment** – Deployment Environment type (Development/Test/Production), will be used for naming and tagging purposes.
 - **Identity provider** blade
   - **Domain to join**
     - **Identity Service Provider** - Identity service provider (AD DS, Entra DS, Microsoft Entra ID) that already exists and will be used for Azure Virtual Desktop.
-      - Microsoft Entra ID.
       - Active Directory (AD DS).
       - Microsoft Entra Domain Services.
-      - **Intune enrollment** - If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box.
-      - **Domain name** - The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Entra ID + FSLogix deployments, because identities need to be hybrid for storage authenctication to be supported.
-      - **Domain GUID** - GUID for the on-premises domain controller.
+      - Microsoft Entra ID
+      - Microsoft Entra ID Kerberos
+      - **Domain name** - The full qualified domain name of the on-premises domain where the hybrid identities originated from. This requirement also applies to Microsoft Entra ID Kerberos + FSLogix deployments.
+      - **Domain GUID** - GUID for the on-premises domain controller when Microsoft Entra ID Kerberos is selected..
     - **Azure Virtual Desktop access assignment** - These identities will be granted access to Azure Virtual Desktop application groups (role "Desktop Virtualization User").
-    - Groups - select from the drop down the groups to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using Microsoft Entra ID as the identity provider.
+    - Groups - select from the fly-out group selector the group to be granted access to Azure Virtual Desktop published items and to create sessions on VMs and single sign-on (SSO) when using Microsoft Entra ID as the identity provider.
     - Note: when using Microsoft Entra ID as the identity service provider, an additional role (virtual machine user login) will be granted to compute resource group during deployment.
   - **When selecting AD DS or Microsoft Entra DS:**
     - Domain join credentials: The Username and password with rights to join computers to the domain.
@@ -78,7 +78,7 @@
       - **Custom DNS servers** - Enter the custom DNS servers IPs to be set on the VNet. These DNS server should have proper DNS resolution to your AD DS domain, internet and Azure private DNS zones for private endpoint resolution.
     - **Existing** - Select if using existing virtual networks for the Azure Virtual Desktop deployment.
       - **Azure Virtual Desktop virtual network** - Select virtual network to be used for Azure Virtual Desktop deployment.
-      - **Azure Virtual Desktop subnet** - Select virtual network subnet to be used for session hosts deployment.
+      - **Azure Virtual Desktop subnet** - Select virtual network subnet to be used for session hosts deployment. This subnet must have a service endpoint for Microsoft.Storage.
       - **Private endpoint virtual network** - Select virtual network to be used for private endpoint deployment.
       - **Private endpoint subnet** - Select virtual network subnet to be used for private endpoint deployment.
   - **Private endpoints (Key vault and Azure files)** - Select the checkbox to create private endpoints for key vault and Azure file services, when selecting no public endpoints of the services will be used.
@@ -100,7 +100,7 @@ Take a look at the [Naming Standard and Tagging](./resource-naming.md) page for 
 
 ## Post Deployment Considerations
 
-- When using Microsoft Entra ID as identity provider and deploying FSLogix storage, it is required to grant admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) created during deployment, additional information can be found in the
+- When using Microsoft Entra ID Kerberos as identity provider and deploying FSLogix storage, it is required to grant admin consent to the storage account service principal (your-storage-account-name.file.core.windows.net) created during deployment, additional information can be found in the
 [Grant admin consent to the new service principal](https://learn.microsoft.com/azure/storage/files/storage-files-identity-auth-hybrid-identities-enable?tabs=azure-portal#grant-admin-consent-to-the-new-service-principal) guide.
 
 ## Redeployment Considerations

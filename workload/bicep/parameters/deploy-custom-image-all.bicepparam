@@ -1,0 +1,45 @@
+using './deploy-custom-image.bicep'
+
+param alertsActionGroupCustomName = 'ag-aib'
+param alertsDistributionGroup = ''
+param applicationNameTag = 'Contoso-App'
+param automationAccountCustomName = 'aa-avd'
+param buildSchedule = 'Recurring'
+param costCenterTag = 'Contoso-CC'
+param criticalityCustomTag = 'Contoso-Critical'
+param criticalityTag = 'Low'
+param customNaming = false
+param dataClassificationTag = 'Non-business'
+param departmentTag = 'Contoso-AVD'
+param deploymentLocation = 'eastus'
+param enableMonitoringAlerts = false
+param enableResourceTags = false
+param enableTelemetry = true
+param environmentTag = 'Dev'
+param existingLogAnalyticsWorkspaceResourceId = ''
+param existingSubnetName = ''
+param existingVirtualNetworkResourceId = ''
+param imageBuildNameTag = 'AVD-Image'
+param imageDefinitionCustomName = 'avd-win11-23h2'
+param imageDefinitionAcceleratedNetworkSupported = true
+param imageDefinitionHibernateSupported = false
+param imageDefinitionSecurityType = 'Standard'
+param imageGalleryCustomName = 'gal_avd_use2_001'
+param imageTemplateCustomName = 'it-avd-win11-23h2'
+param imageVersionDisasterRecoveryLocation = ''
+param imageVersionPrimaryLocation = ''
+param imageVersionStorageAccountType = 'Standard_LRS'
+param logAnalyticsWorkspaceCustomName = 'log-avd'
+param logAnalyticsWorkspaceDataRetention = 30
+param operatingSystemImage = 'win11_23h2'
+param operationsTeamTag = 'workload-admins@Contoso.com'
+param ownerTag = 'workload-owner@Contoso.com'
+param rdpShortPathManagedNetworks = false
+param resourceGroupCustomName = 'rg-avd-use2-shared-services'
+param screenCaptureProtection = false
+param sharedServicesSubId = ''
+param time = ? /* TODO : please fix the value assigned to this parameter `utcNow()` */
+param useExistingVirtualNetwork = false
+param userAssignedManagedIdentityCustomName = ''
+param workloadNameTag = 'Contoso-Workload'
+

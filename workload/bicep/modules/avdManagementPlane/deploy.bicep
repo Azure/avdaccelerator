@@ -22,8 +22,8 @@ param identityServiceProvider string
 @sys.description('Identity ID to grant RBAC role to access AVD application group.')
 param securityPrincipalId string
 
-@sys.description('AVD OS image source.')
-param osImage string
+@sys.description('Marketplace AVD OS image sku.')
+param mpImageSku string
 
 @sys.description('Resource ID of keyvault that will contain host pool registration token.')
 param keyVaultResourceId string
@@ -159,7 +159,7 @@ var varApplicationGroups = [
     applicationGroupType: (preferredAppGroupType == 'Desktop') ? 'Desktop' : 'RemoteApp'
   }
 ]
-var varHostPoolRdpPropertiesDomainServiceCheck = (identityServiceProvider == 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
+var varHostPoolRdpPropertiesDomainServiceCheck = contains(identityServiceProvider, 'EntraID') ? '${hostPoolRdpProperties};targetisaadjoined:i:1;enablerdsaadauth:i:1' : hostPoolRdpProperties
 var varRAppApplicationGroupsStandardApps = (preferredAppGroupType == 'RailApplications') ? [
   {
     name: 'Task Manager'
@@ -220,7 +220,7 @@ var varRAppApplicationGroupsOfficeApps = (preferredAppGroupType == 'RailApplicat
     filePath: 'C:\\Program Files\\Microsoft Office\\root\\Office16\\OUTLOOK.EXE'
   }
 ]: []
-var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
+var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(mpImageSku, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId) ? [
   {
     workspaceResourceId: alaWorkspaceResourceId
@@ -287,8 +287,6 @@ module applicationGroups '../../../../avm/1.0.0/res/desktop-virtualization/appli
     ]: []
     diagnosticSettings: varDiagnosticSettings
   }
-  dependsOn: [
-  ]
 }]
 
 // Workspace.
@@ -300,7 +298,7 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
       friendlyName: workSpaceFriendlyName
       location: managementPlaneLocation
       applicationGroupReferences: [
-        '/subscriptions/${subscriptionId}/resourceGroups/${serviceObjectsRgName}/providers/Microsoft.DesktopVirtualization/applicationgroups/${applicationGroupName}'
+        applicationGroups[0].outputs.resourceId
       ]
       tags: tags
       publicNetworkAccess: deployAvdPrivateLinkService ? workspacePublicNetworkAccess : null
@@ -324,10 +322,6 @@ module workSpace '../../../../avm/1.0.0/res/desktop-virtualization/workspace/mai
       ]: []
       diagnosticSettings: varDiagnosticSettings
   }
-  dependsOn: [
-    hostPool
-    applicationGroups
-  ]
 }
 
 // Scaling plan.
@@ -351,6 +345,12 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
       diagnosticSettings: varDiagnosticSettings
   }
   dependsOn: [
+    applicationGroups
     workSpace
   ]
 }
+
+// =========== //
+// Outputs //
+// =========== //
+output hostPoolResourceId string = hostPool.outputs.resourceId
