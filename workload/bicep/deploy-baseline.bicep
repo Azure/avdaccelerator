@@ -240,12 +240,15 @@ param avdDeploySessionHostsCount int = 1
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 1)')
 param avdSessionHostCountIndex int = 1
 
-@sys.description('When set to AvailabilityZones, VMs and storage are distributed across availability zones, when set to None, VMs and storage will be deployed at regional level.')
+@sys.description('When set to AvailabilityZones, VMs are distributed across availability zones, when set to None, VMs are deployed at regional level.')
 @allowed([
   'None'
   'AvailabilityZones'
 ])
 param availability string = 'None'
+
+@sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
+param zoneRedundantStorage bool = false
 
 @sys.description('The Availability Zones to use for the session hosts.')
 @allowed([
@@ -1389,7 +1392,7 @@ module storage './modules/sharedModules/storage.bicep' = if (varCreateStorageDep
     deploymentEnvironment: varDeploymentEnvironmentLowercase
     storageService: storageService
     useCustomNaming: avdUseCustomNaming
-    availability: availability
+    storageAvailabilityZones: zoneRedundantStorage
     domainJoinUserName: avdDomainJoinUserName
     vmLocalUserName: avdVmLocalUserName
     identityServiceProvider: avdIdentityServiceProvider

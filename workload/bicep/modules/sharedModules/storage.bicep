@@ -103,8 +103,8 @@ param sessionHostTimeZone string
 @description('The resource ID of the application security group.')
 param applicationSecurityGroupResourceId string
 
-@description('The availability setting (AvailabilityZones or other).')
-param availability string
+@description('USe or not zone redundant storage.')
+param storageAvailabilityZones bool
 
 @description('The custom DNS IPs.')
 param dnsServers string
@@ -194,7 +194,7 @@ var varFslogixAnfVolume = createFslogixDeployment
         name: varFslogixFileShareName
         coolAccess: false
         encryptionKeySource: 'Microsoft.NetApp'
-        zones: [] // availability == 'AvailabilityZones'
+        zones: [] // storageAvailabilityZones
         //? availabilityZones
         //: []
         serviceLevel: fslogixStoragePerformance
@@ -216,7 +216,7 @@ var varAppAttchAnfVolume = createAppAttachDeployment
         name: varAppAttachFileShareName
         coolAccess: false
         encryptionKeySource: 'Microsoft.NetApp'
-        zones: [] // availability == 'AvailabilityZones'
+        zones: [] // storageAvailabilityZones
         //? availabilityZones
         //: []
         serviceLevel: appAttachStoragePerformance
@@ -278,13 +278,10 @@ var varFslogixStoragePerformance = fslogixStoragePerformance == 'Ultra'
 var varAppAttachStoragePerformance = appAttachStoragePerformance == 'Ultra' 
   ? 'Premium' 
   : appAttachStoragePerformance
-var varStorageAccountAvailability = availability == 'AvailabilityZones' 
-  ? true 
-  : false
-var varFslogixStorageSku = (varStorageAccountAvailability && storageService == 'AzureFiles')
+var varFslogixStorageSku = (storageAvailabilityZones && storageService == 'AzureFiles')
   ? '${varFslogixStoragePerformance}_ZRS'
   : '${varFslogixStoragePerformance}_LRS'
-var varAppAttachStorageSku = varStorageAccountAvailability
+var varAppAttachStorageSku = storageAvailabilityZones
   ? '${varAppAttachStoragePerformance}_ZRS'
   : '${varAppAttachStoragePerformance}_LRS'
 var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.3/DSCStorageScripts.zip'
