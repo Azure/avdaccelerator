@@ -145,26 +145,49 @@ $connectTestResult = Test-NetConnection -ComputerName $StorageFqdn -Port 445
 
 Write-Log "Test connection access to port 445 for $StorageFqdn was $connectTestResult"
 
-Try {
-	Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
-	if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
-		$UserStorage = "/user:Azure\$StorageAccountName"
-		Write-Log "User storage: $UserStorage"
-		$StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object { $_.KeyName -eq "key1" }
-		Write-Log "File Share location: $FileShareLocation"
-		net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
-		#$StorageKey1 = ConvertTo-SecureString $StorageKey.value -AsPlainText -Force
-		#$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("Azure\stfsly206dorg", $StorageKey1)
-		#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Credential $credential
+if ($StorageService -eq 'AzureFiles') {
+	Try {
+		Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
+		if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
+			$UserStorage = "/user:Azure\$StorageAccountName"
+			Write-Log "User storage: $UserStorage"
+			$StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object { $_.KeyName -eq "key1" }
+			Write-Log "File Share location: $FileShareLocation"
+			net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
+			#$StorageKey1 = ConvertTo-SecureString $StorageKey.value -AsPlainText -Force
+			#$credential = New-Object -TypeName System.Management.Automation.PSCredential -ArgumentList ("Azure\stfsly206dorg", $StorageKey1)
+			#New-PSDrive -Name $DriveLetter -PSProvider FileSystem -Root $FileShareLocation -Credential $credential
+		}
+		else {
+			Write-Log "Drive $DriveLetter already mounted."
+		}
 	}
-	else {
-		Write-Log "Drive $DriveLetter already mounted."
+	Catch {
+		Write-Log -Err "Error while mounting profile storage as drive $DriveLetter"
+		Write-Log -Err $_.Exception.Message
+		Throw $_
 	}
 }
-Catch {
-	Write-Log -Err "Error while mounting profile storage as drive $DriveLetter"
-	Write-Log -Err $_.Exception.Message
-	Throw $_
+
+if ($StorageService -eq 'ANF') {
+	Try {
+		Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
+		if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
+			#$UserStorage = "/user:Azure\$StorageAccountName"
+			#Write-Log "User storage: $UserStorage"
+			#$StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object { $_.KeyName -eq "key1" }
+			#Write-Log "File Share location: $FileShareLocation"
+			net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
+		}
+		else {
+			Write-Log "Drive $DriveLetter already mounted."
+		}
+	}
+	Catch {
+		Write-Log -Err "Error while mounting profile storage as drive $DriveLetter"
+		Write-Log -Err $_.Exception.Message
+		Throw $_
+	}
 }
 
 Try {
