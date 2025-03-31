@@ -764,10 +764,12 @@ module automationAccount '../../avm/1.0.0/res/automation/automation-account/main
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Account-${time}'
     params: {
-        diagnosticSettings: [
+        diagnosticSettings: enableMonitoringAlerts ? [
             {
                 workspaceResourceId: empty(alertsDistributionGroup) ? '' : empty(existingLogAnalyticsWorkspaceResourceId) ? workspace.outputs.resourceId : existingLogAnalyticsWorkspaceResourceId
             }
+        ] : [
+            
         ]
         name: varAutomationAccountName
         jobSchedules: [

@@ -74,7 +74,7 @@ var varKeyVaultName = split(keyVaultResourceId, '/')[8]
 // =========== //
 
 // Call on the KV.
-resource keyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+resource keyVaultGet 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
     name: varKeyVaultName
     scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
@@ -88,8 +88,9 @@ module azureNetAppFiles '../../../../avm/1.1.0/res/net-app/net-app-account/main.
         adName: accountName
         domainName: identityDomainName
         domainJoinUser: domainJoinUserName
-        domainJoinPassword: keyVaultget.getSecret('domainJoinUserPassword')
-        //domainJoinOU: replace(storageOuPath, '"', '\\"')
+        domainJoinPassword: keyVaultGet.getSecret('domainJoinUserPassword')
+        //domainJoinOU: 'CN="${replace(storageOuPath, '"', '\\"')}"'
+        domainJoinOU: 'CN=${storageOuPath}'
         dnsServers: dnsServers
         smbServerNamePrefix: smbServerNamePrefix
         location: location

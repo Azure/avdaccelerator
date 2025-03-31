@@ -262,14 +262,14 @@ var varFslogixFileSharePath = createFslogixDeployment
   ? (storageService == 'AzureFiles'
       ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
       : (storageService == 'ANF' 
-        ? anf.outputs.anfFslogixVolumeResourceId 
+        ? '\\\\${netAppAccountGet.outputs.anfSmbServerFqdn}\\${last(split(azureNetAppFiles.outputs.anfFslogixVolumeResourceId, '/'))}'
         : ''))
   : ''
 var varAppAttachFileSharePath = createAppAttachDeployment
   ? (storageService == 'AzureFiles'
       ? '\\\\${varAppAttachStorageName}.file.${environment().suffixes.storage}\\${varAppAttachFileShareName}'
       : (storageService == 'ANF' 
-        ? anf.outputs.anfAppAttachVolumeResourceId 
+        ? '\\\\${netAppAccountGet.outputs.anfSmbServerFqdn}\\${last(split(azureNetAppFiles.outputs.anfAppAttachVolumeResourceId, '/'))}'
         : ''))
   : ''
 var varFslogixStoragePerformance = fslogixStoragePerformance == 'Ultra' 
@@ -300,6 +300,10 @@ var varStorageCustomOuPath = !empty(storageOuPath)
   ? 'true' 
   : 'false'
 var varMarketPlaceGalleryWindows = loadJsonContent('../../../variables/osMarketPlaceImages.json')
+var varAnfVolumeResourceIdGet = (createFslogixDeployment && (storageService == 'ANF')) 
+  ? azureNetAppFiles.outputs.anfFslogixVolumeResourceId 
+  : ((createAppAttachDeployment && (storageService == 'ANF')) ? azureNetAppFiles.outputs.anfAppAttachVolumeResourceId 
+    : '')
 // =========== //
 // Deployments //
 // =========== //
@@ -338,10 +342,7 @@ module managementVm './managementVm.bicep' = if (identityServiceProvider != 'Ent
 }
 
 // Azure NetApp Files
-module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') && (!contains(
-  identityServiceProvider,
-  'EntraID'
-))) {
+module azureNetAppFiles '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') && (!contains(identityServiceProvider,'EntraID'))) {
   name: 'Storage-ANF-${time}'
   params: {
     accountName: varAnfAccountName
@@ -374,6 +375,15 @@ module anf '../azureNetappFiles/deploy.bicep' = if ((storageService == 'ANF') &&
   dependsOn: [
     managementVm
   ]
+}
+
+
+// Call on ANF account and volume to get the SMB server FQDN.
+module netAppAccountGet '../azureNetappFiles/.bicep/getNetAppVolumeSmbServerFqdn.bicep' = if (storageService == 'ANF') {
+  name: 'Get-ANF-SMB-Server-FQDN-${time}'
+  params: {
+    netAppVolumeResourceId: varAnfVolumeResourceIdGet
+  }
 }
 
 // FSLogix Azure Files
