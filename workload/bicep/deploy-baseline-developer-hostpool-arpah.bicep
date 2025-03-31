@@ -156,7 +156,7 @@ param avdWorkSpaceCustomName string = 'vdws-app1-${toLower(deploymentEnvironment
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
-param avdHostPoolCustomName string = 'vdpool-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
+param avdHostPoolCustomName string = 'vdpool-${toLower(hostPoolPersona)}-${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD host pool custom friendly (Display) name. (Default: App1 - East US - Dev - 001)')
@@ -164,11 +164,11 @@ param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - ${deployme
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
-param avdScalingPlanCustomName string = 'vdscaling-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
+param avdScalingPlanCustomName string = 'vdscaling-${toLower(hostPoolPersona)}--${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')
-param avdApplicationGroupCustomName string = 'vdag-desktop-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
+param avdApplicationGroupCustomName string = 'vdag-desktop-${toLower(hostPoolPersona)}--${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom friendly (Display) name. (Default: Desktops - App1 - East US - Dev - 001)')
