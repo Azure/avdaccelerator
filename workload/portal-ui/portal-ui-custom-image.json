@@ -247,7 +247,7 @@
                                 {
                                     "name": "securityType",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[or(contains(steps('imageManagement').operatingSystem.versionSelection, 'g2'), contains(steps('imageManagement').operatingSystem.versionSelection, 'win11'))]",
+                                    "visible": true,
                                     "label": "Security type",
                                     "defaultValue": "Standard",
                                     "toolTip": "Security type refers to the different security features available for a virtual machine. Security features like Trusted launch and Confidential Virtual Machines help to improve the security of Azure generation 2 virtual machines. However, additional security features have some limitations, which include not supporting back up, managed disks, and ephemeral OS disks. Learn more about Trusted launch virtual machines at https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch and Confidential virtual machines at https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-vm-overview.",
