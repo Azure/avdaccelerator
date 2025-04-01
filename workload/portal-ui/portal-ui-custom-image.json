@@ -871,10 +871,8 @@
                 "imageVersionPrimaryLocation": "[steps('imageManagement').imageVersion.primaryLocation]",
                 "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.storageAccountType]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
-                
                 "mpImageOffer": "[steps('imageManagement').imageOsSection.offer]",
                 "mpImageSku": "[steps('imageManagement').imageOsSection.sku]",
-
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
                 "ownerTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.owner, 'none')]",
                 "rdpShortPathManagedNetworks": "[steps('aib').customizers.rdpShortPathSelection]",
