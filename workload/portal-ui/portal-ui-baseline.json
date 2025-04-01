@@ -2816,7 +2816,7 @@
 				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdArmServicePrincipal.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdArmServicePrincipal.value.id)), '')]",
 				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
 				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
-				"storageServiceSelector": "[if(or(steps('storage').storageFslogix.fslogixDeployment, equals(steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageServiceSelector, 'AzureFiles')]",
+				"storageServiceSelector": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageServiceSelector, 'AzureFiles')]",
 				"avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
 				"avdSessionHostLocation": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]",
 				"avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
