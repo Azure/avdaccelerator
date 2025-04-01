@@ -407,7 +407,7 @@ var varRemainingCustomizers = [
     {
         type: 'WindowsRestart'
         restartCheckCommand: 'Write-Host "Restarting post script customizers"'
-        restarttimeout: '10m'
+        restartTimeout: '10m'
     }
     {
         type: 'WindowsUpdate'
