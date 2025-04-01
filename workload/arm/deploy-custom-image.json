@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "1909065514053830006"
+      "templateHash": "10378235014485029723"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -731,80 +731,6 @@
       }
     ],
     "varNamingStandard": "[format('{0}', variables('varLocationAcronym'))]",
-    "varOperatingSystemImageDefinition": {
-      "win10_22h2_g2": {
-        "osType": "Windows",
-        "osState": "Generalized",
-        "offer": "windows-10",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win10-22h2-avd-g2",
-        "hyperVGeneration": "V2",
-        "version": "latest"
-      },
-      "win10_22h2_office_g2": {
-        "osType": "Windows",
-        "osState": "Generalized",
-        "offer": "office-365",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win10-22h2-avd-m365-g2",
-        "hyperVGeneration": "V2",
-        "version": "latest"
-      },
-      "win11_22h2": {
-        "osType": "Windows",
-        "osState": "Generalized",
-        "offer": "windows-11",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win11-22h2-avd",
-        "hyperVGeneration": "V2",
-        "version": "latest"
-      },
-      "win11_22h2_office": {
-        "osType": "Windows",
-        "osState": "Generalized",
-        "offer": "office-365",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win11-22h2-avd-m365",
-        "hyperVGeneration": "V2",
-        "version": "latest"
-      },
-      "win11_23h2": {
-        "osType": "Windows",
-        "osState": "Generalized",
-        "offer": "windows-11",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win11-23h2-avd",
-        "hyperVGeneration": "V2",
-        "version": "latest"
-      },
-      "win11_23h2_office": {
-        "osType": "Windows",
-        "osState": "Generalized",
-        "offer": "office-365",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win11-23h2-avd-m365",
-        "hyperVGeneration": "V2",
-        "version": "latest"
-      },
-      "win11_24h2": {
-        "osType": "Windows",
-        "osState": "Generalized",
-        "offer": "windows-11",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win11-24h2-avd",
-        "hyperVGeneration": "V2",
-        "version": "latest"
-      },
-      "win11_24h2_office": {
-        "osType": "Windows",
-        "osState": "Generalized",
-        "offer": "office-365",
-        "publisher": "MicrosoftWindowsDesktop",
-        "sku": "win11-24h2-avd-m365",
-        "hyperVGeneration": "V2",
-        "version": "latest"
-      }
-    },
     "varRdpShortPathCustomizer": "[if(parameters('rdpShortPathManagedNetworks'), createArray(createObject('type', 'PowerShell', 'name', 'rdpShortPath', 'runElevated', true(), 'runAsSystem', true(), 'scriptUri', format('{0}scripts/Set-RdpShortpath.ps1', variables('varBaseScriptUri')))), createArray())]",
     "varRemainingCustomizers": [
       {
