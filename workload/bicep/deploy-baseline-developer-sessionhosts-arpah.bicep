@@ -442,7 +442,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
 // }
 resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
     name: avdHostPoolCustomName
-    scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgCustomName}')
+    scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgCustomName}')
 }
 
 // Session hosts
