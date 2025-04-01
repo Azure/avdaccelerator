@@ -386,12 +386,12 @@ var varModules = [
     {
         name: 'Az.Accounts'
         uri: 'https://www.powershellgallery.com/api/v2/package'
-        version: '2.12.1'
+        version: '4.0.2'
     }
     {
         name: 'Az.ImageBuilder'
         uri: 'https://www.powershellgallery.com/api/v2/package'
-        version: '0.3.0'
+        version: '0.4.1'
     }
 ]
 var varNamingStandard = '${varLocationAcronym}'
