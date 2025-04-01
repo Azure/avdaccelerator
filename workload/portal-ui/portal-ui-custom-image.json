@@ -205,7 +205,7 @@
 									"condition": "",
 									"request": {
 										"method": "GET",
-										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.subscription.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('imageManagement').imageOsSection.offer, '/skus?api-version=2022-08-01')]"
+										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('imageManagement').imageOsSection.offer, '/skus?api-version=2022-08-01')]"
 									}
 								},
 								{
