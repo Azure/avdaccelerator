@@ -431,7 +431,7 @@ var varRemainingCustomizers = [
     {
         type: 'WindowsRestart'
         restartCheckCommand: 'Write-Host "restarting post Windows updates"'
-        restarttimeout: '10m'
+        restartTimeout: '10m'
     }
     {
         type: 'PowerShell'
@@ -445,7 +445,7 @@ var varRemainingCustomizers = [
     }
     {
         type: 'WindowsRestart'
-        restarttimeout: '10m'
+        restartTimeout: '10m'
     }
 ]
 var varResourceGroupName = customNaming ? resourceGroupCustomName : 'rg-avd-${varNamingStandard}-shared-services'

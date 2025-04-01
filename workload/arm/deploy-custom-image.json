@@ -760,7 +760,7 @@
       {
         "type": "WindowsRestart",
         "restartCheckCommand": "Write-Host \"restarting post Windows updates\"",
-        "restarttimeout": "10m"
+        "restartTimeout": "10m"
       },
       {
         "type": "PowerShell",
@@ -774,7 +774,7 @@
       },
       {
         "type": "WindowsRestart",
-        "restarttimeout": "10m"
+        "restartTimeout": "10m"
       }
     ],
     "varResourceGroupName": "[if(parameters('customNaming'), parameters('resourceGroupCustomName'), format('rg-avd-{0}-shared-services', variables('varNamingStandard')))]",
