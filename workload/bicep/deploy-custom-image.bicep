@@ -581,7 +581,7 @@ resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (
 }
 
 // AVD Shared Services Resource Group.
-module avdSharedResourcesRg '../../avm/1.0.0/res/resources/resource-group/main.bicep' = {
+module avdSharedResourcesRg '../../avm/1.1.0/res/resources/resource-group/main.bicep' = {
     scope: subscription(sharedServicesSubId)
     name: 'RG-${time}'
     params: {
@@ -623,7 +623,7 @@ module roleDefinitions './modules/rbacRoles/roleDefinitionsSubscriptions.bicep' 
 }]
 
 // Managed identity.
-module userAssignedManagedIdentity '../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = {
+module userAssignedManagedIdentity '../../avm/1.1.0/res/managed-identity/user-assigned-identity/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'User-Assigned-Managed-Identity-${time}'
     params: {
@@ -648,7 +648,7 @@ module roleAssignments '../../avm/1.0.0/ptn/authorization/role-assignment/module
 }]
 
 //// Unique role assignment for Azure US Government since it does not support image template permissions
-module roleAssignment_AzureUSGovernment '../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (varAzureCloudName != 'AzureCloud') {
+module roleAssignment_AzureUSGovernment '../../avm/1.1.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (varAzureCloudName != 'AzureCloud') {
     name: 'Role-Assignment-MAG-${time}'
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     params: {
@@ -659,7 +659,7 @@ module roleAssignment_AzureUSGovernment '../../avm/1.0.0/ptn/authorization/role-
 }
 
 // Compute Gallery.
-module gallery '../../avm/1.0.0/res/compute/gallery/main.bicep' = {
+module gallery '../../avm/1.1.0/res/compute/gallery/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Compute-Gallery-${time}'
     params: {
@@ -674,7 +674,7 @@ module gallery '../../avm/1.0.0/res/compute/gallery/main.bicep' = {
 }
 
 // Image Definition.
-module image '../../avm/1.0.0/res/compute/gallery/image/main.bicep' = {
+module image '../../avm/1.1.0/res/compute/gallery/image/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Definition-${time}'
     params: {
@@ -682,17 +682,21 @@ module image '../../avm/1.0.0/res/compute/gallery/image/main.bicep' = {
         name: varImageDefinitionName
         osState: varOperatingSystemImageDefinitions[operatingSystemImage].osState
         osType: varOperatingSystemImageDefinitions[operatingSystemImage].osType
-        publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
-        offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
-        sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
+        identifier: {
+            publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
+            offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
+            sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
+        }
         location: imageVersionPrimaryLocation
         hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
         isAcceleratedNetworkSupported: imageDefinitionAcceleratedNetworkSupported
         isHibernateSupported: imageDefinitionHibernateSupported
         securityType: imageDefinitionSecurityType
-        productName: operatingSystemImage
-        planName: varOperatingSystemImageDefinitions[operatingSystemImage].offer
-        planPublisherName: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
+        purchasePlan: {
+            product: operatingSystemImage
+            name: varOperatingSystemImageDefinitions[operatingSystemImage].offer
+            publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
+        }
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
@@ -704,7 +708,7 @@ module image '../../avm/1.0.0/res/compute/gallery/image/main.bicep' = {
 
 
 // Image template.
-module imageTemplate '../../avm/1.0.0/res/virtual-machine-images/image-template/main.bicep' = {
+module imageTemplate '../../avm/1.1.0/res/virtual-machine-images/image-template/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Image-Template-${time}'
     params: {
@@ -736,7 +740,6 @@ module imageTemplate '../../avm/1.0.0/res/virtual-machine-images/image-template/
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
-        image
         gallery
         avdSharedResourcesRg
         roleAssignments
@@ -744,14 +747,16 @@ module imageTemplate '../../avm/1.0.0/res/virtual-machine-images/image-template/
 }
 
 // Log Analytics Workspace.
-module workspace '../../avm/1.0.0/res/operational-insights/workspace/main.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
+module workspace '../../avm/1.1.0/res/operational-insights/workspace/main.bicep' = if (enableMonitoringAlerts && empty(existingLogAnalyticsWorkspaceResourceId)) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Log-Analytics-Workspace-${time}'
     params: {
         location: deploymentLocation
         name: varLogAnalyticsWorkspaceName
         dataRetention: logAnalyticsWorkspaceDataRetention
-        useResourcePermissions: true
+        features: {
+            enableLogAccessUsingOnlyResourcePermissions: true
+        }
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
@@ -760,7 +765,7 @@ module workspace '../../avm/1.0.0/res/operational-insights/workspace/main.bicep'
 }
 
 // Automation account.
-module automationAccount '../../avm/1.0.0/res/automation/automation-account/main.bicep' = {
+module automationAccount '../../avm/1.1.0/res/automation/automation-account/main.bicep' = {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Automation-Account-${time}'
     params: {
@@ -827,7 +832,7 @@ module automationAccount '../../avm/1.0.0/res/automation/automation-account/main
 
 // Automation accounts.
 @batchSize(1)
-module modules '../../avm/1.0.0/res/automation/automation-account/module/main.bicep' = [for i in range(0, length(varModules)): {
+module modules '../../avm/1.1.0/res/automation/automation-account/module/main.bicep' = [for i in range(0, length(varModules)): {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'AA-Module-${i}-${time}'
     params: {
@@ -840,7 +845,7 @@ module modules '../../avm/1.0.0/res/automation/automation-account/module/main.bi
 }]
 
 // Action groups.
-module actionGroup '../../avm/1.0.0/res/insights/action-group/main.bicep' = if (enableMonitoringAlerts) {
+module actionGroup '../../avm/1.1.0/res/insights/action-group/main.bicep' = if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Action-Group-${time}'
     params: {
@@ -863,7 +868,7 @@ module actionGroup '../../avm/1.0.0/res/insights/action-group/main.bicep' = if (
 }
 
 // Schedules.
-module scheduledQueryRules '../../avm/1.0.0/res/insights/scheduled-query-rule/main.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
+module scheduledQueryRules '../../avm/1.1.0/res/insights/scheduled-query-rule/main.bicep' = [for i in range(0, length(varAlerts)): if (enableMonitoringAlerts) {
     scope: resourceGroup(sharedServicesSubId, varResourceGroupName)
     name: 'Scheduled-Query-Rule-${i}-${time}'
     params: {
