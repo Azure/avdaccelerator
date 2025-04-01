@@ -461,3 +461,9 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
     updateWorkspace
   ]
 }
+
+
+// =========== //
+// Outputs //
+// =========== //
+output hostPoolResourceId string = hostPool.outputs.resourceId

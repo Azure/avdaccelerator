@@ -113,6 +113,12 @@ param createAvdFslogixDeployment bool
 @sys.description('Path for the FSlogix share.')
 param fslogixSharePath string
 
+@sys.description('FSLogix storage account resource ID.')
+param fslogixStorageAccountResourceId string
+
+@sys.description('Host pool resource ID.')
+param hostPoolResourceId string
+
 @sys.description('FSLogix storage account FDQN.')
 param fslogixStorageFqdn string
 
@@ -390,14 +396,16 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        //hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
+        hostPoolResourceId: hostPoolResourceId
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
         fslogix: createAvdFslogixDeployment
         identityDomainName: identityDomainName
         vmSize: vmSize
-        fslogixFileShare: fslogixSharePath
-        fslogixStorageFqdn: fslogixStorageFqdn
+        fslogixSharePath: fslogixSharePath
+        //fslogixStorageFqdn: fslogixStorageFqdn
+        fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
         identityServiceProvider: identityServiceProvider
     }
     dependsOn: [
@@ -405,6 +413,30 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
         monitoring
     ]
 }]
+
+// module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
+//     for i in range(0, count): {
+//       scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//       name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
+//       params: {
+//         baseScriptUri: sessionHostConfigurationScriptUri
+//         fslogix: configureFslogix
+//         fslogixSharePath: fslogixSharePath
+//         fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
+//         hostPoolResourceId: hostPoolResourceId
+//         identityDomainName: identityDomainName
+//         identityServiceProvider: identityServiceProvider
+//         location: location
+//         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//         scriptName: sessionHostConfigurationScript
+//         vmSize: vmSize
+//       }
+//       dependsOn: [
+//         sessionHosts
+//         ama
+//       ]
+//     }
+//   ]
 
 // extensionDomainJoinPassword: keyVault.getSecret('domainJoinUserPassword')
 //         extensionDomainJoinConfig: {

@@ -279,6 +279,10 @@ param securityPrincipalId string = ''
 @sys.description('AVD host pool type. (Default: Pooled)')
 param avdHostPoolType string = 'Pooled'
 
+@maxLength(90)
+@sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
+param avdStorageObjectsRgCustomName string = 'avd-nih-arpah-${toLower(deploymentEnvironment)}-use2-storage'
+
 // =========== //
 // Variable declaration //
 // =========== //
@@ -381,7 +385,7 @@ var varAvdDefaultTags = {
 
 var varZtKeyvaultTag = {
     Purpose: 'Disk encryption keys for zero trust'
-}
+}    
 
 // retrieve existing resources
 resource keyVaultExisting 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
@@ -431,7 +435,15 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
       enableKvPurgeProtection: enableKvPurgeProtection
       kvTags: varZtKeyvaultTag
     }
-  }  
+}  
+// resource existingFslogixAzureFilesStorage 'Microsoft.Storage/storageAccounts@2022-09-01' existing = {
+//     name: varFslogixStorageName
+//     scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgCustomName}')
+// }
+resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+    name: avdHostPoolCustomName
+    scope: resourceGroup('${avdWorkloadSubsId}', '${avdStorageObjectsRgCustomName}')
+}
 
 // Session hosts
 @batchSize(3)
@@ -476,6 +488,8 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       encryptionAtHost: diskZeroTrust
       createAvdFslogixDeployment: createAvdFslogixDeployment
       fslogixSharePath: varFslogixSharePath
+      fslogixStorageAccountResourceId: ''
+      hostPoolResourceId: existingHostPool.id
       fslogixStorageFqdn: varFslogixStorageFqdn
       sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
       sessionHostConfigurationScript: varSessionHostConfigurationScript

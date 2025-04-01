@@ -480,6 +480,11 @@ module scalingPlan '../../../../avm/1.0.0/res/desktop-virtualization/scaling-pla
   ]
 }
 
+// =========== //
+// Outputs //
+// =========== //
+output hostPoolResourceId string = hostPool.outputs.resourceId
+
 @sys.description('The name of the desktop host pool.')
 output desktopHostPoolName string = hostPoolName
 
