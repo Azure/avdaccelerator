@@ -17,6 +17,10 @@ on:
         - Pooled
         - Personal
         default: 'Pooled'
+      session_host_count: 
+        type: number
+        description: Number of session hosts
+        default: '1'
       deployment_stack_name: 
         type: string
         description: Name of deployment stack to delete
@@ -65,6 +69,6 @@ jobs:
         inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperSessionHost.ps1 -DeploymentStackName ${{ inputs.deployment_stack_name }} -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-sessionhosts-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-sessionhost-arpah.parameters.json' `
           -avdSessionHostCustomNamePrefix ${{ env.SESSION_HOST_PREFIX }} -deploymentEnvironment ${{ inputs.environment }} -avdWorkloadSubsId ${{ secrets.AZURE_SUB_ID }} -imageGallerySubscriptionId ${{ secrets.IMAGE_GALLERY_SUB_ID }} ` 
           -existingVnetAvdSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -existingVnetPrivateEndpointSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -identityDomainName ${{ secrets.AD_NAME}} -avdOuPath "${{ secrets.AD_OU }}" -securityPrincipalId "${{ secrets.DEVELOPER_SECURITY_PRINCIPAL_ID }}" ` 
-          -update_existing_stack ${{ inputs.update_existing_stack }} -avdHostPoolType ${{ inputs.hostpool_type }}
+          -update_existing_stack ${{ inputs.update_existing_stack }} -avdHostPoolType '${{ inputs.hostpool_type }}' -avdDeploySessionHostsCount ${{ inputs.session_host_count }}
         azPSVersion: "latest"
         errorActionPreference: stop
