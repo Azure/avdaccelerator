@@ -1138,7 +1138,7 @@
 								{
 									"name": "storageServiceSelector",
 									"type": "Microsoft.Common.DropDown",
-									"visible": "[steps('storage').storageFslogix.fslogixDeployment]",
+									"visible": "[or(steps('storage').storageFslogix.fslogixDeployment), steps('storage').storageAppAttach.appAttachStorageDeployment)]",
 									"label": "Storage service",
 									"filter": true,
 									"defaultValue": "Azure Files",
