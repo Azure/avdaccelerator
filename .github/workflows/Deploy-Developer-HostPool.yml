@@ -81,14 +81,15 @@ jobs:
     #     azPSVersion: "latest"
     #     errorActionPreference: continue
 
-    # - name: Update AVD Application Group Display Name in the ${{ inputs.environment }} environment
-    #   uses: azure/powershell@v2
-    #   env:
-    #     ResourceGroupName: 'avd-nih-arpah-${{ inputs.environment }}-use2-service-objects'
-    #     ApplicationGroupName: 'vdag-desktop-developer-${{ inputs.environment }}-use2-001'
-    #     Name: 'SessionDesktop'
-    #     FriendlyName: 'ARPA-H Windows Developer '
-    #   with:
-    #     inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName ${{ env.ResourceGroupName }} -ApplicationGroupName  ${{ env.ApplicationGroupName }} -Name  ${{ env.Name }} -FriendlyName  '${{ env.FriendlyName }}'
-    #     azPSVersion: "latest"
-    #     errorActionPreference: continue
+    - name: Update AVD Application Group Display Name in the ${{ inputs.environment }} environment
+      uses: azure/powershell@v2
+      env:
+        ResourceGroupName: 'avd-nih-arpah-${{ inputs.environment }}-use2-service-objects'
+        ApplicationGroupName: 'vdag-desktop-developer-${{ inputs.hostpool_type }}-${{ inputs.environment }}-use2-001'
+        # TEST:                 'vdag-desktop-${toLower(hostPoolPersona)}--${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
+        Name: 'SessionDesktop'
+        FriendlyName: 'ARPA-H Windows Developer '
+      with:
+        inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName ${{ env.ResourceGroupName }} -ApplicationGroupName  ${{ env.ApplicationGroupName }} -Name  ${{ env.Name }} -FriendlyName  '${{ env.FriendlyName }}'
+        azPSVersion: "latest"
+        errorActionPreference: continue
