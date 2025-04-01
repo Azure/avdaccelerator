@@ -1129,7 +1129,7 @@
 								{
 									"name": "identityDomainOuPathStorageExisting",
 									"type": "Microsoft.Common.TextBox",
-									"visible": "[not(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'))]",
+									"visible": "[equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')]",
 									"label": "Custom OU path (Optional)",
 									"toolTip": "Provide OU where to locate storage account file share. If not provided, file share will be placed on the default (computers) OU.",
 									"placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
