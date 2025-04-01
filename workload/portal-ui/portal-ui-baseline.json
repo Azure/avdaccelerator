@@ -1136,6 +1136,31 @@
 									"constraints": {}
 								},
 								{
+									"name": "storageServiceSelector",
+									"type": "Microsoft.Common.DropDown",
+									"visible": "[steps('storage').storageFslogix.fslogixDeployment]",
+									"label": "Storage service",
+									"filter": true,
+									"defaultValue": "Azure Files",
+									"toolTip": "Select the storage service (Azure Files or ANF) to use for FSLogix and/or App Attach containers. ANF is only available when using AD DS or Microsoft Entra Domain Services identity service providers",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Azure Files",
+												"description": "",
+												"value": "AzureFiles"
+											},
+											{
+												"label": "Azure NetApp Files",
+												"description": "",
+												"value": "ANF",
+												"visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS'))]"
+											}
+										]
+									}
+								},
+								{
 									"name": "storageApi",
 									"type": "Microsoft.Solutions.ArmApiControl",
 									"request": {
@@ -1147,6 +1172,7 @@
 									"name": "storageGeneralSettingsZoneRedundancy",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Storage account type",
+									"visible": "[if(steps('storage').storageGeneralSettings.storageServiceSelector, equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'AzureFiles'), true, false)]",
 									"defaultValue": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, true), 'Zone-Redundant Storage', 'Locally Redundant Storage')]",
 									"toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
 									"constraints": {
@@ -1165,7 +1191,8 @@
 								{
 									"name": "fslogixDeployment",
 									"type": "Microsoft.Common.CheckBox",
-									"label": "FSLogix profile management",
+									"label": "Deploy storage",
+									"visible": true,
 									"defaultValue": true,
 									"toolTip": "Deploys FSLogix containers and session host setup for user's profiles."
 								},
@@ -1173,10 +1200,10 @@
 									"name": "fslogixStorageAccountSku",
 									"type": "Microsoft.Common.DropDown",
 									"visible": "[steps('storage').storageFslogix.fslogixDeployment]",
-									"label": "File share peformance",
+									"label": "File share performance",
 									"filter": true,
 									"defaultValue": "Premium",
-									"toolTip": "Storage account performance for FSLogix storage. Recommended tier is Premium.",
+									"toolTip": "Performance for App Attach storage (Azure files or ANF). Recommended tier is Premium for storage account and Standard for ANF.",
 									"constraints": {
 										"required": true,
 										"allowedValues": [
@@ -1189,6 +1216,12 @@
 												"label": "Standard",
 												"description": "",
 												"value": "Standard"
+											},
+											{
+												"label": "Ultra (ANF)",
+												"description": "",
+												"value": "Ultra",
+												"visible": "[equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')]"
 											}
 										]
 									}
@@ -1198,10 +1231,10 @@
 									"type": "Microsoft.Common.Slider",
 									"visible": "[steps('storage').storageFslogix.fslogixDeployment]",
 									"label": "File share size",
-									"subLabel": "x 100GB",
+									"subLabel": "GB",
 									"toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
-									"min": 1,
-									"max": 100,
+									"min": 50,
+									"max": 100000,
 									"defaultValue": 1,
 									"showStepMarkers": true,
 									"constraints": {
@@ -1230,7 +1263,7 @@
 									"name": "appAttachStorageDeployment",
 									"type": "Microsoft.Common.CheckBox",
 									"visible": "[not(contains(steps('basics').resourceScope.location.name, 'china'))]",
-									"label": "Create App Attach storage",
+									"label": "Deploy storage",
 									"toolTip": "Deploys App Attach containers and permissions setup."
 								},
 								{
@@ -1240,7 +1273,7 @@
 									"label": "File share performance",
 									"filter": true,
 									"defaultValue": "Premium",
-									"toolTip": "Storage account performance for App Attach storage. Recommended tier is Premium.",
+									"toolTip": "Performance for App Attach storage (Azure files or ANF). Recommended tier is Premium for storage account and Standard for ANF.",
 									"constraints": {
 										"required": true,
 										"allowedValues": [
@@ -1253,6 +1286,12 @@
 												"label": "Standard",
 												"description": "",
 												"value": "Standard"
+											},
+											{
+												"label": "Ultra (ANF)",
+												"description": "",
+												"value": "Ultra",
+												"visible": "[equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')]"
 											}
 										]
 									}
@@ -1262,10 +1301,10 @@
 									"type": "Microsoft.Common.Slider",
 									"visible": "[and(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
 									"label": "File share size",
-									"subLabel": "x 100GB",
+									"subLabel": "GB",
 									"toolTip": "Size of Azure File share quota, the maximum sizes are 5TB for standard SKU and 100TB for premium SKU",
-									"min": 1,
-									"max": 100,
+									"min": 50,
+									"max": 100000,
 									"defaultValue": 1,
 									"showStepMarkers": true,
 									"constraints": {
@@ -2777,7 +2816,7 @@
 				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdArmServicePrincipal.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdArmServicePrincipal.value.id)), '')]",
 				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
 				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
-				"diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
+				"storageServiceSelector": "[if(or(steps('storage').storageFslogix.fslogixDeployment, equals(steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageServiceSelector, 'AzureFiles')]",
 				"avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
 				"avdSessionHostLocation": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]",
 				"avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",

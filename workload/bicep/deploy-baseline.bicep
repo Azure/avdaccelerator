@@ -680,7 +680,7 @@ var varZtKvName = avdUseCustomNaming
   ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}'
   : 'kv-key-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' // max length limit 24 characters
 var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
-var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/'  
+var varBaseScriptUri = 'https://raw.githubusercontent.com/azure/avdaccelerator/anf-fslogix/workload/'  
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
 var varMaxSessionHostsPerTemplate = 10

@@ -173,10 +173,6 @@ if ($StorageService -eq 'ANF') {
 	Try {
 		Write-Log "Mounting Profile storage $StorageAccountName as a drive $DriveLetter"
 		if (-not (Get-PSDrive -Name $DriveLetter -ErrorAction SilentlyContinue)) {
-			#$UserStorage = "/user:Azure\$StorageAccountName"
-			#Write-Log "User storage: $UserStorage"
-			#$StorageKey = (Get-AzStorageAccountKey -ResourceGroupName $StorageAccountRG -AccountName $StorageAccountName) | Where-Object { $_.KeyName -eq "key1" }
-			#Write-Log "File Share location: $FileShareLocation"
 			net use ${DriveLetter}: $FileShareLocation $UserStorage $StorageKey.Value
 		}
 		else {
