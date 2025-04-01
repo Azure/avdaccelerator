@@ -64,7 +64,7 @@ jobs:
       with:
         inlineScript: ./.github/workflows/scripts/DeploymentStack-DeveloperHostPool.ps1 -DeploymentStackName ${{ inputs.deployment_stack_name }} -Location 'eastus2' -TemplateFile './workload/bicep/deploy-baseline-developer-hostpool-arpah.bicep' -ParametersFile './workload/bicep/parameters/deploy-baseline-developer-hostpool-arpah.parameters.json' `
           -deploymentEnvironment ${{ inputs.environment }} -avdWorkloadSubsId ${{ secrets.AZURE_SUB_ID }} -avdEnterpriseAppObjectId ${{ secrets.AZURE_AVD_OBJECTID }} ` 
-          -existingVnetPrivateEndpointSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -securityPrincipalId "${{ secrets.DEVELOPER_SECURITY_PRINCIPAL_ID }}" -update_existing_stack ${{ inputs.update_existing_stack }} '
+          -existingVnetPrivateEndpointSubnetResourceId ${{ secrets.AVD_SUBNET_ID }} -securityPrincipalId "${{ secrets.DEVELOPER_SECURITY_PRINCIPAL_ID }}" -update_existing_stack ${{ inputs.update_existing_stack }} `
           -avdHostPoolType '${{ inputs.hostpool_type }}'
         azPSVersion: "latest"
         errorActionPreference: stop
