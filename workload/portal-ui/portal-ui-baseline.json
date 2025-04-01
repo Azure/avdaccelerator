@@ -1171,7 +1171,7 @@
 									"name": "storageGeneralSettingsZoneRedundancy",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Storage account type",
-									"visible": "[if(equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF'), true, false)]",
+									"visible": "[equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')]",
 									"defaultValue": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, true), 'Zone-Redundant Storage', 'Locally Redundant Storage')]",
 									"toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
 									"constraints": {
