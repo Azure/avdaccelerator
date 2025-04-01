@@ -189,14 +189,17 @@ param logAnalyticsWorkspaceCustomName string = 'log-avd'
 @sys.description('Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)')
 param logAnalyticsWorkspaceDataRetention int = 30
 
-@sys.description('AVD OS image offer. (Default: Office-365)')
+@sys.description('Market place AVD  OS image offer. (Default: Office-365)')
 param mpImageOffer string = 'Office-365'
 
-@sys.description('AVD OS image SKU. (Default: win11-24h2-avd-m365)')
+@sys.description('Market place AVD  OS image SKU. (Default: win11-24h2-avd-m365)')
 param mpImageSku string = 'win11-24h2-avd-m365'
 
-@sys.description('AVD OS image publisher.')
+@sys.description('Market place AVD  OS image publisher.')
 param mpImagePublisher string = 'MicrosoftWindowsDesktop'
+
+@sys.description('Market place AVD OS image version.')
+param mpImageVersion string = 'MicrosoftWindowsDesktop'
 
 @sys.description('Team accountable for day-to-day operations. (Contoso-Ops)')
 param operationsTeamTag string = 'workload-admins@Contoso.com'
@@ -731,7 +734,7 @@ module imageTemplate '../../avm/1.1.0/res/virtual-machine-images/image-template/
             publisher: mpImagePublisher
             offer: mpImageOffer
             sku: mpImageSku
-            version: 'latest'
+            version: mpImageVersion
         }
         tags: enableResourceTags ? varCommonResourceTags : {}
     }

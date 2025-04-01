@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "1075843091819258923"
+      "templateHash": "1909065514053830006"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -305,21 +305,28 @@
       "type": "string",
       "defaultValue": "Office-365",
       "metadata": {
-        "description": "AVD OS image offer. (Default: Office-365)"
+        "description": "Market place AVD  OS image offer. (Default: Office-365)"
       }
     },
     "mpImageSku": {
       "type": "string",
       "defaultValue": "win11-24h2-avd-m365",
       "metadata": {
-        "description": "AVD OS image SKU. (Default: win11-24h2-avd-m365)"
+        "description": "Market place AVD  OS image SKU. (Default: win11-24h2-avd-m365)"
       }
     },
     "mpImagePublisher": {
       "type": "string",
       "defaultValue": "MicrosoftWindowsDesktop",
       "metadata": {
-        "description": "AVD OS image publisher."
+        "description": "Market place AVD  OS image publisher."
+      }
+    },
+    "mpImageVersion": {
+      "type": "string",
+      "defaultValue": "MicrosoftWindowsDesktop",
+      "metadata": {
+        "description": "Market place AVD OS image version."
       }
     },
     "operationsTeamTag": {
@@ -4712,7 +4719,7 @@
               "publisher": "[parameters('mpImagePublisher')]",
               "offer": "[parameters('mpImageOffer')]",
               "sku": "[parameters('mpImageSku')]",
-              "version": "latest"
+              "version": "[parameters('mpImageVersion')]"
             }
           },
           "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
