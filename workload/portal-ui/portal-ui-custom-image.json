@@ -169,59 +169,59 @@
                                 }
                             ]
                         },
-                        {
-                            "name": "operatingSystem",
-                            "type": "Microsoft.Common.Section",
-                            "visible": true,
-                            "label": "Operating system",
-                            "elements": [
-                                {
-                                    "name": "versionSelection",
-                                    "type": "Microsoft.Common.DropDown",
-                                    "label": "Version",
-                                    "filter": true,
-                                    "defaultValue": "Windows 11 24H2",
-                                    "toolTip": "Select the operating system version for the source image.",
-                                    "constraints": {
-                                        "required": true,
-                                        "allowedValues": [
-                                            {
-                                                "label": "Windows 10 22H2 (Gen2)",
-                                                "value": "win10_22h2_g2"
-                                            },
-                                            {
-                                                "label": "Windows 10 22H2 - Office 365 (Gen2)",
-                                                "value": "win10_22h2_office_g2"
-                                            },
-                                            {
-                                                "label": "Windows 11 22H2",
-                                                "value": "win11_22h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 22H2 - Office 365",
-                                                "value": "win11_22h2_office"
-                                            },
-                                            {
-                                                "label": "Windows 11 23H2",
-                                                "value": "win11_23h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 23H2 - Office 365",
-                                                "value": "win11_23h2_office"
-                                            },
-                                            {
-                                                "label": "Windows 11 24H2",
-                                                "value": "win11_24h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 24H2 - Office 365",
-                                                "value": "win11_24h2_office"
-                                            }
-                                        ]
-                                    }
-                                }
-                            ]
-                        },
+						{
+							"name": "imageOsSection",
+							"type": "Microsoft.Common.Section",
+							"visible": true,
+							"label": "Market place OS selection",
+							"elements": [
+								{
+									"name": "offer",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Offer",
+									"defaultValue": "Office-365",
+									"toolTip": "Select the desired marketplace image offer.",
+									"constraints": {
+										"allowedValues": [
+											{
+												"label": "Office-365",
+												"value": "office-365"
+											},
+											{
+												"label": "Windows-10",
+												"value": "Windows-10"
+											},
+											{
+												"label": "Windows-11",
+												"value": "windows-11"
+											}
+										],
+										"required": true
+									}
+								},
+								{
+									"name": "skusApi",
+									"type": "Microsoft.Solutions.ArmApiControl",
+									"condition": "",
+									"request": {
+										"method": "GET",
+										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.subscription.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('imageManagement').imageOsSection.offer, '/skus?api-version=2022-08-01')]"
+									}
+								},
+								{
+									"name": "sku",
+									"type": "Microsoft.Common.DropDown",
+									"label": "SKU",
+									"defaultValue": "win11-24h2-avd-m365",
+									"toolTip": "Select the desired marketplace image SKU.",
+									"constraints": {
+										"allowedValues": "[map(filter(steps('imageManagement').imageOsSection.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'ent')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+										"required": true
+									},
+									"visible": true
+								}
+							]
+						},
                         {
                             "name": "imageDefinitionFeatures",
                             "type": "Microsoft.Common.Section",
@@ -871,7 +871,10 @@
                 "imageVersionPrimaryLocation": "[steps('imageManagement').imageVersion.primaryLocation]",
                 "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.storageAccountType]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
-                "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
+                
+                "mpImageOffer": "[steps('imageManagement').imageOsSection.offer]",
+                "mpImageSku": "[steps('imageManagement').imageOsSection.sku]",
+
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
                 "ownerTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.owner, 'none')]",
                 "rdpShortPathManagedNetworks": "[steps('aib').customizers.rdpShortPathSelection]",

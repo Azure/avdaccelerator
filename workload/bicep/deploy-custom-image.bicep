@@ -189,18 +189,14 @@ param logAnalyticsWorkspaceCustomName string = 'log-avd'
 @sys.description('Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)')
 param logAnalyticsWorkspaceDataRetention int = 30
 
-@allowed([
-    'win10_22h2_g2'
-    'win10_22h2_office_g2'
-    'win11_22h2'
-    'win11_22h2_office'
-    'win11_23h2'
-    'win11_23h2_office'
-    'win11_24h2'
-    'win11_24h2_office'
-])
-@sys.description('AVD OS image source. (Default: win11_24h2)')
-param operatingSystemImage string = 'win11_24h2'
+@sys.description('AVD OS image offer. (Default: Office-365)')
+param mpImageOffer string = 'Office-365'
+
+@sys.description('AVD OS image SKU. (Default: win11-24h2-avd-m365)')
+param mpImageSku string = 'win11-24h2-avd-m365'
+
+@sys.description('AVD OS image publisher.')
+param mpImagePublisher string = 'MicrosoftWindowsDesktop'
 
 @sys.description('Team accountable for day-to-day operations. (Contoso-Ops)')
 param operationsTeamTag string = 'workload-admins@Contoso.com'
@@ -335,7 +331,7 @@ var varCommonResourceTags = enableResourceTags ? {
 
 } : {}
 var varCustomizationSteps = union(varScriptCustomizers, varRemainingCustomizers)
-var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${operatingSystemImage}'
+var varImageDefinitionName = customNaming ? imageDefinitionCustomName : 'avd-${mpImageOffer}-${mpImageSku}'
 var varImageGalleryName = customNaming ? imageGalleryCustomName : 'gal_avd_${varNamingStandard}'
 var varImageReplicationRegions = empty(imageVersionDisasterRecoveryLocation) ? [
     imageVersionPrimaryLocation
@@ -377,7 +373,7 @@ var varImageTemplateContributorRole = [
         ]
     }
 ]
-var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${operatingSystemImage}'
+var varImageTemplateName = customNaming ? imageTemplateCustomName : 'it-avd-${mpImageOffer}'
 var varLocationAcronym = varLocations[varLocation].acronym
 var varLocation = toLower(replace(deploymentLocation, ' ', ''))
 var varLocations = loadJsonContent('../variables/locations.json')
@@ -395,7 +391,7 @@ var varModules = [
     }
 ]
 var varNamingStandard = '${varLocationAcronym}'
-var varOperatingSystemImageDefinitions = {
+var varOperatingSystemImageDefinition = {
     win10_22h2_g2: {
         osType: 'Windows'
         osState: 'Generalized'
@@ -680,22 +676,22 @@ module image '../../avm/1.1.0/res/compute/gallery/image/main.bicep' = {
     params: {
         galleryName: varImageGalleryName
         name: varImageDefinitionName
-        osState: varOperatingSystemImageDefinitions[operatingSystemImage].osState
-        osType: varOperatingSystemImageDefinitions[operatingSystemImage].osType
+        osState: 'Generalized'
+        osType: 'Windows'
         identifier: {
-            publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
-            offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
-            sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
+            publisher: mpImagePublisher
+            offer: mpImageOffer
+            sku: mpImageSku
         }
         location: imageVersionPrimaryLocation
-        hyperVGeneration: varOperatingSystemImageDefinitions[operatingSystemImage].hyperVGeneration
+        hyperVGeneration: 'V2'
         isAcceleratedNetworkSupported: imageDefinitionAcceleratedNetworkSupported
         isHibernateSupported: imageDefinitionHibernateSupported
         securityType: imageDefinitionSecurityType
         purchasePlan: {
-            product: operatingSystemImage
-            name: varOperatingSystemImageDefinitions[operatingSystemImage].offer
-            publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
+            product: mpImageOffer
+            name: mpImageOffer
+            publisher: mpImagePublisher
         }
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
@@ -732,10 +728,10 @@ module imageTemplate '../../avm/1.1.0/res/virtual-machine-images/image-template/
         customizationSteps: varCustomizationSteps
         imageSource: {
             type: 'PlatformImage'
-            publisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
-            offer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
-            sku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
-            version: varOperatingSystemImageDefinitions[operatingSystemImage].version
+            publisher: mpImagePublisher
+            offer: mpImageOffer
+            sku: mpImageSku
+            version: 'latest'
         }
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
@@ -782,9 +778,9 @@ module automationAccount '../../avm/1.1.0/res/automation/automation-account/main
                 parameters: {
                     ClientId: userAssignedManagedIdentity.outputs.clientId
                     EnvironmentName: varAzureCloudName
-                    ImageOffer: varOperatingSystemImageDefinitions[operatingSystemImage].offer
-                    ImagePublisher: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
-                    ImageSku: varOperatingSystemImageDefinitions[operatingSystemImage].sku
+                    ImageOffer: mpImageOffer
+                    ImagePublisher: mpImagePublisher
+                    ImageSku: mpImageSku
                     Location: deploymentLocation
                     SubscriptionId: sharedServicesSubId
                     TemplateName: imageTemplate.outputs.name

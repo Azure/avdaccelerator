@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "3916407708030793025"
+      "templateHash": "1075843091819258923"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -301,21 +301,25 @@
         "description": "Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)"
       }
     },
-    "operatingSystemImage": {
+    "mpImageOffer": {
       "type": "string",
-      "defaultValue": "win11_24h2",
-      "allowedValues": [
-        "win10_22h2_g2",
-        "win10_22h2_office_g2",
-        "win11_22h2",
-        "win11_22h2_office",
-        "win11_23h2",
-        "win11_23h2_office",
-        "win11_24h2",
-        "win11_24h2_office"
-      ],
+      "defaultValue": "Office-365",
       "metadata": {
-        "description": "AVD OS image source. (Default: win11_24h2)"
+        "description": "AVD OS image offer. (Default: Office-365)"
+      }
+    },
+    "mpImageSku": {
+      "type": "string",
+      "defaultValue": "win11-24h2-avd-m365",
+      "metadata": {
+        "description": "AVD OS image SKU. (Default: win11-24h2-avd-m365)"
+      }
+    },
+    "mpImagePublisher": {
+      "type": "string",
+      "defaultValue": "MicrosoftWindowsDesktop",
+      "metadata": {
+        "description": "AVD OS image publisher."
       }
     },
     "operationsTeamTag": {
@@ -680,7 +684,7 @@
     "varBaseScriptUri": "https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/",
     "varCommonResourceTags": "[if(parameters('enableResourceTags'), createObject('ImageBuildName', parameters('imageBuildNameTag'), 'WorkloadName', parameters('workloadNameTag'), 'DataClassification', parameters('dataClassificationTag'), 'Department', parameters('departmentTag'), 'Criticality', if(equals(parameters('criticalityTag'), 'Custom'), parameters('criticalityCustomTag'), parameters('criticalityTag')), 'ApplicationName', parameters('applicationNameTag'), 'OpsTeam', parameters('operationsTeamTag'), 'Owner', parameters('ownerTag'), 'CostCenter', parameters('costCenterTag'), 'Environment', parameters('environmentTag')), createObject())]",
     "varCustomizationSteps": "[union(variables('varScriptCustomizers'), variables('varRemainingCustomizers'))]",
-    "varImageDefinitionName": "[if(parameters('customNaming'), parameters('imageDefinitionCustomName'), format('avd-{0}', parameters('operatingSystemImage')))]",
+    "varImageDefinitionName": "[if(parameters('customNaming'), parameters('imageDefinitionCustomName'), format('avd-{0}-{1}', parameters('mpImageOffer'), parameters('mpImageSku')))]",
     "varImageGalleryName": "[if(parameters('customNaming'), parameters('imageGalleryCustomName'), format('gal_avd_{0}', variables('varNamingStandard')))]",
     "varImageReplicationRegions": "[if(empty(parameters('imageVersionDisasterRecoveryLocation')), createArray(parameters('imageVersionPrimaryLocation')), createArray(parameters('imageVersionPrimaryLocation'), parameters('imageVersionDisasterRecoveryLocation')))]",
     "varImageTemplateBuildAutomationName": "Image Template Build Automation",
@@ -702,7 +706,7 @@
         ]
       }
     ],
-    "varImageTemplateName": "[if(parameters('customNaming'), parameters('imageTemplateCustomName'), format('it-avd-{0}', parameters('operatingSystemImage')))]",
+    "varImageTemplateName": "[if(parameters('customNaming'), parameters('imageTemplateCustomName'), format('it-avd-{0}', parameters('mpImageOffer')))]",
     "varLocationAcronym": "[variables('varLocations')[variables('varLocation')].acronym]",
     "varLocation": "[toLower(replace(parameters('deploymentLocation'), ' ', ''))]",
     "varLocations": "[variables('$fxv#0')]",
@@ -720,7 +724,7 @@
       }
     ],
     "varNamingStandard": "[format('{0}', variables('varLocationAcronym'))]",
-    "varOperatingSystemImageDefinitions": {
+    "varOperatingSystemImageDefinition": {
       "win10_22h2_g2": {
         "osType": "Windows",
         "osState": "Generalized",
@@ -4124,23 +4128,23 @@
             "value": "[variables('varImageDefinitionName')]"
           },
           "osState": {
-            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].osState]"
+            "value": "Generalized"
           },
           "osType": {
-            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].osType]"
+            "value": "Windows"
           },
           "identifier": {
             "value": {
-              "publisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
-              "offer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
-              "sku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]"
+              "publisher": "[parameters('mpImagePublisher')]",
+              "offer": "[parameters('mpImageOffer')]",
+              "sku": "[parameters('mpImageSku')]"
             }
           },
           "location": {
             "value": "[parameters('imageVersionPrimaryLocation')]"
           },
           "hyperVGeneration": {
-            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].hyperVGeneration]"
+            "value": "V2"
           },
           "isAcceleratedNetworkSupported": {
             "value": "[parameters('imageDefinitionAcceleratedNetworkSupported')]"
@@ -4153,9 +4157,9 @@
           },
           "purchasePlan": {
             "value": {
-              "product": "[parameters('operatingSystemImage')]",
-              "name": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
-              "publisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]"
+              "product": "[parameters('mpImageOffer')]",
+              "name": "[parameters('mpImageOffer')]",
+              "publisher": "[parameters('mpImagePublisher')]"
             }
           },
           "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
@@ -4705,10 +4709,10 @@
           "imageSource": {
             "value": {
               "type": "PlatformImage",
-              "publisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
-              "offer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
-              "sku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]",
-              "version": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].version]"
+              "publisher": "[parameters('mpImagePublisher')]",
+              "offer": "[parameters('mpImageOffer')]",
+              "sku": "[parameters('mpImageSku')]",
+              "version": "latest"
             }
           },
           "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
@@ -8524,9 +8528,9 @@
                 "parameters": {
                   "ClientId": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('User-Assigned-Managed-Identity-{0}', parameters('time'))), '2022-09-01').outputs.clientId.value]",
                   "EnvironmentName": "[variables('varAzureCloudName')]",
-                  "ImageOffer": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]",
-                  "ImagePublisher": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]",
-                  "ImageSku": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].sku]",
+                  "ImageOffer": "[parameters('mpImageOffer')]",
+                  "ImagePublisher": "[parameters('mpImagePublisher')]",
+                  "ImageSku": "[parameters('mpImageSku')]",
                   "Location": "[parameters('deploymentLocation')]",
                   "SubscriptionId": "[parameters('sharedServicesSubId')]",
                   "TemplateName": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', parameters('sharedServicesSubId'), variables('varResourceGroupName')), 'Microsoft.Resources/deployments', format('Image-Template-{0}', parameters('time'))), '2022-09-01').outputs.name.value]",
