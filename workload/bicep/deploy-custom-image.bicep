@@ -690,9 +690,9 @@ module image '../../avm/1.0.0/res/compute/gallery/image/main.bicep' = {
         isAcceleratedNetworkSupported: imageDefinitionAcceleratedNetworkSupported
         isHibernateSupported: imageDefinitionHibernateSupported
         securityType: imageDefinitionSecurityType
-        //productName: operatingSystemImage
-        //planName: varOperatingSystemImageDefinitions[operatingSystemImage].offer
-        //planPublisherName: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
+        productName: operatingSystemImage
+        planName: varOperatingSystemImageDefinitions[operatingSystemImage].offer
+        planPublisherName: varOperatingSystemImageDefinitions[operatingSystemImage].publisher
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [

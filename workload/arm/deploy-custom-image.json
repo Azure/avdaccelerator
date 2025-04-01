@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "689697612690771102"
+      "templateHash": "12976082197841057560"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -2925,6 +2925,15 @@
           },
           "securityType": {
             "value": "[parameters('imageDefinitionSecurityType')]"
+          },
+          "productName": {
+            "value": "[parameters('operatingSystemImage')]"
+          },
+          "planName": {
+            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].offer]"
+          },
+          "planPublisherName": {
+            "value": "[variables('varOperatingSystemImageDefinitions')[parameters('operatingSystemImage')].publisher]"
           },
           "tags": "[if(parameters('enableResourceTags'), createObject('value', variables('varCommonResourceTags')), createObject('value', createObject()))]"
         },
