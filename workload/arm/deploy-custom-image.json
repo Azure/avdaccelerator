@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "10378235014485029723"
+      "templateHash": "2681018416811264702"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -324,7 +324,7 @@
     },
     "mpImageVersion": {
       "type": "string",
-      "defaultValue": "MicrosoftWindowsDesktop",
+      "defaultValue": "latest",
       "metadata": {
         "description": "Market place AVD OS image version."
       }

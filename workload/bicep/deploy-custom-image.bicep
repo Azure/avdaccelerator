@@ -199,7 +199,7 @@ param mpImageSku string = 'win11-24h2-avd-m365'
 param mpImagePublisher string = 'MicrosoftWindowsDesktop'
 
 @sys.description('Market place AVD OS image version.')
-param mpImageVersion string = 'MicrosoftWindowsDesktop'
+param mpImageVersion string = 'latest'
 
 @sys.description('Team accountable for day-to-day operations. (Contoso-Ops)')
 param operationsTeamTag string = 'workload-admins@Contoso.com'
