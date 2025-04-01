@@ -1171,7 +1171,7 @@
 									"name": "storageGeneralSettingsZoneRedundancy",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Storage account type",
-									"visible": "[and(equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'Azure Files'), or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment))]",
+									"visible": "[or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment)]",
 									"defaultValue": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, true), 'Zone-Redundant Storage', 'Locally Redundant Storage')]",
 									"toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
 									"constraints": {
