@@ -1230,8 +1230,7 @@
 											{
 												"label": "Ultra (ANF)",
 												"description": "",
-												"value": "Ultra",
-												"visible": "[equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')]"
+												"value": "Ultra"
 											}
 										]
 									}
@@ -1300,8 +1299,7 @@
 											{
 												"label": "Ultra (ANF)",
 												"description": "",
-												"value": "Ultra",
-												"visible": "[equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')]"
+												"value": "Ultra"
 											}
 										]
 									}
@@ -2826,7 +2824,7 @@
 				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdArmServicePrincipal.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdArmServicePrincipal.value.id)), '')]",
 				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
 				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
-				"storageService": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageServiceSelector, 'AzureFiles')]",
+				"storageService": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), if(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')), steps('storage').storageGeneralSettings.storageServiceSelector, 'AzureFiles'), '')]",
 				"avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
 				"avdSessionHostLocation": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]",
 				"avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
