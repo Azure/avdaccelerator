@@ -164,7 +164,7 @@ param avdHostPoolCustomFriendlyName string = 'ARPA-H on NIH Network - ${deployme
 
 @maxLength(64)
 @sys.description('AVD scaling plan custom name. (Default: vdscaling-app1-dev-use2-001)')
-param avdScalingPlanCustomName string = 'vdscaling-${toLower(hostPoolPersona)}--${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
+param avdScalingPlanCustomName string = 'vdscaling-${toLower(hostPoolPersona)}-${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(64)
 @sys.description('AVD desktop application group custom name. (Default: vdag-desktop-app1-dev-use2-001)')

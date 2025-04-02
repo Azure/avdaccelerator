@@ -119,8 +119,8 @@ param fslogixStorageAccountResourceId string
 @sys.description('Host pool resource ID.')
 param hostPoolResourceId string
 
-@sys.description('FSLogix storage account FDQN.')
-param fslogixStorageFqdn string
+// @sys.description('FSLogix storage account FDQN.')
+// param fslogixStorageFqdn string
 
 @sys.description('URI for AVD session host configuration script URI.')
 param sessionHostConfigurationScriptUri string
@@ -301,8 +301,6 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
 //       principalType: 'Group'
 //     }
 // }]
-
-
 
 // Add antimalware extension to session host.
 module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
