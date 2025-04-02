@@ -1498,6 +1498,19 @@
 							}
 						},
 						{
+							"name": "virtualNetworkAnfSubnetSize",
+							"type": "Microsoft.Common.TextBox",
+							"visible": "[and(steps('network').createAvdVirtualNetwork, equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF'))]",
+							"label": "Azure NetApp Files subnet address prefix",
+							"toolTip": "Virtual network subnet CIDR for Azure NetApp Files service",
+							"placeholder": "Example: 10.10.3.0/26",
+							"constraints": {
+								"required": true,
+								"regex": "^(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(?:\/(1[0-9]|2[0-6]))$",
+								"validationMessage": "Invalid CIDR range. The address prefix must be in the range 10 to 24."
+							}
+						},
+						{
 							"name": "virtualNetworkDns",
 							"type": "Microsoft.Common.TextBox",
 							"visible": "[and(steps('network').createAvdVirtualNetwork, not(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID')))]",
@@ -1548,6 +1561,23 @@
 						{
 							"name": "virtualNetworkAvdSubnetSelectorName",
 							"label": "Azure Virtual Desktop subnet",
+							"type": "Microsoft.Common.DropDown",
+							"visible": "[and(not(steps('network').createAvdVirtualNetwork), equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF'))]",
+							"defaultValue": "",
+							"toolTip": "Select the subnet.",
+							"multiselect": false,
+							"selectAll": false,
+							"filter": true,
+							"filterPlaceholder": "Filter items ...",
+							"multiLine": true,
+							"constraints": {
+								"allowedValues": "[map(steps('network').avdSubnetApi.value,(item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
+								"required": true
+							}
+						},
+						{
+							"name": "virtualNetworkAnfSubnetSelectorName",
+							"label": "Azure NetApp Files subnet",
 							"type": "Microsoft.Common.DropDown",
 							"visible": "[not(steps('network').createAvdVirtualNetwork)]",
 							"defaultValue": "",
@@ -2846,6 +2876,10 @@
 				"createAvdVnet": "[steps('network').createAvdVirtualNetwork]",
 				"avdVnetworkAddressPrefixes": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkSize, '10.10.0.0/16')]",
 				"vNetworkAvdSubnetAddressPrefix": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkAvdSubnetSize, '10.10.1.0/24')]",
+				"vNetworkAnfSubnetAddressPrefix": "[if(and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')), steps('network').virtualNetworkAnfSubnetSize, '10.10.3.0/26')]",
+
+
+
 				"vNetworkPrivateEndpointSubnetAddressPrefix": "[if(and(equals(steps('network').createAvdVirtualNetwork, true), equals(steps('network').deployPrivateEndpointKeyvaultStorage, true)), steps('network').virtualNetworkPrivateEndpointSubnetSize, '10.10.2.0/27')]",
 				"customDnsIps": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').virtualNetworkDns, '')]",
 				"existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
