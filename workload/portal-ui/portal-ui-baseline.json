@@ -1141,7 +1141,6 @@
 									"label": "Storage service",
 									"visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS'))]",
 									"filter": true,
-									"defaultValue": "AzureFiles",
 									"toolTip": "Select the storage service (Azure Files or ANF) to use for FSLogix and/or App Attach containers. ANF is only available when using AD DS or Microsoft Entra Domain Services identity service providers",
 									"constraints": {
 										"required": true,
