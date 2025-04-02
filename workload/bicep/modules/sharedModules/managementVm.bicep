@@ -1,4 +1,7 @@
 targetScope = 'subscription'
+metadata name = 'AVD LZA storage management VM'
+metadata description = 'This module deploys a management VM to join Azure Files to domain and for tools.'
+metadata owner = 'Azure/avdaccelerator'
 
 // ========== //
 // Parameters //
@@ -8,7 +11,7 @@ targetScope = 'subscription'
 param diskEncryptionSetResourceId string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+param subId string
 
 @sys.description('Virtual machine time zone.')
 param computeTimeZone string
@@ -19,8 +22,8 @@ param identityServiceProvider string
 @sys.description('Resource Group Name for Azure Files.')
 param serviceObjectsRgName string
 
-@sys.description('AVD subnet ID.')
-param subnetId string
+@sys.description('Subnet resource ID.')
+param subnetResourceId string
 
 @sys.description('Enable accelerated networking on the session host VMs.')
 param enableAcceleratedNetworking bool
@@ -41,7 +44,7 @@ param location string
 param encryptionAtHost bool
 
 @sys.description('Session host VM size.')
-param mgmtVmSize string
+param vmSize string
 
 @sys.description('OS disk type for session host.')
 param osDiskType string
@@ -58,8 +61,8 @@ param vmLocalUserName string
 @sys.description('Identity domain name.')
 param identityDomainName string
 
-@sys.description('Keyvault name to get credentials from.')
-param wrklKvName string
+@sys.description('Keyvault resource ID to get credentials from.')
+param keyVaultResourceId string
 
 @sys.description('AVD session host domain join credentials.')
 param domainJoinUserName string
@@ -74,7 +77,7 @@ param applicationSecurityGroupResourceId string
 param tags object
 
 @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
-param managementVmName string
+param vmName string
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
@@ -82,32 +85,35 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
-
-var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
-    storageAccountType: osDiskType
-} : {
-    diskEncryptionSet: {
-        id: diskEncryptionSetResourceId
+var varKeyVaultSubId = split(keyVaultResourceId, '/')[2]
+var varKeyVaultRgName = split(keyVaultResourceId, '/')[4]
+var varKeyVaultName = split(keyVaultResourceId, '/')[8]
+var varManagedDisk = empty(diskEncryptionSetResourceId) 
+    ? {
+        storageAccountType: osDiskType
+    } : {
+        diskEncryptionSet: {
+            id: diskEncryptionSetResourceId
+        }
+        storageAccountType: osDiskType
     }
-    storageAccountType: osDiskType
-}
 
 // =========== //
 // Deployments //
 // =========== //
 
 // Call on the KV.
-resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-    name: wrklKvName
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+resource keyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+    name: varKeyVaultName
+    scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }
 
 // Provision temporary VM and add it to domain.
-module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = {
-    scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+module managementVm '../../../../avm/1.0.0/res/compute/virtual-machine/main.bicep' = {
+    scope: resourceGroup('${subId}', '${serviceObjectsRgName}')
     name: 'MGMT-VM-${time}'
     params: {
-        name: managementVmName
+        name: vmName
         location: location
         timeZone: computeTimeZone
         managedIdentities: {
@@ -119,7 +125,7 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
         encryptionAtHost: encryptionAtHost
         zone: 0
         osType: 'Windows'
-        vmSize: mgmtVmSize
+        vmSize: vmSize
         securityType: securityType
         secureBootEnabled: secureBootEnabled
         vTpmEnabled: vTpmEnabled
@@ -131,16 +137,16 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
             managedDisk: varManagedDisk
         }
         adminUsername: vmLocalUserName
-        adminPassword: avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
+        adminPassword: keyVaultget.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
-                name: 'nic-01-${managementVmName}'
+                name: 'nic-01-${vmName}'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
                 ipConfigurations: !empty(applicationSecurityGroupResourceId)  ? [
                     {
                         name: 'ipconfig01'
-                        subnetResourceId: subnetId
+                        subnetResourceId: subnetResourceId
                         applicationSecurityGroups: [
                             {
                                 id: applicationSecurityGroupResourceId
@@ -150,19 +156,23 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
                 ] : [
                     {
                         name: 'ipconfig01'
-                        subnetResourceId: subnetId
+                        subnetResourceId: subnetResourceId
                     }
                 ]
             }
         ]
         // Join domain
         allowExtensionOperations: true
-        extensionDomainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
+        extensionDomainJoinPassword: keyVaultget.getSecret('domainJoinUserPassword')
         extensionDomainJoinConfig: {
-            enabled: contains(identityServiceProvider, 'EntraID') ? false: true
+            enabled: contains(identityServiceProvider, 'EntraID') 
+                ? false
+                : true
             settings: {
                 name: identityDomainName
-                ouPath: !empty(ouPath) ? ouPath : null
+                ouPath: !empty(ouPath) 
+                    ? ouPath 
+                    : null
                 user: domainJoinUserName
                 restart: 'true'
                 options: '3'
@@ -170,7 +180,9 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
         }
         // Entra ID Join.
         extensionAadJoinConfig: {
-            enabled: contains(identityServiceProvider, 'EntraID') ? true: false
+            enabled: contains(identityServiceProvider, 'EntraID') 
+                ? true
+                : false
         }
         tags: tags
     }
