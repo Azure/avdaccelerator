@@ -489,7 +489,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       fslogixSharePath: varFslogixSharePath
       fslogixStorageAccountResourceId: ''
       hostPoolResourceId: existingHostPool.id
-      fslogixStorageFqdn: varFslogixStorageFqdn
+      //fslogixStorageFqdn: varFslogixStorageFqdn
       sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
       sessionHostConfigurationScript: varSessionHostConfigurationScript
       marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
