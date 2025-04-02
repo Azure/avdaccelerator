@@ -29,9 +29,9 @@
                                     "name": "deploymentInfo",
                                     "type": "Microsoft.Common.InfoBox",
                                     "options": {
-										"style": "Info",
+                                        "style": "Info",
                                         "text": "The subscription and region selected below will be used for most of the resources deployed in this solution. The replication regions for the image version will be the only exception and those regions will be defined in the next step. The regions listed in the menu below are the only regions that support Azure Image Builder image templates. Please ensure to select the appropriate options for your environment.",
-                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell#regions"										
+                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell#regions"
                                     }
                                 }
                             ]
@@ -169,59 +169,59 @@
                                 }
                             ]
                         },
-						{
-							"name": "imageOsSection",
-							"type": "Microsoft.Common.Section",
-							"visible": true,
-							"label": "Market place OS selection",
-							"elements": [
-								{
-									"name": "offer",
-									"type": "Microsoft.Common.DropDown",
-									"label": "Offer",
-									"defaultValue": "Office-365",
-									"toolTip": "Select the desired marketplace image offer.",
-									"constraints": {
-										"allowedValues": [
-											{
-												"label": "Office-365",
-												"value": "office-365"
-											},
-											{
-												"label": "Windows-10",
-												"value": "Windows-10"
-											},
-											{
-												"label": "Windows-11",
-												"value": "windows-11"
-											}
-										],
-										"required": true
-									}
-								},
-								{
-									"name": "skusApi",
-									"type": "Microsoft.Solutions.ArmApiControl",
-									"condition": "",
-									"request": {
-										"method": "GET",
-										"path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('imageManagement').imageOsSection.offer, '/skus?api-version=2022-08-01')]"
-									}
-								},
-								{
-									"name": "sku",
-									"type": "Microsoft.Common.DropDown",
-									"label": "SKU",
-									"defaultValue": "win11-24h2-avd-m365",
-									"toolTip": "Select the desired marketplace image SKU.",
-									"constraints": {
-										"allowedValues": "[map(filter(steps('imageManagement').imageOsSection.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'ent')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
-										"required": true
-									},
-									"visible": true
-								}
-							]
-						},
+                        {
+                            "name": "imageOsSection",
+                            "type": "Microsoft.Common.Section",
+                            "visible": true,
+                            "label": "Market place OS selection",
+                            "elements": [
+                                {
+                                    "name": "offer",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "Offer",
+                                    "defaultValue": "Office-365",
+                                    "toolTip": "Select the desired marketplace image offer.",
+                                    "constraints": {
+                                        "allowedValues": [
+                                            {
+                                                "label": "Office-365",
+                                                "value": "office-365"
+                                            },
+                                            {
+                                                "label": "Windows-10",
+                                                "value": "Windows-10"
+                                            },
+                                            {
+                                                "label": "Windows-11",
+                                                "value": "windows-11"
+                                            }
+                                        ],
+                                        "required": true
+                                    }
+                                },
+                                {
+                                    "name": "skusApi",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "condition": "",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('imageManagement').imageOsSection.offer, '/skus?api-version=2022-08-01')]"
+                                    }
+                                },
+                                {
+                                    "name": "sku",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "SKU",
+                                    "defaultValue": "win11-24h2-avd-m365",
+                                    "toolTip": "Select the desired marketplace image SKU.",
+                                    "constraints": {
+                                        "allowedValues": "[map(filter(steps('imageManagement').imageOsSection.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'ent')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+                                        "required": true
+                                    },
+                                    "visible": true
+                                }
+                            ]
+                        },
                         {
                             "name": "imageDefinitionFeatures",
                             "type": "Microsoft.Common.Section",
@@ -286,13 +286,13 @@
                             "type": "Microsoft.Common.TextBlock",
                             "visible": true,
                             "options": {
-                              "text": "The AIB service allows the use of scripts and customizers to automatically create images on demand. This solution will deploy a managed identity and custom RBAC roles to enable AIB.",
-                              "link": {
-                                "label": "Learn more",
-                                "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell"
-                              }
+                                "text": "The AIB service allows the use of scripts and customizers to automatically create images on demand. This solution will deploy a managed identity and custom RBAC roles to enable AIB.",
+                                "link": {
+                                    "label": "Learn more",
+                                    "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell"
+                                }
                             }
-                          },
+                        },
                         {
                             "name": "buildSchedule",
                             "type": "Microsoft.Common.OptionsGroup",
