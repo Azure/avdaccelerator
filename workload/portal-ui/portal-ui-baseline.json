@@ -2885,6 +2885,12 @@
 				"existingHubVnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.existingHubVirtualNetwork, '')]",
 				"vNetworkGatewayOnHub": "[if(equals(steps('network').createAvdVirtualNetwork, true), steps('network').hubVirtualNetworkPeering.hubVirtualNetworkGateway, false)]",
 				"existingVnetAvdSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkAvdSubnetSelectorName, '')]",
+				"existingVnetAnfSubnetResourceId": "[if(and(equals(steps('network').createAvdVirtualNetwork, false), equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')), steps('network').virtualNetworkAnfSubnetSelectorName, '')]",
+
+
+
+
+
 				"existingVnetPrivateEndpointSubnetResourceId": "[if(equals(steps('network').createAvdVirtualNetwork, false), steps('network').virtualNetworkPrivateEndpointSubnetSelectorName, '')]",
 				"avdDeploySessionHosts": "[steps('sessionHosts').deploySessionHosts]",
 				"avdStartVmOnConnect": "[steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect]",
