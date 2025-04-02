@@ -1139,6 +1139,7 @@
 									"name": "storageServiceSelector",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Storage service",
+									"visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS'))]",
 									"filter": true,
 									"defaultValue": "AzureFiles",
 									"toolTip": "Select the storage service (Azure Files or ANF) to use for FSLogix and/or App Attach containers. ANF is only available when using AD DS or Microsoft Entra Domain Services identity service providers",
@@ -1153,9 +1154,20 @@
 											{
 												"label": "Azure NetApp Files",
 												"description": "",
-												"value": "ANF"
+												"value": "ANF",
+												"visible": false
 											}
 										]
+									}
+								},
+								{
+									"name": "storageServiceSelectionWarning",
+									"type": "Microsoft.Common.InfoBox",
+									"visible": "[not(or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS')))]",
+									"options": {
+										"text": "Azure NetApp Files is only available when using AD DS or Entra ID Domain Services as the identity service provider. Therefore the FSLogix or App Attach deployments will use Azure Files.",
+										"uri": "https://learn.microsoft.com/en-us/azure/azure-netapp-files/azure-netapp-files-introduction",
+										"style": "Warning"
 									}
 								},
 								{
