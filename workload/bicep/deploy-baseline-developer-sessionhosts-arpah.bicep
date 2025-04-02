@@ -485,7 +485,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       useAvailabilityZones: availabilityZonesCompute
       subscriptionId: avdWorkloadSubsId
       encryptionAtHost: diskZeroTrust
-      createAvdFslogixDeployment: createAvdFslogixDeployment
+      configureFslogix: createAvdFslogixDeployment
       fslogixSharePath: varFslogixSharePath
       fslogixStorageAccountResourceId: ''
       hostPoolResourceId: existingHostPool.id

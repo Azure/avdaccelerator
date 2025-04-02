@@ -108,7 +108,7 @@ param sessionHostOuPath string
 param asgResourceId string
 
 @sys.description('Deploy Fslogix setup.')
-param createAvdFslogixDeployment bool
+param configureFslogix bool
 
 @sys.description('Path for the FSlogix share.')
 param fslogixSharePath string
@@ -275,7 +275,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
                     time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
                     scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
                 }
-                Exclusions: createAvdFslogixDeployment ? {
+                Exclusions: configureFslogix ? {
                     Extensions: '*.vhd;*.vhdx'
                     Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
                     Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
@@ -324,7 +324,7 @@ module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtu
                 time: '120' // When to perform the scheduled scan, measured in minutes from midnight (0-1440). For example: 0 = 12AM, 60 = 1AM, 120 = 2AM.
                 scanType: 'Quick' //Indicates whether scheduled scan setting type is set to Quick or Full (default is Quick)
             }
-            Exclusions: createAvdFslogixDeployment ? {
+            Exclusions: configureFslogix ? {
                 Extensions: '*.vhd;*.vhdx'
                 Paths: '"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys;%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys;%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys;%TEMP%\\*.VHD;%TEMP%\\*.VHDX;%Windir%\\TEMP\\*.VHD;%Windir%\\TEMP\\*.VHDX;${fslogixSharePath}\\*\\*.VHD;${fslogixSharePath}\\*\\*.VHDX'
                 Processes: '%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe;%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe;%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe'
@@ -398,7 +398,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
         hostPoolResourceId: hostPoolResourceId
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
-        fslogix: createAvdFslogixDeployment
+        fslogix: configureFslogix
         identityDomainName: identityDomainName
         vmSize: vmSize
         fslogixSharePath: fslogixSharePath
