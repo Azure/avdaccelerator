@@ -180,7 +180,7 @@ resource image 'Microsoft.Compute/galleries/images@2024-03-03' = {
     osState: osState
     osType: osType
     privacyStatementUri: privacyStatementUri
-    purchasePlan: purchasePlan ?? null
+    //purchasePlan: purchasePlan ?? null
     recommended: { vCPUs: vCPUs, memory: memory }
     releaseNoteUri: releaseNoteUri
   }

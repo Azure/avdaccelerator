@@ -617,11 +617,11 @@ module image '../../avm/1.1.0/res/compute/gallery/image/main.bicep' = {
         isAcceleratedNetworkSupported: imageDefinitionAcceleratedNetworkSupported
         isHibernateSupported: imageDefinitionHibernateSupported
         securityType: imageDefinitionSecurityType
-        purchasePlan: {
-            product: mpImageOffer
-            name: mpImageSku
-            publisher: mpImagePublisher
-        }
+        // purchasePlan: {
+        //     product: mpImageOffer
+        //     name: mpImageSku
+        //     publisher: mpImagePublisher
+        // }
         tags: enableResourceTags ? varCommonResourceTags : {}
     }
     dependsOn: [
