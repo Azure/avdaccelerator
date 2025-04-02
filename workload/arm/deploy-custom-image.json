@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "2681018416811264702"
+      "templateHash": "677105428401929254"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -4091,7 +4091,7 @@
           "purchasePlan": {
             "value": {
               "product": "[parameters('mpImageOffer')]",
-              "name": "[parameters('mpImageOffer')]",
+              "name": "[parameters('mpImageSku')]",
               "publisher": "[parameters('mpImagePublisher')]"
             }
           },

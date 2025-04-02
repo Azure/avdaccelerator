@@ -619,7 +619,7 @@ module image '../../avm/1.1.0/res/compute/gallery/image/main.bicep' = {
         securityType: imageDefinitionSecurityType
         purchasePlan: {
             product: mpImageOffer
-            name: mpImageOffer
+            name: mpImageSku
             publisher: mpImagePublisher
         }
         tags: enableResourceTags ? varCommonResourceTags : {}
