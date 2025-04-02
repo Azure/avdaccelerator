@@ -1129,7 +1129,7 @@
 								{
 									"name": "identityDomainOuPathStorageExisting",
 									"type": "Microsoft.Common.TextBox",
-									"visible": "[contains(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')]",
+									"visible": "[or(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'ADDS'), equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraDS'))]",
 									"label": "Custom OU path (Optional)",
 									"toolTip": "Provide OU where to locate storage account file share. If not provided, file share will be placed on the default (computers) OU.",
 									"placeholder": "Example: OU=storage,OU=avd,DC=contoso,DC=com",
@@ -1138,16 +1138,15 @@
 								{
 									"name": "storageServiceSelector",
 									"type": "Microsoft.Common.DropDown",
-									"visible": "[or(steps('storage').storageFslogix.fslogixDeployment), steps('storage').storageAppAttach.appAttachStorageDeployment)]",
 									"label": "Storage service",
 									"filter": true,
-									"defaultValue": "Azure Files",
+									"defaultValue": "AzureFiles",
 									"toolTip": "Select the storage service (Azure Files or ANF) to use for FSLogix and/or App Attach containers. ANF is only available when using AD DS or Microsoft Entra Domain Services identity service providers",
 									"constraints": {
 										"required": true,
 										"allowedValues": [
 											{
-												"label": "Azure Files",
+												"label": "AzureFiles",
 												"description": "",
 												"value": "AzureFiles"
 											},
@@ -1171,7 +1170,7 @@
 									"name": "storageGeneralSettingsZoneRedundancy",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Storage account type",
-									"visible": "[equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF')]",
+									"visible": "[equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'AzureFiles')]",
 									"defaultValue": "[if(equals(steps('sessionHosts').sessionHostsRegionSection.sessionHostsAvailabilitySettings, true), 'Zone-Redundant Storage', 'Locally Redundant Storage')]",
 									"toolTip": "Select to replicate storage across availability zones or only use local redundancy.",
 									"constraints": {
@@ -2815,7 +2814,7 @@
 				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdArmServicePrincipal.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdArmServicePrincipal.value.id)), '')]",
 				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
 				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
-				"storageServiceSelector": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageServiceSelector, 'AzureFiles')]",
+				"storageService": "[if(or(steps('storage').storageFslogix.fslogixDeployment, steps('storage').storageAppAttach.appAttachStorageDeployment), steps('storage').storageGeneralSettings.storageServiceSelector, 'AzureFiles')]",
 				"avdManagementPlaneLocation": "[steps('basics').resourceScope.location.name]",
 				"avdSessionHostLocation": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsRegionSection.sessionHostsRegion, steps('basics').resourceScope.location.name)]",
 				"avdWorkloadSubsId": "[steps('basics').resourceScope.subscription.subscriptionId]",
