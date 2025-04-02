@@ -1212,7 +1212,7 @@
 									"visible": "[steps('storage').storageFslogix.fslogixDeployment]",
 									"label": "File share performance",
 									"filter": true,
-									"defaultValue": "Premium",
+									"defaultValue": "[if(equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'AzureFiles'), 'Premium', 'Standard')]",
 									"toolTip": "Performance for App Attach storage (Azure files or ANF). Recommended tier is Premium for storage account and Standard for ANF.",
 									"constraints": {
 										"required": true,
@@ -1228,7 +1228,7 @@
 												"value": "Standard"
 											},
 											{
-												"label": "Ultra (ANF)",
+												"label": "Ultra (ANF only)",
 												"description": "",
 												"value": "Ultra"
 											}
@@ -1281,7 +1281,7 @@
 									"visible": "[and(equals(steps('storage').storageAppAttach.appAttachStorageDeployment, true), not(contains(steps('basics').resourceScope.location.name, 'china')))]",
 									"label": "File share performance",
 									"filter": true,
-									"defaultValue": "Premium",
+									"defaultValue": "[if(equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'AzureFiles'), 'Premium', 'Standard')]",
 									"toolTip": "Performance for App Attach storage (Azure files or ANF). Recommended tier is Premium for storage account and Standard for ANF.",
 									"constraints": {
 										"required": true,
@@ -1297,7 +1297,7 @@
 												"value": "Standard"
 											},
 											{
-												"label": "Ultra (ANF)",
+												"label": "Ultra (ANF only)",
 												"description": "",
 												"value": "Ultra"
 											}
