@@ -431,12 +431,12 @@ try {
                 Set-RegistryValue -Name $Setting.Name -Path $Setting.Path -PropertyType $Setting.PropertyType -Value $Setting.Value -Verbose
         }
 
-        # Resize OS Disk
-        Write-Log -message "Resizing OS Disk"
-        $driveLetter = $env:SystemDrive.Substring(0, 1)
-        $size = Get-PartitionSupportedSize -DriveLetter $driveLetter
-        Resize-Partition -DriveLetter $driveLetter -Size $size.SizeMax
-        Write-Log -message "OS Disk Resized"
+        # Resize OS Disk JWI:  commented out due to error during deployment:   https://github.com/Azure/avdaccelerator/issues/769
+        # Write-Log -message "Resizing OS Disk"
+        # $driveLetter = $env:SystemDrive.Substring(0, 1)
+        # $size = Get-PartitionSupportedSize -DriveLetter $driveLetter
+        # Resize-Partition -DriveLetter $driveLetter -Size $size.SizeMax
+        # Write-Log -message "OS Disk Resized"
 
         ##############################################################
         # Add Defender Exclusions for FSLogix 
