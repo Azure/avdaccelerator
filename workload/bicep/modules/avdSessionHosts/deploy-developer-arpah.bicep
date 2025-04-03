@@ -394,7 +394,6 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
     params: {
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        //hostPoolToken: keyVault.getSecret('hostPoolRegistrationToken')
         hostPoolResourceId: hostPoolResourceId
         baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
@@ -402,7 +401,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in 
         identityDomainName: identityDomainName
         vmSize: vmSize
         fslogixSharePath: fslogixSharePath
-        //fslogixStorageFqdn: fslogixStorageFqdn
+        extendOsDisk: customOsDiskSizeGB != 0 ? true : false
         fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
         identityServiceProvider: identityServiceProvider
     }

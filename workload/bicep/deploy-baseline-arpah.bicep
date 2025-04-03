@@ -34,8 +34,14 @@ param avdManagementPlaneLocation string = 'eastus2'
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
 param avdWorkloadSubsId string = ''
 
-@sys.description('Azure Virtual Desktop Enterprise Application object ID. (Default: "")')
-param avdEnterpriseAppObjectId string = ''
+@sys.description('Azure Virtual Desktop Enterprise Application object ID (Enterprise app name: Azure Virtual Desktop) . (Default: "")')
+param avdServicePrincipalObjectId string = ''
+
+@sys.description('Azure Virtual Desktop ARM Enterprise Application Object Id (Enterprise app name: Azure Virtual Desktop ARM Provider). Required for the deployment of App Attach File Share with EntraID identity provider. (Default: "")')
+param avdArmServicePrincipalObjectId string = ''
+
+// @sys.description('Azure Virtual Desktop Enterprise Application object ID. (Default: "")')
+// param avdEnterpriseAppObjectId string = ''
 
 @sys.description('AVD session host local username.')
 param avdVmLocalUserName string
@@ -54,6 +60,9 @@ param avdIdentityServiceProvider string = 'ADDS'
 
 @sys.description('Required, Eronll session hosts on Intune. (Default: false)')
 param createIntuneEnrollment bool = false
+
+@sys.description('Optional. Identity ID(s) to grant RBAC role to access AVD application group and NTFS permissions. (Default: [])')
+param avdSecurityGroups array = []
 
 // This is the object id for the 'ARPA-H AVD Default' MS Entra Group
 @sys.description('Optional, Identity ID to grant RBAC role to access AVD application group and NTFS permissions. (Default: "")')
@@ -1045,6 +1054,10 @@ var verResourceGroups = [
     }
 ]
 
+// security Principals (you can add support for more than one because it is an array. Future)
+var varSecurityPrincipalId = !empty(avdSecurityGroups) ? avdSecurityGroups[0].objectId : ''
+var varSecurityPrincipalName = !empty(avdSecurityGroups) ? avdSecurityGroups[0].displayName : ''
+
 // =========== //
 // Deployments //
 // =========== //
@@ -1260,7 +1273,7 @@ module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
         hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
         hostPoolType: avdHostPoolType
         preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
-        deployScalingPlan: !empty(avdEnterpriseAppObjectId) ? varDeployScalingPlan : false
+        deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
         scalingPlanExclusionTag: varScalingPlanExclusionTag
         scalingPlanSchedules: (avdHostPoolType == 'Pooled') ? varPooledScalingPlanSchedules : varPersonalScalingPlanSchedules
         scalingPlanName: varScalingPlanName
@@ -1352,27 +1365,53 @@ module managementPLane './modules/avdManagementPlane/deploy-arpah.bicep' = {
 // }
 
 // Identity: managed identities and role assignments
+// module identity './modules/identity/deploy.bicep' = {
+//     name: 'Identities-And-RoleAssign-${time}'
+//     params: {
+//         location: avdSessionHostLocation
+//         subscriptionId: avdWorkloadSubsId
+//         computeObjectsRgName: varComputeObjectsRgName
+//         serviceObjectsRgName: varServiceObjectsRgName
+//         storageObjectsRgName: varStorageObjectsRgName
+//         avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
+//         deployScalingPlan: varDeployScalingPlan
+//         storageManagedIdentityName: varStorageManagedIdentityName
+//         enableStartVmOnConnect: avdStartVmOnConnect
+//         identityServiceProvider: avdIdentityServiceProvider
+//         createStorageDeployment: varCreateStorageDeployment
+//         securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
+//         tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//     }
+//     dependsOn: [
+//         baselineResourceGroups
+//         baselineStorageResourceGroup
+//         monitoringDiagnosticSettings
+//     ]
+// }
+
 module identity './modules/identity/deploy.bicep' = {
     name: 'Identities-And-RoleAssign-${time}'
     params: {
-        location: avdSessionHostLocation
-        subscriptionId: avdWorkloadSubsId
-        computeObjectsRgName: varComputeObjectsRgName
-        serviceObjectsRgName: varServiceObjectsRgName
-        storageObjectsRgName: varStorageObjectsRgName
-        avdEnterpriseObjectId: !empty(avdEnterpriseAppObjectId) ? avdEnterpriseAppObjectId : ''
-        deployScalingPlan: varDeployScalingPlan
-        storageManagedIdentityName: varStorageManagedIdentityName
-        enableStartVmOnConnect: avdStartVmOnConnect
-        identityServiceProvider: avdIdentityServiceProvider
-        createStorageDeployment: varCreateStorageDeployment
-        securityPrincipalId: !empty(securityPrincipalId) ? securityPrincipalId : ''
-        tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+      location: avdSessionHostLocation
+      subscriptionId: avdWorkloadSubsId
+      computeObjectsRgName: varComputeObjectsRgName
+      createAppAttachRoleAssignments: createAppAttachDeployment && avdIdentityServiceProvider == 'EntraID'
+      serviceObjectsRgName: varServiceObjectsRgName
+      storageObjectsRgName: varStorageObjectsRgName
+      avdServicePrincipalObjectId: avdServicePrincipalObjectId
+      avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
+      deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
+      storageManagedIdentityName: varStorageManagedIdentityName
+      enableStartVmOnConnect: avdStartVmOnConnect
+      identityServiceProvider: avdIdentityServiceProvider
+      createStorageDeployment: varCreateStorageDeployment
+      securityPrincipalId: varSecurityPrincipalId
+      tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     }
     dependsOn: [
-        baselineResourceGroups
-        baselineStorageResourceGroup
-        monitoringDiagnosticSettings
+      baselineResourceGroups
+      baselineStorageResourceGroup
+      monitoringDiagnosticSettings
     ]
 }
 
@@ -1583,13 +1622,125 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy-arpah.bicep'
         storageFilePrivateEndpointStaticIp: storageAccountInfo.storageFilePrivateEndpointStaticIp
     }
     dependsOn: [
+        // baselineStorageResourceGroup
+        // networking
+        // wrklKeyVault
+        // managementVm
+        // monitoringDiagnosticSettings
+
         baselineStorageResourceGroup
-        networking
         wrklKeyVault
         managementVm
-        monitoringDiagnosticSettings
+        
     ]
 }]
+
+// module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
+//     name: 'Storage-FSLogix-${time}'
+//     params: {
+//       storagePurpose: 'fslogix'
+//       vmLocalUserName: avdVmLocalUserName
+//       fileShareName: varFslogixFileShareName
+//       fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+//       storageSku: varFslogixStorageSku
+//       fileShareQuotaSize: fslogixFileShareQuotaSize
+//       storageAccountFqdn: varFslogixStorageFqdn
+//       storageAccountName: varFslogixStorageName
+//       storageToDomainScript: varStorageToDomainScript
+//       storageToDomainScriptUri: varStorageToDomainScriptUri
+//       identityServiceProvider: avdIdentityServiceProvider
+//       dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+//       storageCustomOuPath: varStorageCustomOuPath
+//       managementVmName: varManagementVmName
+//       deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+//       ouStgPath: varOuStgPath
+//       managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
+//         ? identity.outputs.managedIdentityStorageClientId
+//         : ''
+//       securityPrincipalName: varSecurityPrincipalName
+//       domainJoinUserName: avdDomainJoinUserName
+//       wrklKvName: varWrklKvName
+//       serviceObjectsRgName: varServiceObjectsRgName
+//       identityDomainName: identityDomainName
+//       identityDomainGuid: identityDomainGuid
+//       location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+//       storageObjectsRgName: varStorageObjectsRgName
+//       privateEndpointSubnetId: createAvdVnet
+//         ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+//         : existingVnetPrivateEndpointSubnetResourceId
+//       vmsSubnetId: createAvdVnet
+//         ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
+//         : existingVnetAvdSubnetResourceId
+//       vnetPrivateDnsZoneFilesId: createPrivateDnsZones
+//         ? networking.outputs.azureFilesDnsZoneResourceId
+//         : avdVnetPrivateDnsZoneFilesId
+//       workloadSubsId: avdWorkloadSubsId
+//       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//       alaWorkspaceResourceId: avdDeployMonitoring
+//         ? (deployAlaWorkspace
+//             ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+//             : alaExistingWorkspaceResourceId)
+//         : ''
+//     }
+//     dependsOn: [
+//       baselineStorageResourceGroup
+//       wrklKeyVault
+//       managementVm
+//     ]
+//   }
+// module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
+//     name: 'Storage-FSLogix-${time}'
+//     params: {
+//       storagePurpose: 'fslogix'
+//       vmLocalUserName: avdVmLocalUserName
+//       fileShareName: varFslogixFileShareName
+//       fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+//       storageSku: varFslogixStorageSku
+//       fileShareQuotaSize: fslogixFileShareQuotaSize
+//       storageAccountFqdn: varFslogixStorageFqdn
+//       storageAccountName: varFslogixStorageName
+//       storageToDomainScript: varStorageToDomainScript
+//       storageToDomainScriptUri: varStorageToDomainScriptUri
+//       identityServiceProvider: avdIdentityServiceProvider
+//       dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
+//       storageCustomOuPath: varStorageCustomOuPath
+//       managementVmName: varManagementVmName
+//       deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
+//       ouStgPath: varOuStgPath
+//       managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
+//         ? identity.outputs.managedIdentityStorageClientId
+//         : ''
+//       securityPrincipalName: varSecurityPrincipalName
+//       domainJoinUserName: avdDomainJoinUserName
+//       wrklKvName: varWrklKvName
+//       serviceObjectsRgName: varServiceObjectsRgName
+//       identityDomainName: identityDomainName
+//       identityDomainGuid: identityDomainGuid
+//       location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+//       storageObjectsRgName: varStorageObjectsRgName
+//       privateEndpointSubnetId: createAvdVnet
+//         ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
+//         : existingVnetPrivateEndpointSubnetResourceId
+//       vmsSubnetId: createAvdVnet
+//         ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
+//         : existingVnetAvdSubnetResourceId
+//       vnetPrivateDnsZoneFilesId: createPrivateDnsZones
+//         ? networking.outputs.azureFilesDnsZoneResourceId
+//         : avdVnetPrivateDnsZoneFilesId
+//       workloadSubsId: avdWorkloadSubsId
+//       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//       alaWorkspaceResourceId: avdDeployMonitoring
+//         ? (deployAlaWorkspace
+//             ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+//             : alaExistingWorkspaceResourceId)
+//         : ''
+//     }
+//     dependsOn: [
+//       baselineStorageResourceGroup
+//       wrklKeyVault
+//       managementVm
+//     ]
+//   }
 
 // App Attach storage
 module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateAppAttachDeployment) {
@@ -1707,8 +1858,12 @@ module sessionHosts './modules/avdSessionHosts/deploy-arpah.bicep' = [
         vmLocalUserName: avdVmLocalUserName
         subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
-        createAvdFslogixDeployment: createAvdFslogixDeployment
+        configureFslogix: createAvdFslogixDeployment
         fslogixSharePath: varFslogixSharePath
+        fslogixStorageAccountResourceId: avdIdentityServiceProvider == 'EntraID'
+        ? fslogixAzureFilesStorage[0].outputs.storageAccountResourceId
+        : ''
+        hostPoolResourceId: managementPLane.outputs.hostPoolResourceId
         fslogixStorageFqdn: varFslogixStorageFqdn
         sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
         sessionHostConfigurationScript: varSessionHostConfigurationScript
@@ -1725,13 +1880,14 @@ module sessionHosts './modules/avdSessionHosts/deploy-arpah.bicep' = [
         hostPoolName: managementPLane.outputs.desktopHostPoolName
     }
     dependsOn: [
-        fslogixAzureFilesStorage
+        // fslogixAzureFilesStorage
+        // baselineResourceGroups
+        // networking
+        // wrklKeyVault
+        // monitoringDiagnosticSettings
+        // vmScaleSetFlex
+        // managementPLane
         baselineResourceGroups
-        networking
-        wrklKeyVault
-        monitoringDiagnosticSettings
-        vmScaleSetFlex
-        managementPLane
     ]
   }
 ]
@@ -1781,8 +1937,12 @@ module sessionHostsRemoteApp './modules/avdSessionHosts/deploy-arpah.bicep' = [
         vmLocalUserName: avdVmLocalUserName
         subscriptionId: avdWorkloadSubsId
         encryptionAtHost: diskZeroTrust
-        createAvdFslogixDeployment: createAvdFslogixDeployment
+        configureFslogix: createAvdFslogixDeployment
         fslogixSharePath: varFslogixSharePathRemote
+        fslogixStorageAccountResourceId: avdIdentityServiceProvider == 'EntraID'
+        ? fslogixAzureFilesStorage[1].outputs.storageAccountResourceId
+        : ''
+        hostPoolResourceId: managementPLane.outputs.hostPoolResourceId
         fslogixStorageFqdn: varFslogixStorageFqdnRemote
         sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
         sessionHostConfigurationScript: varSessionHostConfigurationScript
