@@ -33,7 +33,7 @@ Param(
 
         [parameter(Mandatory)]
         [boolean]
-        $extendOsDisk
+        $ExtendOsDisk
 
         # [parameter(Mandatory)]
         # [string]
@@ -437,7 +437,7 @@ try {
 
         # Resize OS Disk
 
-        if ($extendOsDisk -eq $true) {
+        if ($ExtendOsDisk -eq $true) {
                 Write-Log -message "Resizing OS Disk"
                 $driveLetter = $env:SystemDrive.Substring(0, 1)
                 $size = Get-PartitionSupportedSize -DriveLetter $driveLetter
