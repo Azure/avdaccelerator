@@ -29,9 +29,9 @@
                                     "name": "deploymentInfo",
                                     "type": "Microsoft.Common.InfoBox",
                                     "options": {
-										"style": "Info",
+                                        "style": "Info",
                                         "text": "The subscription and region selected below will be used for most of the resources deployed in this solution. The replication regions for the image version will be the only exception and those regions will be defined in the next step. The regions listed in the menu below are the only regions that support Azure Image Builder image templates. Please ensure to select the appropriate options for your environment.",
-                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell#regions"										
+                                        "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell#regions"
                                     }
                                 }
                             ]
@@ -170,55 +170,55 @@
                             ]
                         },
                         {
-                            "name": "operatingSystem",
+                            "name": "imageOsSection",
                             "type": "Microsoft.Common.Section",
                             "visible": true,
-                            "label": "Operating system",
+                            "label": "Market place OS selection",
                             "elements": [
                                 {
-                                    "name": "versionSelection",
+                                    "name": "offer",
                                     "type": "Microsoft.Common.DropDown",
-                                    "label": "Version",
-                                    "filter": true,
-                                    "defaultValue": "Windows 11 23H2",
-                                    "toolTip": "Select the operating system version for the source image.",
+                                    "label": "Offer",
+                                    "defaultValue": "Office-365",
+                                    "toolTip": "Select the desired marketplace image offer.",
                                     "constraints": {
-                                        "required": true,
                                         "allowedValues": [
                                             {
-                                                "label": "Windows 10 22H2 (Gen2)",
-                                                "value": "win10_22h2_g2"
+                                                "label": "Office-365",
+                                                "value": "office-365"
                                             },
                                             {
-                                                "label": "Windows 10 22H2 - Office 365 (Gen2)",
-                                                "value": "win10_22h2_office_g2"
+                                                "label": "Windows-10",
+                                                "value": "Windows-10"
                                             },
                                             {
-                                                "label": "Windows 11 22H2",
-                                                "value": "win11_22h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 22H2 - Office 365",
-                                                "value": "win11_22h2_office"
-                                            },
-                                            {
-                                                "label": "Windows 11 23H2",
-                                                "value": "win11_23h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 23H2 - Office 365",
-                                                "value": "win11_23h2_office"
-                                            },
-                                            {
-                                                "label": "Windows 11 24H2",
-                                                "value": "win11_24h2"
-                                            },
-                                            {
-                                                "label": "Windows 11 24H2 - Office 365",
-                                                "value": "win11_24h2_office"
+                                                "label": "Windows-11",
+                                                "value": "windows-11"
                                             }
-                                        ]
+                                        ],
+                                        "required": true
                                     }
+                                },
+                                {
+                                    "name": "skusApi",
+                                    "type": "Microsoft.Solutions.ArmApiControl",
+                                    "condition": "",
+                                    "request": {
+                                        "method": "GET",
+                                        "path": "[concat(steps('basics').resourceScope.subscription.id, '/providers/Microsoft.Compute/locations/', steps('basics').resourceScope.location.name, '/publishers/MicrosoftWindowsDesktop/artifacttypes/vmimage/offers/', steps('imageManagement').imageOsSection.offer, '/skus?api-version=2022-08-01')]"
+                                    }
+                                },
+                                {
+                                    "name": "sku",
+                                    "type": "Microsoft.Common.DropDown",
+                                    "label": "SKU",
+                                    "defaultValue": "win11-24h2-avd-m365",
+                                    "toolTip": "Select the desired marketplace image SKU.",
+                                    "constraints": {
+                                        "allowedValues": "[map(filter(steps('imageManagement').imageOsSection.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'ent')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+                                        "required": true
+                                    },
+                                    "visible": true
                                 }
                             ]
                         },
@@ -247,9 +247,9 @@
                                 {
                                     "name": "securityType",
                                     "type": "Microsoft.Common.DropDown",
-                                    "visible": "[or(contains(steps('imageManagement').operatingSystem.versionSelection, 'g2'), contains(steps('imageManagement').operatingSystem.versionSelection, 'win11'))]",
+                                    "visible": true,
                                     "label": "Security type",
-                                    "defaultValue": "Standard",
+                                    "defaultValue": "Trusted Launch",
                                     "toolTip": "Security type refers to the different security features available for a virtual machine. Security features like Trusted launch and Confidential Virtual Machines help to improve the security of Azure generation 2 virtual machines. However, additional security features have some limitations, which include not supporting back up, managed disks, and ephemeral OS disks. Learn more about Trusted launch virtual machines at https://learn.microsoft.com/en-us/azure/virtual-machines/trusted-launch and Confidential virtual machines at https://learn.microsoft.com/en-us/azure/confidential-computing/confidential-vm-overview.",
                                     "constraints": {
                                         "required": true,
@@ -286,13 +286,13 @@
                             "type": "Microsoft.Common.TextBlock",
                             "visible": true,
                             "options": {
-                              "text": "The AIB service allows the use of scripts and customizers to automatically create images on demand. This solution will deploy a managed identity and custom RBAC roles to enable AIB.",
-                              "link": {
-                                "label": "Learn more",
-                                "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell"
-                              }
+                                "text": "The AIB service allows the use of scripts and customizers to automatically create images on demand. This solution will deploy a managed identity and custom RBAC roles to enable AIB.",
+                                "link": {
+                                    "label": "Learn more",
+                                    "uri": "https://learn.microsoft.com/azure/virtual-machines/image-builder-overview?tabs=azure-powershell"
+                                }
                             }
-                          },
+                        },
                         {
                             "name": "buildSchedule",
                             "type": "Microsoft.Common.OptionsGroup",
@@ -871,7 +871,8 @@
                 "imageVersionPrimaryLocation": "[steps('imageManagement').imageVersion.primaryLocation]",
                 "imageVersionStorageAccountType": "[steps('imageManagement').imageVersion.storageAccountType]",
                 "logAnalyticsWorkspaceCustomName": "[if(equals(steps('naming').customNamingSelection, true), steps('naming').customNaming.logAnalyticsWorkspace, 'none')]",
-                "operatingSystemImage": "[steps('imageManagement').operatingSystem.versionSelection]",
+                "mpImageOffer": "[steps('imageManagement').imageOsSection.offer]",
+                "mpImageSku": "[steps('imageManagement').imageOsSection.sku]",
                 "operationsTeamTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.operationsTeam, 'none')]",
                 "ownerTag": "[if(equals(steps('tags').selection, true), steps('tags').customTags.owner, 'none')]",
                 "rdpShortPathManagedNetworks": "[steps('aib').customizers.rdpShortPathSelection]",
