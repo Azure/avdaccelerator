@@ -167,7 +167,6 @@ var varCustomOsDiskProperties = {
   managedDisk: varManagedDisk
   diskSizeGB: customOsDiskSizeGB != 0 ? customOsDiskSizeGB : null
 }
-
 var varZones = [for zone in availabilityZones: int(zone)]
 
 // =========== //
@@ -363,6 +362,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
       fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
       hostPoolResourceId: hostPoolResourceId
       identityDomainName: identityDomainName
+      extendOsDisk: customOsDiskSizeGB != 0 ? true : false
       identityServiceProvider: identityServiceProvider
       location: location
       name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'

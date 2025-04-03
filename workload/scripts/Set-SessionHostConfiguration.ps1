@@ -29,7 +29,11 @@ Param(
 
         [parameter(Mandatory)]
         [string]
-        $NvidiaVmSize
+        $NvidiaVmSize,
+
+        [parameter(Mandatory)]
+        [boolean]
+        $ExtendOsDisk
 
         # [parameter(Mandatory)]
         # [string]
@@ -432,11 +436,14 @@ try {
         }
 
         # Resize OS Disk
-        Write-Log -message "Resizing OS Disk"
-        $driveLetter = $env:SystemDrive.Substring(0, 1)
-        $size = Get-PartitionSupportedSize -DriveLetter $driveLetter
-        Resize-Partition -DriveLetter $driveLetter -Size $size.SizeMax
-        Write-Log -message "OS Disk Resized"
+
+        if ($ExtendOsDisk -eq $true) {
+                Write-Log -message "Resizing OS Disk"
+                $driveLetter = $env:SystemDrive.Substring(0, 1)
+                $size = Get-PartitionSupportedSize -DriveLetter $driveLetter
+                Resize-Partition -DriveLetter $driveLetter -Size $size.SizeMax
+                Write-Log -message "OS Disk Resized"
+        }
 
         ##############################################################
         # Add Defender Exclusions for FSLogix 

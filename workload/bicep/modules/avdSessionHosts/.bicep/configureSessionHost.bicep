@@ -14,6 +14,9 @@ param identityDomainName string
 @sys.description('Location where to deploy compute services.')
 param location string
 
+@sys.description('Specifies whether to extend the OS disk.')
+param extendOsDisk bool
+
 @sys.description('URI for AVD session host configuration URI path.')
 param baseScriptUri string
 
@@ -42,7 +45,7 @@ param hostPoolResourceId string
 // Additional parameter for screen capture functionallity -ScreenCaptureProtection ${ScreenCaptureProtection} -verbose' powershell script will need to be updated too
 
 var fslogixStorageAccountName = fslogix ? last(split(fslogixStorageAccountResourceId, '/')) : ''
-var varBaseScriptArguments = '-IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken "${hostPool.listRegistrationTokens().value[0].token}" -AmdVmSize ${varAmdVmSize} -NvidiaVmSize ${varNvidiaVmSize}'
+var varBaseScriptArguments = '-ExtendOsDisk ${extendOsDisk} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken "${hostPool.listRegistrationTokens().value[0].token}" -AmdVmSize ${varAmdVmSize} -NvidiaVmSize ${varNvidiaVmSize}'
 var varBaseFSLogixScriptArguments = '-FslogixFileShare "${fslogixSharePath}"'
 var varFSLogixScriptArguments = identityServiceProvider == 'EntraID'
   ? '${varBaseFSLogixScriptArguments} -FslogixStorageAccountKey "${storageAccount.listkeys().keys[0].value}"'
