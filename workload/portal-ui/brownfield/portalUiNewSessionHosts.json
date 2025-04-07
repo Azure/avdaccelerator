@@ -79,7 +79,7 @@
 									"list": "value|[*].{label:name, value:id}"
 								}
 							}
-						}						
+						}					
 					]
 				},
 				{
@@ -100,6 +100,45 @@
 							"type": "Microsoft.Common.Section",
 							"label": "Virtual Machine Naming",
 							"elements": [
+								{
+									"name": "prefix",
+									"type": "Microsoft.Common.TextBox",
+									"visible": "[not(steps('sessionHosts').naming.customNaming)]",
+									"label": "Deployment Prefix",
+									"subLabel": "",
+									"defaultValue": "AVD1",
+									"toolTip": "The name of the resource group to deploy. (Default: AVD1)",
+									"constraints": {
+										"required": true,
+										"regex": "^[a-zA-Z0-9]{2,4}$",
+										"validationMessage": "The prefix can be 2-4 aphanumeric characters."
+									}
+								},
+								{
+									"name": "environment",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Deployment Environment",
+									"visible": "[not(steps('sessionHosts').naming.customNaming)]",
+									"defaultValue": "Dev",
+									"toolTip": "The name of the resource group to deploy.",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Dev",
+												"value": "Dev"
+											},
+											{
+												"label": "Test",
+												"value": "Test"
+											},
+											{
+												"label": "Prod",
+												"value": "Prod"
+											}
+										]
+									}
+								},	
 								{
 									"name": "customNaming",
 									"type": "Microsoft.Common.CheckBox",
@@ -982,8 +1021,8 @@
 				"hostPoolResourceId": "[steps('basics').hostPool.id]",
 				"location": "[steps('basics').resourceScope.location.name]",
 				"computeRgResourceGroupName": "[steps('basics').resourceGroup.name]",
-				"deploymentPrefix": "[first(skip(split(steps('basics').resourceGroup.name, '-'), 2))]",
-				"deploymentEnvironment": "[first(skip(split(steps('basics').resourceGroup.name, '-'), 3))]",
+				"deploymentPrefix": "[if(not(steps('sessionHosts').naming.customNaming), steps('sessionHosts').naming.prefix, '')]", 
+				"deploymentEnvironment": "[if(not(steps('sessionHosts').naming.customNaming), steps('sessionHosts').naming.environment, '')]", 
 				"customNaming": "[steps('sessionHosts').naming.customNaming]",
 				"sessionHostCustomNamePrefix": "[if(steps('sessionHosts').naming.customNaming, steps('sessionHosts').naming.vmNamePrefix, 'notapp')]",
 				"count": "[steps('sessionHosts').naming.count]",
