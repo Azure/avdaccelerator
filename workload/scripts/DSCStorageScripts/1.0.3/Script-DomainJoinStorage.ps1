@@ -125,11 +125,14 @@ if ($IdentityServiceProvider -eq 'ADDS' && $StorageService -eq 'AzureFiles') {
 		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
 	}
- else {
-		#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
-		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -OverwriteExistingADObject #-SamAccountName $SamAccountName
-		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
-	}
+
+if ($IdentityServiceProvider -eq 'EntraDS' && $StorageService -eq 'AzureFiles') {
+		Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
+		if ( $CustomOuPath -eq 'true') 	{
+			#Join-AzStorageAccountForAuth -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -DomainAccountType 'ComputerAccount' -OrganizationalUnitName $OUName -OverwriteExistingADObject
+			Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitName $OUName -DomainAccountType 'ComputerAccount' -OverwriteExistingADObject #-SamAccountName $SamAccountName
+			Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to default OU path $OUName"
+		}
 }
 
 if ($StoragePurpose -eq 'fslogix') {
