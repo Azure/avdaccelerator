@@ -56,9 +56,6 @@
       "avdSessionHostCountIndex": {
           "value": 0
       },
-      "availabilityZonesCompute": {
-          "value": true
-      },
       "avdSessionHostsSize": {
           "value": "Standard_E4s_v5"
       },
