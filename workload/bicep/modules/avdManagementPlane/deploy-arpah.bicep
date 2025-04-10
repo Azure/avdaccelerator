@@ -268,6 +268,13 @@ var varRAppApplicationGroupsOfficeApps = (preferredRemoteAppGroupType == 'RailAp
     showInPortal: true
     filePath: 'shell:AppsFolder\\Microsoft.OutlookForWindows_8wekyb3d8bbwe!Microsoft.OutlookForWindows'
   }
+  {
+    name: 'Chrome'
+    description: 'Chrome'
+    friendlyName: 'Chrome'
+    showInPortal: true
+    filePath: 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'
+}
 ]: []
 
 //var varRAppApplicationGroupsApps = (preferredAppGroupType == 'RailApplications') ? ((contains(osImage, 'office')) ? union(varRAppApplicationGroupsStandardApps, varRAppApplicationGroupsOfficeApps) : varRAppApplicationGroupsStandardApps) : []

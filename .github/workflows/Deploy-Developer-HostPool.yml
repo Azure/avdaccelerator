@@ -88,7 +88,7 @@ jobs:
         ApplicationGroupName: 'vdag-desktop-developer-${{ inputs.hostpool_type }}-${{ inputs.environment }}-use2-001'
         # TEST:                 'vdag-desktop-${toLower(hostPoolPersona)}--${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
         Name: 'SessionDesktop'
-        FriendlyName: 'ARPA-H Windows Developer '
+        FriendlyName: 'ARPA-H Windows Developer'
       with:
         inlineScript: ./.github/workflows/scripts/update_app_display_name.ps1 -ResourceGroupName ${{ env.ResourceGroupName }} -ApplicationGroupName  ${{ env.ApplicationGroupName }} -Name  ${{ env.Name }} -FriendlyName  '${{ env.FriendlyName }}'
         azPSVersion: "latest"
