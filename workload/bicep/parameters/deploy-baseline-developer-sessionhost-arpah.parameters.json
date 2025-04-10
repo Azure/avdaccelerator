@@ -96,7 +96,7 @@
         "value": "Pooled"
       },
       "maxSessionHostsPerTemplate": {
-        "value": 1
+        "value": 10
       }
   }
 }
