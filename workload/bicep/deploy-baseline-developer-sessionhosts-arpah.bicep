@@ -463,7 +463,7 @@ resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05'
 // Session hosts
 @batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
-  for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
+  for i in range(0, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i - 1}-${time}'
     params: {
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
