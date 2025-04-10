@@ -343,10 +343,36 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 }
 
 // Add monitoring extension to session host
-module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
-    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Mon-${batchId}-${i - 1}-${time}'
-    params: {
+// module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployMonitoring) {
+//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//     name: 'SH-Mon-${batchId}-${i - 1}-${time}'
+//     params: {
+//         location: location
+//         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//         name: 'AzureMonitorWindowsAgent'
+//         publisher: 'Microsoft.Azure.Monitor'
+//         type: 'AzureMonitorWindowsAgent'
+//         typeHandlerVersion: '1.0'
+//         autoUpgradeMinorVersion: true
+//         enableAutomaticUpgrade: true
+//         settings: {
+//             workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
+//         }
+//         protectedSettings: {
+//             workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
+//         }
+//     }
+//     dependsOn: [
+//         sessionHostsAntimalwareExtension
+//         alaWorkspace
+//     ]
+// }]
+
+module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [
+    for i in range(0, count): if (deployMonitoring) {
+      scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+      name: 'SH-Mon-${batchId + 1}-${i + countIndex}-${time}'
+      params: {
         location: location
         virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         name: 'AzureMonitorWindowsAgent'
@@ -355,18 +381,13 @@ module monitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/m
         typeHandlerVersion: '1.0'
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: true
-        settings: {
-            workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : ''
-        }
-        protectedSettings: {
-            workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
-        }
-    }
-    dependsOn: [
+      }
+      dependsOn: [
         sessionHostsAntimalwareExtension
-        alaWorkspace
-    ]
-}]
+      ]
+    }
+  ]
+
 
 // Data collection rule association
 module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
@@ -381,35 +402,60 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
         // //sessionHostsAntimalwareExtension
         // sessionHosts
         // alaWorkspace
-        monitoring
+        ama
         sessionHostsAntimalwareExtension
         alaWorkspace
     ]
 }]
 
 // Apply AVD session host configurations
-module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
-    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-Config-${batchId}-${i}-${time}'
-    params: {
+// module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
+//     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//     name: 'SH-Config-${batchId}-${i}-${time}'
+//     params: {
+//         location: location
+//         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//         hostPoolResourceId: hostPoolResourceId
+//         baseScriptUri: sessionHostConfigurationScriptUri
+//         scriptName: sessionHostConfigurationScript
+//         fslogix: configureFslogix
+//         identityDomainName: identityDomainName
+//         vmSize: vmSize
+//         fslogixSharePath: fslogixSharePath
+//         extendOsDisk: customOsDiskSizeGB != 0 ? true : false
+//         fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
+//         identityServiceProvider: identityServiceProvider
+//     }
+//     dependsOn: [
+//         sessionHosts
+//         monitoring
+//     ]
+// }]
+
+module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
+    for i in range(0, count): {
+      scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+      name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
+      params: {
+        baseScriptUri: sessionHostConfigurationScriptUri
+        fslogix: configureFslogix
+        fslogixSharePath: fslogixSharePath
+        fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
+        hostPoolResourceId: hostPoolResourceId
+        identityDomainName: identityDomainName
+        extendOsDisk: customOsDiskSizeGB != 0 ? true : false
+        identityServiceProvider: identityServiceProvider
         location: location
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        hostPoolResourceId: hostPoolResourceId
-        baseScriptUri: sessionHostConfigurationScriptUri
         scriptName: sessionHostConfigurationScript
-        fslogix: configureFslogix
-        identityDomainName: identityDomainName
         vmSize: vmSize
-        fslogixSharePath: fslogixSharePath
-        extendOsDisk: customOsDiskSizeGB != 0 ? true : false
-        fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
-        identityServiceProvider: identityServiceProvider
-    }
-    dependsOn: [
+      }
+      dependsOn: [
         sessionHosts
-        monitoring
-    ]
-}]
+        ama
+      ]
+    }
+  ]
 
 // module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
 //     for i in range(0, count): {
