@@ -43,8 +43,14 @@ param count int
 @sys.description('The session host number to begin with for the deployment.')
 param countIndex int
 
+// @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true).')
+// param useAvailabilityZones bool
+
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true).')
-param useAvailabilityZones bool
+param availability string
+
+@sys.description('Defines the Availability Zones for the VMs.')
+param availabilityZones array = []
 
 // @sys.description('VMSS flex name.')
 // param vmssFlexNamePrefix string
@@ -177,6 +183,8 @@ var varCustomOsDiskProperties = {
     diskSizeGB: !empty(customOsDiskSizeGB ) ? customOsDiskSizeGB : null
 }
 
+var varZones = [for zone in availabilityZones: int(zone)]
+
 // var devSecurityGroupPrincipalId = '19cfe65e-52b6-49e5-8155-02843498171d'
 
 var varCustomDeveloperRole = {
@@ -195,14 +203,14 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 }
 
 // Session hosts
-module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpah.bicep' = [for i in range(1, count): {
+module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpah.bicep' = [for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-${batchId}-${i - 1}-${time}'
     params: {
         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
-        zone: useAvailabilityZones ? (i % 3 + 1) : 0
+        zone: availability == 'AvailabilityZones' ? varZones[i % length(varZones)] : 0
         managedIdentities: (identityServiceProvider == 'EntraID' || deployMonitoring) ? {
             systemAssigned: true
         }: null
@@ -303,7 +311,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
 // }]
 
 // Add antimalware extension to session host.
-module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): if (deployAntiMalwareExt) {
+module sessionHostsAntimalwareExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(0, count): if (deployAntiMalwareExt) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Antimal-${batchId}-${i - 1}-${time}'
     params: {
@@ -390,7 +398,7 @@ module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bic
 
 
 // Data collection rule association
-module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(1, count): if (deployMonitoring) {
+module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = [for i in range(0, count): if (deployMonitoring) {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'DCR-Asso-${batchId}-${i - 1}-${time}'
     params: {
@@ -494,7 +502,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
 //             }
 //         }
 
-module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     //name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
     name: 'Dom-Join-${batchId}-${i}-${time}'

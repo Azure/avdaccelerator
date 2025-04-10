@@ -81,8 +81,24 @@ param avdDeploySessionHostsCount int = 2
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 0)')
 param avdSessionHostCountIndex int = 0
 
-@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
-param availabilityZonesCompute bool = true
+@sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level.')
+@allowed([
+  'None'
+  'AvailabilityZones'
+])
+param availability string = 'AvailabilityZones'
+
+@sys.description('The Availability Zones to use for the session hosts.')
+@allowed([
+  '1'
+  '2'
+  '3'
+])
+param availabilityZones array = ['1', '2', '3']
+
+
+// @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be members of a new availability set. (Default: true)')
+// param availabilityZonesCompute bool = true
 
 @sys.description('Enables a zero trust configuration on the session host disks. (Default: false)')
 param diskZeroTrust bool = false
@@ -455,6 +471,8 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment)
         ? '${applicationSecurityGroupExisting.id}'
         : ''
+      availability: availability
+      availabilityZones: availabilityZones
       identityServiceProvider: avdIdentityServiceProvider
       createIntuneEnrollment: createIntuneEnrollment
       batchId: i - 1
@@ -482,7 +500,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       secureBootEnabled: secureBootEnabled
       vTpmEnabled: vTpmEnabled
       subnetId: existingVnetAvdSubnetResourceId
-      useAvailabilityZones: availabilityZonesCompute
+      //useAvailabilityZones: availabilityZonesCompute
       subscriptionId: avdWorkloadSubsId
       encryptionAtHost: diskZeroTrust
       configureFslogix: createAvdFslogixDeployment

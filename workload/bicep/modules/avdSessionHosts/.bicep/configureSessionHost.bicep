@@ -109,4 +109,3 @@ resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09
     }
   }
 }
-
