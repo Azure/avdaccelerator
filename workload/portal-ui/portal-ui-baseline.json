@@ -1536,7 +1536,7 @@
 							"name": "avdVirtualNetworkSelectorId",
 							"type": "Microsoft.Solutions.ResourceSelector",
 							"visible": "[not(steps('network').createAvdVirtualNetwork)]",
-							"label": "Azure Virtual Desktop virtual network",
+							"label": "Virtual network",
 							"resourceType": "Microsoft.Network/virtualNetworks",
 							"constraints": {
 								"required": true
@@ -1562,16 +1562,16 @@
 							"name": "virtualNetworkAvdSubnetSelectorName",
 							"label": "Azure Virtual Desktop subnet",
 							"type": "Microsoft.Common.DropDown",
-							"visible": "[and(not(steps('network').createAvdVirtualNetwork), equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF'))]",
+							"visible": "[not(steps('network').createAvdVirtualNetwork)]",
 							"defaultValue": "",
-							"toolTip": "Select the subnet.",
+							"toolTip": "Select the AVD subnet.",
 							"multiselect": false,
 							"selectAll": false,
 							"filter": true,
 							"filterPlaceholder": "Filter items ...",
 							"multiLine": true,
 							"constraints": {
-								"allowedValues": "[map(filter(steps('network').avdSubnetApi.value, (item) => not(empty(item.delegations))), (item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
+								"allowedValues": "[map(steps('network').avdSubnetApi.value,(item) => parse(concat('{\"label\":\"', item.name, '\",\"value\":\"', item.id, '\",\"description\":\"', 'Resource Group: ', last(take(split(item.id, '/'), 5)), '\"}')))]",
 								"required": true
 							}
 						},
@@ -1579,9 +1579,9 @@
 							"name": "virtualNetworkAnfSubnetSelectorName",
 							"label": "Azure NetApp Files subnet",
 							"type": "Microsoft.Common.DropDown",
-							"visible": "[not(steps('network').createAvdVirtualNetwork)]",
+							"visible": "[and(not(steps('network').createAvdVirtualNetwork), equals(steps('storage').storageGeneralSettings.storageServiceSelector, 'ANF'))]",
 							"defaultValue": "",
-							"toolTip": "Select the subnet.",
+							"toolTip": "Select the Azure NetApp Files subnet, this subnet needs to be delegated to service Microsoft.Netapp/volumes.",
 							"multiselect": false,
 							"selectAll": false,
 							"filter": true,
