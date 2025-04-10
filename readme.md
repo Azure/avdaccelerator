@@ -70,20 +70,11 @@ The brownfield, add-ons and tools section, contains templates to deploy addition
 
 ### Custom image build
 
-[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered:
+[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery.
 
-- Windows 10 22H2 (Gen 2)
-- Windows 11 22H2 (Gen 2)
-- Windows 11 23H2 (Gen 2)
-- Windows 11 24H2 (Gen 2)
-- Windows 10 22H2 with O365 (Gen 2)
-- Windows 11 22H2 with O365 (Gen 2)
-- Windows 11 23H2 with O365 (Gen 2)
-- Windows 11 24H2 with O365 (Gen 2)
+You can select to enable the Trusted Launch or Confidential VM security type feature on the Azure Compute Gallery image definition.
 
-You can also select to enable the Trusted Launch or Confidential VM security type feature on the Azure Compute Gallery image definition.
-
-Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
+Custom image is patched with the latest Windows updates.
 
 | Deployment Type | Link |
 |:--|:--|
