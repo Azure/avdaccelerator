@@ -125,6 +125,7 @@ if ($IdentityServiceProvider -eq 'ADDS' && $StorageService -eq 'AzureFiles') {
 		Join-AzStorageAccount -ResourceGroupName $StorageAccountRG -StorageAccountName $StorageAccountName -OrganizationalUnitDistinguishedName $OUName -DomainAccountType 'ComputerAccount' -OverwriteExistingADObject #-SamAccountName $SamAccountName
 		Write-Log -Message "Successfully domain joined the storage account $StorageAccountName to custom OU path $OUName"
 	}
+}
 
 if ($IdentityServiceProvider -eq 'EntraDS' && $StorageService -eq 'AzureFiles') {
 		Write-Log "Domain joining storage account $StorageAccountName in Resource group $StorageAccountRG"
