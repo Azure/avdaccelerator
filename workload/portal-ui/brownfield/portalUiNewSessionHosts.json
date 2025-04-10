@@ -213,7 +213,7 @@
 									"defaultValue": "win11-24h2-avd-m365",
 									"toolTip": "Select the desired marketplace image SKU.",
 									"constraints": {
-										"allowedValues": "[map(filter(steps('sessionHosts').image.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'entn')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+										"allowedValues": "[map(filter(steps('sessionHosts').image.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'ent')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
 										"required": true
 									},
 									"visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
@@ -592,7 +592,7 @@
 									"type": "Microsoft.Common.TextBox",
 									"placeholder": "domainjoin@contoso.com",
 									"label": "Domain Join User Principal Name",
-									"toolTip": "The User Principal Name of the domain join account.",
+									"toolTip": "Provide username with permissions to join session host to the domain, the expected format is <username>@<domain_name>.",
 									"constraints": {
 										"regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
 										"required": true

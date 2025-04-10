@@ -306,10 +306,11 @@
 									"name": "identityDomainJoinUserName",
 									"type": "Microsoft.Common.TextBox",
 									"label": "User principal name",
-									"toolTip": "Provide username with permissions to join session host to the domain.",
+									"toolTip": "Provide username with permissions to join session host to the domain, the expected format is <username>@<domain_name>.",
 									"placeholder": "Example: 'avdadmin@contoso.com'",
 									"defaultValue": "",
 									"constraints": {
+										"regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
 										"required": true
 									}
 								},
