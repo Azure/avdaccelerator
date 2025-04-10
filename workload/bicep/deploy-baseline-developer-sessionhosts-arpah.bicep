@@ -355,9 +355,9 @@ var varFslogixFileShareName = avdUseCustomNaming
 var varFslogixStorageName = avdUseCustomNaming 
     ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}biz' 
     : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-var varFslogixStorageFqdn = createAvdFslogixDeployment 
-    ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
-    : ''
+// var varFslogixStorageFqdn = createAvdFslogixDeployment 
+//     ? '${varFslogixStorageName}.file.${environment().suffixes.storage}' 
+//     : ''
 var varDataCollectionRulesName = 'dcr-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}'
 var varZtKvName = avdUseCustomNaming 
     ? '${ztKvPrefixCustomName}-${varComputeStorageResourcesNamingStandard}-${varNamingUniqueStringTwoChar}' 
@@ -374,9 +374,9 @@ var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 var varMaxSessionHostsPerTemplate = maxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
 var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
-var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0 
-    ? varMaxSessionHostsDivisionValue + 1 
-    : varMaxSessionHostsDivisionValue
+var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0
+  ? varMaxSessionHostsDivisionValue + 1
+  : varMaxSessionHostsDivisionValue
 
 var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
 // Resource tagging
@@ -463,7 +463,7 @@ resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05'
 // Session hosts
 @batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
-  for i in range(0, varSessionHostBatchCount): if (avdDeploySessionHosts) {
+  for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i - 1}-${time}'
     params: {
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
@@ -500,14 +500,12 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       secureBootEnabled: secureBootEnabled
       vTpmEnabled: vTpmEnabled
       subnetId: existingVnetAvdSubnetResourceId
-      //useAvailabilityZones: availabilityZonesCompute
       subscriptionId: avdWorkloadSubsId
       encryptionAtHost: diskZeroTrust
       configureFslogix: createAvdFslogixDeployment
       fslogixSharePath: varFslogixSharePath
       fslogixStorageAccountResourceId: ''
       hostPoolResourceId: existingHostPool.id
-      //fslogixStorageFqdn: varFslogixStorageFqdn
       sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
       sessionHostConfigurationScript: varSessionHostConfigurationScript
       marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
