@@ -417,6 +417,30 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 }]
 
 // Apply AVD session host configurations
+module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'SH-Config-${batchId}-${i}-${time}'
+    params: {
+        location: location
+        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+        hostPoolResourceId: hostPoolResourceId
+        baseScriptUri: sessionHostConfigurationScriptUri
+        scriptName: sessionHostConfigurationScript
+        fslogix: configureFslogix
+        identityDomainName: identityDomainName
+        vmSize: vmSize
+        fslogixSharePath: fslogixSharePath
+        extendOsDisk: customOsDiskSizeGB != 0 ? true : false
+        fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
+        identityServiceProvider: identityServiceProvider
+    }
+    dependsOn: [
+        sessionHosts
+        ama
+    ]
+}]
+
+// old way
 // module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [for i in range(1, count): {
 //     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
 //     name: 'SH-Config-${batchId}-${i}-${time}'
@@ -440,30 +464,30 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 //     ]
 // }]
 
-module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
-    for i in range(1, count): {
-      scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-      name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
-      params: {
-        baseScriptUri: sessionHostConfigurationScriptUri
-        fslogix: configureFslogix
-        fslogixSharePath: fslogixSharePath
-        fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
-        hostPoolResourceId: hostPoolResourceId
-        identityDomainName: identityDomainName
-        extendOsDisk: customOsDiskSizeGB != 0 ? true : false
-        identityServiceProvider: identityServiceProvider
-        location: location
-        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        scriptName: sessionHostConfigurationScript
-        vmSize: vmSize
-      }
-      dependsOn: [
-        sessionHosts
-        ama
-      ]
-    }
-  ]
+// module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
+//     for i in range(1, count): {
+//       scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+//       name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
+//       params: {
+//         baseScriptUri: sessionHostConfigurationScriptUri
+//         fslogix: configureFslogix
+//         fslogixSharePath: fslogixSharePath
+//         fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
+//         hostPoolResourceId: hostPoolResourceId
+//         identityDomainName: identityDomainName
+//         extendOsDisk: customOsDiskSizeGB != 0 ? true : false
+//         identityServiceProvider: identityServiceProvider
+//         location: location
+//         name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+//         scriptName: sessionHostConfigurationScript
+//         vmSize: vmSize
+//       }
+//       dependsOn: [
+//         sessionHosts
+//         ama
+//       ]
+//     }
+//   ]
 
 // module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
 //     for i in range(0, count): {
