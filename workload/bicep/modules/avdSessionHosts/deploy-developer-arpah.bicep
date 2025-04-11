@@ -432,7 +432,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
         : null
         extensionDomainJoinConfig: contains(identityServiceProvider, 'DS')
         ? {
-            enabled: true
+            enabled: false
             settings: {
               name: identityDomainName
               ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
