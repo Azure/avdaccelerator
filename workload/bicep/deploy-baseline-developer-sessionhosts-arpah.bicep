@@ -110,7 +110,7 @@ param avdSessionHostsSize string = 'Standard_E4s_v5'
 param avdSessionHostDiskType string = 'Premium_LRS'
 
 @sys.description('Optional. Custom OS Disk Size.')
-param customOsDiskSizeGb string = ''
+param customOsDiskSizeGB int = 0
 
 @sys.description('''Enables accelerated Networking on the session hosts.
 If using a Azure Compute Gallery Image, the Image Definition must have been configured with
@@ -132,20 +132,20 @@ param secureBootEnabled bool = true
 @sys.description('Specifies whether vTPM should be enabled on the virtual machine. This parameter is part of the UefiSettings. securityType should be set to TrustedLaunch or ConfidentialVM to enable UefiSettings. (Default: true)')
 param vTpmEnabled bool = true
 
-@allowed([
-    'win10_21h2'
-    'win10_21h2_office'
-    'win10_22h2_g2'
-    'win10_22h2_office_g2'
-    'win11_21h2'
-    'win11_21h2_office'
-    'win11_22h2'
-    'win11_22h2_office'
-    'win11_23h2'
-    'win11_23h2_office'
-])
-@sys.description('AVD OS image SKU. (Default: win11-22h2)')
-param avdOsImage string = 'win11_23h2_office'
+// @allowed([
+//     'win10_21h2'
+//     'win10_21h2_office'
+//     'win10_22h2_g2'
+//     'win10_22h2_office_g2'
+//     'win11_21h2'
+//     'win11_21h2_office'
+//     'win11_22h2'
+//     'win11_22h2_office'
+//     'win11_23h2'
+//     'win11_23h2_office'
+// ])
+// @sys.description('AVD OS image SKU. (Default: win11-22h2)')
+// param avdOsImage string = 'win11_23h2_office'
 
 @sys.description('Set to deploy image from Azure Compute Gallery. (Default: false)')
 param useSharedImage bool = false
@@ -156,8 +156,17 @@ param goldenImageId string  = ''
 @sys.description('Image from Azure Compute Gallery Subscription ID.')
 param imageGallerySubscriptionId string = ''
 
+// @sys.description('Source custom image ID. (Default: "")')
+// param avdImageTemplateDefinitionId string = '/subscriptions/${imageGallerySubscriptionId}/resourceGroups/rg-avd-golden-image/providers/Microsoft.Compute/galleries/acgavd/images/${goldenImageId}'
+
+@sys.description('AVD OS image offer. (Default: Office-365)')
+param mpImageOffer string = 'Office-365'
+
+@sys.description('AVD OS image SKU. (Default: win11-24h2-avd-m365)')
+param mpImageSku string = 'win11-24h2-avd-m365'
+
 @sys.description('Source custom image ID. (Default: "")')
-param avdImageTemplateDefinitionId string = '/subscriptions/${imageGallerySubscriptionId}/resourceGroups/rg-avd-golden-image/providers/Microsoft.Compute/galleries/acgavd/images/${goldenImageId}'
+param avdCustomImageDefinitionId string = '/subscriptions/${imageGallerySubscriptionId}/resourceGroups/rg-avd-golden-image/providers/Microsoft.Compute/galleries/acgavd/images/${goldenImageId}'
 
 // Custom Naming
 // Input must followe resource naming rules on https://docs.microsoft.com/azure/azure-resource-manager/management/resource-name-rules
@@ -460,61 +469,121 @@ resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05'
     scope: resourceGroup('${avdWorkloadSubsId}', '${avdServiceObjectsRgCustomName}')
 }
 
+// // Session hosts
+// @batchSize(3)
+// module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
+//   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
+//     name: 'SH-Batch-${i - 1}-${time}'
+//     params: {
+//       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
+//       timeZone: varTimeZoneSessionHosts
+//       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment)
+//         ? '${applicationSecurityGroupExisting.id}'
+//         : ''
+//       availability: availability
+//       availabilityZones: availabilityZones
+//       identityServiceProvider: avdIdentityServiceProvider
+//       createIntuneEnrollment: createIntuneEnrollment
+//       batchId: i - 1
+//       computeObjectsRgName: varComputeObjectsRgName
+//       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
+//         ? varMaxSessionHostsDivisionRemainderValue
+//         : varMaxSessionHostsPerTemplate
+//       countIndex: i == 1
+//         ? avdSessionHostCountIndex
+//         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
+//       domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
+//       domainJoinPassword: keyVaultExisting.getSecret('domainJoinUserPassword')
+//       wrklKvName: varWrklKvName
+//       serviceObjectsRgName: varServiceObjectsRgName
+//       identityDomainName: identityDomainName
+//       avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
+//       sessionHostOuPath: avdOuPath
+//       diskType: avdSessionHostDiskType
+//       customOsDiskSizeGB: customOsDiskSizeGb
+//       location: avdSessionHostLocation
+//       namePrefix: varSessionHostNamePrefix
+//       vmSize: avdSessionHostsSize
+//       enableAcceleratedNetworking: enableAcceleratedNetworking
+//       securityType: securityType == 'Standard' ? '' : securityType
+//       secureBootEnabled: secureBootEnabled
+//       vTpmEnabled: vTpmEnabled
+//       subnetId: existingVnetAvdSubnetResourceId
+//       subscriptionId: avdWorkloadSubsId
+//       encryptionAtHost: diskZeroTrust
+//       configureFslogix: createAvdFslogixDeployment
+//       fslogixSharePath: varFslogixSharePath
+//       fslogixStorageAccountResourceId: ''
+//       hostPoolResourceId: existingHostPool.id
+//       sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
+//       sessionHostConfigurationScript: varSessionHostConfigurationScript
+//       marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
+//       useSharedImage: useSharedImage
+//       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+//       deployMonitoring: true
+//       alaWorkspaceResourceId: logAnalyticsWorkspaceExisting.id
+//       dataCollectionRuleId: dataCollectionRulesExisting.id
+//       deployAntiMalwareExt: deployAntiMalwareExt
+//       securityPrincipalId: securityPrincipalId
+//     }
+//   }
+// ]
+
 // Session hosts
 @batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
   for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
-    name: 'SH-Batch-${i - 1}-${time}'
+    name: 'SH-Batch-${i}-${time}'
     params: {
-      diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
-      timeZone: varTimeZoneSessionHosts
       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment)
         ? '${applicationSecurityGroupExisting.id}'
         : ''
       availability: availability
       availabilityZones: availabilityZones
-      identityServiceProvider: avdIdentityServiceProvider
-      createIntuneEnrollment: createIntuneEnrollment
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
+      configureFslogix: createAvdFslogixDeployment
       count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
         ? varMaxSessionHostsDivisionRemainderValue
         : varMaxSessionHostsPerTemplate
       countIndex: i == 1
         ? avdSessionHostCountIndex
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
-      domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
-      domainJoinPassword: keyVaultExisting.getSecret('domainJoinUserPassword')
-      wrklKvName: varWrklKvName
-      serviceObjectsRgName: varServiceObjectsRgName
-      identityDomainName: identityDomainName
-      avdImageTemplateDefinitionId: avdImageTemplateDefinitionId
-      sessionHostOuPath: avdOuPath
+      createIntuneEnrollment: createIntuneEnrollment
+      customImageDefinitionId: avdCustomImageDefinitionId
+      dataCollectionRuleId: dataCollectionRulesExisting.id
+      deployAntiMalwareExt: deployAntiMalwareExt
+      deployMonitoring: true
+      diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
+      customOsDiskSizeGB: customOsDiskSizeGB
       diskType: avdSessionHostDiskType
-      customOsDiskSizeGB: customOsDiskSizeGb
-      location: avdSessionHostLocation
-      namePrefix: varSessionHostNamePrefix
-      vmSize: avdSessionHostsSize
+      domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
+      domainJoinUserPrincipalName: keyVaultExisting.getSecret('domainJoinUserName')
       enableAcceleratedNetworking: enableAcceleratedNetworking
-      securityType: securityType == 'Standard' ? '' : securityType
-      secureBootEnabled: secureBootEnabled
-      vTpmEnabled: vTpmEnabled
-      subnetId: existingVnetAvdSubnetResourceId
-      subscriptionId: avdWorkloadSubsId
       encryptionAtHost: diskZeroTrust
-      configureFslogix: createAvdFslogixDeployment
       fslogixSharePath: varFslogixSharePath
       fslogixStorageAccountResourceId: ''
       hostPoolResourceId: existingHostPool.id
+      identityDomainName: identityDomainName
+      identityServiceProvider: avdIdentityServiceProvider
+      keyVaultResourceId: keyVaultExisting.id
+      location: avdSessionHostLocation
+      mpImageOffer: mpImageOffer
+      mpImageSku: mpImageSku
+      namePrefix: varSessionHostNamePrefix
+      secureBootEnabled: secureBootEnabled
+      securityType: securityType == 'Standard' ? '' : securityType
       sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
       sessionHostConfigurationScript: varSessionHostConfigurationScript
-      marketPlaceGalleryWindows: varMarketPlaceGalleryWindows[avdOsImage]
-      useSharedImage: useSharedImage
+      sessionHostOuPath: avdOuPath
+      subscriptionId: avdWorkloadSubsId
+      subnetId: existingVnetAvdSubnetResourceId
       tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-      deployMonitoring: true
+      timeZone: varTimeZoneSessionHosts
+      useSharedImage: useSharedImage
+      vmSize: avdSessionHostsSize
+      vTpmEnabled: vTpmEnabled
       alaWorkspaceResourceId: logAnalyticsWorkspaceExisting.id
-      dataCollectionRuleId: dataCollectionRulesExisting.id
-      deployAntiMalwareExt: deployAntiMalwareExt
       securityPrincipalId: securityPrincipalId
     }
   }
