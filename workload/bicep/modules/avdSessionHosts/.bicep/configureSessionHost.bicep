@@ -92,7 +92,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing 
   name: fslogixStorageAccountName
   scope: resourceGroup(split(fslogixStorageAccountResourceId, '/')[4])
 }
-
+//Microsoft.Compute/virtualMachines/extensions@2022-11-01
 resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
   name: '${name}/SessionHostConfig'
   location: location
@@ -105,7 +105,8 @@ resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09
       fileUris: array(baseScriptUri)
     }
     protectedSettings: {
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command .\\${scriptName} ${varScriptArguments}'
+       commandToExecute: 'powershell -ExecutionPolicy Unrestricted -Command .\\${scriptName} ${varScriptArguments}'
+      //commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${scriptName} ${varScriptArguments}'
     }
   }
 }

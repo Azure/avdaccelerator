@@ -31,8 +31,8 @@ Param(
         [string]
         $NvidiaVmSize,
 
-        [parameter(Mandatory)]
-        [boolean]
+        [parameter(Mandatory = $false)]
+        [string]
         $ExtendOsDisk
 
         # [parameter(Mandatory)]
@@ -437,7 +437,7 @@ try {
 
         # Resize OS Disk
 
-        if ($ExtendOsDisk -eq $true) {
+        if ($ExtendOsDisk -eq 'true') {
                 Write-Log -message "Resizing OS Disk"
                 $driveLetter = $env:SystemDrive.Substring(0, 1)
                 $size = Get-PartitionSupportedSize -DriveLetter $driveLetter

@@ -62,8 +62,8 @@
       "avdSessionHostDiskType": {
           "value": "Premium_LRS"
       },
-      "avdOsImage": {
-          "value": "win11_23h2_office"
+      "mpImageSku": {
+          "value": "win11-24h2-avd-m365"
       },
       "securityType": {
           "value": "TrustedLaunch"
@@ -81,7 +81,7 @@
           "value": "<<subscriptionId>>"
       },
       "goldenImageId": {
-          "value": "devopsGoldenImageAvdArpah/versions/latest"
+          "value": "GoldenImageAVDArpaH/versions/latest"
       },
       "createResourceTags": {
           "value": false
