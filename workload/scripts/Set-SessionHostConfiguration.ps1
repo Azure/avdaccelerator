@@ -31,7 +31,7 @@ Param(
         [string]
         $NvidiaVmSize,
 
-        [parameter(Mandatory)]
+        [parameter(Mandatory = $false)]
         [boolean]
         $ExtendOsDisk
 
