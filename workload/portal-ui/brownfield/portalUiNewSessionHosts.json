@@ -620,52 +620,39 @@
 							]
 						},
 						{
-							"name": "security",
-							"type": "Microsoft.Common.Section",
-							"label": "Other Security Settings",
-							"elements": [
-								{
-									"name": "asg",
-									"type": "Microsoft.Solutions.ArmApiControl",
-									"request": {
-										"method": "GET",
-										"path": "[concat(steps('basics').resourceGroup.id, '/providers/Microsoft.Network/applicationSecurityGroups?api-version=2024-05-01')]"
-									}
-								},
-								{
-									"name": "encryptionAtHost",
-									"type": "Microsoft.Common.CheckBox",
-									"label": "Encryption At Host",
-									"toolTip": "Check to enable Encryption At Host",
-									"defaultValue": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), true, false)]",
-									"visible": "[equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered')]"
-								},
-								{
-									"name": "customerManagedKeys",
-									"type": "Microsoft.Common.CheckBox",
-									"label": "Enable Customer-Managed Keys on OS Disk",
-									"defaultValue": "[if(empty(filter(steps('basics').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id))), false, true)]",
-									"toolTip": "Enables a zero trust configuration on the session host disks.",
-									"visible": "[not(empty(steps('basics').diskEncryptionSetsApi.value))]"
-								},
-								{
-									"name": "diskEncryptionSet",
-									"type": "Microsoft.Common.DropDown",
-									"defaultValue": "[first(map(filter(steps('basics').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id)), (des) => des.name))]",
-									"label": "Disk Encryption Set",
-									"constraints": {
-										"allowedValues": "[steps('basics').diskEncryptionSetsApi.transformed.list]",
-										"required": true
-									},
-									"visible": "[and(not(empty(steps('basics').diskEncryptionSetsApi.value)), steps('sessionHosts').security.customerManagedKeys)]"
-								},
-								{
-									"name": "deployAntiMalwareExt",
-									"type": "Microsoft.Common.CheckBox",
-									"label": "Deploy Anti-Malware Extension",
-									"toolTip": "Deploys anti-malware extension on session hosts."
-								}
-							]
+							"name": "asg",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('basics').resourceGroup.id, '/providers/Microsoft.Network/applicationSecurityGroups?api-version=2024-05-01')]"
+							}
+						},
+						{
+							"name": "encryptionAtHost",
+							"type": "Microsoft.Common.CheckBox",
+							"label": "Encryption At Host",
+							"toolTip": "Check to enable Encryption At Host",
+							"defaultValue": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), true, false)]",
+							"visible": "[equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered')]"
+						},
+						{
+							"name": "customerManagedKeys",
+							"type": "Microsoft.Common.CheckBox",
+							"label": "Enable Customer-Managed Keys on OS Disk",
+							"defaultValue": "[if(empty(filter(steps('basics').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id))), false, true)]",
+							"toolTip": "Enables a zero trust configuration on the session host disks.",
+							"visible": "[not(empty(steps('basics').diskEncryptionSetsApi.value))]"
+						},
+						{
+							"name": "diskEncryptionSet",
+							"type": "Microsoft.Common.DropDown",
+							"defaultValue": "[first(map(filter(steps('basics').diskEncryptionSetsApi.value, (des) => equals(des.tags.cm-resource-parent, steps('basics').hostPool.id)), (des) => des.name))]",
+							"label": "Disk Encryption Set",
+							"constraints": {
+								"allowedValues": "[steps('basics').diskEncryptionSetsApi.transformed.list]",
+								"required": true
+							},
+							"visible": "[and(not(empty(steps('basics').diskEncryptionSetsApi.value)), steps('sessionHosts').customerManagedKeys)]"
 						}
 					]
 				},
@@ -1037,10 +1024,10 @@
 				"securityType": "[if(equals(steps('sessionHosts').image.source, 'computegallery'), if(contains(steps('sessionHosts').image.imageDefinitionApi.transformed.SecurityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.securityType, 'Standard'), if(or(contains(steps('sessionHosts').image.sku, 'win11'), contains(steps('sessionHosts').image.sku, 'g2')), steps('sessionHosts').securityProfile.securityType, 'Standard'))]",
 				"secureBootEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.secureBootEnabled, false)]",
 				"vTpmEnabled": "[if(equals(steps('sessionHosts').securityProfile.securityType, 'TrustedLaunch'), steps('sessionHosts').securityProfile.vTpmEnabled, false)]",
-				"asgResourceId": "[if(empty(steps('sessionHosts').security.asg), '', first(map(steps('sessionHosts').security.asg.value, (asg) => asg.id)))]",
-				"encryptionAtHost": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), steps('sessionHosts').security.encryptionAtHost, false)]",
-				"diskEncryptionSetResourceId": "[if(steps('sessionHosts').security.customerManagedKeys, steps('sessionHosts').security.diskEncryptionSet, '')]",
-				"deployAntiMalwareExt": "[steps('sessionHosts').security.deployAntiMalwareExt]",
+				"asgResourceId": "[if(empty(steps('sessionHosts').asg), '', first(map(steps('sessionHosts').asg.value, (asg) => asg.id)))]",
+				"encryptionAtHost": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), steps('sessionHosts').encryptionAtHost, false)]",
+				"diskEncryptionSetResourceId": "[if(steps('sessionHosts').customerManagedKeys, steps('sessionHosts').diskEncryptionSet, '')]",
+				"deployAntiMalwareExt": "[steps('sessionHosts').settings.enableAntiMalwareExt]",
 				"identityServiceProvider": "[steps('identity').identityServiceProvider]",
 				"createIntuneEnrollment": "[if(contains(steps('identity').identityServiceProvider, 'ID'), steps('identity').intuneEnrollment, false)]",
 				"identityDomainName": "[if(contains(steps('identity').identityServiceProvider, 'DS'), steps('identity').identityDomainName, '')]",
