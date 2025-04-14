@@ -603,6 +603,12 @@ module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bic
         typeHandlerVersion: '1.0'
         autoUpgradeMinorVersion: true
         enableAutomaticUpgrade: true
+        settings: {
+          workspaceId: !empty(alaWorkspaceResourceId) ? reference(alaWorkspace.id, alaWorkspace.apiVersion).customerId : '' 
+        }
+        protectedSettings: {
+          workspaceKey: !empty(alaWorkspaceResourceId) ? alaWorkspace.listKeys().primarySharedKey : ''
+        }
       }
       dependsOn: [
         sessionHostsAntimalwareExtension
@@ -653,10 +659,11 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
     }
   ]
 
-module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(1, count): {
+module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     //name: '${uniqueString(deployment().name, location)}-VM-DomainJoin'
-    name: 'Dom-Join-${batchId}-${i}-${time}'
+    // name: 'Dom-Join-${batchId}-${i}-${time}'
+    name: 'Dom-Join-${batchId + 1}-${i + countIndex}-${time}'
     params: {
       virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       name: 'DomainJoin'
