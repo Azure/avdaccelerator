@@ -635,29 +635,29 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
-    for i in range(0, count): {
-      scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-      name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
-      params: {
-        baseScriptUri: sessionHostConfigurationScriptUri
-        fslogix: configureFslogix
-        fslogixSharePath: fslogixSharePath
-        fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
-        hostPoolResourceId: hostPoolResourceId
-        identityDomainName: identityDomainName
-        extendOsDisk: customOsDiskSizeGB != 0 ? true : false
-        identityServiceProvider: identityServiceProvider
-        location: location
-        name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-        scriptName: sessionHostConfigurationScript
-        vmSize: vmSize
-      }
-      dependsOn: [
-        sessionHosts
-        ama
-      ]
+  for i in range(0, count): {
+    scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
+    name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
+    params: {
+      baseScriptUri: sessionHostConfigurationScriptUri
+      fslogix: configureFslogix
+      fslogixSharePath: fslogixSharePath
+      fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
+      hostPoolResourceId: hostPoolResourceId
+      identityDomainName: identityDomainName
+      extendOsDisk: customOsDiskSizeGB != 0 ? true : false
+      identityServiceProvider: identityServiceProvider
+      location: location
+      name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      scriptName: sessionHostConfigurationScript
+      vmSize: vmSize
     }
-  ]
+    dependsOn: [
+      sessionHosts
+      ama
+    ]
+  }
+]
 
 module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = [for i in range(0, count): {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
