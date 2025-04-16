@@ -980,13 +980,14 @@ var varTagsWithValues = union(
   empty(costCenterTag) ? {} : { CostCenter: costCenterTag }
 )
 var varCustomResourceTags = createResourceTags ? varTagsWithValues : {}
-var varAllComputeStorageTags = contains(avdIdentityServiceProvider, 'EntraID')
-  ? {
-      IdentityServiceProvider: avdIdentityServiceProvider
-  }: {
-      DomainName: identityDomainName
-      IdentityServiceProvider: avdIdentityServiceProvider
-    }
+var varAllComputeStorageTags = {
+  DomainName: identityDomainName
+  IdentityServiceProvider: avdIdentityServiceProvider
+  SourceImage: useSharedImage ? split(avdCustomImageDefinitionId, '/')[8] : mpImageSku
+  HotPoolName: varHostPoolName
+  FSLogixPath: createAvdFslogixDeployment ? varFslogixSharePath : 'NA'
+  OUPath: contains(avdIdentityServiceProvider, 'EntraID') ? 'NA' : avdOuPath
+}
 var varAvdDefaultTags = {
   'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
   Environment: deploymentEnvironment
