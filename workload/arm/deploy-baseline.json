@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "15624477571568102458"
+      "templateHash": "2844762627669354029"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1719,7 +1719,14 @@
     "varCreateVnetPeering": "[if(not(empty(parameters('existingHubVnetResourceId'))), true(), false())]",
     "varTagsWithValues": "[union(if(empty(parameters('workloadNameTag')), createObject(), createObject('WorkloadName', parameters('workloadNameTag'))), if(empty(parameters('workloadTypeTag')), createObject(), createObject('WorkloadType', parameters('workloadTypeTag'))), if(empty(parameters('dataClassificationTag')), createObject(), createObject('DataClassification', parameters('dataClassificationTag'))), if(empty(parameters('departmentTag')), createObject(), createObject('Department', parameters('departmentTag'))), if(empty(parameters('workloadCriticalityTag')), createObject(), createObject('Criticality', if(equals(parameters('workloadCriticalityTag'), 'Custom'), parameters('workloadCriticalityCustomValueTag'), parameters('workloadCriticalityTag')))), if(empty(parameters('applicationNameTag')), createObject(), createObject('ApplicationName', parameters('applicationNameTag'))), if(empty(parameters('workloadSlaTag')), createObject(), createObject('ServiceClass', parameters('workloadSlaTag'))), if(empty(parameters('opsTeamTag')), createObject(), createObject('OpsTeam', parameters('opsTeamTag'))), if(empty(parameters('ownerTag')), createObject(), createObject('Owner', parameters('ownerTag'))), if(empty(parameters('costCenterTag')), createObject(), createObject('CostCenter', parameters('costCenterTag'))))]",
     "varCustomResourceTags": "[if(parameters('createResourceTags'), variables('varTagsWithValues'), createObject())]",
-    "varAllComputeStorageTags": "[if(contains(parameters('avdIdentityServiceProvider'), 'EntraID'), createObject('IdentityServiceProvider', parameters('avdIdentityServiceProvider'), 'SourceImage', if(parameters('useSharedImage'), split(parameters('avdCustomImageDefinitionId'), '/')[8], parameters('mpImageSku')), 'HotPoolName', variables('varHostPoolName'), 'FSLogixPath', if(parameters('createAvdFslogixDeployment'), variables('varFslogixSharePath'), 'NotDeployed')), createObject('DomainName', parameters('identityDomainName'), 'IdentityServiceProvider', parameters('avdIdentityServiceProvider'), 'SourceImage', if(parameters('useSharedImage'), split(parameters('avdCustomImageDefinitionId'), '/')[8], parameters('mpImageSku')), 'HotPoolName', variables('varHostPoolName'), 'FSLogixPath', if(parameters('createAvdFslogixDeployment'), variables('varFslogixSharePath'), 'NotDeployed')))]",
+    "varAllComputeStorageTags": {
+      "DomainName": "[parameters('identityDomainName')]",
+      "IdentityServiceProvider": "[parameters('avdIdentityServiceProvider')]",
+      "SourceImage": "[if(parameters('useSharedImage'), split(parameters('avdCustomImageDefinitionId'), '/')[8], parameters('mpImageSku'))]",
+      "HotPoolName": "[variables('varHostPoolName')]",
+      "FSLogixPath": "[if(parameters('createAvdFslogixDeployment'), variables('varFslogixSharePath'), 'NA')]",
+      "OUPath": "[if(contains(parameters('avdIdentityServiceProvider'), 'EntraID'), 'NA', parameters('avdOuPath'))]"
+    },
     "varAvdDefaultTags": {
       "cm-resource-parent": "[format('/subscriptions/{0}/resourceGroups/{1}/providers/Microsoft.DesktopVirtualization/hostpools/{2}', parameters('avdWorkloadSubsId'), variables('varServiceObjectsRgName'), variables('varHostPoolName'))]",
       "Environment": "[parameters('deploymentEnvironment')]",
