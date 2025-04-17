@@ -220,10 +220,12 @@ param avdAlaWorkspaceDataRetention int = 90
 param alaExistingWorkspaceResourceId string = ''
 
 @minValue(1)
-@maxValue(100)
+@maxValue(1999)
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
 
+@minValue(1)
+@maxValue(9998)
 @sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 1)')
 param avdSessionHostCountIndex int = 1
 
