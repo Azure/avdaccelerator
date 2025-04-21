@@ -47,7 +47,7 @@ jobs:
       uses: azure/powershell@v2
       env:
         HostPoolResourceGroupName: 'avd-nih-arpah-${{ github.event.inputs.environment }}-use2-service-objects'
-        HostPoolName: 'vdpool-developer-${{ github.event.inputs.environment }}-use2-001'
+        HostPoolName: 'vdpool-developer-personal-${{ github.event.inputs.environment }}-use2-001'
         KeyVaultName: 'SessionDesktop'
   
       with:
