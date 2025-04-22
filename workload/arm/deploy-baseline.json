@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.34.44.8038",
-      "templateHash": "17810112161035520353"
+      "templateHash": "14053498666684800097"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -56,7 +56,6 @@
     },
     "avdWorkloadSubsId": {
       "type": "string",
-      "defaultValue": "",
       "metadata": {
         "description": "AVD workload subscription ID, multiple subscriptions scenario. (Default: \"\")"
       }
@@ -456,7 +455,7 @@
       "minValue": 1,
       "maxValue": 9998,
       "metadata": {
-        "description": "The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 1)"
+        "description": "The session host number to begin with for the deployment. This is important when adding virtual machines to host pool ensure the names do not conflict. (Default: 1)"
       }
     },
     "availability": {
