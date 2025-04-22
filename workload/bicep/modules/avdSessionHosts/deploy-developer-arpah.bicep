@@ -660,6 +660,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
       dataCollectionRuleId: dataCollectionRuleId
     }
     dependsOn: [
+      ama
       alaWorkspace
     ]
   }
