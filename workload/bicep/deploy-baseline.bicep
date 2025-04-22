@@ -33,7 +33,7 @@ param avdSessionHostLocation string
 param avdManagementPlaneLocation string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
-param avdWorkloadSubsId string = ''
+param avdWorkloadSubsId string
 
 @sys.description('Azure Virtual Desktop Enterprise Application object ID (Enterprise app name: Azure Virtual Desktop) . (Default: "")')
 param avdServicePrincipalObjectId string = ''
