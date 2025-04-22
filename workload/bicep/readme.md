@@ -41,19 +41,20 @@ New-AzSubscriptionDeployment `
 ```bash
 az login
 #
-subId="<subscription-ID>"
-az account set --subscription "$subId"
+SubID="<subscription-ID>"
+read -s -p "Local user password: " avdVmLocalUserPassword
 #
+az account set --subscription "$SubID"
 az deployment sub create \
 --name "AVDAcceleratorDeployment" \
 --location "<deployment-location>" \
 --template-file "./workload/bicep/deploy-baseline.bicep" \
 --parameters \
-  avdWorkloadSubsId="$subId" \
+  avdWorkloadSubsId="$SubID" \
   avdSessionHostLocation="<session-host-location>" \
   avdManagementPlaneLocation="<management-plane-location>" \
   avdVmLocalUserName="<local-username>" \
-  avdVmLocalUserPassword="<local-password>" \
+  avdVmLocalUserPassword="$avdVmLocalUserPassword" \
   avdIdentityServiceProvider="EntraIDKerberos" \
   identityDomainName="<domain-name>" \
   avdServicePrincipalObjectId="<object-id>" \
