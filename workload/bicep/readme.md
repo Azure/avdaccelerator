@@ -70,23 +70,54 @@ az deployment sub create \
 ### PowerShell
 
 ```powershell
-New-AzSubscriptionDeployment `
-  -TemplateFile workload/bicep/deploy-custom-image.bicep `
-  -sharedServicesSubId "<subscriptionId>" `
-  -deploymentLocation "eastus" `
-  -imageVersionPrimaryLocation "eastus" `
-  -Location "eastus"
+Connect-AzAccount
+#
+$SubID = "<subscription-ID>"
+#
+Select-AzSubscription -SubscriptionId $SubID
+New-AzDeployment `
+  -Location "<deployment-location>" `
+  -TemplateFile "./workload/bicep/deploy-custom-image.bicep" `
+  -Name "CustomImageDeployment" `
+  -SubscriptionId $SubID `
+  -sharedServicesSubId "<shared-services-subscription-id>" `
+  -deploymentLocation "<deployment-location>" `
+  -imageVersionPrimaryLocation "<primary-location>" `
+  -mpImagePublisher "<image-publisher>" `
+  -mpImageOffer "<image-offer>" `
+  -mpImageSku "<image-sku>" `
+  -mpImageVersion "latest" `
+  -userAssignedManagedIdentityCustomName "<managed-identity-name>" `
+  -enableMonitoringAlerts $false `
+  -enableResourceTags $false `
+  -enableTelemetry $true
 ```
 
 ### Azure CLI
 
 ```bash
-az deployment create \
-  --template-file workload/bicep/deploy-custom-image.bicep \
-  --parameters sharedServicesSubId="<subscriptionId>" \
-  --deploymentLocation="eastus" \
-  --imageVersionPrimaryLocation="eastus" \
-  --Location "eastus"
+az login
+#
+SubID="<subscription-ID>"
+#
+az account set --subscription "$SubID"
+az deployment sub create \
+  --name "CustomImageDeployment" \
+  --location "<deployment-location>" \
+  --template-file "./workload/bicep/deploy-custom-image.bicep" \
+  --parameters \
+    subscriptionId="$SubID" \
+    sharedServicesSubId="<shared-services-subscription-id>" \
+    deploymentLocation="<deployment-location>" \
+    imageVersionPrimaryLocation="<primary-location>" \
+    mpImagePublisher="<image-publisher>" \
+    mpImageOffer="<image-offer>" \
+    mpImageSku="<image-sku>" \
+    mpImageVersion="latest" \
+    userAssignedManagedIdentityCustomName="<managed-identity-name>" \
+    enableMonitoringAlerts=false \
+    enableResourceTags=false \
+    enableTelemetry=true
 ```
 
 ## Contributing
