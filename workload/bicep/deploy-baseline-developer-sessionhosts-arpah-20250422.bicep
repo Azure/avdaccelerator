@@ -530,9 +530,9 @@ resource existingHostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05'
 // ]
 
 // Session hosts
-// @batchSize(3)
+@batchSize(3)
 module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
-  for i in range(1, avdDeploySessionHostsCount): if (avdDeploySessionHosts) {
+  for i in range(1, varSessionHostBatchCount): if (avdDeploySessionHosts) {
     name: 'SH-Batch-${i}-${time}'
     params: {
       asgResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment)
@@ -543,8 +543,12 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       batchId: i - 1
       computeObjectsRgName: varComputeObjectsRgName
       configureFslogix: createAvdFslogixDeployment
-      count: i
-      countIndex: i - 1
+      count: i == varSessionHostBatchCount && varMaxSessionHostsDivisionRemainderValue > 0
+        ? varMaxSessionHostsDivisionRemainderValue
+        : varMaxSessionHostsPerTemplate
+      countIndex: i == 1
+        ? avdSessionHostCountIndex
+        : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
       createIntuneEnrollment: createIntuneEnrollment
       customImageDefinitionId: avdCustomImageDefinitionId
       dataCollectionRuleId: dataCollectionRulesExisting.id
