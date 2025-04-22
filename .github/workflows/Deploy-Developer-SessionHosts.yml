@@ -50,7 +50,7 @@ jobs:
     environment: ${{ inputs.environment }}
 
     env:
-      SESSION_HOST_PREFIX: ${{ inputs.environment == 'Prod' && 'avddhpp' || 'avddhpt' }}
+      SESSION_HOST_PREFIX: ${{ inputs.environment == 'Prod' && 'avddevp' || 'avddevt' }}
 
     steps:
 
