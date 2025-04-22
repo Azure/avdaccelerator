@@ -1,4 +1,4 @@
-﻿<#
+<#
     Updates the AVD application display name.
 #>
 param (
@@ -11,4 +11,4 @@ param (
 $hostPoolToken = New-AzWvdRegistrationInfo -ResourceGroupName $HostPoolResourceGroupName -HostPoolName $HostPoolName -ExpirationTime (Get-Date).AddHours(2) -ErrorAction Stop
 
 # now update key vault
-az keyvault secret set --name hostPoolRegistrationToken --vault-name $KeyVaultName --value $hostPoolToken
+az keyvault secret set --name hostPoolRegistrationToken --vault-name $KeyVaultName --value $hostPoolToken.Token
