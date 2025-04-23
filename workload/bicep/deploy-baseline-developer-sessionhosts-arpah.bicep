@@ -199,7 +199,6 @@ param avdApplicationSecurityGroupCustomName string = 'asg-app1-${toLower(deploym
 
 @maxLength(64)
 @sys.description('AVD host pool custom name. (Default: vdpool-app1-dev-use2-001)')
-//param avdHostPoolCustomName string = 'vdpool-${toLower(hostPoolPersona)}-${toLower(deploymentEnvironment)}-use2-001'
 param avdHostPoolCustomName string = 'vdpool-${toLower(hostPoolPersona)}-${toLower(avdHostPoolType)}-${toLower(deploymentEnvironment)}-use2-001'
 
 @maxLength(11)
@@ -304,7 +303,7 @@ param securityPrincipalId string = ''
 @sys.description('AVD host pool type. (Default: Pooled)')
 param avdHostPoolType string = 'Pooled'
 
-param maxSessionHostsPerTemplate int = 10
+//param maxSessionHostsPerTemplate int = 10
 
 // @maxLength(90)
 // @sys.description('AVD network resources resource group custom name. (Default: rg-avd-app1-dev-use2-storage)')
@@ -388,7 +387,8 @@ var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 //   ? varMaxSessionHostsDivisionValue + 1
 //   : varMaxSessionHostsDivisionValue
 
-var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
+//var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
+
 // Resource tagging
 // Tag Exclude-${varAvdScalingPlanName} is used by scaling plans to exclude session hosts from scaling. Exmaple: Exclude-vdscal-eus2-app1-dev-001
 var varCustomResourceTags = createResourceTags ? {
@@ -554,7 +554,6 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
       customOsDiskSizeGB: customOsDiskSizeGB
       diskType: avdSessionHostDiskType
-      //domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
       domainJoinUserPrincipalName: keyVaultExisting.getSecret('domainJoinUserName')
       domainJoinPassword: keyVaultExisting.getSecret('domainJoinUserPassword')
       enableAcceleratedNetworking: enableAcceleratedNetworking

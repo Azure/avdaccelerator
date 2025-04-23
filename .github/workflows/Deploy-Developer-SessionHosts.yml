@@ -46,7 +46,7 @@ on:
 
 jobs:
   generate-hostpool-token:
-    name: deploy developer hostpool
+    name: generate hostpool token
     uses: ./.github/workflows/Generate-HostPoolToken.yml
     with:
       environment: ${{ inputs.environment }}

@@ -32,16 +32,16 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }} 
         enable-AzPSSession: true
 
-    - name: Public IP
+    - name: Get Public IP of GH Runner
       id: ip
       uses: haythem/public-ip@v1.3
   
-    - name: Print Public IP
+    - name: Print Public IP of GH Runner
       run: |
         echo ${{ steps.ip.outputs.ipv4 }}
         echo ${{ steps.ip.outputs.ipv6 }}
 
-    - name: Add temporary network rule
+    - name: Add temporary network rule in Key Vault for Public IP of GH Runner
       run: |
         az keyvault network-rule add --name ${{ secrets.KEY_VAULT }} --ip-address ${{ steps.ip.outputs.ipv4 }}
 
@@ -55,6 +55,6 @@ jobs:
         azPSVersion: "latest"
         errorActionPreference: stop
 
-    - name: Remove temporary network rule
+    - name: Remove temporary network rule in Key Vault for Public IP of GH Runner
       run: |
         az keyvault network-rule remove --name ${{ secrets.KEY_VAULT }} --ip-address ${{ steps.ip.outputs.ipv4 }}

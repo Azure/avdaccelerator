@@ -64,6 +64,9 @@
         },
         "createResourceTags": {
             "value": false
+        },
+        "avdWrklKvPrefixCustomName" : {
+            "value": "kv-sec"
         }
     }
   }
