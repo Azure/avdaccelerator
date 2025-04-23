@@ -79,7 +79,121 @@
 									"list": "value|[*].{label:name, value:id}"
 								}
 							}
-						}						
+						}					
+					]
+				},
+				{
+					"name": "identity",
+					"label": "Identity",
+					"visible": true,
+					"elements": [
+						{
+							"name": "identityServiceProvider",
+							"type": "Microsoft.Common.OptionsGroup",
+							"label": "Identity Service Provider",
+							"defaultValue": "Active Directory (AD DS)",
+							"toolTip": "Choose the identity service provider for your users and session hosts. Your choices explained:</br></br><b>Active Directory (ADDS)</b>: The users are sourced from ADDS and session hosts will be domain joined.</br></br><b>Microsoft Entra Domain Services</b>: The users are sourced from Entra ID or ADDS and the session hosts are joined to Entra Domain Services.</br></br><b>Microsoft Entra ID</b>: The users are sourced from Entra ID and the session hosts will join Entra ID.</br></br><b>Microsoft Entra ID Kerberos</b>: The Users are sourced from ADDS, but the session hosts will be joined to Entra ID.",
+							"constraints": {
+								"required": true,
+								"allowedValues": [
+									{
+										"label": "Active Directory (AD DS)",
+										"value": "ADDS"
+									},
+									{
+										"label": "Microsoft Entra Domain Services",
+										"value": "EntraDS"
+									},
+									{
+										"label": "Microsoft Entra ID",
+										"value": "EntraID"
+									},
+									{
+										"label": "Microsoft Entra ID Kerberos",
+										"value": "EntraIDKerberos"
+									}
+								]
+							}
+						},
+						{
+							"name": "identityServiceProviderInfo1",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": "[equals(steps('identity').identityServiceProvider, 'EntraID')]",
+							"options": {
+								"text": "If you are deploying this solution with FSLogix Storage, storage account key access must be permitted within your subscription. This solution will securely configure your session host to access the FSLogix Azure Files storage with the storage account key.",
+								"uri": "https://techcommunity.microsoft.com/blog/fslogix-blog/fslogix-profile-containers-for-azure-ad-cloud-only-identities/3739352",
+								"style": "Warning"
+							}
+						},
+						{
+							"name": "intuneEnrollment",
+							"type": "Microsoft.Common.CheckBox",
+							"visible": "[contains(steps('identity').identityServiceProvider, 'EntraID')]",
+							"label": "Intune enrollment",
+							"toolTip": "If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
+						},
+						{
+							"name": "identityDomainName",
+							"type": "Microsoft.Common.TextBox",
+							"label": "Domain name",
+							"visible": "[contains(steps('identity').identityServiceProvider, 'DS')]",
+							"toolTip": "The full qualified domain name of the domain to which the virtual machines will be joined.",
+							"placeholder": "Example: contoso.com",
+							"constraints": {
+								"required": true
+							}
+						},
+						{
+							"name": "ouPath",
+							"type": "Microsoft.Common.TextBox",
+							"visible": "[contains(steps('identity').identityServiceProvider, 'DS')]",
+							"label": "OU Path",
+							"toolTip": "Optionally, input the distinguished name of the desired organization unit for the AVD session hosts.",
+							"placeholder": "Example: OU=pooled,OU=avd,DC=contoso,DC=com",
+							"constraints": {
+								"required": false
+							}
+						},
+						{
+							"name": "domainJoinUserPrincipalName",
+							"type": "Microsoft.Common.TextBox",
+							"placeholder": "domainjoin@contoso.com",
+							"label": "Domain Join User Principal Name",
+							"visible": "[contains(steps('identity').identityServiceProvider, 'DS')]",
+							"toolTip": "Provide username with permissions to join session host to the domain, the expected format is <username>@<domain_name>.",
+							"constraints": {
+								"regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+								"required": true
+							}
+						},
+						{
+							"name": "secretsInfoBox1",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": "[contains(steps('identity').identityServiceProvider, 'EntraID')]",
+							"options": {
+								"text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
+								"style": "Info"
+							}
+						},
+						{
+							"name": "secretsInfoBox2",
+							"type": "Microsoft.Common.InfoBox",
+							"visible": "[contains(steps('identity').identityServiceProvider, 'DS')]",
+							"options": {
+								"text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>domainJoinUserPassword</b>: The password associated with the user principal name specified above.</li><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
+								"style": "Info"
+							}
+						},
+						{
+							"name": "keyVault",
+							"type": "Microsoft.Solutions.ResourceSelector",
+							"label": "Select Keyvault containing workload secrets",
+							"resourceType": "Microsoft.KeyVault/vaults",
+							"toolTip": "Select Keyvault which contains the secrets",
+							"constraints": {
+								"required": true
+							}
+						}
 					]
 				},
 				{
@@ -100,6 +214,45 @@
 							"type": "Microsoft.Common.Section",
 							"label": "Virtual Machine Naming",
 							"elements": [
+								{
+									"name": "prefix",
+									"type": "Microsoft.Common.TextBox",
+									"visible": "[not(steps('sessionHosts').naming.customNaming)]",
+									"label": "Deployment Prefix",
+									"subLabel": "",
+									"defaultValue": "AVD1",
+									"toolTip": "The name of the resource group to deploy. (Default: AVD1)",
+									"constraints": {
+										"required": true,
+										"regex": "^[a-zA-Z0-9]{2,4}$",
+										"validationMessage": "The prefix can be 2-4 aphanumeric characters."
+									}
+								},
+								{
+									"name": "environment",
+									"type": "Microsoft.Common.DropDown",
+									"label": "Deployment Environment",
+									"visible": "[not(steps('sessionHosts').naming.customNaming)]",
+									"defaultValue": "Dev",
+									"toolTip": "The name of the resource group to deploy.",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Dev",
+												"value": "Dev"
+											},
+											{
+												"label": "Test",
+												"value": "Test"
+											},
+											{
+												"label": "Prod",
+												"value": "Prod"
+											}
+										]
+									}
+								},	
 								{
 									"name": "customNaming",
 									"type": "Microsoft.Common.CheckBox",
@@ -213,7 +366,7 @@
 									"defaultValue": "win11-24h2-avd-m365",
 									"toolTip": "Select the desired marketplace image SKU.",
 									"constraints": {
-										"allowedValues": "[map(filter(steps('sessionHosts').image.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'entn')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
+										"allowedValues": "[map(filter(steps('sessionHosts').image.skusApi, (sku) => and(startsWith(sku.name, 'win'), not(contains(sku.name, 'ent')), or(contains(sku.name, 'ent'), contains(sku.name, 'avd')))), (sku) => parse(concat('{\"label\":\"', sku.name, '\",\"value\":\"', sku.name, '\"}')))]",
 										"required": true
 									},
 									"visible": "[equals(steps('sessionHosts').image.source, 'marketplace')]"
@@ -505,200 +658,51 @@
 										"required": true
 									},
 									"visible": "[and(not(empty(steps('basics').diskEncryptionSetsApi.value)), steps('sessionHosts').security.customerManagedKeys)]"
-								},
-								{
-									"name": "deployAntiMalwareExt",
-									"type": "Microsoft.Common.CheckBox",
-									"label": "Deploy Anti-Malware Extension",
-									"toolTip": "Deploys anti-malware extension on session hosts."
 								}
 							]
+						}
+					]
+				},
+				{
+					"name": "networking",
+					"label": "Networking",
+					"elements": [
+						{
+							"name": "virtualNetwork",
+							"type": "Microsoft.Solutions.ResourceSelector",
+							"label": "Virtual Network",
+							"resourceType": "Microsoft.Network/virtualNetworks",
+							"constraints": {
+								"required": true
+							},
+							"scope": {
+								"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
+								"location": "[steps('basics').resourceScope.location.name]"
+							}
 						},
 						{
-							"name": "identityAndAccounts",
-							"type": "Microsoft.Common.Section",
-							"label": "Identity and Account Settings",
-							"elements": [
-								{
-									"name": "identityServiceProvider",
-									"type": "Microsoft.Common.OptionsGroup",
-									"visible": true,
-									"label": "Identity Service Provider",
-									"defaultValue": "Active Directory (AD DS)",
-									"toolTip": "Choose the identity service provider for your users and session hosts. Your choices explained:</br></br><b>Active Directory (ADDS)</b>: The users are sourced from ADDS and session hosts will be domain joined.</br></br><b>Microsoft Entra Domain Services</b>: The users are sourced from Entra ID or ADDS and the session hosts are joined to Entra Domain Services.</br></br><b>Microsoft Entra ID</b>: The users are sourced from Entra ID and the session hosts will join Entra ID.</br></br><b>Microsoft Entra ID Kerberos</b>: The Users are sourced from ADDS, but the session hosts will be joined to Entra ID.",
-									"constraints": {
-										"required": true,
-										"allowedValues": [
-											{
-												"label": "Active Directory (AD DS)",
-												"value": "ADDS"
-											},
-											{
-												"label": "Microsoft Entra Domain Services",
-												"value": "EntraDS"
-											},
-											{
-												"label": "Microsoft Entra ID",
-												"value": "EntraID"
-											},
-											{
-												"label": "Microsoft Entra ID Kerberos",
-												"value": "EntraIDKerberos"
-											}
-										]
-									}
-								},
-								{
-									"name": "identityServiceProviderInfo1",
-									"type": "Microsoft.Common.InfoBox",
-									"visible": "[equals(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
-									"options": {
-										"text": "If you are deploying this solution with FSLogix Storage, storage account key access must be permitted within your subscription. This solution will securely configure your session host to access the FSLogix Azure Files storage with the storage account key.",
-										"uri": "https://techcommunity.microsoft.com/blog/fslogix-blog/fslogix-profile-containers-for-azure-ad-cloud-only-identities/3739352",
-										"style": "Warning"
-									}
-								},
-								{
-									"name": "intuneEnrollment",
-									"type": "Microsoft.Common.CheckBox",
-									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
-									"label": "Intune enrollment",
-									"toolTip": "If Intune is configured in your Microsoft Entra ID tenant, you can choose to have the VM automatically enrolled during the deployment by selecting this box."
-								},
-								{
-									"name": "identityDomainName",
-									"type": "Microsoft.Common.TextBox",
-									"label": "Domain name",
-									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
-									"toolTip": "The full qualified domain name of the domain to which the virtual machines will be joined.",
-									"placeholder": "Example: contoso.com",
-									"constraints": {
-										"required": true
-									}
-								},
-								{
-									"name": "ouPath",
-									"type": "Microsoft.Common.TextBox",
-									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
-									"label": "OU Path",
-									"toolTip": "Optionally, input the distinguished name of the desired organization unit for the AVD session hosts.",
-									"placeholder": "Example: OU=pooled,OU=avd,DC=contoso,DC=com",
-									"constraints": {
-										"required": false
-									}
-								},
-								{
-									"name": "domainJoinUserPrincipalName",
-									"type": "Microsoft.Common.TextBox",
-									"placeholder": "domainjoin@contoso.com",
-									"label": "Domain Join User Principal Name",
-									"toolTip": "The User Principal Name of the domain join account.",
-									"constraints": {
-										"regex": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-										"required": true
-									},
-									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]"
-								},
-								{
-									"name": "secretsInfoBox1",
-									"type": "Microsoft.Common.InfoBox",
-									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'EntraID')]",
-									"options": {
-										"text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
-										"style": "Info"
-									}
-								},
-								{
-									"name": "secretsInfoBox2",
-									"type": "Microsoft.Common.InfoBox",
-									"visible": "[contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS')]",
-									"options": {
-										"text": "This add-on requires that the following secret names and values are stored in a key vault that you will select below:</br><ul><li><b>domainJoinUserPassword</b>: The password associated with the user principal name specified above.</li><li><b>vmLocalUserName</b>: The virtual machine administrator username.</li><li><b>vmLocalUserPassword</b>: The virtual machine administrator password.",
-										"style": "Info"
-									}
-								},
-								{
-									"name": "keyVault",
-									"type": "Microsoft.Solutions.ResourceSelector",
-									"label": "Select Keyvault containing workload secrets",
-									"resourceType": "Microsoft.KeyVault/vaults",
-									"toolTip": "Select Keyvault which contains the secrets",
-									"constraints": {
-										"required": true
-									}
+							"name": "subnetsApi",
+							"condition": "[not(empty(steps('networking').virtualNetwork))]",
+							"type": "Microsoft.Solutions.ArmApiControl",
+							"request": {
+								"method": "GET",
+								"path": "[concat(steps('networking').virtualNetwork.id, '/subnets?api-version=2022-05-01')]",
+								"transforms": {
+									"list": "value|[*].{label:name, value:id}"
 								}
-							]
+							}
 						},
 						{
-							"name": "network",
-							"type": "Microsoft.Common.Section",
-							"label": "Network",
-							"elements": [
-								{
-									"name": "virtualNetwork",
-									"type": "Microsoft.Solutions.ResourceSelector",
-									"label": "Virtual Network",
-									"resourceType": "Microsoft.Network/virtualNetworks",
-									"constraints": {
-										"required": true
-									},
-									"scope": {
-										"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-										"location": "[steps('basics').resourceScope.location.name]"
-									}
-								},
-								{
-									"name": "subnetsApi",
-									"condition": "[not(empty(steps('sessionHosts').network.virtualNetwork))]",
-									"type": "Microsoft.Solutions.ArmApiControl",
-									"request": {
-										"method": "GET",
-										"path": "[concat(steps('sessionHosts').network.virtualNetwork.id, '/subnets?api-version=2022-05-01')]",
-										"transforms": {
-											"list": "value|[*].{label:name, value:id}"
-										}
-									}
-								},
-								{
-									"name": "subnet",
-									"type": "Microsoft.Common.DropDown",
-									"visible": true,
-									"label": "Subnet",
-									"defaultValue": "",
-									"toolTip": "Select an existing subnet for the AVD session hosts.",
-									"constraints": {
-										"required": true,
-										"allowedValues": "[steps('sessionHosts').network.subnetsApi.transformed.list]"
-									}
-								}
-							]
-						},
-						{
-							"name": "monitoring",
-							"type": "Microsoft.Common.Section",
-							"label": "Monitoring",
-							"elements": [
-								{
-									"name": "enableMonitoring",
-									"type": "Microsoft.Common.CheckBox",
-									"label": "Deploy Azure Monitor Agent and Associate Data Collection Rule",
-									"toolTip": "Deploy AVD monitoring resources and setings."
-								},
-								{
-									"name": "dataCollectionRule",
-									"type": "Microsoft.Solutions.ResourceSelector",
-									"visible": "[steps('sessionHosts').monitoring.enableMonitoring]",
-									"label": "AVD Insights Data Collection Rule",
-									"resourceType": "Microsoft.Insights/dataCollectionRules",
-									"constraints": {
-										"required": true
-									},
-									"scope": {
-										"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
-										"location": "[steps('basics').resourceScope.location.name]"
-									}
-								}
-							]
+							"name": "subnet",
+							"type": "Microsoft.Common.DropDown",
+							"visible": true,
+							"label": "Subnet",
+							"defaultValue": "",
+							"toolTip": "Select an existing subnet for the AVD session hosts.",
+							"constraints": {
+								"required": true,
+								"allowedValues": "[steps('networking').subnetsApi.transformed.list]"
+							}
 						}
 					]
 				},
@@ -757,6 +761,32 @@
 								"required": true
 							},
 							"visible": "[not(empty(steps('fslogix').storageAccount))]"
+						}
+					]
+				},
+				{
+					"name": "monitoring",
+					"label": "Monitoring",
+					"elements": [
+						{
+							"name": "enableMonitoring",
+							"type": "Microsoft.Common.CheckBox",
+							"label": "Deploy Azure Monitor Agent and Associate Data Collection Rule",
+							"toolTip": "Deploy AVD monitoring resources and settings."
+						},
+						{
+							"name": "dataCollectionRule",
+							"type": "Microsoft.Solutions.ResourceSelector",
+							"visible": "[steps('monitoring').enableMonitoring]",
+							"label": "AVD Insights Data Collection Rule",
+							"resourceType": "Microsoft.Insights/dataCollectionRules",
+							"constraints": {
+								"required": true
+							},
+							"scope": {
+								"subscriptionId": "[steps('basics').resourceScope.subscription.subscriptionId]",
+								"location": "[steps('basics').resourceScope.location.name]"
+							}
 						}
 					]
 				},
@@ -982,8 +1012,8 @@
 				"hostPoolResourceId": "[steps('basics').hostPool.id]",
 				"location": "[steps('basics').resourceScope.location.name]",
 				"computeRgResourceGroupName": "[steps('basics').resourceGroup.name]",
-				"deploymentPrefix": "[first(skip(split(steps('basics').resourceGroup.name, '-'), 2))]",
-				"deploymentEnvironment": "[first(skip(split(steps('basics').resourceGroup.name, '-'), 3))]",
+				"deploymentPrefix": "[if(not(steps('sessionHosts').naming.customNaming), steps('sessionHosts').naming.prefix, 'AVD1')]", 
+				"deploymentEnvironment": "[if(not(steps('sessionHosts').naming.customNaming), steps('sessionHosts').naming.environment, 'Dev')]", 
 				"customNaming": "[steps('sessionHosts').naming.customNaming]",
 				"sessionHostCustomNamePrefix": "[if(steps('sessionHosts').naming.customNaming, steps('sessionHosts').naming.vmNamePrefix, 'notapp')]",
 				"count": "[steps('sessionHosts').naming.count]",
@@ -1004,16 +1034,16 @@
 				"asgResourceId": "[if(empty(steps('sessionHosts').security.asg), '', first(map(steps('sessionHosts').security.asg.value, (asg) => asg.id)))]",
 				"encryptionAtHost": "[if(equals(steps('basics').encryptionAtHostFeatureApi.properties.state, 'Registered'), steps('sessionHosts').security.encryptionAtHost, false)]",
 				"diskEncryptionSetResourceId": "[if(steps('sessionHosts').security.customerManagedKeys, steps('sessionHosts').security.diskEncryptionSet, '')]",
-				"deployAntiMalwareExt": "[steps('sessionHosts').security.deployAntiMalwareExt]",
-				"identityServiceProvider": "[steps('sessionHosts').identityAndAccounts.identityServiceProvider]",
-				"createIntuneEnrollment": "[steps('sessionHosts').identityAndAccounts.intuneEnrollment]",
-				"identityDomainName": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.identityDomainName, '')]",
-				"sessionHostOuPath": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.ouPath, '')]",
-				"keyVaultResourceId": "[steps('sessionHosts').identityAndAccounts.keyVault.id]",
-				"domainJoinUserPrincipalName": "[if(contains(steps('sessionHosts').identityAndAccounts.identityServiceProvider, 'DS'), steps('sessionHosts').identityAndAccounts.domainJoinUserPrincipalName, '')]",
-				"subnetResourceId": "[steps('sessionHosts').network.subnet]",
-				"enableMonitoring": "[steps('sessionHosts').monitoring.enableMonitoring]",
-				"dataCollectionRuleId": "[if(steps('sessionHosts').monitoring.enableMonitoring, steps('sessionHosts').monitoring.dataCollectionRule.id, '')]",
+				"deployAntiMalwareExt": "[steps('sessionHosts').settings.enableAntiMalwareExt]",
+				"identityServiceProvider": "[steps('identity').identityServiceProvider]",
+				"createIntuneEnrollment": "[if(contains(steps('identity').identityServiceProvider, 'ID'), steps('identity').intuneEnrollment, false)]",
+				"identityDomainName": "[if(contains(steps('identity').identityServiceProvider, 'DS'), steps('identity').identityDomainName, '')]",
+				"sessionHostOuPath": "[if(contains(steps('identity').identityServiceProvider, 'DS'), steps('identity').ouPath, '')]",
+				"keyVaultResourceId": "[steps('identity').keyVault.id]",
+				"domainJoinUserPrincipalName": "[if(contains(steps('identity').identityServiceProvider, 'DS'), steps('identity').domainJoinUserPrincipalName, '')]",
+				"subnetResourceId": "[steps('networking').subnet]",
+				"enableMonitoring": "[steps('monitoring').enableMonitoring]",
+				"dataCollectionRuleId": "[if(steps('monitoring').enableMonitoring, steps('monitoring').dataCollectionRule.id, '')]",
 				"configureFslogix": "[steps('fslogix').configureFslogix]",
 				"fslogixStorageAccountResourceId": "[if(steps('fslogix').configureFslogix, steps('fslogix').storageAccount, '')]",
 				"fslogixFileShareName": "[if(steps('fslogix').configureFslogix, steps('fslogix').fileShareName, '')]",

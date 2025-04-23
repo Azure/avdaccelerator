@@ -33,7 +33,7 @@ param avdSessionHostLocation string
 param avdManagementPlaneLocation string
 
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario. (Default: "")')
-param avdWorkloadSubsId string = ''
+param avdWorkloadSubsId string
 
 @sys.description('Azure Virtual Desktop Enterprise Application object ID (Enterprise app name: Azure Virtual Desktop) . (Default: "")')
 param avdServicePrincipalObjectId string = ''
@@ -220,11 +220,13 @@ param avdAlaWorkspaceDataRetention int = 90
 param alaExistingWorkspaceResourceId string = ''
 
 @minValue(1)
-@maxValue(100)
+@maxValue(1999)
 @sys.description('Quantity of session hosts to deploy. (Default: 1)')
 param avdDeploySessionHostsCount int = 1
 
-@sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to ensure the names do not conflict. (Default: 1)')
+@minValue(1)
+@maxValue(9998)
+@sys.description('The session host number to begin with for the deployment. This is important when adding virtual machines to host pool ensure the names do not conflict. (Default: 1)')
 param avdSessionHostCountIndex int = 1
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level.')
@@ -980,13 +982,14 @@ var varTagsWithValues = union(
   empty(costCenterTag) ? {} : { CostCenter: costCenterTag }
 )
 var varCustomResourceTags = createResourceTags ? varTagsWithValues : {}
-var varAllComputeStorageTags = contains(avdIdentityServiceProvider, 'EntraID')
-  ? {
-      IdentityServiceProvider: avdIdentityServiceProvider
-  }: {
-      DomainName: identityDomainName
-      IdentityServiceProvider: avdIdentityServiceProvider
-    }
+var varAllComputeStorageTags = {
+  DomainName: identityDomainName
+  IdentityServiceProvider: avdIdentityServiceProvider
+  SourceImage: useSharedImage ? split(avdCustomImageDefinitionId, '/')[8] : mpImageSku
+  HotPoolName: varHostPoolName
+  FSLogixPath: createAvdFslogixDeployment ? varFslogixSharePath : 'NA'
+  OUPath: contains(avdIdentityServiceProvider, 'EntraID') ? 'NA' : avdOuPath
+}
 var varAvdDefaultTags = {
   'cm-resource-parent': '/subscriptions/${avdWorkloadSubsId}/resourceGroups/${varServiceObjectsRgName}/providers/Microsoft.DesktopVirtualization/hostpools/${varHostPoolName}'
   Environment: deploymentEnvironment
