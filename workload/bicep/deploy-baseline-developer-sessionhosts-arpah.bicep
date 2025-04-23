@@ -380,12 +380,13 @@ var varFslogixSharePath = createAvdFslogixDeployment
 var varBaseScriptUri = 'https://raw.githubusercontent.com/ARPA-H/avdaccelerator-nih/main/workload/'
 var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
 var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
-var varMaxSessionHostsPerTemplate = maxSessionHostsPerTemplate
-var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
-var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
-var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0
-  ? varMaxSessionHostsDivisionValue + 1
-  : varMaxSessionHostsDivisionValue
+
+// var varMaxSessionHostsPerTemplate = maxSessionHostsPerTemplate
+// var varMaxSessionHostsDivisionValue = avdDeploySessionHostsCount / varMaxSessionHostsPerTemplate
+// var varMaxSessionHostsDivisionRemainderValue = avdDeploySessionHostsCount % varMaxSessionHostsPerTemplate
+// var varSessionHostBatchCount = varMaxSessionHostsDivisionRemainderValue > 0
+//   ? varMaxSessionHostsDivisionValue + 1
+//   : varMaxSessionHostsDivisionValue
 
 var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
 // Resource tagging
@@ -553,7 +554,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
       customOsDiskSizeGB: customOsDiskSizeGB
       diskType: avdSessionHostDiskType
-      domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
+      //domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
       domainJoinUserPrincipalName: keyVaultExisting.getSecret('domainJoinUserName')
       domainJoinPassword: keyVaultExisting.getSecret('domainJoinUserPassword')
       enableAcceleratedNetworking: enableAcceleratedNetworking

@@ -103,9 +103,9 @@ targetScope = 'subscription'
 // @sys.description('Identity domain name.')
 // param identityDomainName string
 
-@sys.description('AVD session host domain join credentials.')
-@secure()
-param domainJoinUserName string
+// @sys.description('AVD session host domain join credentials.')
+// @secure()
+// param domainJoinUserName string
 
 // @sys.description('OU path to join AVd VMs.')
 // param sessionHostOuPath string
@@ -706,7 +706,7 @@ module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine
       settings: {
             name: identityDomainName
             ouPath: !empty(sessionHostOuPath) ? sessionHostOuPath : null
-            user: domainJoinUserName
+            user: domainJoinUserPrincipalName
             restart: 'true'
             options: '3'
         }
