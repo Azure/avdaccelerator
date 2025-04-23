@@ -18,24 +18,6 @@
 							}
 						},
 						{
-							"name": "avdServicePrincipal",
-							"type": "Microsoft.Solutions.GraphApiControl",
-							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
-							"request": {
-								"method": "GET",
-								"path": "/v1.0/serviceprincipals?$filter=appId eq '9cdead84-a844-4324-93f2-b2e6bb768d07'"
-							}
-						},
-						{
-							"name": "avdArmServicePrincipal",
-							"type": "Microsoft.Solutions.GraphApiControl",
-							"condition": "[not(empty(steps('basics').resourceScope.subscription))]",
-							"request": {
-								"method": "GET",
-								"path": "/v1.0/servicePrincipals?$filter=appId eq '50e95039-b200-4007-bc97-8d5790743a63'"
-							}
-						},
-						{
 							"name": "infoPreReq",
 							"type": "Microsoft.Common.InfoBox",
 							"visible": true,
@@ -649,7 +631,7 @@
                                 {
                                     "name": "servicePrincipalSelector",
                                     "type": "Microsoft.Common.Selector",
-									"visible": "[and(empty(first(steps('basics').avdServicePrincipal.value)), or(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan))]",
+									"visible": "[or(steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect, steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan)]",
                                     "label": "<b>Azure/Windows Virtual Desktop</b> Enterprise Application",
                                     "keyPath": "displayName",
                                     "value": "[steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection]",
@@ -860,7 +842,7 @@
                                     "defaultValue": 1,
                                     "toolTip": "Select the start number of the virtual machine suffix.",
                                     "min": 1,
-                                    "max": 4998,
+                                    "max": 9998,
                                     "showStepMarkers": true,
                                     "constraints": {
                                         "required": true
@@ -873,7 +855,7 @@
                                     "defaultValue": 1,
                                     "toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
                                     "min": 1,
-                                    "max": 4999,
+                                    "max": 1999,
                                     "showStepMarkers": true,
                                     "constraints": {
                                         "required": true
@@ -1336,7 +1318,7 @@
 										"required": true
 									},
 									"link": "[if(empty(steps('storage').storageAppAttach.servicePrincipalPickerBlade), 'Select Enterprise Application', first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(first(steps('basics').avdServicePrincipal.value)), empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade))]"
+									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade))]"
 								},
 								{
 									"name": "armServicePrincipalPickerBlade",
@@ -1383,7 +1365,7 @@
 										"required": true
 									},
 									"link": "[if(empty(steps('storage').storageAppAttach.armServicePrincipalPickerBlade), 'Select Enterprise Application', first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.displayName)))]",
-									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment, empty(first(steps('basics').avdArmServicePrincipal.value)))]"
+									"visible": "[and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment)]"
 								}
 							]
 						}
@@ -2773,8 +2755,8 @@
 		},
 		"outputs": {
 			"parameters": {
-				"avdServicePrincipalObjectId": "[if(empty(first(steps('basics').avdServicePrincipal.value)), if(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), '')), first(steps('basics').avdServicePrincipal.value.id))]",
-				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), if(empty(first(steps('basics').avdArmServicePrincipal.value)), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), first(steps('basics').avdArmServicePrincipal.value.id)), '')]",
+				"avdServicePrincipalObjectId": "[if(or(steps('managementPlane').managementPlaneHostPoolScaling.scalingPlan, steps('managementPlane').managementPlaneHostPoolScaling.startVmOnConnect), first(map(steps('managementPlane').managementPlaneHostPoolScaling.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), first(map(steps('storage').storageAppAttach.servicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), ''))]",
+				"avdArmServicePrincipalObjectId": "[if(and(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('storage').storageAppAttach.appAttachStorageDeployment), first(map(steps('storage').storageAppAttach.armServicePrincipalPickerBlade.transformed.selection, (sp) => sp.id)), '')]",
 				"deploymentPrefix": "[steps('basics').deploymentSpecs.deploymentPrefix]",
 				"deploymentEnvironment": "[steps('basics').deploymentSpecs.deploymentEnvironment]",
 				"diskZeroTrust": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskZeroTrust]",
