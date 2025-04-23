@@ -555,6 +555,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       diskType: avdSessionHostDiskType
       domainJoinUserName: keyVaultExisting.getSecret('domainJoinUserName')
       domainJoinUserPrincipalName: keyVaultExisting.getSecret('domainJoinUserName')
+      domainJoinPassword: keyVaultExisting.getSecret('domainJoinUserPassword')
       enableAcceleratedNetworking: enableAcceleratedNetworking
       encryptionAtHost: diskZeroTrust
       fslogixSharePath: varFslogixSharePath
@@ -584,3 +585,4 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
     }
   }
 ]
+
