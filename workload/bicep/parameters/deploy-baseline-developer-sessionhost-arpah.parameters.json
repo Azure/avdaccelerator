@@ -94,9 +94,6 @@
       },
       "avdHostPoolType": {
         "value": "Pooled"
-      },
-      "maxSessionHostsPerTemplate": {
-        "value": 10
       }
   }
 }
