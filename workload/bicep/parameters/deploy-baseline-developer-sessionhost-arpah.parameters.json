@@ -81,7 +81,7 @@
           "value": "<<subscriptionId>>"
       },
       "goldenImageId": {
-          "value": "devopsGoldenImageAvdArpah/versions/latest"
+          "value": "avd-nih-dev-win11/versions/latest"
       },
       "createResourceTags": {
           "value": false
