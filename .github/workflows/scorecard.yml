@@ -27,12 +27,12 @@ jobs:
       # Needed to publish results and get a badge (see publish_results below).
       id-token: write
       # Uncomment the permissions below if installing in a private repository.
-      # contents: read
-      # actions: read
+      contents: read
+      actions: read
 
     steps:
       - name: "Checkout code"
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        uses: actions/checkout@85e6279cec87321a52edac9c87bce653a07cf6c2 # v4.1.1
         with:
           persist-credentials: false
 
