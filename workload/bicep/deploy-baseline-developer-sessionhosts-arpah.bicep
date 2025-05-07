@@ -545,7 +545,7 @@ module sessionHosts './modules/avdSessionHosts/deploy-developer-arpah.bicep' = [
       computeObjectsRgName: varComputeObjectsRgName
       configureFslogix: createAvdFslogixDeployment
       count: i
-      //countIndex: i - 1
+      countIndex: i + avdSessionHostCountIndex
       createIntuneEnrollment: createIntuneEnrollment
       customImageDefinitionId: avdCustomImageDefinitionId
       dataCollectionRuleId: dataCollectionRulesExisting.id
