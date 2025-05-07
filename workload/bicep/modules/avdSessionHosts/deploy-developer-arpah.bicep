@@ -41,8 +41,8 @@ param subscriptionId string
 @sys.description('Quantity of session hosts to deploy.')
 param count int
 
-// @sys.description('The session host number to begin with for the deployment.')
-// param countIndex int
+@sys.description('The session host number to begin with for the deployment.')
+param countIndex int
 
 @sys.description('When true VMs are distributed across availability zones, when set to false, VMs will be deployed at regional level. (Default: true).')
 param availability string
@@ -183,9 +183,10 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 // Session hosts
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpah.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${count - 1}-${time}'
+    name: 'SH-${batchId + 1}-${count - 1}-${time}'
     params: {
-        name: '${namePrefix}${padLeft(count, 4, '0')}'
+        name: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
+        // name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
         location: location
         timeZone: timeZone
         zone: availability == 'AvailabilityZones' ? varZones[count % length(varZones)] : 0
@@ -215,7 +216,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpa
         adminPassword: keyVault.getSecret('vmLocalUserPassword')
         nicConfigurations: [
             {
-                name: 'nic-01-${namePrefix}${padLeft(count, 4, '0')}'
+                name: 'nic-01-${namePrefix}${padLeft(count + countIndex, 4, '0')}'
                 deleteOption: 'Delete'
                 enableAcceleratedNetworking: enableAcceleratedNetworking
                 ipConfigurations: !empty(asgResourceId) ? [
@@ -311,10 +312,10 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 // Add monitoring extension to session host
 module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = if (deployMonitoring) {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'SH-GA-${batchId}-${count - 1}-${time}'
+  name: 'SH-GA-${batchId + 1}-${count - 1}-${time}'
   params: {
       location: location
-      virtualMachineName: '${namePrefix}${padLeft(count, 4, '0')}'
+      virtualMachineName: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
       name: 'GuestAttestation'
       publisher: 'Microsoft.Azure.Security.WindowsAttestation'
       type: 'GuestAttestation'
@@ -345,10 +346,10 @@ module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-mach
 
 module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = if (deployMonitoring) {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'SH-Mon-${batchId}-${count - 1}-${time}'
+  name: 'SH-Mon-${batchId + 1}-${count - 1}-${time}'
   params: {
     location: location
-    virtualMachineName: '${namePrefix}${padLeft(count, 4, '0')}'
+    virtualMachineName: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
     name: 'AzureMonitorWindowsAgent'
     publisher: 'Microsoft.Azure.Monitor'
     type: 'AzureMonitorWindowsAgent'
@@ -371,9 +372,9 @@ module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bic
 // Data collection rule association
 module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = if (deployMonitoring) {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'DCR-Asso-${batchId}-${count - 1}-${time}'
+  name: 'DCR-Asso-${batchId + 1}-${count - 1}-${time}'
   params: {
-    virtualMachineName: '${namePrefix}${padLeft(count, 4, '0')}'
+    virtualMachineName: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
     dataCollectionRuleId: dataCollectionRuleId
   }
   dependsOn: [
@@ -385,7 +386,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'SH-Config-${batchId}-${count - 1}-${time}'
+  name: 'SH-Config-${batchId + 1}-${count - 1}-${time}'
   params: {
     baseScriptUri: sessionHostConfigurationScriptUri
     fslogix: configureFslogix
@@ -396,7 +397,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
     extendOsDisk: customOsDiskSizeGB != 0 ? true : false
     identityServiceProvider: identityServiceProvider
     location: location
-    name: '${namePrefix}${padLeft(count, 4, '0')}'
+    name: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
     scriptName: sessionHostConfigurationScript
     vmSize: vmSize
   }
@@ -408,9 +409,9 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
 
 module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'Dom-Join-${batchId}-${count - 1}-${time}'
+  name: 'Dom-Join-${batchId + 1}-${count - 1}-${time}'
   params: {
-    virtualMachineName: '${namePrefix}${padLeft(count, 4, '0')}'
+    virtualMachineName: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
     name: 'DomainJoin'
     location: location
     publisher: 'Microsoft.Compute'
