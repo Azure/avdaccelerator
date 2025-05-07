@@ -183,7 +183,7 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
 // Session hosts
 module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main-arpah.bicep' = {
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-    name: 'SH-${batchId}-${count - 1}-${time}'
+    name: 'SH-${batchId + 1}-${count - 1}-${time}'
     params: {
         name: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
         // name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
@@ -312,7 +312,7 @@ resource alaWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' exis
 // Add monitoring extension to session host
 module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = if (deployMonitoring) {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'SH-GA-${batchId}-${count - 1}-${time}'
+  name: 'SH-GA-${batchId + 1}-${count - 1}-${time}'
   params: {
       location: location
       virtualMachineName: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
@@ -346,7 +346,7 @@ module deployIntegrityMonitoring '../../../../avm/1.0.0/res/compute/virtual-mach
 
 module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = if (deployMonitoring) {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'SH-Mon-${batchId}-${count - 1}-${time}'
+  name: 'SH-Mon-${batchId + 1}-${count - 1}-${time}'
   params: {
     location: location
     virtualMachineName: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
@@ -372,7 +372,7 @@ module ama '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bic
 // Data collection rule association
 module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bicep' = if (deployMonitoring) {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'DCR-Asso-${batchId}-${count - 1}-${time}'
+  name: 'DCR-Asso-${batchId + 1}-${count - 1}-${time}'
   params: {
     virtualMachineName: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
     dataCollectionRuleId: dataCollectionRuleId
@@ -386,7 +386,7 @@ module dataCollectionRuleAssociation '.bicep/dataCollectionRulesAssociation.bice
 // Apply AVD session host configurations
 module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'SH-Config-${batchId}-${count - 1}-${time}'
+  name: 'SH-Config-${batchId + 1}-${count - 1}-${time}'
   params: {
     baseScriptUri: sessionHostConfigurationScriptUri
     fslogix: configureFslogix
@@ -409,7 +409,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = {
 
 module vm_domainJoinExtension '../../../../avm/1.0.0/res/compute/virtual-machine/extension/main.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
-  name: 'Dom-Join-${batchId}-${count - 1}-${time}'
+  name: 'Dom-Join-${batchId + 1}-${count - 1}-${time}'
   params: {
     virtualMachineName: '${namePrefix}${padLeft(count + countIndex, 4, '0')}'
     name: 'DomainJoin'
