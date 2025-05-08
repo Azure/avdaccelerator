@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "363676076343152940"
+      "templateHash": "1594909801016812027"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1723,7 +1723,7 @@
     "varAllComputeStorageTags": {
       "DomainName": "[parameters('identityDomainName')]",
       "IdentityServiceProvider": "[parameters('avdIdentityServiceProvider')]",
-      "SourceImage": "[if(parameters('useSharedImage'), split(parameters('avdCustomImageDefinitionId'), '/')[10], parameters('mpImageSku'))]",
+      "SourceImage": "[if(parameters('useSharedImage'), last(split(parameters('avdCustomImageDefinitionId'), '/')), parameters('mpImageSku'))]",
       "HotPoolName": "[variables('varHostPoolName')]",
       "FSLogixPath": "[if(parameters('createAvdFslogixDeployment'), variables('varFslogixSharePath'), 'NA')]",
       "OUPath": "[if(contains(parameters('avdIdentityServiceProvider'), 'EntraID'), 'NA', parameters('avdOuPath'))]"
