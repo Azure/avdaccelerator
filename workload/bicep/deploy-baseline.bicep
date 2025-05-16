@@ -985,7 +985,7 @@ var varCustomResourceTags = createResourceTags ? varTagsWithValues : {}
 var varAllComputeStorageTags = {
   DomainName: identityDomainName
   IdentityServiceProvider: avdIdentityServiceProvider
-  SourceImage: useSharedImage ? split(avdCustomImageDefinitionId, '/')[10] : mpImageSku
+  SourceImage: useSharedImage ? last(split(avdCustomImageDefinitionId, '/')) : mpImageSku
   HotPoolName: varHostPoolName
   FSLogixPath: createAvdFslogixDeployment ? varFslogixSharePath : 'NA'
   OUPath: contains(avdIdentityServiceProvider, 'EntraID') ? 'NA' : avdOuPath

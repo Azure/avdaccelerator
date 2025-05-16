@@ -38,30 +38,30 @@ New-AzSubscriptionDeployment `
 
 ### Azure CLI
 
-```bash
+```powershell
 az login
 #
-SubID="<subscription-ID>"
-read -s -p "Local user password: " avdVmLocalUserPassword
+$SubID = "<subscription-ID>"
+$avdVmLocalUserPassword = Read-Host -Prompt "Local user password" -AsSecureString
 #
 az account set --subscription "$SubID"
-az deployment sub create \
---name "AVDAcceleratorDeployment" \
---location "<deployment-location>" \
---template-file "./workload/bicep/deploy-baseline.bicep" \
---parameters \
-  avdWorkloadSubsId="$SubID" \
-  avdSessionHostLocation="<session-host-location>" \
-  avdManagementPlaneLocation="<management-plane-location>" \
-  avdVmLocalUserName="<local-username>" \
-  avdVmLocalUserPassword="$avdVmLocalUserPassword" \
-  avdIdentityServiceProvider="EntraIDKerberos" \
-  identityDomainName="<domain-name>" \
-  avdServicePrincipalObjectId="<object-id>" \
-  avdSecurityGroups="[{\"objectId\": \"00000000-0000-0000-0000-000000000000\", \"displayName\": \"Example-Security-Group\"}]" \ 
-  avdVnetworkAddressPrefixes="10.10.0.0/16" \
-  vNetworkAvdSubnetAddressPrefix="10.10.1.0/24" \
-  vNetworkPrivateEndpointSubnetAddressPrefix="10.10.2.0/27"
+az deployment sub create `
+--name "AVDAcceleratorDeployment" `
+--location "<deployment-location>" `
+--template-file "./workload/bicep/deploy-baseline.bicep" `
+--parameters `
+  avdWorkloadSubsId "$SubID" `
+  avdSessionHostLocation "<session-host-location>" `
+  avdManagementPlaneLocation "<management-plane-location>" `
+  avdVmLocalUserName "<local-username>" `
+  avdVmLocalUserPassword "$avdVmLocalUserPassword" `
+  avdIdentityServiceProvider "EntraIDKerberos" `
+  identityDomainName "<domain-name>" `
+  avdServicePrincipalObjectId "<object-id>" `
+  avdSecurityGroups @(@{objectId="00000000-0000-0000-0000-000000000000"; displayName="Example-Security-Group"}) `
+  avdVnetworkAddressPrefixes "10.10.0.0/16" `
+  vNetworkAvdSubnetAddressPrefix "10.10.1.0/24" `
+  vNetworkPrivateEndpointSubnetAddressPrefix "10.10.2.0/27"
 ```
 > Note: above AZ CLI deployment sample, deploys AVD with most of the default options in the AVD LZA using  Entra ID Kerberos as identity provider and deploying new virtual network.
 
@@ -95,29 +95,29 @@ New-AzDeployment `
 
 ### Azure CLI
 
-```bash
+```powershell
 az login
 #
-SubID="<subscription-ID>"
+$SubID = "<subscription-ID>"
 #
 az account set --subscription "$SubID"
-az deployment sub create \
-  --name "CustomImageDeployment" \
-  --location "<deployment-location>" \
-  --template-file "./workload/bicep/deploy-custom-image.bicep" \
-  --parameters \
-    subscriptionId="$SubID" \
-    sharedServicesSubId="<shared-services-subscription-id>" \
-    deploymentLocation="<deployment-location>" \
-    imageVersionPrimaryLocation="<primary-location>" \
-    mpImagePublisher="<image-publisher>" \
-    mpImageOffer="<image-offer>" \
-    mpImageSku="<image-sku>" \
-    mpImageVersion="latest" \
-    userAssignedManagedIdentityCustomName="<managed-identity-name>" \
-    enableMonitoringAlerts=false \
-    enableResourceTags=false \
-    enableTelemetry=true
+az deployment sub create `
+  --name "CustomImageDeployment" `
+  --location "<deployment-location>" `
+  --template-file "./workload/bicep/deploy-custom-image.bicep" `
+  --parameters `
+    subscriptionId "$SubID" `
+    sharedServicesSubId "<shared-services-subscription-id>" `
+    deploymentLocation "<deployment-location>" `
+    imageVersionPrimaryLocation "<primary-location>" `
+    mpImagePublisher "<image-publisher>" `
+    mpImageOffer "<image-offer>" `
+    mpImageSku "<image-sku>" `
+    mpImageVersion "latest" `
+    userAssignedManagedIdentityCustomName "<managed-identity-name>" `
+    enableMonitoringAlerts false `
+    enableResourceTags false `
+    enableTelemetry true
 ```
 
 ## Contributing
