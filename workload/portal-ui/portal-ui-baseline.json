@@ -2798,7 +2798,7 @@
 				"useSharedImage": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')), true, false)]",
 				"mpImageOffer": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.offer, '')]",
 				"mpImageSku": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.sku, '')]",
-				"avdcustomImageDefinitionId": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')), steps('sessionHosts').sessionHostsOsSection.imageDefinition, '')]",
+				"avdCustomImageDefinitionId": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')), steps('sessionHosts').sessionHostsOsSection.imageDefinition, '')]",
 				"deployAntiMalwareExt": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.enableAntiMalwareExt, true)]",
 				"avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
 				"customOsDiskSizeGB": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostdiskSizeGB]",
