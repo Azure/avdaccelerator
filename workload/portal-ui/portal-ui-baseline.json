@@ -842,7 +842,7 @@
                                     "defaultValue": 1,
                                     "toolTip": "Select the start number of the virtual machine suffix.",
                                     "min": 1,
-                                    "max": 4998,
+                                    "max": 9998,
                                     "showStepMarkers": true,
                                     "constraints": {
                                         "required": true
@@ -855,7 +855,7 @@
                                     "defaultValue": 1,
                                     "toolTip": "Select the number of virtual machines to deploy in your AVD host pool.",
                                     "min": 1,
-                                    "max": 4999,
+                                    "max": 1999,
                                     "showStepMarkers": true,
                                     "constraints": {
                                         "required": true
@@ -2798,7 +2798,7 @@
 				"useSharedImage": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')), true, false)]",
 				"mpImageOffer": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.offer, '')]",
 				"mpImageSku": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'marketplace')), steps('sessionHosts').sessionHostsOsSection.sku, '')]",
-				"avdcustomImageDefinitionId": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')), steps('sessionHosts').sessionHostsOsSection.imageDefinition, '')]",
+				"avdCustomImageDefinitionId": "[if(and(steps('sessionHosts').deploySessionHosts, equals(steps('sessionHosts').sessionHostsOsSection.source, 'computegallery')), steps('sessionHosts').sessionHostsOsSection.imageDefinition, '')]",
 				"deployAntiMalwareExt": "[if(equals(steps('sessionHosts').deploySessionHosts, true), steps('sessionHosts').sessionHostsSettingsSection.enableAntiMalwareExt, true)]",
 				"avdSessionHostDiskType": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostDiskType]",
 				"customOsDiskSizeGB": "[steps('sessionHosts').sessionHostsSettingsSection.sessionHostdiskSizeGB]",
