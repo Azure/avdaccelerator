@@ -20,11 +20,11 @@ on:
       session_host_count: 
         type: number
         description: Number of session hosts
-        default: '1'
+        default: 1
       host_count_index: 
         type: number
         description: Index to start for the name of the session host, ex) avddevt01, avddevt02, etc.
-        default: '1'
+        default: 1
       deployment_stack_name: 
         type: string
         description: Name of deployment stack to delete
