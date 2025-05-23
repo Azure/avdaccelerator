@@ -57,6 +57,7 @@ The brownfield section contains templates to deploy additional features for Azur
 ### Specialized AVD use cases
 
 - [Secure enclaves for research, such as AI](https://github.com/Azure/HubAndSpokeResearchEnclave)
+- [Linux Broker for AVD Access: A scalable solution for managing and brokering user access to Linux virtual machines.](https://github.com/microsoft/LinuxBrokerForAVDAccess)
 
 ### Monitoring workbooks
 
