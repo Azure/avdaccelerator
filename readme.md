@@ -60,6 +60,7 @@ The brownfield, add-ons and tools section, contains templates to deploy addition
 ### Specialized AVD use cases
 
 - [Secure enclaves for research, such as AI](https://github.com/Azure/HubAndSpokeResearchEnclave)
+- [Linux Broker for AVD Access: A scalable solution for managing and brokering user access to Linux virtual machines.](https://github.com/microsoft/LinuxBrokerForAVDAccess)
 
 ### Monitoring and alerts
 
