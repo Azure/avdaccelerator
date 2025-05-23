@@ -39,48 +39,43 @@ If you are having deployment challenges, refer to the [LZA baseline troubleshoot
 
 ## Azure Virtual Desktop - LZA Optional Deployments
 
-### Brownfield scenarios
+### Brownfield, add-ons and tools
 
-The brownfield section contains templates to deploy additional features for Azure Virtual Desktop when existing infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
+The brownfield, add-ons and tools section, contains templates to deploy additional features for Azure Virtual Desktop when infrastructure already exists. These templates can be used individually as required. Here is the list of deployment options available:
 
+### Brownfield
 - [Add New Session Hosts](./workload/bicep/brownfield/newSessionHosts/readme.md)
-- [Alerts](./workload/bicep/brownfield/alerts/readme.md)
+- [Deploy AVD agents to VM](./workload/bicep/brownfield/addAvdAgents/readme.md)
+- [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
+
+### Add-ons and tools
+- [AVD Client (Remote Desktop) Kiosk](https://github.com/Azure/AVDClientKiosk)
+- [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)
 - [Auto Increase Premium File Share Quota](./workload/bicep/brownfield/autoIncreasePremiumFileShareQuota/readme.md)
 - [AVD Session Host Replacer](https://github.com/Azure/AVDSessionHostReplacer)
 - [Custom Image Templates Prerequisites](./workload/bicep/brownfield/customImageTemplatesPrerequisites/readme.md)
 - [Migrate monitoring agent from MMA to AMA](./workload/scripts/Monitoring/readme.md)
-- [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
-- [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
-- [AVD Client (Remote Desktop) Kiosk](https://github.com/Azure/AVDClientKiosk)
 
 ### Specialized AVD use cases
 
 - [Secure enclaves for research, such as AI](https://github.com/Azure/HubAndSpokeResearchEnclave)
 - [Linux Broker for AVD Access: A scalable solution for managing and brokering user access to Linux virtual machines.](https://github.com/microsoft/LinuxBrokerForAVDAccess)
 
-### Monitoring workbooks
+### Monitoring and alerts
 
 - [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
 - [Error Reporting Workbook](./workload/workbooks/errorReporting/readme.md)
 - [Error Tracking Workbook](./workload/workbooks/errorTracking/readme.md)
+- [Alerts](./workload/bicep/brownfield/alerts/readme.md)
 
 ### Custom image build
 
-[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery. The following images are offered:
+[Getting Started](/workload/docs/getting-started-custom-image-build.md) deploying a custom image based on the latest version of the Azure marketplace image to an Azure Compute Gallery.
 
-- Windows 10 22H2 (Gen 2)
-- Windows 11 22H2 (Gen 2)
-- Windows 11 23H2 (Gen 2)
-- Windows 11 24H2 (Gen 2)
-- Windows 10 22H2 with O365 (Gen 2)
-- Windows 11 22H2 with O365 (Gen 2)
-- Windows 11 23H2 with O365 (Gen 2)
-- Windows 11 24H2 with O365 (Gen 2)
+You can select to enable the Trusted Launch or Confidential VM security type feature on the Azure Compute Gallery image definition.
 
-You can also select to enable the Trusted Launch or Confidential VM security type feature on the Azure Compute Gallery image definition.
-
-Custom image is optimized using [Virtual Desktop Optimization Tool (VDOT)](https://github.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool) and patched with the latest Windows updates.
+Custom image is patched with the latest Windows updates.
 
 | Deployment Type | Link |
 |:--|:--|

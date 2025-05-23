@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "12759370349231900780"
+      "version": "0.33.93.31351",
+      "templateHash": "3263896733964641059"
     },
     "name": "Private DNS Zone MX record",
     "description": "This module deploys a Private DNS Zone MX record.",
@@ -136,21 +136,18 @@
     "privateDnsZone": {
       "existing": true,
       "type": "Microsoft.Network/privateDnsZones",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2024-06-01",
       "name": "[parameters('privateDnsZoneName')]"
     },
     "MX": {
       "type": "Microsoft.Network/privateDnsZones/MX",
-      "apiVersion": "2020-06-01",
+      "apiVersion": "2024-06-01",
       "name": "[format('{0}/{1}', parameters('privateDnsZoneName'), parameters('name'))]",
       "properties": {
         "metadata": "[parameters('metadata')]",
         "mxRecords": "[parameters('mxRecords')]",
         "ttl": "[parameters('ttl')]"
-      },
-      "dependsOn": [
-        "privateDnsZone"
-      ]
+      }
     },
     "MX_roleAssignments": {
       "copy": {

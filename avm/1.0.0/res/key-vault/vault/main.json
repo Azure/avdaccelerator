@@ -5,8 +5,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.27.1.19265",
-      "templateHash": "18302078907641172783"
+      "version": "0.33.93.31351",
+      "templateHash": "13610368292683692517"
     },
     "name": "Key Vaults",
     "description": "This module deploys a Key Vault.",
@@ -1189,8 +1189,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "13379419349517171769"
+              "version": "0.33.93.31351",
+              "templateHash": "673206505709710643"
             },
             "name": "Key Vault Access Policies",
             "description": "This module deploys a Key Vault Access Policy.",
@@ -1374,10 +1374,7 @@
               "name": "[format('{0}/{1}', parameters('keyVaultName'), 'add')]",
               "properties": {
                 "accessPolicies": "[variables('formattedAccessPolicies')]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             }
           },
           "outputs": {
@@ -1458,8 +1455,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "5636875941217257115"
+              "version": "0.33.93.31351",
+              "templateHash": "17400304622639006546"
             },
             "name": "Key Vault Secrets",
             "description": "This module deploys a Key Vault Secret.",
@@ -1612,12 +1609,12 @@
             "keyVault": {
               "existing": true,
               "type": "Microsoft.KeyVault/vaults",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2023-07-01",
               "name": "[parameters('keyVaultName')]"
             },
             "secret": {
               "type": "Microsoft.KeyVault/vaults/secrets",
-              "apiVersion": "2022-07-01",
+              "apiVersion": "2023-07-01",
               "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
               "tags": "[parameters('tags')]",
               "properties": {
@@ -1628,10 +1625,7 @@
                   "nbf": "[parameters('attributesNbf')]"
                 },
                 "value": "[parameters('value')]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             },
             "secret_roleAssignments": {
               "copy": {
@@ -1742,8 +1736,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.27.1.19265",
-              "templateHash": "2556304156587722941"
+              "version": "0.33.93.31351",
+              "templateHash": "15753887201917524746"
             },
             "name": "Key Vault Keys",
             "description": "This module deploys a Key Vault Key.",
@@ -1967,10 +1961,7 @@
                 "kty": "[parameters('kty')]",
                 "rotationPolicy": "[coalesce(parameters('rotationPolicy'), createObject())]",
                 "release_policy": "[coalesce(parameters('releasePolicy'), createObject())]"
-              },
-              "dependsOn": [
-                "keyVault"
-              ]
+              }
             },
             "key_roleAssignments": {
               "copy": {
@@ -2051,7 +2042,7 @@
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'enableTelemetry'), parameters('enableTelemetry'))]"
           },
           "location": {
-            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2020-06-01', 'Full').location)]"
+            "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'location'), reference(split(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()].subnetResourceId, '/subnets/')[0], '2024-03-01', 'Full').location)]"
           },
           "lock": {
             "value": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'lock'), parameters('lock'))]"

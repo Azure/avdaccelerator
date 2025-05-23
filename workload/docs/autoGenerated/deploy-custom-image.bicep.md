@@ -37,7 +37,10 @@ imageVersionPrimaryLocation | Yes      | Primary replication location for Image 
 imageVersionStorageAccountType | No       | Determine the Storage Account Type for the Image Version distributed by the Image Template. (Default: Standard_LRS)
 logAnalyticsWorkspaceCustomName | No       | Custom name for the Log Analytics Workspace.
 logAnalyticsWorkspaceDataRetention | No       | Set the data retention in the number of days for the Log Analytics Workspace. (Default: 30)
-operatingSystemImage | No       | AVD OS image source. (Default: win11-22h2)
+mpImageOffer   | No       | Market place AVD  OS image offer. (Default: Office-365)
+mpImageSku     | No       | Market place AVD  OS image SKU. (Default: win11-24h2-avd-m365)
+mpImagePublisher | No       | Market place AVD  OS image publisher.
+mpImageVersion | No       | Market place AVD OS image version.
 operationsTeamTag | No       | Team accountable for day-to-day operations. (Contoso-Ops)
 ownerTag       | No       | Organizational owner of the AVD deployment. (Default: Contoso-Owner)
 rdpShortPathManagedNetworks | No       | Determine whether to enable RDP Short Path for Managed Networks. (Default: false)
@@ -229,9 +232,7 @@ This high-performance path bypasses the host from the data path, which reduces l
 most demanding network workloads on supported VM types.
 
 
-- Default value: `true`
-
-- Allowed values: `true`, `false`
+- Default value: `True`
 
 ### imageDefinitionHibernateSupported
 
@@ -239,9 +240,7 @@ most demanding network workloads on supported VM types.
 
 The image will support hibernation.
 
-- Default value: `false`
-
-- Allowed values: `true`, `false`
+- Default value: `False`
 
 ### imageDefinitionSecurityType
 
@@ -267,7 +266,7 @@ Custom name for Image Gallery. (Default: gal_avd_use2_001)
 
 Custom name for Image Template. (Default: it-avd-win11-23h2)
 
-- Default value: `it-avd-win11-22h2`
+- Default value: `it-avd-win11-23h2`
 
 ### imageVersionDisasterRecoveryLocation
 
@@ -307,15 +306,37 @@ Set the data retention in the number of days for the Log Analytics Workspace. (D
 
 - Default value: `30`
 
-### operatingSystemImage
+### mpImageOffer
 
 ![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
 
-AVD OS image source. (Default: win11-22h2)
+Market place AVD  OS image offer. (Default: Office-365)
 
-- Default value: `win11_22h2`
+- Default value: `Office-365`
 
-- Allowed values: `win10_22h2_g2`, `win10_22h2_office_g2`, `win11_22h2`, `win11_22h2_office`, `win11_23h2`, `win11_23h2_office`, `win11_24h2`, `win11_24h2_office`
+### mpImageSku
+
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
+
+Market place AVD  OS image SKU. (Default: win11-24h2-avd-m365)
+
+- Default value: `win11-24h2-avd-m365`
+
+### mpImagePublisher
+
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
+
+Market place AVD  OS image publisher.
+
+- Default value: `MicrosoftWindowsDesktop`
+
+### mpImageVersion
+
+![Parameter Setting](https://img.shields.io/badge/parameter-optional-green?style=flat-square)
+
+Market place AVD OS image version.
+
+- Default value: `latest`
 
 ### operationsTeamTag
 
@@ -402,7 +423,7 @@ Reference to the size of the VM for your workloads (Default: Contoso-Workload)
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "template": "workload/arm/deploy-custom-image.json"
+        "template": "workload/bicep/deploy-custom-image.json"
     },
     "parameters": {
         "alertsActionGroupCustomName": {
@@ -469,10 +490,10 @@ Reference to the size of the VM for your workloads (Default: Contoso-Workload)
             "value": "avd-win11-23h2"
         },
         "imageDefinitionAcceleratedNetworkSupported": {
-            "value": "true"
+            "value": true
         },
         "imageDefinitionHibernateSupported": {
-            "value": "false"
+            "value": false
         },
         "imageDefinitionSecurityType": {
             "value": "Standard"
@@ -481,7 +502,7 @@ Reference to the size of the VM for your workloads (Default: Contoso-Workload)
             "value": "gal_avd_use2_001"
         },
         "imageTemplateCustomName": {
-            "value": "it-avd-win11-22h2"
+            "value": "it-avd-win11-23h2"
         },
         "imageVersionDisasterRecoveryLocation": {
             "value": ""
@@ -498,8 +519,17 @@ Reference to the size of the VM for your workloads (Default: Contoso-Workload)
         "logAnalyticsWorkspaceDataRetention": {
             "value": 30
         },
-        "operatingSystemImage": {
-            "value": "win11_22h2"
+        "mpImageOffer": {
+            "value": "Office-365"
+        },
+        "mpImageSku": {
+            "value": "win11-24h2-avd-m365"
+        },
+        "mpImagePublisher": {
+            "value": "MicrosoftWindowsDesktop"
+        },
+        "mpImageVersion": {
+            "value": "latest"
         },
         "operationsTeamTag": {
             "value": "workload-admins@Contoso.com"

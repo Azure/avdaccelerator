@@ -87,11 +87,11 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2024-04-08-preview' existing = {
+resource appGroup_hostpool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
   name: hostpoolName
 }
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2024-04-08-preview' = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' = {
   name: name
   location: location
   tags: tags
@@ -109,14 +109,14 @@ module appGroup_applications 'application/main.bicep' = [
     params: {
       name: application.name
       applicationGroupName: appGroup.name
-      description: contains(application, 'description') ? application.description : ''
-      friendlyName: contains(application, 'friendlyName') ? application.friendlyName : appGroup.name
+      description: application.?description ?? ''
+      friendlyName: application.?friendlyName ?? appGroup.name
       filePath: application.filePath
-      commandLineSetting: contains(application, 'commandLineSetting') ? application.commandLineSetting : 'DoNotAllow'
-      commandLineArguments: contains(application, 'commandLineArguments') ? application.commandLineArguments : ''
-      showInPortal: contains(application, 'showInPortal') ? application.showInPortal : false
-      iconPath: contains(application, 'iconPath') ? application.iconPath : application.filePath
-      iconIndex: contains(application, 'iconIndex') ? application.iconIndex : 0
+      commandLineSetting: application.?commandLineSetting ?? 'DoNotAllow'
+      commandLineArguments: application.?commandLineArguments ?? ''
+      showInPortal: application.?showInPortal ?? false
+      iconPath: application.?iconPath ?? application.filePath
+      iconIndex: application.?iconIndex ?? 0
     }
   }
 ]
@@ -137,11 +137,9 @@ resource appGroup_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(appGroup.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {
-      roleDefinitionId: contains(builtInRoleNames, roleAssignment.roleDefinitionIdOrName)
-        ? builtInRoleNames[roleAssignment.roleDefinitionIdOrName]
-        : contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
+      roleDefinitionId: builtInRoleNames[?roleAssignment.roleDefinitionIdOrName] ?? (contains(roleAssignment.roleDefinitionIdOrName, '/providers/Microsoft.Authorization/roleDefinitions/')
             ? roleAssignment.roleDefinitionIdOrName
-            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName)
+            : subscriptionResourceId('Microsoft.Authorization/roleDefinitions', roleAssignment.roleDefinitionIdOrName))
       principalId: roleAssignment.principalId
       description: roleAssignment.?description
       principalType: roleAssignment.?principalType

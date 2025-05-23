@@ -1,3 +1,22 @@
+# Get current IP address for use in KV firewall rules
+data "http" "ip" {
+  url = "https://api.ipify.org/"
+  retry {
+    attempts     = 5
+    max_delay_ms = 1000
+    min_delay_ms = 500
+  }
+}
+# Get current IP address for use in KV firewall rules
+data "http" "ipv6" {
+  url = "https://api64.ipify.org/"
+  retry {
+    attempts     = 5
+    max_delay_ms = 1000
+    min_delay_ms = 500
+  }
+}
+
 module "avm-res-keyvault-vault" {
   source                      = "Azure/avm-res-keyvault-vault/azurerm"
   version                     = "0.5.3"
@@ -29,7 +48,7 @@ module "avm-res-keyvault-vault" {
   network_acls = {
     bypass         = "AzureServices"
     default_action = "Deny"
-    ip_rules       = ["136.28.83.128"]
+    ip_rules       = ["${data.http.ip.response_body}/32", "${data.http.ipv6.response_body}/32"]
     virtual_network_subnet_ids = [
       data.azurerm_subnet.pesubnet.id
     ]

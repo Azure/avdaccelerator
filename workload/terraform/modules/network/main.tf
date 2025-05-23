@@ -48,10 +48,11 @@ resource "azurerm_virtual_network_peering" "peer1" {
   depends_on = [
     azurerm_virtual_network.vnet, azurerm_resource_group.net, azurerm_subnet.subnet
   ]
-
 }
 
 resource "azurerm_virtual_network_peering" "peer4" {
+  count = local.use_same_hub_identity_vnet ? 0 : 1
+
   name                         = "peer_${var.prefix}_avdspoke_identity"
   resource_group_name          = azurerm_resource_group.net.name
   virtual_network_name         = azurerm_virtual_network.vnet.name
@@ -66,6 +67,7 @@ resource "azurerm_virtual_network_peering" "peer4" {
     azurerm_virtual_network_peering.peer1
   ]
 }
+
 resource "azurerm_virtual_network_peering" "peer2" {
   name                         = "peer_${var.prefix}_hub_avdspoke"
   resource_group_name          = var.hub_connectivity_rg
@@ -83,6 +85,8 @@ resource "azurerm_virtual_network_peering" "peer2" {
 }
 
 resource "azurerm_virtual_network_peering" "peer3" {
+    count = local.use_same_hub_identity_vnet ? 0 : 1
+
   name                         = "peer_${var.prefix}_identity_avdspoke"
   resource_group_name          = var.identity_rg
   virtual_network_name         = var.identity_vnet

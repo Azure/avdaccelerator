@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.29.47.4906",
-      "templateHash": "4517769152659984664"
+      "version": "0.33.93.31351",
+      "templateHash": "3240256104847600934"
     }
   },
   "parameters": {
@@ -65,8 +65,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7242678102480686190"
+              "version": "0.33.93.31351",
+              "templateHash": "15994721174152142851"
             }
           },
           "parameters": {
@@ -81,7 +81,7 @@
           "outputs": {
             "info": {
               "type": "object",
-              "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2021-07-12')]"
+              "value": "[reference(resourceId('Microsoft.DesktopVirtualization/hostPools', parameters('hostPoolName')), '2023-09-05')]"
             }
           }
         }
@@ -120,8 +120,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.29.47.4906",
-              "templateHash": "7971287228448710013"
+              "version": "0.33.93.31351",
+              "templateHash": "3141478793517761836"
             }
           },
           "parameters": {
@@ -159,7 +159,7 @@
           "resources": [
             {
               "type": "Microsoft.DesktopVirtualization/hostPools",
-              "apiVersion": "2021-07-12",
+              "apiVersion": "2023-09-05",
               "name": "[parameters('hostPoolName')]",
               "location": "[parameters('location')]",
               "properties": {

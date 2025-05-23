@@ -23,7 +23,7 @@ param preferredAppGroupType string
 // ========== //
 
 // Host pool.
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2021-07-12' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' = {
   name: hostPoolName
   location: location
   properties: {

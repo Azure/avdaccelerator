@@ -21,6 +21,11 @@ Azure Virtual Desktop resources and dependent services for establishing the base
 - Azure Files Storage with App Attach share, RBAC role assignment and private endpoint **
 - Application Security group
 - Key Vault and private endpoint
+- **Microsoft Defender Services** (enabled via policy):
+  - **Microsoft Defender for Servers**: Provides threat detection, vulnerability assessment, and real-time security alerts for virtual machines.
+  - **Microsoft Defender for Storage**: Secures Azure Files shares and other storage resources against unauthorized access or malware.
+  - **Microsoft Defender for Key Vault**: Monitors and protects access to cryptographic keys and secrets.
+  - **Microsoft Defender for Azure Resource Manager**: Detects suspicious management operations and protects the Azure management plane.
 
   ** Denotes resources only deployed in ADDS Identity scenario.
 

@@ -585,6 +585,16 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
             privateLinkServiceNetworkPolicies: 'Enabled'
             networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
             routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
+            serviceEndpoints: [
+              {
+                service: 'Microsoft.Storage'
+                locations: ['${location}']
+              }
+              {
+                service: 'Microsoft.KeyVault'
+                locations: ['${location}']
+              }
+            ]
           }
         ]
     ddosProtectionPlanResourceId: deployDDoSNetworkProtection ? ddosProtectionPlan.outputs.resourceId : ''
