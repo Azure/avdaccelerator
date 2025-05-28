@@ -68,6 +68,10 @@ param storageCustomOuPath string
 @sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
 
+@sys.allowed([
+  'AppAttach'
+  'Fslogix'
+])
 @sys.description('Sets purpose of the storage account.')
 param storagePurpose string
 

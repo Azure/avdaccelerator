@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16668176290732472514"
+      "templateHash": "25888029288036518"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -26921,7 +26921,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "7785445356140947453"
+              "templateHash": "14900737311876161460"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -27050,6 +27050,10 @@
             },
             "storagePurpose": {
               "type": "string",
+              "allowedValues": [
+                "AppAttach",
+                "Fslogix"
+              ],
               "metadata": {
                 "description": "Sets purpose of the storage account."
               }
@@ -30082,7 +30086,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "7785445356140947453"
+              "templateHash": "14900737311876161460"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -30211,6 +30215,10 @@
             },
             "storagePurpose": {
               "type": "string",
+              "allowedValues": [
+                "AppAttach",
+                "Fslogix"
+              ],
               "metadata": {
                 "description": "Sets purpose of the storage account."
               }
