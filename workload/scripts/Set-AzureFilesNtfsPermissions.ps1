@@ -33,7 +33,7 @@ $DriveLetter = switch ($StoragePurpose) {
     Default { 'Z:' }
 }
 
-# Get & set domain services for Azure Files
+# Domain join Azure Files for domain services scenarios
 if ($IdentityServiceProvider -like '*DS') {
     Write-Host 'Installing the RSAT-AD-PowerShell feature.'
     $RsatInstalled = (Get-WindowsFeature -Name 'RSAT-AD-PowerShell').Installed
@@ -174,7 +174,7 @@ if ($IdentityServiceProvider -like '*DS') {
         if ($KerberosEncryption -eq 'AES256') {
             # Set the Kerberos encryption on the computer object
             Write-Host 'Setting Kerberos encryption to AES256 on the computer object for the Azure Storage Account.'
-            $DistinguishedName = 'CN=' + $StorageAccountName + ',' + $OrganizationalUnitPath
+            $DistinguishedName = (Get-ADComputer -Credential $DomainCredential -Filter {Name -eq $StorageAccountName}).DistinguishedName
             Set-ADComputer -Credential $DomainCredential -Identity $DistinguishedName -KerberosEncryptionType 'AES256' | Out-Null
             Write-Host 'Set the Kerberos encryption to AES256 on the computer object for the Azure Storage Account.'
 
