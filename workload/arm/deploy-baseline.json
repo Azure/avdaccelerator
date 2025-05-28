@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "7137048872869580981"
+      "templateHash": "15154219397245817827"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -26921,7 +26921,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "17609482059885507935"
+              "templateHash": "5119867668572635534"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29627,7 +29627,7 @@
                       "keyVault": {
                         "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
                       },
-                      "secretName": "domainJoinPassword"
+                      "secretName": "domainJoinUserPassword"
                     }
                   },
                   "domainJoinUserName": {
@@ -30082,7 +30082,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "17609482059885507935"
+              "templateHash": "5119867668572635534"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -32788,7 +32788,7 @@
                       "keyVault": {
                         "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
                       },
-                      "secretName": "domainJoinPassword"
+                      "secretName": "domainJoinUserPassword"
                     }
                   },
                   "domainJoinUserName": {

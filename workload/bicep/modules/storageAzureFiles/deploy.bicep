@@ -211,7 +211,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (endsWi
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Add-${storagePurpose}-Storage-Setup-${time}'
   params: {
-    domainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinPassword')
+    domainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
     domainJoinUserName: avdWrklKeyVaultget.getSecret('domainJoinUserName')
     identityServiceProvider: identityServiceProvider
     kerberosEncryption: kerberosEncryption
