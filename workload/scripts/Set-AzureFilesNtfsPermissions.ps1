@@ -133,11 +133,16 @@ if ($IdentityServiceProvider -like '*DS') {
             Write-Host 'AD computer object for Azure Storage Account does not exist.'
         }
         Write-Host 'Creating AD computer object for Azure Storage Account.'
-        $ComputerObject = if ($OrganizationalUnitPath) {
-            New-ADComputer -Credential $DomainCredential -Name $StorageAccountName -Path $OrganizationalUnitPath -ServicePrincipalNames $SPN -AccountPassword $ComputerPassword -Description $Description -PassThru
-        } else {
-            New-ADComputer -Credential $DomainCredential -Name $StorageAccountName -ServicePrincipalNames $SPN -AccountPassword $ComputerPassword -Description $Description -PassThru
+        $Parameters = @{
+            Credential = $DomainCredential
+            Name       = $StorageAccountName
+            ServicePrincipalNames = $SPN
+            AccountPassword = $ComputerPassword
+            Description = $Description
+            PassThru   = $true
         }
+        if ($OrganizationalUnitPath) {$Parameters += @{Path = $OrganizationalUnitPath}}
+        $ComputerObject = New-ADComputer @Parameters
         Write-Host 'Created AD computer object for Azure Storage Account.'
 
         $Body = (@{
