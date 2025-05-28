@@ -1,7 +1,11 @@
 Param(
         [parameter(Mandatory = $false)]
         [string]
-        $IdentityDomainName, 
+        $IdentityDomainName,
+
+        [parameter(Mandatory = $false)]
+        [string]
+        $KerberosEncryption,
 
         [parameter(Mandatory)]
         [string]
@@ -233,6 +237,18 @@ try {
                                 Path         = 'HKLM:\SOFTWARE\Policies\Microsoft\Windows NT\Terminal Services'
                                 PropertyType = 'DWord'
                                 Value        = 1
+                        }
+                )
+        }
+
+        # Set Kerberos Encryption for AES256
+        if ($KerberosEncryption -eq 'AES256' -and $IdentityServiceProvider -like "*DS") {
+                $Settings += @(
+                        [PSCustomObject]@{
+                                Name         = 'SupportedEncryptionTypes'
+                                Path         = 'HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System\Kerberos\Parameters'
+                                PropertyType = 'DWord'
+                                Value        = 2147483640
                         }
                 )
         }

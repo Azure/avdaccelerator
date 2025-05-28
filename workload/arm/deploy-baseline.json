@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "993343308970746372"
+      "templateHash": "7137048872869580981"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -33237,6 +33237,9 @@
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
           },
+          "kerberosEncryption": {
+            "value": "[parameters('kerberosEncryption')]"
+          },
           "keyVaultResourceId": {
             "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
           },
@@ -33290,10 +33293,20 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "15848614986010265599"
+              "templateHash": "45552708601869829"
             }
           },
           "parameters": {
+            "kerberosEncryption": {
+              "type": "string",
+              "allowedValues": [
+                "AES256",
+                "RC4"
+              ],
+              "metadata": {
+                "description": "The encryption type to kerberos authentication."
+              }
+            },
             "location": {
               "type": "string",
               "metadata": {
@@ -37787,6 +37800,9 @@
                   "identityDomainName": {
                     "value": "[parameters('identityDomainName')]"
                   },
+                  "kerberosEncryption": {
+                    "value": "[parameters('kerberosEncryption')]"
+                  },
                   "extendOsDisk": "[if(not(equals(parameters('customOsDiskSizeGB'), 0)), createObject('value', true()), createObject('value', false()))]",
                   "identityServiceProvider": {
                     "value": "[parameters('identityServiceProvider')]"
@@ -37811,7 +37827,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "90280513080040365"
+                      "templateHash": "15488707433687457334"
                     }
                   },
                   "parameters": {
@@ -37831,6 +37847,16 @@
                       "type": "string",
                       "metadata": {
                         "description": "Identity domain name."
+                      }
+                    },
+                    "kerberosEncryption": {
+                      "type": "string",
+                      "allowedValues": [
+                        "AES256",
+                        "RC4"
+                      ],
+                      "metadata": {
+                        "description": "The encryption type for Kerberos authentication."
                       }
                     },
                     "location": {
@@ -37890,7 +37916,7 @@
                   },
                   "variables": {
                     "fslogixStorageAccountName": "[if(parameters('fslogix'), last(split(parameters('fslogixStorageAccountResourceId'), '/')), '')]",
-                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\"', parameters('fslogixSharePath'))]",
+                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\" -KerberosEncryption \"{1}\"', parameters('fslogixSharePath'), parameters('kerberosEncryption'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
                       "Standard_NV8as_v4",

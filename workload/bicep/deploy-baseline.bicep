@@ -1593,6 +1593,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       hostPoolResourceId: managementPLane.outputs.hostPoolResourceId
       identityDomainName: identityDomainName
       identityServiceProvider: avdIdentityServiceProvider
+      kerberosEncryption: kerberosEncryption
       keyVaultResourceId: wrklKeyVault.outputs.resourceId
       location: avdSessionHostLocation
       mpImageOffer: mpImageOffer
