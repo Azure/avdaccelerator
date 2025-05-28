@@ -47,9 +47,6 @@ param managedIdentityClientId string
 @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
-@sys.description('OU Storage Path')
-param ouStgPath string
-
 @sys.description('Private endpoint subnet ID.')
 param privateEndpointSubnetId string
 
@@ -62,11 +59,11 @@ param serviceObjectsRgName string
 @sys.description('Storage account name.')
 param storageAccountName string
 
-@sys.description('Custom OU path for storage.')
-param storageCustomOuPath string
-
 @sys.description('Resource Group Name for Azure Files.')
 param storageObjectsRgName string
+
+@sys.description('The distinguied name (DN) of the organizational unit (OU) in which the computer account is created.')
+param storageOuPath string
 
 @sys.allowed([
   'AppAttach'
@@ -220,7 +217,7 @@ module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (endsWi
     identityServiceProvider: identityServiceProvider
     kerberosEncryption: kerberosEncryption
     location: location
-    organizationalUnitPath: empty(storageCustomOuPath) ? ouStgPath : storageCustomOuPath
+    organizationalUnitPath: storageOuPath
     securityPrincipalName: securityPrincipalName
     shareName: fileShareName
     storageAccountName: storageAccountName

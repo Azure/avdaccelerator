@@ -961,8 +961,6 @@ var varPooledScalingPlanSchedules = [
   }
 ]
 var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
-var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
-var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
@@ -1457,15 +1455,14 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
       ? identity.outputs.managedIdentityStorageClientId
       : ''
     managementVmName: varManagementVmName
-    ouStgPath: varOuStgPath
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
     securityPrincipalName: varSecurityPrincipalName
     serviceObjectsRgName: varServiceObjectsRgName
     storageAccountName: varFslogixStorageName
-    storageCustomOuPath: varStorageCustomOuPath
     storageObjectsRgName: varStorageObjectsRgName
+    storageOuPath: storageOuPath
     storagePurpose: 'Fslogix'
     storageSku: varFslogixStorageSku
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
@@ -1508,15 +1505,14 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
       ? identity.outputs.managedIdentityStorageClientId
       : ''
     managementVmName: varManagementVmName
-    ouStgPath: varOuStgPath
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
     securityPrincipalName: varSecurityPrincipalName
     serviceObjectsRgName: varServiceObjectsRgName
     storageAccountName: varAppAttachStorageName
-    storageCustomOuPath: varStorageCustomOuPath
     storageObjectsRgName: varStorageObjectsRgName
+    storageOuPath: storageOuPath
     storagePurpose: 'AppAttach'
     storageSku: varAppAttachStorageSku
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags

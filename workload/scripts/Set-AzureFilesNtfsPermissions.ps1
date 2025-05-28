@@ -35,17 +35,6 @@ $DriveLetter = switch ($StoragePurpose) {
 
 # Get & set domain services for Azure Files
 if ($IdentityServiceProvider -like '*DS') {
-	Write-Host 'Forcing group policy updates.'
-	Start-Process -FilePath 'gpupdate.exe' -ArgumentList '/force /wait:0' -Wait -NoNewWindow | Out-Null
-    Write-Host 'Forced group policy updates.'
-
-    # Wait for 1 minute to ensure domain policies are applied
-    # This is necessary to ensure that the RSAT tools are available and the domain is ready for further operations
-
-	Write-Host 'Waiting for domain policies to be applied (1 minute)'
-	Start-Sleep -Seconds 60
-    Write-Host 'Waited for domain policies to be applied.'
-
     Write-Host 'Installing the RSAT-AD-PowerShell feature.'
     $RsatInstalled = (Get-WindowsFeature -Name 'RSAT-AD-PowerShell').Installed
     if (!$RsatInstalled){
@@ -54,6 +43,16 @@ if ($IdentityServiceProvider -like '*DS') {
     } else {
         Write-Host 'RSAT-AD-PowerShell is already installed.'
     }
+
+	Write-Host 'Forcing group policy updates.'
+	Start-Process -FilePath 'gpupdate.exe' -ArgumentList '/force /wait:0' -Wait -NoNewWindow | Out-Null
+    Write-Host 'Forced group policy updates.'
+
+    # Wait for 1 minute to ensure domain policies are applied
+    # This is necessary to ensure that the RSAT tools are available and the domain is ready for further operations
+	Write-Host 'Waiting for domain policies to be applied (1 minute)'
+	Start-Sleep -Seconds 60
+    Write-Host 'Waited for domain policies to be applied.'
 
     # Create Domain credential
     $SecureDomainJoinPassword = ConvertTo-SecureString -String $DomainJoinPassword -AsPlainText -Force
@@ -134,7 +133,11 @@ if ($IdentityServiceProvider -like '*DS') {
             Write-Host 'AD computer object for Azure Storage Account does not exist.'
         }
         Write-Host 'Creating AD computer object for Azure Storage Account.'
-        $ComputerObject = New-ADComputer -Credential $DomainCredential -Name $StorageAccountName -Path $OrganizationalUnitPath -ServicePrincipalNames $SPN -AccountPassword $ComputerPassword -Description $Description -PassThru
+        $ComputerObject = if ($OrganizationalUnitPath) {
+            New-ADComputer -Credential $DomainCredential -Name $StorageAccountName -Path $OrganizationalUnitPath -ServicePrincipalNames $SPN -AccountPassword $ComputerPassword -Description $Description -PassThru
+        } else {
+            New-ADComputer -Credential $DomainCredential -Name $StorageAccountName -ServicePrincipalNames $SPN -AccountPassword $ComputerPassword -Description $Description -PassThru
+        }
         Write-Host 'Created AD computer object for Azure Storage Account.'
 
         $Body = (@{
