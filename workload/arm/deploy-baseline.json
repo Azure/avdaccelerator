@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1594909801016812027"
+      "templateHash": "993343308970746372"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -132,6 +132,13 @@
       "defaultValue": "none",
       "metadata": {
         "description": "AVD session host domain join user principal name. (Default: \"none\")"
+      }
+    },
+    "avdDomainJoinUserObjectId": {
+      "type": "string",
+      "defaultValue": "none",
+      "metadata": {
+        "description": "AVD session host domain join user object ID. (Default: \"none\")"
       }
     },
     "avdDomainJoinUserPassword": {
@@ -547,6 +554,17 @@
       "defaultValue": true,
       "metadata": {
         "description": "Enables accelerated Networking on the session hosts.\nIf using a Azure Compute Gallery Image, the Image Definition must have been configured with\nthe \\'isAcceleratedNetworkSupported\\' property set to \\'true\\'.\n"
+      }
+    },
+    "kerberosEncryption": {
+      "type": "string",
+      "defaultValue": "AES256",
+      "allowedValues": [
+        "AES256",
+        "RC4"
+      ],
+      "metadata": {
+        "description": "The type of kerberos encryption to enable on the Azure Files share(s)."
       }
     },
     "securityType": {
@@ -1436,8 +1454,6 @@
     "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varAppAttachFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('appAttachFileShareCustomName'), format('appa-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}fsl{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stfsl{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
-    "varFslogixStorageFqdn": "[if(parameters('createAvdFslogixDeployment'), format('{0}.file.{1}', variables('varFslogixStorageName'), environment().suffixes.storage), '')]",
-    "varAppAttachStorageFqdn": "[format('{0}.file.{1}', variables('varAppAttachStorageName'), environment().suffixes.storage)]",
     "varAppAttachStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}appa{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stappa{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
     "varManagementVmName": "[format('vmmgmt{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym'))]",
     "varAlaWorkspaceName": "[if(parameters('avdUseCustomNaming'), parameters('avdAlaWorkspaceCustomName'), format('log-avd-{0}-{1}', variables('varDeploymentEnvironmentLowercase'), variables('varManagementPlaneLocationAcronym')))]",
@@ -1709,9 +1725,6 @@
       }
     ],
     "varMarketPlaceGalleryWindows": "[variables('$fxv#1')]",
-    "varStorageAzureFilesDscAgentPackageLocation": "https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.3/DSCStorageScripts.zip",
-    "varStorageToDomainScriptUri": "[format('{0}scripts/Manual-DSC-Storage-Scripts.ps1', variables('varBaseScriptUri'))]",
-    "varStorageToDomainScript": "./Manual-DSC-Storage-Scripts.ps1",
     "varOuStgPath": "[if(not(empty(parameters('storageOuPath'))), format('\"{0}\"', parameters('storageOuPath')), format('\"{0}\"', variables('varDefaultStorageOuPath')))]",
     "varDefaultStorageOuPath": "[if(equals(parameters('avdIdentityServiceProvider'), 'EntraDS'), 'AADDC Computers', 'Computers')]",
     "varStorageCustomOuPath": "[if(not(empty(parameters('storageOuPath'))), 'true', 'false')]",
@@ -22869,6 +22882,9 @@
         },
         "mode": "Incremental",
         "parameters": {
+          "computeTimeZone": {
+            "value": "[variables('varTimeZoneSessionHosts')]"
+          },
           "diskEncryptionSetResourceId": "[if(parameters('diskZeroTrust'), createObject('value', reference(subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Zero-Trust-{0}', parameters('time'))), '2022-09-01').outputs.ztDiskEncryptionSetResourceId.value), createObject('value', ''))]",
           "identityServiceProvider": {
             "value": "[parameters('avdIdentityServiceProvider')]"
@@ -22876,53 +22892,50 @@
           "managementVmName": {
             "value": "[variables('varManagementVmName')]"
           },
-          "computeTimeZone": {
-            "value": "[variables('varTimeZoneSessionHosts')]"
-          },
           "applicationSecurityGroupResourceId": "[if(or(or(parameters('avdDeploySessionHosts'), parameters('createAvdFslogixDeployment')), variables('varCreateAppAttachDeployment')), createObject('value', format('{0}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.applicationSecurityGroupResourceId.value)), createObject('value', ''))]",
           "domainJoinUserName": {
             "value": "[parameters('avdDomainJoinUserName')]"
           },
-          "wrklKvName": {
-            "value": "[variables('varWrklKvName')]"
+          "enableAcceleratedNetworking": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).enableAcceleratedNetworking]"
           },
-          "serviceObjectsRgName": {
-            "value": "[variables('varServiceObjectsRgName')]"
+          "encryptionAtHost": {
+            "value": "[parameters('diskZeroTrust')]"
           },
           "identityDomainName": {
             "value": "[parameters('identityDomainName')]"
-          },
-          "ouPath": {
-            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).ouPath]"
-          },
-          "osDiskType": {
-            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).osDiskType]"
           },
           "location": "[if(parameters('avdDeploySessionHosts'), createObject('value', parameters('avdSessionHostLocation')), createObject('value', parameters('avdManagementPlaneLocation')))]",
           "mgmtVmSize": {
             "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).mgmtVmSize]"
           },
-          "subnetId": {
-            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).subnetId]"
+          "osDiskType": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).osDiskType]"
           },
-          "enableAcceleratedNetworking": {
-            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).enableAcceleratedNetworking]"
+          "ouPath": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).ouPath]"
           },
-          "securityType": "[if(equals(parameters('securityType'), 'Standard'), createObject('value', ''), createObject('value', parameters('securityType')))]",
           "secureBootEnabled": {
             "value": "[parameters('secureBootEnabled')]"
           },
-          "vTpmEnabled": {
-            "value": "[parameters('vTpmEnabled')]"
+          "securityType": "[if(equals(parameters('securityType'), 'Standard'), createObject('value', ''), createObject('value', parameters('securityType')))]",
+          "serviceObjectsRgName": {
+            "value": "[variables('varServiceObjectsRgName')]"
+          },
+          "subnetId": {
+            "value": "[createObject('osImage', variables('varMarketPlaceGalleryWindows')[parameters('managementVmOsImage')], 'osDiskType', 'Standard_LRS', 'mgmtVmSize', parameters('avdSessionHostsSize'), 'enableAcceleratedNetworking', false(), 'ouPath', parameters('avdOuPath'), 'subnetId', if(parameters('createAvdVnet'), format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName')), parameters('existingVnetAvdSubnetResourceId'))).subnetId]"
           },
           "vmLocalUserName": {
             "value": "[parameters('avdVmLocalUserName')]"
           },
+          "vTpmEnabled": {
+            "value": "[parameters('vTpmEnabled')]"
+          },
           "workloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
-          "encryptionAtHost": {
-            "value": "[parameters('diskZeroTrust')]"
+          "wrklKvName": {
+            "value": "[variables('varWrklKvName')]"
           },
           "storageManagedIdentityResourceId": "[if(and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'EntraID'))), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageResourceId.value), createObject('value', ''))]",
           "osImage": {
@@ -26835,83 +26848,71 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "storagePurpose": {
-            "value": "fslogix"
+          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
+          "deployPrivateEndpoint": {
+            "value": "[parameters('deployPrivateEndpointKeyvaultStorage')]"
           },
-          "vmLocalUserName": {
-            "value": "[parameters('avdVmLocalUserName')]"
-          },
-          "fileShareName": {
-            "value": "[variables('varFslogixFileShareName')]"
+          "domainJoinUserObjectId": {
+            "value": "[parameters('avdDomainJoinUserObjectId')]"
           },
           "fileShareMultichannel": "[if(equals(parameters('fslogixStoragePerformance'), 'Premium'), createObject('value', true()), createObject('value', false()))]",
-          "storageSku": {
-            "value": "[variables('varFslogixStorageSku')]"
+          "fileShareName": {
+            "value": "[variables('varFslogixFileShareName')]"
           },
           "fileShareQuotaSize": {
             "value": "[parameters('fslogixFileShareQuotaSize')]"
           },
-          "storageAccountFqdn": {
-            "value": "[variables('varFslogixStorageFqdn')]"
-          },
-          "storageAccountName": {
-            "value": "[variables('varFslogixStorageName')]"
-          },
-          "storageToDomainScript": {
-            "value": "[variables('varStorageToDomainScript')]"
-          },
-          "storageToDomainScriptUri": {
-            "value": "[variables('varStorageToDomainScriptUri')]"
-          },
-          "identityServiceProvider": {
-            "value": "[parameters('avdIdentityServiceProvider')]"
-          },
-          "dscAgentPackageLocation": {
-            "value": "[variables('varStorageAzureFilesDscAgentPackageLocation')]"
-          },
-          "storageCustomOuPath": {
-            "value": "[variables('varStorageCustomOuPath')]"
-          },
-          "managementVmName": {
-            "value": "[variables('varManagementVmName')]"
-          },
-          "deployPrivateEndpoint": {
-            "value": "[parameters('deployPrivateEndpointKeyvaultStorage')]"
-          },
-          "ouStgPath": {
-            "value": "[variables('varOuStgPath')]"
-          },
-          "managedIdentityClientId": "[if(and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'EntraID'))), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
-          "securityPrincipalName": {
-            "value": "[variables('varSecurityPrincipalName')]"
-          },
-          "domainJoinUserName": {
-            "value": "[parameters('avdDomainJoinUserName')]"
-          },
-          "wrklKvName": {
-            "value": "[variables('varWrklKvName')]"
-          },
-          "serviceObjectsRgName": {
-            "value": "[variables('varServiceObjectsRgName')]"
+          "identityDomainGuid": {
+            "value": "[parameters('identityDomainGuid')]"
           },
           "identityDomainName": {
             "value": "[parameters('identityDomainName')]"
           },
-          "identityDomainGuid": {
-            "value": "[parameters('identityDomainGuid')]"
+          "identityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
+          },
+          "kerberosEncryption": {
+            "value": "[parameters('kerberosEncryption')]"
           },
           "location": "[if(parameters('avdDeploySessionHosts'), createObject('value', parameters('avdSessionHostLocation')), createObject('value', parameters('avdManagementPlaneLocation')))]",
+          "managedIdentityClientId": "[if(and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'EntraID'))), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
+          "managementVmName": {
+            "value": "[variables('varManagementVmName')]"
+          },
+          "ouStgPath": {
+            "value": "[variables('varOuStgPath')]"
+          },
+          "privateEndpointSubnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName'))), createObject('value', parameters('existingVnetPrivateEndpointSubnetResourceId')))]",
+          "securityPrincipalName": {
+            "value": "[variables('varSecurityPrincipalName')]"
+          },
+          "serviceObjectsRgName": {
+            "value": "[variables('varServiceObjectsRgName')]"
+          },
+          "storageAccountName": {
+            "value": "[variables('varFslogixStorageName')]"
+          },
+          "storageCustomOuPath": {
+            "value": "[variables('varStorageCustomOuPath')]"
+          },
           "storageObjectsRgName": {
             "value": "[variables('varStorageObjectsRgName')]"
           },
-          "privateEndpointSubnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName'))), createObject('value', parameters('existingVnetPrivateEndpointSubnetResourceId')))]",
+          "storagePurpose": {
+            "value": "fslogix"
+          },
+          "storageSku": {
+            "value": "[variables('varFslogixStorageSku')]"
+          },
+          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
           "vmsSubnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName'))), createObject('value', parameters('existingVnetAvdSubnetResourceId')))]",
           "vnetPrivateDnsZoneFilesId": "[if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.azureFilesDnsZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneFilesId')))]",
           "workloadSubsId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
-          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
-          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
+          "wrklKvName": {
+            "value": "[variables('varWrklKvName')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -26920,41 +26921,29 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "4110908438493392914"
+              "templateHash": "17609482059885507935"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
-            "workloadSubsId": {
+            "alaWorkspaceResourceId": {
               "type": "string",
               "metadata": {
-                "description": "AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "Log analytics workspace for diagnostic logs."
               }
             },
-            "storageObjectsRgName": {
-              "type": "string",
+            "deployPrivateEndpoint": {
+              "type": "bool",
               "metadata": {
-                "description": "Resource Group Name for Azure Files."
+                "description": "Optional. AVD Accelerator will deploy with private endpoints by default."
               }
             },
-            "identityServiceProvider": {
+            "domainJoinUserObjectId": {
               "type": "string",
               "metadata": {
-                "description": "Required, The service providing domain services for Azure Virtual Desktop."
-              }
-            },
-            "serviceObjectsRgName": {
-              "type": "string",
-              "metadata": {
-                "description": "Resource Group Name for management VM."
-              }
-            },
-            "storageAccountName": {
-              "type": "string",
-              "metadata": {
-                "description": "Storage account name."
+                "description": "Object ID for the domain join user principal in Entra ID."
               }
             },
             "fileShareName": {
@@ -26963,16 +26952,16 @@
                 "description": "Storage account file share name."
               }
             },
-            "privateEndpointSubnetId": {
+            "identityServiceProvider": {
               "type": "string",
               "metadata": {
-                "description": "Private endpoint subnet ID."
+                "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
-            "vmsSubnetId": {
+            "kerberosEncryption": {
               "type": "string",
               "metadata": {
-                "description": "VMs subnet ID."
+                "description": "Required, The encryption type for Azure Files."
               }
             },
             "location": {
@@ -26987,6 +26976,12 @@
                 "description": "File share SMB multichannel."
               }
             },
+            "fileShareQuotaSize": {
+              "type": "int",
+              "metadata": {
+                "description": "*Azure File share quota"
+              }
+            },
             "identityDomainName": {
               "type": "string",
               "metadata": {
@@ -26999,58 +26994,10 @@
                 "description": "AD domain GUID."
               }
             },
-            "wrklKvName": {
+            "managedIdentityClientId": {
               "type": "string",
               "metadata": {
-                "description": "Keyvault name to get credentials from."
-              }
-            },
-            "domainJoinUserName": {
-              "type": "string",
-              "metadata": {
-                "description": "AVD session host domain join credentials."
-              }
-            },
-            "vmLocalUserName": {
-              "type": "string",
-              "metadata": {
-                "description": "AVD session host local admin credentials."
-              }
-            },
-            "storageSku": {
-              "type": "string",
-              "metadata": {
-                "description": "Azure Files storage account SKU."
-              }
-            },
-            "fileShareQuotaSize": {
-              "type": "int",
-              "metadata": {
-                "description": "*Azure File share quota"
-              }
-            },
-            "vnetPrivateDnsZoneFilesId": {
-              "type": "string",
-              "metadata": {
-                "description": "Use Azure private DNS zones for private endpoints."
-              }
-            },
-            "storageToDomainScript": {
-              "type": "string",
-              "metadata": {
-                "description": "Script name for adding storage account to Active Directory."
-              }
-            },
-            "storageToDomainScriptUri": {
-              "type": "string",
-              "metadata": {
-                "description": "URI for the script for adding the storage account to Active Directory."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "metadata": {
-                "description": "Tags to be applied to resources"
+                "description": "Managed Identity Client ID"
               }
             },
             "managementVmName": {
@@ -27059,16 +27006,64 @@
                 "description": "Name for management virtual machine. for tools and to join Azure Files to domain."
               }
             },
-            "deployPrivateEndpoint": {
-              "type": "bool",
-              "metadata": {
-                "description": "Optional. AVD Accelerator will deploy with private endpoints by default."
-              }
-            },
-            "alaWorkspaceResourceId": {
+            "ouStgPath": {
               "type": "string",
               "metadata": {
-                "description": "Log analytics workspace for diagnostic logs."
+                "description": "OU Storage Path"
+              }
+            },
+            "privateEndpointSubnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Private endpoint subnet ID."
+              }
+            },
+            "securityPrincipalName": {
+              "type": "string",
+              "metadata": {
+                "description": "Identity name array to grant RBAC role to access AVD application group and NTFS permissions."
+              }
+            },
+            "serviceObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource Group Name for management VM."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage account name."
+              }
+            },
+            "storageCustomOuPath": {
+              "type": "string",
+              "metadata": {
+                "description": "Custom OU path for storage."
+              }
+            },
+            "storageObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource Group Name for Azure Files."
+              }
+            },
+            "storagePurpose": {
+              "type": "string",
+              "metadata": {
+                "description": "Sets purpose of the storage account."
+              }
+            },
+            "storageSku": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure Files storage account SKU."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "description": "Tags to be applied to resources"
               }
             },
             "time": {
@@ -27078,58 +27073,204 @@
                 "description": "Do not modify, used to set unique value for resource deployment."
               }
             },
-            "storagePurpose": {
+            "vmsSubnetId": {
               "type": "string",
               "metadata": {
-                "description": "Sets purpose of the storage account."
+                "description": "VMs subnet ID."
               }
             },
-            "dscAgentPackageLocation": {
+            "vnetPrivateDnsZoneFilesId": {
               "type": "string",
               "metadata": {
-                "description": "Sets location of DSC Agent."
+                "description": "Use Azure private DNS zones for private endpoints."
               }
             },
-            "storageCustomOuPath": {
+            "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Custom OU path for storage."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
-            "ouStgPath": {
+            "wrklKvName": {
               "type": "string",
               "metadata": {
-                "description": "OU Storage Path"
-              }
-            },
-            "managedIdentityClientId": {
-              "type": "string",
-              "metadata": {
-                "description": "Managed Identity Client ID"
-              }
-            },
-            "securityPrincipalName": {
-              "type": "string",
-              "metadata": {
-                "description": "Identity name array to grant RBAC role to access AVD application group and NTFS permissions."
-              }
-            },
-            "storageAccountFqdn": {
-              "type": "string",
-              "metadata": {
-                "description": "storage account FDQN."
+                "description": "Keyvault name to get credentials from."
               }
             }
           },
           "variables": {
-            "varAzureCloudName": "[environment().name]",
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
-            "varAdminUserName": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]"
           },
           "resources": [
+            {
+              "condition": "[endsWith(parameters('identityServiceProvider'), 'DS')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('DomainJoin-RoleAssignment-{0}-{1}', parameters('storagePurpose'), parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "roleDefinitionIdOrName": {
+                    "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]"
+                  },
+                  "principalId": {
+                    "value": "[parameters('domainJoinUserObjectId')]"
+                  },
+                  "principalType": {
+                    "value": "User"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.35.1.17967",
+                      "templateHash": "8005756264137170002"
+                    },
+                    "name": "Role Assignments (Resource Group scope)",
+                    "description": "This module deploys a Role Assignment at a Resource Group scope.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "roleDefinitionIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+                      }
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().name]",
+                      "metadata": {
+                        "description": "Optional. Name of the Resource Group to assign the RBAC role to. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "defaultValue": "[subscription().subscriptionId]",
+                      "metadata": {
+                        "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The description of the role assignment."
+                      }
+                    },
+                    "delegatedManagedIdentityResourceId": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. ID of the delegated managed identity resource."
+                      }
+                    },
+                    "condition": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
+                      }
+                    },
+                    "conditionVersion": {
+                      "type": "string",
+                      "defaultValue": "2.0",
+                      "allowedValues": [
+                        "2.0"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+                      }
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "ServicePrincipal",
+                        "Group",
+                        "User",
+                        "ForeignGroup",
+                        "Device",
+                        ""
+                      ],
+                      "metadata": {
+                        "description": "Optional. The principal type of the assigned principal ID."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    },
+                    "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+                      "properties": {
+                        "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                        "principalId": "[parameters('principalId')]",
+                        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
+                        "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]",
+                        "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
+                        "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The GUID of the Role Assignment."
+                      },
+                      "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Role Assignment."
+                      },
+                      "value": "[resourceId('Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the role assignment was applied at."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "scope": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The scope this Role Assignment applies to."
+                      },
+                      "value": "[resourceGroup().id]"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -29469,7 +29610,7 @@
               }
             },
             {
-              "condition": "[not(equals(parameters('identityServiceProvider'), 'EntraID'))]",
+              "condition": "[endsWith(parameters('identityServiceProvider'), 'DS')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Add-{0}-Storage-Setup-{1}', parameters('storagePurpose'), parameters('time'))]",
@@ -29481,21 +29622,55 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "domainJoinPassword": {
+                    "reference": {
+                      "keyVault": {
+                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
+                      },
+                      "secretName": "domainJoinPassword"
+                    }
+                  },
+                  "domainJoinUserName": {
+                    "reference": {
+                      "keyVault": {
+                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
+                      },
+                      "secretName": "domainJoinUserName"
+                    }
+                  },
+                  "identityServiceProvider": {
+                    "value": "[parameters('identityServiceProvider')]"
+                  },
+                  "kerberosEncryption": {
+                    "value": "[parameters('kerberosEncryption')]"
+                  },
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "organizationalUnitPath": "[if(empty(parameters('storageCustomOuPath')), createObject('value', parameters('ouStgPath')), createObject('value', parameters('storageCustomOuPath')))]",
+                  "securityPrincipalName": {
+                    "value": "[parameters('securityPrincipalName')]"
+                  },
+                  "shareName": {
+                    "value": "[parameters('fileShareName')]"
+                  },
+                  "storageAccountName": {
+                    "value": "[parameters('storageAccountName')]"
+                  },
+                  "storageAccountResourceGroupName": {
+                    "value": "[parameters('storageObjectsRgName')]"
+                  },
+                  "storagePurpose": {
+                    "value": "[parameters('storagePurpose')]"
+                  },
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  },
+                  "userAssignedIdentityClientId": {
+                    "value": "[parameters('managedIdentityClientId')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('managementVmName')]"
-                  },
-                  "file": {
-                    "value": "[parameters('storageToDomainScript')]"
-                  },
-                  "scriptArguments": {
-                    "value": "[variables('varStorageToDomainScriptArgs')]"
-                  },
-                  "adminUserPassword": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
-                  "baseScriptUri": {
-                    "value": "[parameters('storageToDomainScriptUri')]"
                   }
                 },
                 "template": {
@@ -29505,17 +29680,39 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "142065180263257572"
+                      "templateHash": "10214091581432892437"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
                     "owner": "Azure/avdaccelerator"
                   },
                   "parameters": {
-                    "virtualMachineName": {
+                    "domainJoinPassword": {
+                      "type": "securestring",
+                      "metadata": {
+                        "description": "The password for the principal used for domain joining."
+                      }
+                    },
+                    "domainJoinUserName": {
+                      "type": "securestring",
+                      "metadata": {
+                        "description": "The user name for the principal used for domain joining."
+                      }
+                    },
+                    "identityServiceProvider": {
                       "type": "string",
                       "metadata": {
-                        "description": "Virtual machine name."
+                        "description": "The identity service provider for the domain join operation."
+                      }
+                    },
+                    "kerberosEncryption": {
+                      "type": "string",
+                      "allowedValues": [
+                        "AES256",
+                        "RC4"
+                      ],
+                      "metadata": {
+                        "description": "The type of encryption to use for Kerberos tickets."
                       }
                     },
                     "location": {
@@ -29524,25 +29721,50 @@
                         "description": "Location where to deploy compute services."
                       }
                     },
-                    "baseScriptUri": {
+                    "organizationalUnitPath": {
                       "type": "string",
                       "metadata": {
-                        "description": "Location for the AVD agent installation package."
+                        "description": "The distinguished name for the organization unit in domain services for the computer object."
                       }
                     },
-                    "file": {
-                      "type": "string"
-                    },
-                    "scriptArguments": {
+                    "securityPrincipalName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Arguments for domain join script."
+                        "description": "The name of the security principal to give permissions to on the Azure Files share."
                       }
                     },
-                    "adminUserPassword": {
-                      "type": "securestring",
+                    "shareName": {
+                      "type": "string",
                       "metadata": {
-                        "description": "Domain join user password."
+                        "description": "The name of the Azure Files share."
+                      }
+                    },
+                    "storageAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the storage account to use for Azure Files."
+                      }
+                    },
+                    "storageAccountResourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group containing the Azure Files share."
+                      }
+                    },
+                    "storagePurpose": {
+                      "type": "string",
+                      "allowedValues": [
+                        "AppAttach",
+                        "Fslogix"
+                      ],
+                      "metadata": {
+                        "description": "The purpose of the Azure Files share."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "The metadata tags to apply to the resource."
                       }
                     },
                     "time": {
@@ -29551,209 +29773,202 @@
                       "metadata": {
                         "description": "Do not modify, used to set unique value for resource deployment."
                       }
+                    },
+                    "userAssignedIdentityClientId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The client ID of the user-assigned identity to use for the run command."
+                      }
+                    },
+                    "virtualMachineName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Virtual machine name."
+                      }
                     }
+                  },
+                  "variables": {
+                    "$fxv#0": "param (\r\n    [securestring]$DomainJoinPassword,\r\n    [string]$DomainJoinUserName,\r\n    [string]$IdentityServiceProvider,\r\n    [string]$KerberosEncryption,\r\n    [string]$OrganizationalUnitPath,\r\n    [string]$ResourceManagerUri,\r\n    [string]$SecurityPrincipalName,\r\n    [string]$ShareName,\r\n    [string]$StorageAccountName,\r\n    [string]$StorageAccountResourceGroupName,\r\n    [string]$StoragePurpose,\r\n    [string]$StorageSuffix,\r\n    [string]$SubscriptionId,\r\n    [string]$UserAssignedIdentityClientId\r\n)\r\n\r\n$ErrorActionPreference = 'Stop'\r\n$WarningPreference = 'SilentlyContinue'\r\n\r\nWrite-Host 'Turning off Windows firewall.'\r\nSet-NetFirewallProfile -Profile 'Domain', 'Public', 'Private' -Enabled $false\r\n\r\n# Set UNC path for Azure Files file share\r\n$FilesSuffix = '.file.' + $StorageSuffix\r\n$FileShare = '\\\\' + $StorageAccountName + $FilesSuffix + '\\' + $ShareName\r\n\r\n# Set the drive letter for the share based on the storage purpose\r\n$DriveLetter = switch ($StoragePurpose) {\r\n    'AppAttach' { 'X:' }\r\n    'Fslogix' { 'Y:' }\r\n    Default { 'Z:' }\r\n}\r\n\r\n# Get & set domain services for Azure Files\r\nif ($IdentityServiceProvider -like '*DS') {\r\n\tWrite-Host 'Forcing group policy updates'\r\n\tStart-Process -FilePath 'gpupdate.exe' -ArgumentList '/force /wait:0' -Wait -NoNewWindow | Out-Null\r\n\r\n\tWrite-Host 'Waiting for domain policies to be applied (1 minute)'\r\n\tStart-Sleep -Seconds 60\r\n\r\n    $RsatInstalled = (Get-WindowsFeature -Name 'RSAT-AD-PowerShell').Installed\r\n    if (!$RsatInstalled){\r\n        Install-WindowsFeature -Name 'RSAT-AD-PowerShell' | Out-Null\r\n    }\r\n\r\n    # Create Domain credential\r\n    $SecureDomainJoinPassword = ConvertTo-SecureString -String $DomainJoinPassword -AsPlainText -Force\r\n    [pscredential]$DomainCredential = New-Object System.Management.Automation.PSCredential ($DomainJoinUserName, $SecureDomainJoinPassword)\r\n\r\n    # Get Domain information\r\n    $Domain = Get-ADDomain -Credential $DomainCredential -Current 'LocalComputer'\r\n\r\n    # Set domain principal with NetBios for ACLs assignment\r\n    $Group = $Domain.NetBIOSName + '\\' + $SecurityPrincipalName\r\n\r\n    if ($IdentityServiceProvider -eq 'ADDS') {\r\n        # Fix the resource manager URI since only AzureCloud contains a trailing slash\r\n        $ResourceManagerUriFixed = if ($ResourceManagerUri[-1] -eq '/') { $ResourceManagerUri.Substring(0, $ResourceManagerUri.Length - 1) } else { $ResourceManagerUri }\r\n\r\n        # Get an access token for Azure resources\r\n        $AzureManagementAccessToken = (Invoke-RestMethod `\r\n            -Headers @{Metadata = \"true\" } `\r\n            -Uri $('http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=' + $ResourceManagerUriFixed + '&client_id=' + $UserAssignedIdentityClientId)).access_token\r\n\r\n        # Set header for Azure Management API\r\n        $AzureManagementHeader = @{\r\n            'Content-Type'  = 'application/json'\r\n            'Authorization' = 'Bearer ' + $AzureManagementAccessToken\r\n        }\r\n\r\n        # Get / create kerberos key for Azure Storage Account\r\n        $KerberosKey = ((Invoke-RestMethod `\r\n            -Headers $AzureManagementHeader `\r\n            -Method 'POST' `\r\n            -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/listKeys?api-version=2023-05-01&$expand=kerb')).keys | Where-Object { $_.Keyname -contains 'kerb1' }).Value\r\n\r\n        if (!$KerberosKey) \r\n        {\r\n            Invoke-RestMethod `\r\n                -Body (@{keyName = 'kerb1' } | ConvertTo-Json) `\r\n                -Headers $AzureManagementHeader `\r\n                -Method 'POST' `\r\n                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/regenerateKey?api-version=2023-05-01')\r\n            \r\n            $Key = ((Invoke-RestMethod `\r\n                -Headers $AzureManagementHeader `\r\n                -Method 'POST' `\r\n                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/listKeys?api-version=2023-05-01&$expand=kerb')).keys | Where-Object { $_.Keyname -contains 'kerb1' }).Value\r\n        } \r\n        else \r\n        {\r\n            $Key = $KerberosKey\r\n        }\r\n\r\n        # Creates a password for the Azure Storage Account in AD using the Kerberos key\r\n        $ComputerPassword = ConvertTo-SecureString -String $Key.Replace(\"'\",\"\") -AsPlainText -Force\r\n\r\n        # Create the SPN value for the Azure Storage Account; attribute for computer object in AD \r\n        $SPN = 'cifs/' + $StorageAccountName + $FilesSuffix\r\n\r\n        # Create the Description value for the Azure Storage Account; attribute for computer object in AD \r\n        $Description = \"Computer account object for Azure storage account $($StorageAccountName).\"\r\n\r\n        # Create the AD computer object for the Azure Storage Account\r\n        $Computer = Get-ADComputer -Credential $DomainCredential -Filter {Name -eq $StorageAccountName}\r\n        if($Computer){\r\n            Remove-ADComputer -Credential $DomainCredential -Identity $StorageAccountName -Confirm:$false\r\n        }\r\n        $ComputerObject = New-ADComputer -Credential $DomainCredential -Name $StorageAccountName -Path $OrganizationalUnitPath -ServicePrincipalNames $SPN -AccountPassword $ComputerPassword -Description $Description -PassThru\r\n\r\n        $Body = (@{\r\n            properties = @{\r\n                azureFilesIdentityBasedAuthentication = @{\r\n                    activeDirectoryProperties = @{\r\n                        accountType = 'Computer'\r\n                        azureStorageSid = $ComputerObject.SID.Value\r\n                        domainGuid = $Domain.ObjectGUID.Guid\r\n                        domainName = $Domain.DNSRoot\r\n                        domainSid = $Domain.DomainSID.Value\r\n                        forestName = $Domain.Forest\r\n                        netBiosDomainName = $Domain.NetBIOSName\r\n                        samAccountName = $StorageAccountName\r\n                    }\r\n                    directoryServiceOptions = 'AD'\r\n                }\r\n            }\r\n        } | ConvertTo-Json -Depth 6 -Compress)\r\n\r\n        Invoke-RestMethod `\r\n            -Body $Body `\r\n            -Headers $AzureManagementHeader `\r\n            -Method 'PATCH' `\r\n            -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '?api-version=2023-05-01')\r\n\r\n        if ($KerberosEncryption -eq 'AES256') {\r\n            # Set the Kerberos encryption on the computer object\r\n            $DistinguishedName = 'CN=' + $StorageAccountName + ',' + $OrganizationalUnitPath\r\n            Set-ADComputer -Credential $DomainCredential -Identity $DistinguishedName -KerberosEncryptionType 'AES256' | Out-Null\r\n\r\n            # Reset the Kerberos key on the Storage Account\r\n            Invoke-RestMethod `\r\n                -Body (@{keyName = 'kerb1' } | ConvertTo-Json) `\r\n                -Headers $AzureManagementHeader `\r\n                -Method 'POST' `\r\n                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/regenerateKey?api-version=2023-05-01')\r\n\r\n            $Key = ((Invoke-RestMethod `\r\n                -Headers $AzureManagementHeader `\r\n                -Method 'POST' `\r\n                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/listKeys?api-version=2023-05-01&$expand=kerb')).keys | Where-Object { $_.Keyname -contains 'kerb1' }).Value\r\n\r\n            # Update the password on the computer object with the new Kerberos key on the Storage Account\r\n            $NewPassword = ConvertTo-SecureString -String $Key -AsPlainText -Force\r\n            Set-ADAccountPassword -Credential $DomainCredential -Identity $DistinguishedName -Reset -NewPassword $NewPassword | Out-Null\r\n        } \r\n    }\r\n\r\n    Register-PSSessionConfiguration -Name $StorageAccountName -RunAsCredential $DomainCredential -Force\r\n\r\n    Invoke-Command -ArgumentList \"$DriveLetter\", \"$FileShare\", \"$Group\" -ComputerName $env:COMPUTERNAME -ConfigurationName $StorageAccountName -Credential $DomainCredential -ScriptBlock {\r\n        param ($DriveLetter, $FileShare, $Group)\r\n        Start-Process -FilePath 'net.exe' -ArgumentList \"use $DriveLetter $FileShare\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /grant `\"$($Group):(M)`\"\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /grant `\"Creator Owner:(OI)(CI)(IO)(M)`\"\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /remove `\"Authenticated Users`\"\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /remove `\"Builtin\\Users`\"\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'net.exe' -ArgumentList \"use Z: /delete\" -Wait -NoNewWindow | Out-Null\r\n    }\r\n} else {\r\n    Start-Process -FilePath 'net.exe' -ArgumentList \"use $DriveLetter $FileShare\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /grant `\"Creator Owner:(OI)(CI)(IO)(M)`\"\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /inheritance:r\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /remove `\"Builtin\\Administrators`\"\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /remove `\"Builtin\\Users`\"\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'net.exe' -ArgumentList \"use Z: /delete\" -Wait -NoNewWindow | Out-Null\r\n}\r\n\r\n"
                   },
                   "resources": [
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('VM-Ext-AVM-{0}', parameters('time'))]",
+                      "name": "[format('NTFS-Permissions-{0}', parameters('time'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "name": {
-                            "value": "AzureFilesDomainJoin"
-                          },
-                          "virtualMachineName": {
-                            "value": "[parameters('virtualMachineName')]"
-                          },
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "publisher": {
-                            "value": "Microsoft.Compute"
+                          "name": {
+                            "value": "Set-AzureFilesNtfsPermissions_Fslogix"
                           },
-                          "type": {
-                            "value": "CustomScriptExtension"
+                          "parameters": {
+                            "value": [
+                              {
+                                "name": "DomainJoinUserName",
+                                "value": "[parameters('domainJoinUserName')]"
+                              },
+                              {
+                                "name": "IdentityServiceProvider",
+                                "value": "[parameters('identityServiceProvider')]"
+                              },
+                              {
+                                "name": "KerberosEncryption",
+                                "value": "[parameters('kerberosEncryption')]"
+                              },
+                              {
+                                "name": "OrganizationalUnitPath",
+                                "value": "[parameters('organizationalUnitPath')]"
+                              },
+                              {
+                                "name": "ResourceManagerUri",
+                                "value": "[environment().resourceManager]"
+                              },
+                              {
+                                "name": "SecurityPrincipalName",
+                                "value": "[parameters('securityPrincipalName')]"
+                              },
+                              {
+                                "name": "ShareName",
+                                "value": "[parameters('shareName')]"
+                              },
+                              {
+                                "name": "StorageAccountName",
+                                "value": "[parameters('storageAccountName')]"
+                              },
+                              {
+                                "name": "StorageAccountResourceGroupName",
+                                "value": "[parameters('storageAccountResourceGroupName')]"
+                              },
+                              {
+                                "name": "StoragePurpose",
+                                "value": "[parameters('storagePurpose')]"
+                              },
+                              {
+                                "name": "StorageSuffix",
+                                "value": "[environment().suffixes.storage]"
+                              },
+                              {
+                                "name": "SubscriptionId",
+                                "value": "[subscription().subscriptionId]"
+                              },
+                              {
+                                "name": "UserAssignedIdentityClientId",
+                                "value": "[parameters('userAssignedIdentityClientId')]"
+                              }
+                            ]
                           },
-                          "typeHandlerVersion": {
-                            "value": "1.10"
+                          "protectedParameters": {
+                            "value": [
+                              {
+                                "name": "DomainJoinPassword",
+                                "value": "[parameters('domainJoinPassword')]"
+                              }
+                            ]
                           },
-                          "autoUpgradeMinorVersion": {
-                            "value": true
+                          "script": {
+                            "value": "[variables('$fxv#0')]"
                           },
-                          "enableAutomaticUpgrade": {
-                            "value": false
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           },
-                          "settings": {
-                            "value": {}
-                          },
-                          "protectedSettings": {
-                            "value": {
-                              "fileUris": "[array(parameters('baseScriptUri'))]",
-                              "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1} -AdminUserPassword {2} -verbose', parameters('file'), parameters('scriptArguments'), parameters('adminUserPassword'))]"
-                            }
+                          "virtualMachineName": {
+                            "value": "[parameters('virtualMachineName')]"
                           }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.35.1.17967",
-                              "templateHash": "13510096196452363309"
-                            },
-                            "name": "Virtual Machine Extensions",
-                            "description": "This module deploys a Virtual Machine Extension.",
-                            "owner": "Azure/module-maintainers"
+                              "templateHash": "10938492692564567997"
+                            }
                           },
                           "parameters": {
-                            "virtualMachineName": {
+                            "asyncExecution": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Determine whether the run command should be executed asynchronously."
+                              }
+                            },
+                            "location": {
                               "type": "string",
                               "metadata": {
-                                "description": "Conditional. The name of the parent virtual machine that extension is provisioned for. Required if the template is used in a standalone deployment."
+                                "description": "The Azure location where the run command resource will be created."
                               }
                             },
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. The name of the virtual machine extension."
+                                "description": "The name of the run command resource."
                               }
                             },
-                            "location": {
-                              "type": "string",
-                              "defaultValue": "[resourceGroup().location]",
+                            "parameters": {
+                              "type": "array",
+                              "defaultValue": [],
                               "metadata": {
-                                "description": "Optional. The location the extension is deployed to."
+                                "description": "The parameters required by the script to run on the virtual machine."
                               }
                             },
-                            "publisher": {
-                              "type": "string",
+                            "protectedParameters": {
+                              "type": "array",
+                              "defaultValue": [],
                               "metadata": {
-                                "description": "Required. The name of the extension handler publisher."
+                                "description": "The protected parameters required by the script to run on the virtual machine."
                               }
                             },
-                            "type": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
-                              }
-                            },
-                            "typeHandlerVersion": {
+                            "script": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. Specifies the version of the script handler."
-                              }
-                            },
-                            "autoUpgradeMinorVersion": {
-                              "type": "bool",
-                              "metadata": {
-                                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
-                              }
-                            },
-                            "forceUpdateTag": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
-                              }
-                            },
-                            "settings": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Any object that contains the extension specific settings."
-                              }
-                            },
-                            "protectedSettings": {
-                              "type": "secureObject",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Any object that contains the extension specific protected settings."
-                              }
-                            },
-                            "supressFailures": {
-                              "type": "bool",
-                              "defaultValue": false,
-                              "metadata": {
-                                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
-                              }
-                            },
-                            "enableAutomaticUpgrade": {
-                              "type": "bool",
-                              "metadata": {
-                                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+                                "description": "The inline script to run on the virtual machine."
                               }
                             },
                             "tags": {
                               "type": "object",
-                              "nullable": true,
                               "metadata": {
-                                "description": "Optional. Tags of the resource."
+                                "description": "Metadata tags to apply to the run command resource."
+                              }
+                            },
+                            "treatFailureAsDeploymentFailure": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Determine whether the run command should be treated as a deployment failure if it fails."
+                              }
+                            },
+                            "virtualMachineName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the virtual machine to run the command on."
                               }
                             }
                           },
-                          "resources": {
-                            "virtualMachine": {
-                              "existing": true,
-                              "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2022-11-01",
-                              "name": "[parameters('virtualMachineName')]"
-                            },
-                            "extension": {
-                              "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
+                          "resources": [
+                            {
+                              "type": "Microsoft.Compute/virtualMachines/runCommands",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
                               "properties": {
-                                "publisher": "[parameters('publisher')]",
-                                "type": "[parameters('type')]",
-                                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
-                                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
-                                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                                "suppressFailures": "[parameters('supressFailures')]"
+                                "asyncExecution": "[parameters('asyncExecution')]",
+                                "parameters": "[parameters('parameters')]",
+                                "protectedParameters": "[parameters('protectedParameters')]",
+                                "source": {
+                                  "script": "[parameters('script')]"
+                                },
+                                "treatFailureAsDeploymentFailure": "[parameters('treatFailureAsDeploymentFailure')]"
                               }
                             }
-                          },
-                          "outputs": {
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the extension."
-                              },
-                              "value": "[parameters('name')]"
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the extension."
-                              },
-                              "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the Resource Group the extension was created in."
-                              },
-                              "value": "[resourceGroup().name]"
-                            },
-                            "location": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The location the resource was deployed into."
-                              },
-                              "value": "[reference('extension', '2022-11-01', 'full').location]"
-                            }
-                          }
+                          ]
                         }
                       }
                     }
@@ -29794,83 +30009,71 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "storagePurpose": {
-            "value": "AppAttach"
+          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]",
+          "deployPrivateEndpoint": {
+            "value": "[parameters('deployPrivateEndpointKeyvaultStorage')]"
           },
-          "vmLocalUserName": {
-            "value": "[parameters('avdVmLocalUserName')]"
-          },
-          "fileShareName": {
-            "value": "[variables('varAppAttachFileShareName')]"
+          "domainJoinUserObjectId": {
+            "value": "[parameters('avdDomainJoinUserObjectId')]"
           },
           "fileShareMultichannel": "[if(equals(parameters('appAttachStoragePerformance'), 'Premium'), createObject('value', true()), createObject('value', false()))]",
-          "storageSku": {
-            "value": "[variables('varAppAttachStorageSku')]"
+          "fileShareName": {
+            "value": "[variables('varAppAttachFileShareName')]"
           },
           "fileShareQuotaSize": {
             "value": "[parameters('appAttachFileShareQuotaSize')]"
           },
-          "storageAccountFqdn": {
-            "value": "[variables('varAppAttachStorageFqdn')]"
-          },
-          "storageAccountName": {
-            "value": "[variables('varAppAttachStorageName')]"
-          },
-          "storageToDomainScript": {
-            "value": "[variables('varStorageToDomainScript')]"
-          },
-          "storageToDomainScriptUri": {
-            "value": "[variables('varStorageToDomainScriptUri')]"
-          },
-          "identityServiceProvider": {
-            "value": "[parameters('avdIdentityServiceProvider')]"
-          },
-          "dscAgentPackageLocation": {
-            "value": "[variables('varStorageAzureFilesDscAgentPackageLocation')]"
-          },
-          "storageCustomOuPath": {
-            "value": "[variables('varStorageCustomOuPath')]"
-          },
-          "managementVmName": {
-            "value": "[variables('varManagementVmName')]"
-          },
-          "deployPrivateEndpoint": {
-            "value": "[parameters('deployPrivateEndpointKeyvaultStorage')]"
-          },
-          "ouStgPath": {
-            "value": "[variables('varOuStgPath')]"
-          },
-          "managedIdentityClientId": "[if(and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'EntraID'))), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
-          "securityPrincipalName": {
-            "value": "[variables('varSecurityPrincipalName')]"
-          },
-          "domainJoinUserName": {
-            "value": "[parameters('avdDomainJoinUserName')]"
-          },
-          "wrklKvName": {
-            "value": "[variables('varWrklKvName')]"
-          },
-          "serviceObjectsRgName": {
-            "value": "[variables('varServiceObjectsRgName')]"
+          "identityDomainGuid": {
+            "value": "[parameters('identityDomainGuid')]"
           },
           "identityDomainName": {
             "value": "[parameters('identityDomainName')]"
           },
-          "identityDomainGuid": {
-            "value": "[parameters('identityDomainGuid')]"
+          "identityServiceProvider": {
+            "value": "[parameters('avdIdentityServiceProvider')]"
+          },
+          "kerberosEncryption": {
+            "value": "[parameters('kerberosEncryption')]"
           },
           "location": "[if(parameters('avdDeploySessionHosts'), createObject('value', parameters('avdSessionHostLocation')), createObject('value', parameters('avdManagementPlaneLocation')))]",
+          "managedIdentityClientId": "[if(and(variables('varCreateStorageDeployment'), not(equals(parameters('avdIdentityServiceProvider'), 'EntraID'))), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value), createObject('value', ''))]",
+          "managementVmName": {
+            "value": "[variables('varManagementVmName')]"
+          },
+          "ouStgPath": {
+            "value": "[variables('varOuStgPath')]"
+          },
+          "privateEndpointSubnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName'))), createObject('value', parameters('existingVnetPrivateEndpointSubnetResourceId')))]",
+          "securityPrincipalName": {
+            "value": "[variables('varSecurityPrincipalName')]"
+          },
+          "serviceObjectsRgName": {
+            "value": "[variables('varServiceObjectsRgName')]"
+          },
+          "storageAccountName": {
+            "value": "[variables('varAppAttachStorageName')]"
+          },
+          "storageCustomOuPath": {
+            "value": "[variables('varStorageCustomOuPath')]"
+          },
           "storageObjectsRgName": {
             "value": "[variables('varStorageObjectsRgName')]"
           },
-          "privateEndpointSubnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetPrivateEndpointSubnetName'))), createObject('value', parameters('existingVnetPrivateEndpointSubnetResourceId')))]",
-          "vmsSubnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName'))), createObject('value', parameters('existingVnetAvdSubnetResourceId')))]",
-          "vnetPrivateDnsZoneFilesId": "[if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.azureFilesDnsZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneFilesId')))]",
-          "workloadSubsId": {
-            "value": "[parameters('avdWorkloadSubsId')]"
+          "storagePurpose": {
+            "value": "AppAttach"
+          },
+          "storageSku": {
+            "value": "[variables('varAppAttachStorageSku')]"
           },
           "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]",
-          "alaWorkspaceResourceId": "[if(parameters('avdDeployMonitoring'), if(parameters('deployAlaWorkspace'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value), createObject('value', parameters('alaExistingWorkspaceResourceId'))), createObject('value', ''))]"
+          "vmsSubnetId": "[if(parameters('createAvdVnet'), createObject('value', format('{0}/subnets/{1}', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.virtualNetworkResourceId.value, variables('varVnetAvdSubnetName'))), createObject('value', parameters('existingVnetAvdSubnetResourceId')))]",
+          "vnetPrivateDnsZoneFilesId": "[if(parameters('createPrivateDnsZones'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time'))), '2022-09-01').outputs.azureFilesDnsZoneResourceId.value), createObject('value', parameters('avdVnetPrivateDnsZoneFilesId')))]",
+          "wrklKvName": {
+            "value": "[variables('varWrklKvName')]"
+          },
+          "workloadSubsId": {
+            "value": "[parameters('avdWorkloadSubsId')]"
+          }
         },
         "template": {
           "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
@@ -29879,41 +30082,29 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "4110908438493392914"
+              "templateHash": "17609482059885507935"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
-            "workloadSubsId": {
+            "alaWorkspaceResourceId": {
               "type": "string",
               "metadata": {
-                "description": "AVD workload subscription ID, multiple subscriptions scenario."
+                "description": "Log analytics workspace for diagnostic logs."
               }
             },
-            "storageObjectsRgName": {
-              "type": "string",
+            "deployPrivateEndpoint": {
+              "type": "bool",
               "metadata": {
-                "description": "Resource Group Name for Azure Files."
+                "description": "Optional. AVD Accelerator will deploy with private endpoints by default."
               }
             },
-            "identityServiceProvider": {
+            "domainJoinUserObjectId": {
               "type": "string",
               "metadata": {
-                "description": "Required, The service providing domain services for Azure Virtual Desktop."
-              }
-            },
-            "serviceObjectsRgName": {
-              "type": "string",
-              "metadata": {
-                "description": "Resource Group Name for management VM."
-              }
-            },
-            "storageAccountName": {
-              "type": "string",
-              "metadata": {
-                "description": "Storage account name."
+                "description": "Object ID for the domain join user principal in Entra ID."
               }
             },
             "fileShareName": {
@@ -29922,16 +30113,16 @@
                 "description": "Storage account file share name."
               }
             },
-            "privateEndpointSubnetId": {
+            "identityServiceProvider": {
               "type": "string",
               "metadata": {
-                "description": "Private endpoint subnet ID."
+                "description": "Required, The service providing domain services for Azure Virtual Desktop."
               }
             },
-            "vmsSubnetId": {
+            "kerberosEncryption": {
               "type": "string",
               "metadata": {
-                "description": "VMs subnet ID."
+                "description": "Required, The encryption type for Azure Files."
               }
             },
             "location": {
@@ -29946,6 +30137,12 @@
                 "description": "File share SMB multichannel."
               }
             },
+            "fileShareQuotaSize": {
+              "type": "int",
+              "metadata": {
+                "description": "*Azure File share quota"
+              }
+            },
             "identityDomainName": {
               "type": "string",
               "metadata": {
@@ -29958,58 +30155,10 @@
                 "description": "AD domain GUID."
               }
             },
-            "wrklKvName": {
+            "managedIdentityClientId": {
               "type": "string",
               "metadata": {
-                "description": "Keyvault name to get credentials from."
-              }
-            },
-            "domainJoinUserName": {
-              "type": "string",
-              "metadata": {
-                "description": "AVD session host domain join credentials."
-              }
-            },
-            "vmLocalUserName": {
-              "type": "string",
-              "metadata": {
-                "description": "AVD session host local admin credentials."
-              }
-            },
-            "storageSku": {
-              "type": "string",
-              "metadata": {
-                "description": "Azure Files storage account SKU."
-              }
-            },
-            "fileShareQuotaSize": {
-              "type": "int",
-              "metadata": {
-                "description": "*Azure File share quota"
-              }
-            },
-            "vnetPrivateDnsZoneFilesId": {
-              "type": "string",
-              "metadata": {
-                "description": "Use Azure private DNS zones for private endpoints."
-              }
-            },
-            "storageToDomainScript": {
-              "type": "string",
-              "metadata": {
-                "description": "Script name for adding storage account to Active Directory."
-              }
-            },
-            "storageToDomainScriptUri": {
-              "type": "string",
-              "metadata": {
-                "description": "URI for the script for adding the storage account to Active Directory."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "metadata": {
-                "description": "Tags to be applied to resources"
+                "description": "Managed Identity Client ID"
               }
             },
             "managementVmName": {
@@ -30018,16 +30167,64 @@
                 "description": "Name for management virtual machine. for tools and to join Azure Files to domain."
               }
             },
-            "deployPrivateEndpoint": {
-              "type": "bool",
-              "metadata": {
-                "description": "Optional. AVD Accelerator will deploy with private endpoints by default."
-              }
-            },
-            "alaWorkspaceResourceId": {
+            "ouStgPath": {
               "type": "string",
               "metadata": {
-                "description": "Log analytics workspace for diagnostic logs."
+                "description": "OU Storage Path"
+              }
+            },
+            "privateEndpointSubnetId": {
+              "type": "string",
+              "metadata": {
+                "description": "Private endpoint subnet ID."
+              }
+            },
+            "securityPrincipalName": {
+              "type": "string",
+              "metadata": {
+                "description": "Identity name array to grant RBAC role to access AVD application group and NTFS permissions."
+              }
+            },
+            "serviceObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource Group Name for management VM."
+              }
+            },
+            "storageAccountName": {
+              "type": "string",
+              "metadata": {
+                "description": "Storage account name."
+              }
+            },
+            "storageCustomOuPath": {
+              "type": "string",
+              "metadata": {
+                "description": "Custom OU path for storage."
+              }
+            },
+            "storageObjectsRgName": {
+              "type": "string",
+              "metadata": {
+                "description": "Resource Group Name for Azure Files."
+              }
+            },
+            "storagePurpose": {
+              "type": "string",
+              "metadata": {
+                "description": "Sets purpose of the storage account."
+              }
+            },
+            "storageSku": {
+              "type": "string",
+              "metadata": {
+                "description": "Azure Files storage account SKU."
+              }
+            },
+            "tags": {
+              "type": "object",
+              "metadata": {
+                "description": "Tags to be applied to resources"
               }
             },
             "time": {
@@ -30037,58 +30234,204 @@
                 "description": "Do not modify, used to set unique value for resource deployment."
               }
             },
-            "storagePurpose": {
+            "vmsSubnetId": {
               "type": "string",
               "metadata": {
-                "description": "Sets purpose of the storage account."
+                "description": "VMs subnet ID."
               }
             },
-            "dscAgentPackageLocation": {
+            "vnetPrivateDnsZoneFilesId": {
               "type": "string",
               "metadata": {
-                "description": "Sets location of DSC Agent."
+                "description": "Use Azure private DNS zones for private endpoints."
               }
             },
-            "storageCustomOuPath": {
+            "workloadSubsId": {
               "type": "string",
               "metadata": {
-                "description": "Custom OU path for storage."
+                "description": "AVD workload subscription ID, multiple subscriptions scenario."
               }
             },
-            "ouStgPath": {
+            "wrklKvName": {
               "type": "string",
               "metadata": {
-                "description": "OU Storage Path"
-              }
-            },
-            "managedIdentityClientId": {
-              "type": "string",
-              "metadata": {
-                "description": "Managed Identity Client ID"
-              }
-            },
-            "securityPrincipalName": {
-              "type": "string",
-              "metadata": {
-                "description": "Identity name array to grant RBAC role to access AVD application group and NTFS permissions."
-              }
-            },
-            "storageAccountFqdn": {
-              "type": "string",
-              "metadata": {
-                "description": "storage account FDQN."
+                "description": "Keyvault name to get credentials from."
               }
             }
           },
           "variables": {
-            "varAzureCloudName": "[environment().name]",
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varSecurityPrincipalName": "[if(not(empty(parameters('securityPrincipalName'))), parameters('securityPrincipalName'), 'none')]",
-            "varAdminUserName": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), parameters('vmLocalUserName'), parameters('domainJoinUserName'))]",
-            "varStorageToDomainScriptArgs": "[format('-DscPath {0} -StorageAccountName {1} -StorageAccountRG {2} -StoragePurpose {3} -DomainName {4} -IdentityServiceProvider {5} -AzureCloudEnvironment {6} -SubscriptionId {7} -AdminUserName {8} -CustomOuPath {9} -OUName {10} -ShareName {11} -ClientId {12} -SecurityPrincipalName \"{13}\" -StorageAccountFqdn {14} ', parameters('dscAgentPackageLocation'), parameters('storageAccountName'), parameters('storageObjectsRgName'), parameters('storagePurpose'), parameters('identityDomainName'), parameters('identityServiceProvider'), variables('varAzureCloudName'), parameters('workloadSubsId'), variables('varAdminUserName'), parameters('storageCustomOuPath'), parameters('ouStgPath'), parameters('fileShareName'), parameters('managedIdentityClientId'), variables('varSecurityPrincipalName'), parameters('storageAccountFqdn'))]",
             "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]"
           },
           "resources": [
+            {
+              "condition": "[endsWith(parameters('identityServiceProvider'), 'DS')]",
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('DomainJoin-RoleAssignment-{0}-{1}', parameters('storagePurpose'), parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('workloadSubsId'))]",
+              "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "roleDefinitionIdOrName": {
+                    "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7')]"
+                  },
+                  "principalId": {
+                    "value": "[parameters('domainJoinUserObjectId')]"
+                  },
+                  "principalType": {
+                    "value": "User"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.35.1.17967",
+                      "templateHash": "8005756264137170002"
+                    },
+                    "name": "Role Assignments (Resource Group scope)",
+                    "description": "This module deploys a Role Assignment at a Resource Group scope.",
+                    "owner": "Azure/module-maintainers"
+                  },
+                  "parameters": {
+                    "roleDefinitionIdOrName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. You can provide either the display name of the role definition (must be configured in the variable `builtInRoleNames`), or its fully qualified ID in the following format: '/providers/Microsoft.Authorization/roleDefinitions/c2f4ef07-c644-48eb-af81-4b1b4947fb11'."
+                      }
+                    },
+                    "principalId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Required. The Principal or Object ID of the Security Principal (User, Group, Service Principal, Managed Identity)."
+                      }
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "defaultValue": "[resourceGroup().name]",
+                      "metadata": {
+                        "description": "Optional. Name of the Resource Group to assign the RBAC role to. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "subscriptionId": {
+                      "type": "string",
+                      "defaultValue": "[subscription().subscriptionId]",
+                      "metadata": {
+                        "description": "Optional. Subscription ID of the subscription to assign the RBAC role to. If not provided, will use the current scope for deployment."
+                      }
+                    },
+                    "description": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The description of the role assignment."
+                      }
+                    },
+                    "delegatedManagedIdentityResourceId": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. ID of the delegated managed identity resource."
+                      }
+                    },
+                    "condition": {
+                      "type": "string",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "Optional. The conditions on the role assignment. This limits the resources it can be assigned to."
+                      }
+                    },
+                    "conditionVersion": {
+                      "type": "string",
+                      "defaultValue": "2.0",
+                      "allowedValues": [
+                        "2.0"
+                      ],
+                      "metadata": {
+                        "description": "Optional. Version of the condition. Currently accepted value is \"2.0\"."
+                      }
+                    },
+                    "principalType": {
+                      "type": "string",
+                      "allowedValues": [
+                        "ServicePrincipal",
+                        "Group",
+                        "User",
+                        "ForeignGroup",
+                        "Device",
+                        ""
+                      ],
+                      "metadata": {
+                        "description": "Optional. The principal type of the assigned principal ID."
+                      }
+                    }
+                  },
+                  "variables": {
+                    "builtInRoleNames": {
+                      "Contributor": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
+                      "Owner": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '8e3af657-a8ff-443c-a75c-2fe8c4bcb635')]",
+                      "Reader": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')]",
+                      "Role Based Access Control Administrator (Preview)": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'f58310d9-a9f6-439a-9e8d-f62e7b41a168')]",
+                      "User Access Administrator": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '18d7d88d-d35e-4fb5-a5c3-7773c20a72d9')]"
+                    },
+                    "roleDefinitionIdVar": "[if(contains(variables('builtInRoleNames'), parameters('roleDefinitionIdOrName')), variables('builtInRoleNames')[parameters('roleDefinitionIdOrName')], parameters('roleDefinitionIdOrName'))]"
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Authorization/roleAssignments",
+                      "apiVersion": "2022-04-01",
+                      "name": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]",
+                      "properties": {
+                        "roleDefinitionId": "[variables('roleDefinitionIdVar')]",
+                        "principalId": "[parameters('principalId')]",
+                        "description": "[if(not(empty(parameters('description'))), parameters('description'), null())]",
+                        "principalType": "[if(not(empty(parameters('principalType'))), parameters('principalType'), null())]",
+                        "delegatedManagedIdentityResourceId": "[if(not(empty(parameters('delegatedManagedIdentityResourceId'))), parameters('delegatedManagedIdentityResourceId'), null())]",
+                        "conditionVersion": "[if(and(not(empty(parameters('conditionVersion'))), not(empty(parameters('condition')))), parameters('conditionVersion'), null())]",
+                        "condition": "[if(not(empty(parameters('condition'))), parameters('condition'), null())]"
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The GUID of the Role Assignment."
+                      },
+                      "value": "[guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId'))]"
+                    },
+                    "resourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The resource ID of the Role Assignment."
+                      },
+                      "value": "[resourceId('Microsoft.Authorization/roleAssignments', guid(parameters('subscriptionId'), parameters('resourceGroupName'), variables('roleDefinitionIdVar'), parameters('principalId')))]"
+                    },
+                    "resourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group the role assignment was applied at."
+                      },
+                      "value": "[resourceGroup().name]"
+                    },
+                    "scope": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The scope this Role Assignment applies to."
+                      },
+                      "value": "[resourceGroup().id]"
+                    }
+                  }
+                }
+              }
+            },
             {
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
@@ -32428,7 +32771,7 @@
               }
             },
             {
-              "condition": "[not(equals(parameters('identityServiceProvider'), 'EntraID'))]",
+              "condition": "[endsWith(parameters('identityServiceProvider'), 'DS')]",
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Add-{0}-Storage-Setup-{1}', parameters('storagePurpose'), parameters('time'))]",
@@ -32440,21 +32783,55 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
+                  "domainJoinPassword": {
+                    "reference": {
+                      "keyVault": {
+                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
+                      },
+                      "secretName": "domainJoinPassword"
+                    }
+                  },
+                  "domainJoinUserName": {
+                    "reference": {
+                      "keyVault": {
+                        "id": "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))]"
+                      },
+                      "secretName": "domainJoinUserName"
+                    }
+                  },
+                  "identityServiceProvider": {
+                    "value": "[parameters('identityServiceProvider')]"
+                  },
+                  "kerberosEncryption": {
+                    "value": "[parameters('kerberosEncryption')]"
+                  },
                   "location": {
                     "value": "[parameters('location')]"
                   },
+                  "organizationalUnitPath": "[if(empty(parameters('storageCustomOuPath')), createObject('value', parameters('ouStgPath')), createObject('value', parameters('storageCustomOuPath')))]",
+                  "securityPrincipalName": {
+                    "value": "[parameters('securityPrincipalName')]"
+                  },
+                  "shareName": {
+                    "value": "[parameters('fileShareName')]"
+                  },
+                  "storageAccountName": {
+                    "value": "[parameters('storageAccountName')]"
+                  },
+                  "storageAccountResourceGroupName": {
+                    "value": "[parameters('storageObjectsRgName')]"
+                  },
+                  "storagePurpose": {
+                    "value": "[parameters('storagePurpose')]"
+                  },
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  },
+                  "userAssignedIdentityClientId": {
+                    "value": "[parameters('managedIdentityClientId')]"
+                  },
                   "virtualMachineName": {
                     "value": "[parameters('managementVmName')]"
-                  },
-                  "file": {
-                    "value": "[parameters('storageToDomainScript')]"
-                  },
-                  "scriptArguments": {
-                    "value": "[variables('varStorageToDomainScriptArgs')]"
-                  },
-                  "adminUserPassword": "[if(contains(parameters('identityServiceProvider'), 'EntraID'), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'vmLocalUserPassword')), createObject('reference', createObject('keyVault', createObject('id', extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.KeyVault/vaults', parameters('wrklKvName'))), 'secretName', 'domainJoinUserPassword')))]",
-                  "baseScriptUri": {
-                    "value": "[parameters('storageToDomainScriptUri')]"
                   }
                 },
                 "template": {
@@ -32464,17 +32841,39 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "142065180263257572"
+                      "templateHash": "10214091581432892437"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
                     "owner": "Azure/avdaccelerator"
                   },
                   "parameters": {
-                    "virtualMachineName": {
+                    "domainJoinPassword": {
+                      "type": "securestring",
+                      "metadata": {
+                        "description": "The password for the principal used for domain joining."
+                      }
+                    },
+                    "domainJoinUserName": {
+                      "type": "securestring",
+                      "metadata": {
+                        "description": "The user name for the principal used for domain joining."
+                      }
+                    },
+                    "identityServiceProvider": {
                       "type": "string",
                       "metadata": {
-                        "description": "Virtual machine name."
+                        "description": "The identity service provider for the domain join operation."
+                      }
+                    },
+                    "kerberosEncryption": {
+                      "type": "string",
+                      "allowedValues": [
+                        "AES256",
+                        "RC4"
+                      ],
+                      "metadata": {
+                        "description": "The type of encryption to use for Kerberos tickets."
                       }
                     },
                     "location": {
@@ -32483,25 +32882,50 @@
                         "description": "Location where to deploy compute services."
                       }
                     },
-                    "baseScriptUri": {
+                    "organizationalUnitPath": {
                       "type": "string",
                       "metadata": {
-                        "description": "Location for the AVD agent installation package."
+                        "description": "The distinguished name for the organization unit in domain services for the computer object."
                       }
                     },
-                    "file": {
-                      "type": "string"
-                    },
-                    "scriptArguments": {
+                    "securityPrincipalName": {
                       "type": "string",
                       "metadata": {
-                        "description": "Arguments for domain join script."
+                        "description": "The name of the security principal to give permissions to on the Azure Files share."
                       }
                     },
-                    "adminUserPassword": {
-                      "type": "securestring",
+                    "shareName": {
+                      "type": "string",
                       "metadata": {
-                        "description": "Domain join user password."
+                        "description": "The name of the Azure Files share."
+                      }
+                    },
+                    "storageAccountName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the storage account to use for Azure Files."
+                      }
+                    },
+                    "storageAccountResourceGroupName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the resource group containing the Azure Files share."
+                      }
+                    },
+                    "storagePurpose": {
+                      "type": "string",
+                      "allowedValues": [
+                        "AppAttach",
+                        "Fslogix"
+                      ],
+                      "metadata": {
+                        "description": "The purpose of the Azure Files share."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "The metadata tags to apply to the resource."
                       }
                     },
                     "time": {
@@ -32510,209 +32934,202 @@
                       "metadata": {
                         "description": "Do not modify, used to set unique value for resource deployment."
                       }
+                    },
+                    "userAssignedIdentityClientId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The client ID of the user-assigned identity to use for the run command."
+                      }
+                    },
+                    "virtualMachineName": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Virtual machine name."
+                      }
                     }
+                  },
+                  "variables": {
+                    "$fxv#0": "param (\r\n    [securestring]$DomainJoinPassword,\r\n    [string]$DomainJoinUserName,\r\n    [string]$IdentityServiceProvider,\r\n    [string]$KerberosEncryption,\r\n    [string]$OrganizationalUnitPath,\r\n    [string]$ResourceManagerUri,\r\n    [string]$SecurityPrincipalName,\r\n    [string]$ShareName,\r\n    [string]$StorageAccountName,\r\n    [string]$StorageAccountResourceGroupName,\r\n    [string]$StoragePurpose,\r\n    [string]$StorageSuffix,\r\n    [string]$SubscriptionId,\r\n    [string]$UserAssignedIdentityClientId\r\n)\r\n\r\n$ErrorActionPreference = 'Stop'\r\n$WarningPreference = 'SilentlyContinue'\r\n\r\nWrite-Host 'Turning off Windows firewall.'\r\nSet-NetFirewallProfile -Profile 'Domain', 'Public', 'Private' -Enabled $false\r\n\r\n# Set UNC path for Azure Files file share\r\n$FilesSuffix = '.file.' + $StorageSuffix\r\n$FileShare = '\\\\' + $StorageAccountName + $FilesSuffix + '\\' + $ShareName\r\n\r\n# Set the drive letter for the share based on the storage purpose\r\n$DriveLetter = switch ($StoragePurpose) {\r\n    'AppAttach' { 'X:' }\r\n    'Fslogix' { 'Y:' }\r\n    Default { 'Z:' }\r\n}\r\n\r\n# Get & set domain services for Azure Files\r\nif ($IdentityServiceProvider -like '*DS') {\r\n\tWrite-Host 'Forcing group policy updates'\r\n\tStart-Process -FilePath 'gpupdate.exe' -ArgumentList '/force /wait:0' -Wait -NoNewWindow | Out-Null\r\n\r\n\tWrite-Host 'Waiting for domain policies to be applied (1 minute)'\r\n\tStart-Sleep -Seconds 60\r\n\r\n    $RsatInstalled = (Get-WindowsFeature -Name 'RSAT-AD-PowerShell').Installed\r\n    if (!$RsatInstalled){\r\n        Install-WindowsFeature -Name 'RSAT-AD-PowerShell' | Out-Null\r\n    }\r\n\r\n    # Create Domain credential\r\n    $SecureDomainJoinPassword = ConvertTo-SecureString -String $DomainJoinPassword -AsPlainText -Force\r\n    [pscredential]$DomainCredential = New-Object System.Management.Automation.PSCredential ($DomainJoinUserName, $SecureDomainJoinPassword)\r\n\r\n    # Get Domain information\r\n    $Domain = Get-ADDomain -Credential $DomainCredential -Current 'LocalComputer'\r\n\r\n    # Set domain principal with NetBios for ACLs assignment\r\n    $Group = $Domain.NetBIOSName + '\\' + $SecurityPrincipalName\r\n\r\n    if ($IdentityServiceProvider -eq 'ADDS') {\r\n        # Fix the resource manager URI since only AzureCloud contains a trailing slash\r\n        $ResourceManagerUriFixed = if ($ResourceManagerUri[-1] -eq '/') { $ResourceManagerUri.Substring(0, $ResourceManagerUri.Length - 1) } else { $ResourceManagerUri }\r\n\r\n        # Get an access token for Azure resources\r\n        $AzureManagementAccessToken = (Invoke-RestMethod `\r\n            -Headers @{Metadata = \"true\" } `\r\n            -Uri $('http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=' + $ResourceManagerUriFixed + '&client_id=' + $UserAssignedIdentityClientId)).access_token\r\n\r\n        # Set header for Azure Management API\r\n        $AzureManagementHeader = @{\r\n            'Content-Type'  = 'application/json'\r\n            'Authorization' = 'Bearer ' + $AzureManagementAccessToken\r\n        }\r\n\r\n        # Get / create kerberos key for Azure Storage Account\r\n        $KerberosKey = ((Invoke-RestMethod `\r\n            -Headers $AzureManagementHeader `\r\n            -Method 'POST' `\r\n            -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/listKeys?api-version=2023-05-01&$expand=kerb')).keys | Where-Object { $_.Keyname -contains 'kerb1' }).Value\r\n\r\n        if (!$KerberosKey) \r\n        {\r\n            Invoke-RestMethod `\r\n                -Body (@{keyName = 'kerb1' } | ConvertTo-Json) `\r\n                -Headers $AzureManagementHeader `\r\n                -Method 'POST' `\r\n                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/regenerateKey?api-version=2023-05-01')\r\n            \r\n            $Key = ((Invoke-RestMethod `\r\n                -Headers $AzureManagementHeader `\r\n                -Method 'POST' `\r\n                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/listKeys?api-version=2023-05-01&$expand=kerb')).keys | Where-Object { $_.Keyname -contains 'kerb1' }).Value\r\n        } \r\n        else \r\n        {\r\n            $Key = $KerberosKey\r\n        }\r\n\r\n        # Creates a password for the Azure Storage Account in AD using the Kerberos key\r\n        $ComputerPassword = ConvertTo-SecureString -String $Key.Replace(\"'\",\"\") -AsPlainText -Force\r\n\r\n        # Create the SPN value for the Azure Storage Account; attribute for computer object in AD \r\n        $SPN = 'cifs/' + $StorageAccountName + $FilesSuffix\r\n\r\n        # Create the Description value for the Azure Storage Account; attribute for computer object in AD \r\n        $Description = \"Computer account object for Azure storage account $($StorageAccountName).\"\r\n\r\n        # Create the AD computer object for the Azure Storage Account\r\n        $Computer = Get-ADComputer -Credential $DomainCredential -Filter {Name -eq $StorageAccountName}\r\n        if($Computer){\r\n            Remove-ADComputer -Credential $DomainCredential -Identity $StorageAccountName -Confirm:$false\r\n        }\r\n        $ComputerObject = New-ADComputer -Credential $DomainCredential -Name $StorageAccountName -Path $OrganizationalUnitPath -ServicePrincipalNames $SPN -AccountPassword $ComputerPassword -Description $Description -PassThru\r\n\r\n        $Body = (@{\r\n            properties = @{\r\n                azureFilesIdentityBasedAuthentication = @{\r\n                    activeDirectoryProperties = @{\r\n                        accountType = 'Computer'\r\n                        azureStorageSid = $ComputerObject.SID.Value\r\n                        domainGuid = $Domain.ObjectGUID.Guid\r\n                        domainName = $Domain.DNSRoot\r\n                        domainSid = $Domain.DomainSID.Value\r\n                        forestName = $Domain.Forest\r\n                        netBiosDomainName = $Domain.NetBIOSName\r\n                        samAccountName = $StorageAccountName\r\n                    }\r\n                    directoryServiceOptions = 'AD'\r\n                }\r\n            }\r\n        } | ConvertTo-Json -Depth 6 -Compress)\r\n\r\n        Invoke-RestMethod `\r\n            -Body $Body `\r\n            -Headers $AzureManagementHeader `\r\n            -Method 'PATCH' `\r\n            -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '?api-version=2023-05-01')\r\n\r\n        if ($KerberosEncryption -eq 'AES256') {\r\n            # Set the Kerberos encryption on the computer object\r\n            $DistinguishedName = 'CN=' + $StorageAccountName + ',' + $OrganizationalUnitPath\r\n            Set-ADComputer -Credential $DomainCredential -Identity $DistinguishedName -KerberosEncryptionType 'AES256' | Out-Null\r\n\r\n            # Reset the Kerberos key on the Storage Account\r\n            Invoke-RestMethod `\r\n                -Body (@{keyName = 'kerb1' } | ConvertTo-Json) `\r\n                -Headers $AzureManagementHeader `\r\n                -Method 'POST' `\r\n                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/regenerateKey?api-version=2023-05-01')\r\n\r\n            $Key = ((Invoke-RestMethod `\r\n                -Headers $AzureManagementHeader `\r\n                -Method 'POST' `\r\n                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/listKeys?api-version=2023-05-01&$expand=kerb')).keys | Where-Object { $_.Keyname -contains 'kerb1' }).Value\r\n\r\n            # Update the password on the computer object with the new Kerberos key on the Storage Account\r\n            $NewPassword = ConvertTo-SecureString -String $Key -AsPlainText -Force\r\n            Set-ADAccountPassword -Credential $DomainCredential -Identity $DistinguishedName -Reset -NewPassword $NewPassword | Out-Null\r\n        } \r\n    }\r\n\r\n    Register-PSSessionConfiguration -Name $StorageAccountName -RunAsCredential $DomainCredential -Force\r\n\r\n    Invoke-Command -ArgumentList \"$DriveLetter\", \"$FileShare\", \"$Group\" -ComputerName $env:COMPUTERNAME -ConfigurationName $StorageAccountName -Credential $DomainCredential -ScriptBlock {\r\n        param ($DriveLetter, $FileShare, $Group)\r\n        Start-Process -FilePath 'net.exe' -ArgumentList \"use $DriveLetter $FileShare\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /grant `\"$($Group):(M)`\"\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /grant `\"Creator Owner:(OI)(CI)(IO)(M)`\"\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /remove `\"Authenticated Users`\"\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /remove `\"Builtin\\Users`\"\" -Wait -NoNewWindow | Out-Null\r\n        Start-Process -FilePath 'net.exe' -ArgumentList \"use Z: /delete\" -Wait -NoNewWindow | Out-Null\r\n    }\r\n} else {\r\n    Start-Process -FilePath 'net.exe' -ArgumentList \"use $DriveLetter $FileShare\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /grant `\"Creator Owner:(OI)(CI)(IO)(M)`\"\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /inheritance:r\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /remove `\"Builtin\\Administrators`\"\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'icacls.exe' -ArgumentList \"$DriveLetter /remove `\"Builtin\\Users`\"\" -Wait -NoNewWindow | Out-Null\r\n    Start-Process -FilePath 'net.exe' -ArgumentList \"use Z: /delete\" -Wait -NoNewWindow | Out-Null\r\n}\r\n\r\n"
                   },
                   "resources": [
                     {
                       "type": "Microsoft.Resources/deployments",
                       "apiVersion": "2022-09-01",
-                      "name": "[format('VM-Ext-AVM-{0}', parameters('time'))]",
+                      "name": "[format('NTFS-Permissions-{0}', parameters('time'))]",
                       "properties": {
                         "expressionEvaluationOptions": {
                           "scope": "inner"
                         },
                         "mode": "Incremental",
                         "parameters": {
-                          "name": {
-                            "value": "AzureFilesDomainJoin"
-                          },
-                          "virtualMachineName": {
-                            "value": "[parameters('virtualMachineName')]"
-                          },
                           "location": {
                             "value": "[parameters('location')]"
                           },
-                          "publisher": {
-                            "value": "Microsoft.Compute"
+                          "name": {
+                            "value": "Set-AzureFilesNtfsPermissions_Fslogix"
                           },
-                          "type": {
-                            "value": "CustomScriptExtension"
+                          "parameters": {
+                            "value": [
+                              {
+                                "name": "DomainJoinUserName",
+                                "value": "[parameters('domainJoinUserName')]"
+                              },
+                              {
+                                "name": "IdentityServiceProvider",
+                                "value": "[parameters('identityServiceProvider')]"
+                              },
+                              {
+                                "name": "KerberosEncryption",
+                                "value": "[parameters('kerberosEncryption')]"
+                              },
+                              {
+                                "name": "OrganizationalUnitPath",
+                                "value": "[parameters('organizationalUnitPath')]"
+                              },
+                              {
+                                "name": "ResourceManagerUri",
+                                "value": "[environment().resourceManager]"
+                              },
+                              {
+                                "name": "SecurityPrincipalName",
+                                "value": "[parameters('securityPrincipalName')]"
+                              },
+                              {
+                                "name": "ShareName",
+                                "value": "[parameters('shareName')]"
+                              },
+                              {
+                                "name": "StorageAccountName",
+                                "value": "[parameters('storageAccountName')]"
+                              },
+                              {
+                                "name": "StorageAccountResourceGroupName",
+                                "value": "[parameters('storageAccountResourceGroupName')]"
+                              },
+                              {
+                                "name": "StoragePurpose",
+                                "value": "[parameters('storagePurpose')]"
+                              },
+                              {
+                                "name": "StorageSuffix",
+                                "value": "[environment().suffixes.storage]"
+                              },
+                              {
+                                "name": "SubscriptionId",
+                                "value": "[subscription().subscriptionId]"
+                              },
+                              {
+                                "name": "UserAssignedIdentityClientId",
+                                "value": "[parameters('userAssignedIdentityClientId')]"
+                              }
+                            ]
                           },
-                          "typeHandlerVersion": {
-                            "value": "1.10"
+                          "protectedParameters": {
+                            "value": [
+                              {
+                                "name": "DomainJoinPassword",
+                                "value": "[parameters('domainJoinPassword')]"
+                              }
+                            ]
                           },
-                          "autoUpgradeMinorVersion": {
-                            "value": true
+                          "script": {
+                            "value": "[variables('$fxv#0')]"
                           },
-                          "enableAutomaticUpgrade": {
-                            "value": false
+                          "tags": {
+                            "value": "[parameters('tags')]"
                           },
-                          "settings": {
-                            "value": {}
-                          },
-                          "protectedSettings": {
-                            "value": {
-                              "fileUris": "[array(parameters('baseScriptUri'))]",
-                              "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -File {0} {1} -AdminUserPassword {2} -verbose', parameters('file'), parameters('scriptArguments'), parameters('adminUserPassword'))]"
-                            }
+                          "virtualMachineName": {
+                            "value": "[parameters('virtualMachineName')]"
                           }
                         },
                         "template": {
                           "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                          "languageVersion": "2.0",
                           "contentVersion": "1.0.0.0",
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
                               "version": "0.35.1.17967",
-                              "templateHash": "13510096196452363309"
-                            },
-                            "name": "Virtual Machine Extensions",
-                            "description": "This module deploys a Virtual Machine Extension.",
-                            "owner": "Azure/module-maintainers"
+                              "templateHash": "10938492692564567997"
+                            }
                           },
                           "parameters": {
-                            "virtualMachineName": {
+                            "asyncExecution": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Determine whether the run command should be executed asynchronously."
+                              }
+                            },
+                            "location": {
                               "type": "string",
                               "metadata": {
-                                "description": "Conditional. The name of the parent virtual machine that extension is provisioned for. Required if the template is used in a standalone deployment."
+                                "description": "The Azure location where the run command resource will be created."
                               }
                             },
                             "name": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. The name of the virtual machine extension."
+                                "description": "The name of the run command resource."
                               }
                             },
-                            "location": {
-                              "type": "string",
-                              "defaultValue": "[resourceGroup().location]",
+                            "parameters": {
+                              "type": "array",
+                              "defaultValue": [],
                               "metadata": {
-                                "description": "Optional. The location the extension is deployed to."
+                                "description": "The parameters required by the script to run on the virtual machine."
                               }
                             },
-                            "publisher": {
-                              "type": "string",
+                            "protectedParameters": {
+                              "type": "array",
+                              "defaultValue": [],
                               "metadata": {
-                                "description": "Required. The name of the extension handler publisher."
+                                "description": "The protected parameters required by the script to run on the virtual machine."
                               }
                             },
-                            "type": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "Required. Specifies the type of the extension; an example is \"CustomScriptExtension\"."
-                              }
-                            },
-                            "typeHandlerVersion": {
+                            "script": {
                               "type": "string",
                               "metadata": {
-                                "description": "Required. Specifies the version of the script handler."
-                              }
-                            },
-                            "autoUpgradeMinorVersion": {
-                              "type": "bool",
-                              "metadata": {
-                                "description": "Required. Indicates whether the extension should use a newer minor version if one is available at deployment time. Once deployed, however, the extension will not upgrade minor versions unless redeployed, even with this property set to true."
-                              }
-                            },
-                            "forceUpdateTag": {
-                              "type": "string",
-                              "defaultValue": "",
-                              "metadata": {
-                                "description": "Optional. How the extension handler should be forced to update even if the extension configuration has not changed."
-                              }
-                            },
-                            "settings": {
-                              "type": "object",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Any object that contains the extension specific settings."
-                              }
-                            },
-                            "protectedSettings": {
-                              "type": "secureObject",
-                              "defaultValue": {},
-                              "metadata": {
-                                "description": "Optional. Any object that contains the extension specific protected settings."
-                              }
-                            },
-                            "supressFailures": {
-                              "type": "bool",
-                              "defaultValue": false,
-                              "metadata": {
-                                "description": "Optional. Indicates whether failures stemming from the extension will be suppressed (Operational failures such as not connecting to the VM will not be suppressed regardless of this value). The default is false."
-                              }
-                            },
-                            "enableAutomaticUpgrade": {
-                              "type": "bool",
-                              "metadata": {
-                                "description": "Required. Indicates whether the extension should be automatically upgraded by the platform if there is a newer version of the extension available."
+                                "description": "The inline script to run on the virtual machine."
                               }
                             },
                             "tags": {
                               "type": "object",
-                              "nullable": true,
                               "metadata": {
-                                "description": "Optional. Tags of the resource."
+                                "description": "Metadata tags to apply to the run command resource."
+                              }
+                            },
+                            "treatFailureAsDeploymentFailure": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Determine whether the run command should be treated as a deployment failure if it fails."
+                              }
+                            },
+                            "virtualMachineName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the virtual machine to run the command on."
                               }
                             }
                           },
-                          "resources": {
-                            "virtualMachine": {
-                              "existing": true,
-                              "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2022-11-01",
-                              "name": "[parameters('virtualMachineName')]"
-                            },
-                            "extension": {
-                              "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
+                          "resources": [
+                            {
+                              "type": "Microsoft.Compute/virtualMachines/runCommands",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
                               "properties": {
-                                "publisher": "[parameters('publisher')]",
-                                "type": "[parameters('type')]",
-                                "typeHandlerVersion": "[parameters('typeHandlerVersion')]",
-                                "autoUpgradeMinorVersion": "[parameters('autoUpgradeMinorVersion')]",
-                                "enableAutomaticUpgrade": "[parameters('enableAutomaticUpgrade')]",
-                                "forceUpdateTag": "[if(not(empty(parameters('forceUpdateTag'))), parameters('forceUpdateTag'), null())]",
-                                "settings": "[if(not(empty(parameters('settings'))), parameters('settings'), null())]",
-                                "protectedSettings": "[if(not(empty(parameters('protectedSettings'))), parameters('protectedSettings'), null())]",
-                                "suppressFailures": "[parameters('supressFailures')]"
+                                "asyncExecution": "[parameters('asyncExecution')]",
+                                "parameters": "[parameters('parameters')]",
+                                "protectedParameters": "[parameters('protectedParameters')]",
+                                "source": {
+                                  "script": "[parameters('script')]"
+                                },
+                                "treatFailureAsDeploymentFailure": "[parameters('treatFailureAsDeploymentFailure')]"
                               }
                             }
-                          },
-                          "outputs": {
-                            "name": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the extension."
-                              },
-                              "value": "[parameters('name')]"
-                            },
-                            "resourceId": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The resource ID of the extension."
-                              },
-                              "value": "[resourceId('Microsoft.Compute/virtualMachines/extensions', parameters('virtualMachineName'), parameters('name'))]"
-                            },
-                            "resourceGroupName": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The name of the Resource Group the extension was created in."
-                              },
-                              "value": "[resourceGroup().name]"
-                            },
-                            "location": {
-                              "type": "string",
-                              "metadata": {
-                                "description": "The location the resource was deployed into."
-                              },
-                              "value": "[reference('extension', '2022-11-01', 'full').location]"
-                            }
-                          }
+                          ]
                         }
                       }
                     }

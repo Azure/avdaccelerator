@@ -72,6 +72,9 @@ param identityDomainGuid string = ''
 @sys.description('AVD session host domain join user principal name. (Default: "none")')
 param avdDomainJoinUserName string = 'none'
 
+@sys.description('AVD session host domain join user object ID. (Default: "none")')
+param avdDomainJoinUserObjectId string = 'none'
+
 @sys.description('AVD session host domain join password. (Default: "none")')
 @secure()
 param avdDomainJoinUserPassword string = 'none'
@@ -284,6 +287,13 @@ If using a Azure Compute Gallery Image, the Image Definition must have been conf
 the \'isAcceleratedNetworkSupported\' property set to \'true\'.
 ''')
 param enableAcceleratedNetworking bool = true
+
+@sys.allowed([
+  'AES256'
+  'RC4'
+])
+@sys.description('The type of kerberos encryption to enable on the Azure Files share(s).')
+param kerberosEncryption string = 'AES256'
 
 @allowed([
   'Standard'
@@ -651,10 +661,6 @@ var varAppAttachFileShareName = avdUseCustomNaming
 var varFslogixStorageName = avdUseCustomNaming
   ? '${storageAccountPrefixCustomName}fsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
   : 'stfsl${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
-var varFslogixStorageFqdn = createAvdFslogixDeployment
-  ? '${varFslogixStorageName}.file.${environment().suffixes.storage}'
-  : ''
-var varAppAttachStorageFqdn = '${varAppAttachStorageName}.file.${environment().suffixes.storage}'
 var varAppAttachStorageName = avdUseCustomNaming
   ? '${storageAccountPrefixCustomName}appa${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
   : 'stappa${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varNamingUniqueStringThreeChar}'
@@ -955,9 +961,6 @@ var varPooledScalingPlanSchedules = [
   }
 ]
 var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
-var varStorageAzureFilesDscAgentPackageLocation = 'https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/1.0.3/DSCStorageScripts.zip'
-var varStorageToDomainScriptUri = '${varBaseScriptUri}scripts/Manual-DSC-Storage-Scripts.ps1'
-var varStorageToDomainScript = './Manual-DSC-Storage-Scripts.ps1'
 var varOuStgPath = !empty(storageOuPath) ? '"${storageOuPath}"' : '"${varDefaultStorageOuPath}"'
 var varDefaultStorageOuPath = (avdIdentityServiceProvider == 'EntraDS') ? 'AADDC Computers' : 'Computers'
 var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
@@ -1396,29 +1399,29 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
 module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if (avdIdentityServiceProvider != 'EntraID' && (createAvdFslogixDeployment || varCreateAppAttachDeployment)) {
   name: 'Storage-MGMT-VM-${time}'
   params: {
+    computeTimeZone: varTimeZoneSessionHosts
     diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
     identityServiceProvider: avdIdentityServiceProvider
     managementVmName: varManagementVmName
-    computeTimeZone: varTimeZoneSessionHosts
     applicationSecurityGroupResourceId: (avdDeploySessionHosts || createAvdFslogixDeployment || varCreateAppAttachDeployment)
       ? '${networking.outputs.applicationSecurityGroupResourceId}'
       : ''
     domainJoinUserName: avdDomainJoinUserName
-    wrklKvName: varWrklKvName
-    serviceObjectsRgName: varServiceObjectsRgName
+    enableAcceleratedNetworking: varMgmtVmSpecs.enableAcceleratedNetworking
+    encryptionAtHost: diskZeroTrust
     identityDomainName: identityDomainName
-    ouPath: varMgmtVmSpecs.ouPath
-    osDiskType: varMgmtVmSpecs.osDiskType
     location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     mgmtVmSize: varMgmtVmSpecs.mgmtVmSize
-    subnetId: varMgmtVmSpecs.subnetId
-    enableAcceleratedNetworking: varMgmtVmSpecs.enableAcceleratedNetworking
-    securityType: securityType == 'Standard' ? '' : securityType
+    osDiskType: varMgmtVmSpecs.osDiskType
+    ouPath: varMgmtVmSpecs.ouPath
     secureBootEnabled: secureBootEnabled
-    vTpmEnabled: vTpmEnabled
+    securityType: securityType == 'Standard' ? '' : securityType
+    serviceObjectsRgName: varServiceObjectsRgName
+    subnetId: varMgmtVmSpecs.subnetId
     vmLocalUserName: avdVmLocalUserName
+    vTpmEnabled: vTpmEnabled
     workloadSubsId: avdWorkloadSubsId
-    encryptionAtHost: diskZeroTrust
+    wrklKvName: varWrklKvName
     storageManagedIdentityResourceId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
       ? identity.outputs.managedIdentityStorageResourceId
       : ''
@@ -1435,36 +1438,37 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
 module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (createAvdFslogixDeployment) {
   name: 'Storage-FSLogix-${time}'
   params: {
-    storagePurpose: 'fslogix'
-    vmLocalUserName: avdVmLocalUserName
-    fileShareName: varFslogixFileShareName
-    fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
-    storageSku: varFslogixStorageSku
-    fileShareQuotaSize: fslogixFileShareQuotaSize
-    storageAccountFqdn: varFslogixStorageFqdn
-    storageAccountName: varFslogixStorageName
-    storageToDomainScript: varStorageToDomainScript
-    storageToDomainScriptUri: varStorageToDomainScriptUri
-    identityServiceProvider: avdIdentityServiceProvider
-    dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
-    storageCustomOuPath: varStorageCustomOuPath
-    managementVmName: varManagementVmName
+    alaWorkspaceResourceId: avdDeployMonitoring
+      ? (deployAlaWorkspace
+          ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+          : alaExistingWorkspaceResourceId)
+      : ''
     deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
-    ouStgPath: varOuStgPath
+    domainJoinUserObjectId: avdDomainJoinUserObjectId
+    fileShareMultichannel: (fslogixStoragePerformance == 'Premium') ? true : false
+    fileShareName: varFslogixFileShareName
+    fileShareQuotaSize: fslogixFileShareQuotaSize
+    identityDomainGuid: identityDomainGuid
+    identityDomainName: identityDomainName
+    identityServiceProvider: avdIdentityServiceProvider
+    kerberosEncryption: kerberosEncryption
+    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
       ? identity.outputs.managedIdentityStorageClientId
       : ''
-    securityPrincipalName: varSecurityPrincipalName
-    domainJoinUserName: avdDomainJoinUserName
-    wrklKvName: varWrklKvName
-    serviceObjectsRgName: varServiceObjectsRgName
-    identityDomainName: identityDomainName
-    identityDomainGuid: identityDomainGuid
-    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
-    storageObjectsRgName: varStorageObjectsRgName
+    managementVmName: varManagementVmName
+    ouStgPath: varOuStgPath
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
+    securityPrincipalName: varSecurityPrincipalName
+    serviceObjectsRgName: varServiceObjectsRgName
+    storageAccountName: varFslogixStorageName
+    storageCustomOuPath: varStorageCustomOuPath
+    storageObjectsRgName: varStorageObjectsRgName
+    storagePurpose: 'fslogix'
+    storageSku: varFslogixStorageSku
+    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     vmsSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
       : existingVnetAvdSubnetResourceId
@@ -1472,12 +1476,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
       ? networking.outputs.azureFilesDnsZoneResourceId
       : avdVnetPrivateDnsZoneFilesId
     workloadSubsId: avdWorkloadSubsId
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-    alaWorkspaceResourceId: avdDeployMonitoring
-      ? (deployAlaWorkspace
-          ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-          : alaExistingWorkspaceResourceId)
-      : ''
+    wrklKvName: varWrklKvName
   }
   dependsOn: [
     baselineStorageResourceGroup
@@ -1490,49 +1489,45 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
 module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if (varCreateAppAttachDeployment) {
   name: 'Storage-AppA-${time}'
   params: {
-    storagePurpose: 'AppAttach'
-    vmLocalUserName: avdVmLocalUserName
-    fileShareName: varAppAttachFileShareName
-    fileShareMultichannel: (appAttachStoragePerformance == 'Premium') ? true : false
-    storageSku: varAppAttachStorageSku
-    fileShareQuotaSize: appAttachFileShareQuotaSize
-    storageAccountFqdn: varAppAttachStorageFqdn
-    storageAccountName: varAppAttachStorageName
-    storageToDomainScript: varStorageToDomainScript
-    storageToDomainScriptUri: varStorageToDomainScriptUri
-    identityServiceProvider: avdIdentityServiceProvider
-    dscAgentPackageLocation: varStorageAzureFilesDscAgentPackageLocation
-    storageCustomOuPath: varStorageCustomOuPath
-    managementVmName: varManagementVmName
+    alaWorkspaceResourceId: avdDeployMonitoring
+      ? (deployAlaWorkspace
+          ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+          : alaExistingWorkspaceResourceId)
+      : ''
     deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage
-    ouStgPath: varOuStgPath
+    domainJoinUserObjectId: avdDomainJoinUserObjectId
+    fileShareMultichannel: (appAttachStoragePerformance == 'Premium') ? true : false
+    fileShareName: varAppAttachFileShareName
+    fileShareQuotaSize: appAttachFileShareQuotaSize
+    identityDomainGuid: identityDomainGuid
+    identityDomainName: identityDomainName
+    identityServiceProvider: avdIdentityServiceProvider
+    kerberosEncryption: kerberosEncryption
+    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
       ? identity.outputs.managedIdentityStorageClientId
       : ''
-    securityPrincipalName: varSecurityPrincipalName
-    domainJoinUserName: avdDomainJoinUserName
-    wrklKvName: varWrklKvName
-    serviceObjectsRgName: varServiceObjectsRgName
-    identityDomainName: identityDomainName
-    identityDomainGuid: identityDomainGuid
-    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
-    storageObjectsRgName: varStorageObjectsRgName
+    managementVmName: varManagementVmName
+    ouStgPath: varOuStgPath
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
+    securityPrincipalName: varSecurityPrincipalName
+    serviceObjectsRgName: varServiceObjectsRgName
+    storageAccountName: varAppAttachStorageName
+    storageCustomOuPath: varStorageCustomOuPath
+    storageObjectsRgName: varStorageObjectsRgName
+    storagePurpose: 'AppAttach'
+    storageSku: varAppAttachStorageSku
+    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     vmsSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetAvdSubnetName}'
       : existingVnetAvdSubnetResourceId
     vnetPrivateDnsZoneFilesId: createPrivateDnsZones
       ? networking.outputs.azureFilesDnsZoneResourceId
       : avdVnetPrivateDnsZoneFilesId
+    wrklKvName: varWrklKvName
     workloadSubsId: avdWorkloadSubsId
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-    alaWorkspaceResourceId: avdDeployMonitoring
-      ? (deployAlaWorkspace
-          ? monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-          : alaExistingWorkspaceResourceId)
-      : ''
   }
   dependsOn: [
     fslogixAzureFilesStorage

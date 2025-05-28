@@ -8,29 +8,23 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
-@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
-param workloadSubsId string
+@sys.description('Log analytics workspace for diagnostic logs.')
+param alaWorkspaceResourceId string
 
-@sys.description('Resource Group Name for Azure Files.')
-param storageObjectsRgName string
+@sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
+param deployPrivateEndpoint bool
 
-@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
-param identityServiceProvider string
-
-@sys.description('Resource Group Name for management VM.')
-param serviceObjectsRgName string
-
-@sys.description('Storage account name.')
-param storageAccountName string
+@sys.description('Object ID for the domain join user principal in Entra ID.')
+param domainJoinUserObjectId string
 
 @sys.description('Storage account file share name.')
 param fileShareName string
 
-@sys.description('Private endpoint subnet ID.')
-param privateEndpointSubnetId string
+@sys.description('Required, The service providing domain services for Azure Virtual Desktop.')
+param identityServiceProvider string
 
-@sys.description('VMs subnet ID.')
-param vmsSubnetId string
+@sys.description('Required, The encryption type for Azure Files.')
+param kerberosEncryption string
 
 @sys.description('Location where to deploy resources.')
 param location string
@@ -38,82 +32,71 @@ param location string
 @sys.description('File share SMB multichannel.')
 param fileShareMultichannel bool
 
+@sys.description('*Azure File share quota')
+param fileShareQuotaSize int
+
 @sys.description('Identity domain name.')
 param identityDomainName string
 
 @sys.description('AD domain GUID.')
 param identityDomainGuid string
 
-@sys.description('Keyvault name to get credentials from.')
-param wrklKvName string
-
-@sys.description('AVD session host domain join credentials.')
-param domainJoinUserName string
-
-@sys.description('AVD session host local admin credentials.')
-param vmLocalUserName string
-
-@sys.description('Azure Files storage account SKU.')
-param storageSku string
-
-@sys.description('*Azure File share quota')
-param fileShareQuotaSize int
-
-@sys.description('Use Azure private DNS zones for private endpoints.')
-param vnetPrivateDnsZoneFilesId string
-
-@sys.description('Script name for adding storage account to Active Directory.')
-param storageToDomainScript string
-
-@sys.description('URI for the script for adding the storage account to Active Directory.')
-param storageToDomainScriptUri string
-
-@sys.description('Tags to be applied to resources')
-param tags object
+@sys.description('Managed Identity Client ID')
+param managedIdentityClientId string
 
 @sys.description('Name for management virtual machine. for tools and to join Azure Files to domain.')
 param managementVmName string
 
-@sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
-param deployPrivateEndpoint bool
-
-@sys.description('Log analytics workspace for diagnostic logs.')
-param alaWorkspaceResourceId string
-
-@sys.description('Do not modify, used to set unique value for resource deployment.')
-param time string = utcNow()
-
-@sys.description('Sets purpose of the storage account.')
-param storagePurpose string
-
-//parameters for domain join
-@sys.description('Sets location of DSC Agent.')
-param dscAgentPackageLocation string
-
-@sys.description('Custom OU path for storage.')
-param storageCustomOuPath string
-
 @sys.description('OU Storage Path')
 param ouStgPath string
 
-@sys.description('Managed Identity Client ID')
-param managedIdentityClientId string
+@sys.description('Private endpoint subnet ID.')
+param privateEndpointSubnetId string
 
 @sys.description('Identity name array to grant RBAC role to access AVD application group and NTFS permissions.')
 param securityPrincipalName string
 
-@sys.description('storage account FDQN.')
-param storageAccountFqdn string
+@sys.description('Resource Group Name for management VM.')
+param serviceObjectsRgName string
+
+@sys.description('Storage account name.')
+param storageAccountName string
+
+@sys.description('Custom OU path for storage.')
+param storageCustomOuPath string
+
+@sys.description('Resource Group Name for Azure Files.')
+param storageObjectsRgName string
+
+@sys.description('Sets purpose of the storage account.')
+param storagePurpose string
+
+@sys.description('Azure Files storage account SKU.')
+param storageSku string
+
+@sys.description('Tags to be applied to resources')
+param tags object
+
+@sys.description('Do not modify, used to set unique value for resource deployment.')
+param time string = utcNow()
+
+@sys.description('VMs subnet ID.')
+param vmsSubnetId string
+
+@sys.description('Use Azure private DNS zones for private endpoints.')
+param vnetPrivateDnsZoneFilesId string
+
+@sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
+param workloadSubsId string
+
+@sys.description('Keyvault name to get credentials from.')
+param wrklKvName string
 
 // =========== //
 // Variable declaration //
 // =========== //
 
-var varAzureCloudName = environment().name
 var varWrklStoragePrivateEndpointName = 'pe-${storageAccountName}-file'
-var varSecurityPrincipalName = !empty(securityPrincipalName) ? securityPrincipalName : 'none'
-var varAdminUserName = contains(identityServiceProvider, 'EntraID') ? vmLocalUserName : domainJoinUserName
-var varStorageToDomainScriptArgs = '-DscPath ${dscAgentPackageLocation} -StorageAccountName ${storageAccountName} -StorageAccountRG ${storageObjectsRgName} -StoragePurpose ${storagePurpose} -DomainName ${identityDomainName} -IdentityServiceProvider ${identityServiceProvider} -AzureCloudEnvironment ${varAzureCloudName} -SubscriptionId ${workloadSubsId} -AdminUserName ${varAdminUserName} -CustomOuPath ${storageCustomOuPath} -OUName ${ouStgPath} -ShareName ${fileShareName} -ClientId ${managedIdentityClientId} -SecurityPrincipalName "${varSecurityPrincipalName}" -StorageAccountFqdn ${storageAccountFqdn} '
 var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
   ? [
       {
@@ -122,6 +105,7 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
       }
     ]
   : []
+
 // =========== //
 // Deployments //
 // =========== //
@@ -130,6 +114,17 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
 resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
   name: wrklKvName
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
+}
+
+// Assign the domain join user the Storage File Data SMB Share Elevated Contributor role on the storage resource group.
+module ntfsPermissionsRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (endsWith(identityServiceProvider, 'DS')) {
+  scope: resourceGroup('${workloadSubsId}', '${storageObjectsRgName}')
+  name: 'DomainJoin-RoleAssignment-${storagePurpose}-${time}'
+  params: {
+    roleDefinitionIdOrName: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'a7264617-510b-434b-a828-9731dc254ea7') // Storage File Data SMB Share Elevated Contributor
+    principalId: domainJoinUserObjectId
+    principalType: 'User'
+  }
 }
 
 // Provision the storage account and Azure Files.
@@ -212,18 +207,24 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
 }
 
 // Custom Extension call in on the DSC script to join Azure storage account to domain. 
-module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (identityServiceProvider != 'EntraID') {
+module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (endsWith(identityServiceProvider, 'DS')) {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Add-${storagePurpose}-Storage-Setup-${time}'
   params: {
+    domainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinPassword')
+    domainJoinUserName: avdWrklKeyVaultget.getSecret('domainJoinUserName')
+    identityServiceProvider: identityServiceProvider
+    kerberosEncryption: kerberosEncryption
     location: location
+    organizationalUnitPath: empty(storageCustomOuPath) ? ouStgPath : storageCustomOuPath
+    securityPrincipalName: securityPrincipalName
+    shareName: fileShareName
+    storageAccountName: storageAccountName
+    storageAccountResourceGroupName: storageObjectsRgName
+    storagePurpose: storagePurpose
+    tags: tags
+    userAssignedIdentityClientId: managedIdentityClientId
     virtualMachineName: managementVmName
-    file: storageToDomainScript
-    scriptArguments: varStorageToDomainScriptArgs
-    adminUserPassword: contains(identityServiceProvider, 'EntraID')
-      ? avdWrklKeyVaultget.getSecret('vmLocalUserPassword')
-      : avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
-    baseScriptUri: storageToDomainScriptUri
   }
   dependsOn: [
     storageAndFile
