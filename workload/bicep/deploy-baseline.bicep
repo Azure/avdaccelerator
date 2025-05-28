@@ -1466,7 +1466,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     storageAccountName: varFslogixStorageName
     storageCustomOuPath: varStorageCustomOuPath
     storageObjectsRgName: varStorageObjectsRgName
-    storagePurpose: 'fslogix'
+    storagePurpose: 'Fslogix'
     storageSku: varFslogixStorageSku
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
     vmsSubnetId: createAvdVnet

@@ -26899,7 +26899,7 @@
             "value": "[variables('varStorageObjectsRgName')]"
           },
           "storagePurpose": {
-            "value": "fslogix"
+            "value": "Fslogix"
           },
           "storageSku": {
             "value": "[variables('varFslogixStorageSku')]"
