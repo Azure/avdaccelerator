@@ -2846,7 +2846,7 @@
 				"avdDeploySessionHostsCount": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
 				"avdDeploySessionHostsIndex": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsIndex, 1)]",
 				"avdDomainJoinUserName": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
-				"avdDomainJoinUserObjectId": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', first(map(steps('identity').identityDomainCredentials.identityDomainJoinUserPickerBlade.transformed.selection, (sp) => sp.id)))]",//
+				"avdDomainJoinUserObjectId": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', first(map(steps('identity').identityDomainCredentials.identityDomainJoinUserPickerBlade.transformed.selection, (sp) => sp.id)))]",
 				"avdDomainJoinUserPassword": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
 				"avdHostPoolCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomFriendlyName, '')]",
 				"avdHostPoolCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomName, '')]",
