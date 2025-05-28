@@ -311,16 +311,50 @@
 									}
 								},
 								{
-									"name": "identityDomainJoinUserObjectId",
-									"type": "Microsoft.Common.TextBox",
-									"label": "Domain join user object ID",
-									"toolTip": "Input the object ID for the domain join user from Entra ID.",
-									"defaultValue": "",
-									"constraints": {
-										"required": true,
-										"regex": "[a-z0-9]{8}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{4}-[a-z0-9]{12}$",
-										"validationMessage": "The value must be in GUID format."
+									"name": "identityDomainJoinUserPickerBlade",
+									"type": "Microsoft.Solutions.BladeInvokeControl",
+									"openBladeStatus": "[steps('identity').identityDomainCredentials.identityDomainJoinUserSelector.changing]",
+									"bladeReference": {
+										"name": "ObjectPickerBlade",
+										"extension": "Microsoft_AAD_IAM",
+										"parameters": {
+											"queries": 1,
+											"disablers": 9408,
+											"bladeSubtitle": "Pick the domain join user",
+											"additionalQueriesOnSearch": 0,
+											"selectionMaximum": 1,
+											"selectionMinimum": 1,
+											"bladeTitle": "Select User",
+											"informationHeader": {
+												"informationText": "Select the user to assign to the Storage File Data SMB Share Elevated Contributor role",
+												"informationLink": ""
+											},
+											"inviteEnabled": true,
+											"searchBoxLabel": "Search for a user",
+											"searchBoxPlaceHolderText": "Enter a string in the user name",
+											"searchBoxTooltip": "This is the tooltip",
+											"searchGridNoRowsMessage": "No users found",
+											"selectButtonText": "Select User",
+											"selectedGridLabel": "Selected User",
+											"selectedGridNoRowsMessage": "You must select a user"
+										},
+										"inFullScreen": false
+									},
+									"transforms": {
+										"selection": "selectedObjects|[*].{displayName:displayName, objectId:id}"
 									}
+								},
+								{
+									"name": "identityDomainJoinUserSelector",
+									"type": "Microsoft.Common.Selector",
+									"label": "User Object ID",
+									"keyPath": "displayName",
+									"value": "[steps('identity').identityDomainCredentials.identityDomainJoinUserPickerBlade.transformed.selection]",
+									"barColor": "[if(empty(steps('identity').identityDomainCredentials.identityDomainJoinUserPickerBlade), '#FF0000', '#7fba00')]",
+									"constraints": {
+										"required": true
+									},
+									"link": "[if(empty(steps('identity').identityDomainCredentials.identityDomainJoinUserPickerBlade), 'Select user', first(map(steps('identity').identityDomainCredentials.identityDomainJoinUserPickerBlade.transformed.selection, (g) => g.displayName)))]"
 								}
 							]
 						},
@@ -2812,7 +2846,7 @@
 				"avdDeploySessionHostsCount": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsCount, 1)]",
 				"avdDeploySessionHostsIndex": "[if(steps('sessionHosts').deploySessionHosts, steps('sessionHosts').sessionHostsSettingsSection.sessionHostsIndex, 1)]",
 				"avdDomainJoinUserName": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserName)]",
-				"avdDomainJoinUserObjectId": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserObjectId)]",
+				"avdDomainJoinUserObjectId": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', first(map(steps('identity').identityDomainCredentials.identityDomainJoinUserPickerBlade.transformed.selection, (sp) => sp.id)))]",//
 				"avdDomainJoinUserPassword": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainCredentials.identityDomainJoinUserPassword)]",
 				"avdHostPoolCustomFriendlyName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomFriendlyName, '')]",
 				"avdHostPoolCustomName": "[if(equals(steps('resourceNaming').resourceNamingSelection, true), steps('resourceNaming').resourceNamingAvdManagementPlane.hostPoolCustomName, '')]",
