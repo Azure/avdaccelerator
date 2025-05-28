@@ -1,5 +1,5 @@
 param (
-    [securestring]$DomainJoinPassword,
+    [string]$DomainJoinPassword,
     [string]$DomainJoinUserName,
     [string]$IdentityServiceProvider,
     [string]$KerberosEncryption,
