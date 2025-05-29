@@ -181,3 +181,5 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
 // =========== //
 //   Outputs   //
 // =========== //
+
+output name string = managementVm.name
