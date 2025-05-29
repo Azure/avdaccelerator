@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16128862037929559716"
+      "templateHash": "13762695368477345984"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -26908,7 +26908,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "15819775234979326802"
+              "templateHash": "16954072603292478453"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29654,7 +29654,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "10004715448921808663"
+                      "templateHash": "9881203269890158870"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -29773,7 +29773,7 @@
                             "value": "[parameters('location')]"
                           },
                           "name": {
-                            "value": "Set-AzureFilesNtfsPermissions_Fslogix"
+                            "value": "[format('Set-AzureFilesNtfsPermissions_{0}', parameters('storagePurpose'))]"
                           },
                           "parameters": {
                             "value": [
@@ -30029,7 +30029,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "15819775234979326802"
+              "templateHash": "16954072603292478453"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -32775,7 +32775,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "10004715448921808663"
+                      "templateHash": "9881203269890158870"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -32894,7 +32894,7 @@
                             "value": "[parameters('location')]"
                           },
                           "name": {
-                            "value": "Set-AzureFilesNtfsPermissions_Fslogix"
+                            "value": "[format('Set-AzureFilesNtfsPermissions_{0}', parameters('storagePurpose'))]"
                           },
                           "parameters": {
                             "value": [

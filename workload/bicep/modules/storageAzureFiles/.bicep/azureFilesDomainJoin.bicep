@@ -65,7 +65,7 @@ module ntfsPermissions 'runCommand.bicep' = {
   name: 'NTFS-Permissions-${time}'
   params: {
     location: location
-    name: 'Set-AzureFilesNtfsPermissions_Fslogix'
+    name: 'Set-AzureFilesNtfsPermissions_${storagePurpose}'
     parameters: [
       {
         name: 'IdentityServiceProvider'
