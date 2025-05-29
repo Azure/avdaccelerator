@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "6332629335955819854"
+      "templateHash": "15751303910602973651"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1461,7 +1461,7 @@
     "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-key-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varZtKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varZtKvName'))]",
     "varFslogixSharePath": "[if(parameters('createAvdFslogixDeployment'), format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/",
+    "varBaseScriptUri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/",
     "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
     "varSessionHostConfigurationScript": "Set-SessionHostConfiguration.ps1",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateAppAttachDeployment'), true())), true(), false())]",
