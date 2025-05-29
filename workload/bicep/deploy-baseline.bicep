@@ -77,7 +77,7 @@ param avdDomainJoinUserObjectId string = 'none'
 
 @sys.description('AVD session host domain join password. (Default: "none")')
 @secure()
-param avdDomainJoinUserPassword string = 'none'
+param avdDomainJoinUserPassword string = ''
 
 @sys.description('OU path to join AVd VMs. (Default: "")')
 param avdOuPath string = ''
@@ -961,7 +961,6 @@ var varPooledScalingPlanSchedules = [
   }
 ]
 var varMarketPlaceGalleryWindows = loadJsonContent('../variables/osMarketPlaceImages.json')
-var varStorageCustomOuPath = !empty(storageOuPath) ? 'true' : 'false'
 var varAllDnsServers = '${customDnsIps},168.63.129.16'
 var varDnsServers = empty(customDnsIps) ? [] : (split(varAllDnsServers, ','))
 var varCreateVnetPeering = !empty(existingHubVnetResourceId) ? true : false
@@ -1035,6 +1034,7 @@ var varSecurityPrincipalName = !empty(avdSecurityGroups) ? avdSecurityGroups[0].
 // =========== //
 
 //  Telemetry Deployment
+#disable-next-line no-deployments-resources
 resource telemetrydeployment 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
   name: varTelemetryId
   location: avdManagementPlaneLocation
@@ -1450,18 +1450,19 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
     identityDomainName: identityDomainName
     identityServiceProvider: avdIdentityServiceProvider
     kerberosEncryption: kerberosEncryption
+    keyVaultUri: wrklKeyVault.outputs.uri
     location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
       ? identity.outputs.managedIdentityStorageClientId
       : ''
-    managementVmName: varManagementVmName
+    managementVmName: managementVm.outputs.name
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
     securityPrincipalName: varSecurityPrincipalName
     serviceObjectsRgName: varServiceObjectsRgName
     storageAccountName: varFslogixStorageName
-    storageObjectsRgName: varStorageObjectsRgName
+    storageObjectsRgName: varCreateStorageDeployment ? baselineStorageResourceGroup.outputs.name : ''
     storageOuPath: storageOuPath
     storagePurpose: 'Fslogix'
     storageSku: varFslogixStorageSku
@@ -1473,13 +1474,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
       ? networking.outputs.azureFilesDnsZoneResourceId
       : avdVnetPrivateDnsZoneFilesId
     workloadSubsId: avdWorkloadSubsId
-    wrklKvName: varWrklKvName
   }
-  dependsOn: [
-    baselineStorageResourceGroup
-    wrklKeyVault
-    managementVm
-  ]
 }
 
 // App Attach storage
@@ -1500,18 +1495,19 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
     identityDomainName: identityDomainName
     identityServiceProvider: avdIdentityServiceProvider
     kerberosEncryption: kerberosEncryption
+    keyVaultUri: wrklKeyVault.outputs.uri
     location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
     managedIdentityClientId: varCreateStorageDeployment && avdIdentityServiceProvider != 'EntraID'
       ? identity.outputs.managedIdentityStorageClientId
       : ''
-    managementVmName: varManagementVmName
+    managementVmName: managementVm.outputs.name
     privateEndpointSubnetId: createAvdVnet
       ? '${networking.outputs.virtualNetworkResourceId}/subnets/${varVnetPrivateEndpointSubnetName}'
       : existingVnetPrivateEndpointSubnetResourceId
     securityPrincipalName: varSecurityPrincipalName
     serviceObjectsRgName: varServiceObjectsRgName
     storageAccountName: varAppAttachStorageName
-    storageObjectsRgName: varStorageObjectsRgName
+    storageObjectsRgName: varCreateStorageDeployment ? baselineStorageResourceGroup.outputs.name : ''
     storageOuPath: storageOuPath
     storagePurpose: 'AppAttach'
     storageSku: varAppAttachStorageSku
@@ -1522,14 +1518,10 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
     vnetPrivateDnsZoneFilesId: createPrivateDnsZones
       ? networking.outputs.azureFilesDnsZoneResourceId
       : avdVnetPrivateDnsZoneFilesId
-    wrklKvName: varWrklKvName
     workloadSubsId: avdWorkloadSubsId
   }
   dependsOn: [
     fslogixAzureFilesStorage
-    baselineStorageResourceGroup
-    wrklKeyVault
-    managementVm
   ]
 }
 
