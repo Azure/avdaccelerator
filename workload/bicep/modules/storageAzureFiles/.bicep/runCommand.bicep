@@ -30,10 +30,12 @@ param virtualMachineName string
 // Deployments //
 // =========== //
 
+// Existing Virtual Machine
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-11-01' existing = {
   name: virtualMachineName
 }
 
+// Run Command
 resource runCommand 'Microsoft.Compute/virtualMachines/runCommands@2024-11-01' = {
   parent: virtualMachine
   name: name
