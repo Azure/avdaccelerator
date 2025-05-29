@@ -106,6 +106,16 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
       }
     ]
   : []
+var varSmbSettings = union({
+  versions: 'SMB3.1.1;'
+  authenticationMethods: endsWith(identityServiceProvider, 'DS') ? 'Kerberos;' : 'NTLMv2;'
+  kerberosTicketEncryption: kerberosEncryption == 'AES256' ? 'AES-256;' : 'RC4-HMAC;'
+  channelEncryption: 'AES-128-GCM;AES-256-GCM;'
+}, fileShareMultichannel ? {
+  multichannel: {
+    enabled: fileShareMultichannel
+  }
+} : {})
 
 // =========== //
 // Deployments //
@@ -130,6 +140,7 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
     name: storageAccountName
     location: location
     skuName: storageSku
+    allowSharedKeyAccess: endsWith(identityServiceProvider, 'DS') ? false : true
     allowBlobPublicAccess: false
     publicNetworkAccess: deployPrivateEndpoint ? 'Disabled' : 'Enabled'
     kind: ((storageSku == 'Premium_LRS') || (storageSku == 'Premium_ZRS')) ? 'FileStorage' : 'StorageV2'
@@ -171,15 +182,9 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
           shareQuota: fileShareQuotaSize * 100 //Portal UI steps scale
         }
       ]
-      protocolSettings: fileShareMultichannel
-        ? {
-            smb: {
-              multichannel: {
-                enabled: fileShareMultichannel
-              }
-            }
-          }
-        : {}
+      protocolSettings: {
+        smb: varSmbSettings
+      }
       diagnosticSettings: varDiagnosticSettings
     }
     privateEndpoints: deployPrivateEndpoint

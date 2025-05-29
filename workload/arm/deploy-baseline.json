@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "15558305904920933171"
+      "templateHash": "5556688213796210530"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -26908,7 +26908,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "7699773459027154432"
+              "templateHash": "13042185322886142863"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -27085,7 +27085,8 @@
           },
           "variables": {
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]"
+            "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]",
+            "varSmbSettings": "[union(createObject('versions', 'SMB3.1.1;', 'authenticationMethods', if(endsWith(parameters('identityServiceProvider'), 'DS'), 'Kerberos;', 'NTLMv2;'), 'kerberosTicketEncryption', if(equals(parameters('kerberosEncryption'), 'AES256'), 'AES-256;', 'RC4-HMAC;'), 'channelEncryption', 'AES-128-GCM;AES-256-GCM;'), if(parameters('fileShareMultichannel'), createObject('multichannel', createObject('enabled', parameters('fileShareMultichannel'))), createObject()))]"
           },
           "resources": [
             {
@@ -27277,6 +27278,7 @@
                   "skuName": {
                     "value": "[parameters('storageSku')]"
                   },
+                  "allowSharedKeyAccess": "[if(endsWith(parameters('identityServiceProvider'), 'DS'), createObject('value', false()), createObject('value', true()))]",
                   "allowBlobPublicAccess": {
                     "value": false
                   },
@@ -27296,7 +27298,9 @@
                           "shareQuota": "[mul(parameters('fileShareQuotaSize'), 100)]"
                         }
                       ],
-                      "protocolSettings": "[if(parameters('fileShareMultichannel'), createObject('smb', createObject('multichannel', createObject('enabled', parameters('fileShareMultichannel')))), createObject())]",
+                      "protocolSettings": {
+                        "smb": "[variables('varSmbSettings')]"
+                      },
                       "diagnosticSettings": "[variables('varDiagnosticSettings')]"
                     }
                   },
@@ -30029,7 +30033,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "7699773459027154432"
+              "templateHash": "13042185322886142863"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -30206,7 +30210,8 @@
           },
           "variables": {
             "varWrklStoragePrivateEndpointName": "[format('pe-{0}-file', parameters('storageAccountName'))]",
-            "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]"
+            "varDiagnosticSettings": "[if(not(empty(parameters('alaWorkspaceResourceId'))), createArray(createObject('workspaceResourceId', parameters('alaWorkspaceResourceId'), 'logCategoriesAndGroups', createArray())), createArray())]",
+            "varSmbSettings": "[union(createObject('versions', 'SMB3.1.1;', 'authenticationMethods', if(endsWith(parameters('identityServiceProvider'), 'DS'), 'Kerberos;', 'NTLMv2;'), 'kerberosTicketEncryption', if(equals(parameters('kerberosEncryption'), 'AES256'), 'AES-256;', 'RC4-HMAC;'), 'channelEncryption', 'AES-128-GCM;AES-256-GCM;'), if(parameters('fileShareMultichannel'), createObject('multichannel', createObject('enabled', parameters('fileShareMultichannel'))), createObject()))]"
           },
           "resources": [
             {
@@ -30398,6 +30403,7 @@
                   "skuName": {
                     "value": "[parameters('storageSku')]"
                   },
+                  "allowSharedKeyAccess": "[if(endsWith(parameters('identityServiceProvider'), 'DS'), createObject('value', false()), createObject('value', true()))]",
                   "allowBlobPublicAccess": {
                     "value": false
                   },
@@ -30417,7 +30423,9 @@
                           "shareQuota": "[mul(parameters('fileShareQuotaSize'), 100)]"
                         }
                       ],
-                      "protocolSettings": "[if(parameters('fileShareMultichannel'), createObject('smb', createObject('multichannel', createObject('enabled', parameters('fileShareMultichannel')))), createObject())]",
+                      "protocolSettings": {
+                        "smb": "[variables('varSmbSettings')]"
+                      },
                       "diagnosticSettings": "[variables('varDiagnosticSettings')]"
                     }
                   },
