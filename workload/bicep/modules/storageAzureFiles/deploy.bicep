@@ -26,6 +26,9 @@ param identityServiceProvider string
 @sys.description('Required, The encryption type for Azure Files.')
 param kerberosEncryption string
 
+@sys.description('The URI for the key vault containing the domain join credentials.')
+param keyVaultUri string
+
 @sys.description('Location where to deploy resources.')
 param location string
 
@@ -90,9 +93,6 @@ param vnetPrivateDnsZoneFilesId string
 @sys.description('AVD workload subscription ID, multiple subscriptions scenario.')
 param workloadSubsId string
 
-@sys.description('Keyvault name to get credentials from.')
-param wrklKvName string
-
 // =========== //
 // Variable declaration //
 // =========== //
@@ -110,12 +110,6 @@ var varDiagnosticSettings = !empty(alaWorkspaceResourceId)
 // =========== //
 // Deployments //
 // =========== //
-
-// Call on the KV.
-resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
-  name: wrklKvName
-  scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
-}
 
 // Assign the domain join user the Storage File Data SMB Share Elevated Contributor role on the storage resource group.
 module ntfsPermissionsRoleAssignment '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = if (endsWith(identityServiceProvider, 'DS')) {
@@ -207,15 +201,14 @@ module storageAndFile '../../../../avm/1.0.0/res/storage/storage-account/main.bi
   }
 }
 
-// Custom Extension call in on the DSC script to join Azure storage account to domain. 
+// Domain join and set NTFS permissons on Azure Files share. 
 module addShareToDomainScript './.bicep/azureFilesDomainJoin.bicep' = if (endsWith(identityServiceProvider, 'DS')) {
   scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
   name: 'Add-${storagePurpose}-Storage-Setup-${time}'
   params: {
-    domainJoinPassword: avdWrklKeyVaultget.getSecret('domainJoinUserPassword')
-    domainJoinUserName: avdWrklKeyVaultget.getSecret('domainJoinUserName')
     identityServiceProvider: identityServiceProvider
     kerberosEncryption: kerberosEncryption
+    keyVaultUri: keyVaultUri
     location: location
     organizationalUnitPath: storageOuPath
     securityPrincipalName: securityPrincipalName
