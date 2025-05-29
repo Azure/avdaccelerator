@@ -53,29 +53,26 @@ if ($IdentityServiceProvider -like '*DS') {
 	Start-Sleep -Seconds 60
     Write-Host 'Waited for domain policies to be applied.'
 
-    # Fix the resource manager URI since only AzureCloud contains a trailing slash
-    $ResourceManagerUriFixed = if ($ResourceManagerUri[-1] -eq '/') { $ResourceManagerUri.Substring(0, $ResourceManagerUri.Length - 1) } else { $ResourceManagerUri }
-
     # Get an access token for Azure resources
-    $AzureManagementAccessToken = (Invoke-RestMethod `
+    $KeyVaultAccessToken = (Invoke-RestMethod `
         -Headers @{Metadata = "true" } `
-        -Uri $('http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=' + $ResourceManagerUriFixed + '&client_id=' + $UserAssignedIdentityClientId)).access_token
+        -Uri $('http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=' + $KeyVaultUri + '&client_id=' + $UserAssignedIdentityClientId)).access_token
 
     # Set header for Azure Management API
-    $AzureManagementHeader = @{
+    $KeyVaultHeader = @{
         'Content-Type'  = 'application/json'
-        'Authorization' = 'Bearer ' + $AzureManagementAccessToken
+        'Authorization' = 'Bearer ' + $KeyVaultAccessToken
     }
 
     # Get secret for domain join user name
     $DomainJoinUserName = (Invoke-RestMethod `
-        -Headers $AzureManagementHeader `
+        -Headers $KeyVaultHeader `
         -Method 'GET' `
         -Uri $($KeyVaultUri + 'secrets/domainJoinUserName?api-version=7.4')).value
 
     # Get secret for domain join password
     $DomainJoinPassword = (Invoke-RestMethod `
-        -Headers $AzureManagementHeader `
+        -Headers $KeyVaultHeader `
         -Method 'GET' `
         -Uri $($KeyVaultUri + 'secrets/domainJoinUserPassword?api-version=7.4')).value
 
@@ -92,6 +89,20 @@ if ($IdentityServiceProvider -like '*DS') {
     $Group = $Domain.NetBIOSName + '\' + $SecurityPrincipalName
 
     if ($IdentityServiceProvider -eq 'ADDS') {
+        # Fix the resource manager URI since only AzureCloud contains a trailing slash
+        $ResourceManagerUriFixed = if ($ResourceManagerUri[-1] -eq '/') { $ResourceManagerUri.Substring(0, $ResourceManagerUri.Length - 1) } else { $ResourceManagerUri }
+
+        # Get an access token for Azure resources
+        $AzureManagementAccessToken = (Invoke-RestMethod `
+            -Headers @{Metadata = "true" } `
+            -Uri $('http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=' + $ResourceManagerUriFixed + '&client_id=' + $UserAssignedIdentityClientId)).access_token
+
+        # Set header for Azure Management API
+        $AzureManagementHeader = @{
+            'Content-Type'  = 'application/json'
+            'Authorization' = 'Bearer ' + $AzureManagementAccessToken
+    }
+
         # Get / create kerberos key for Azure Storage Account
         Write-Host 'Checking Kerberos key for Azure Storage Account.'
         $KerberosKey = ((Invoke-RestMethod `
