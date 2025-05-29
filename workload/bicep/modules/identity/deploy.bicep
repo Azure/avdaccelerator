@@ -80,7 +80,7 @@ var computeAndServiceObjectsRgs = [
     rgName: serviceObjectsRgName
   }
 ]
-var storageRoleAssignments = [
+var storageRoleAssignments = union([
   {
     name: 'Storage Account Contributor'
     acronym: 'StoraContri'
@@ -91,7 +91,13 @@ var storageRoleAssignments = [
     acronym: 'Reader'
     id: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
   }
-]
+], endsWith(identityServiceProvider, 'DS') ? [
+  {
+    name: 'Key Vault Secrets User'
+    acronym: 'KyVltScrtUsr'
+    id: '4633458b-17de-408a-b874-0445c86b69e6'
+  }
+] : [])
 
 var appAttachEntraIDPrincpals = [
   {

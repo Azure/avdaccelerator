@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "8986953013055528952"
+      "templateHash": "9062624858579170356"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -12803,7 +12803,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "12764357724232318422"
+              "templateHash": "16485164295715232283"
             }
           },
           "parameters": {
@@ -12932,18 +12932,7 @@
                 "rgName": "[parameters('serviceObjectsRgName')]"
               }
             ],
-            "storageRoleAssignments": [
-              {
-                "name": "Storage Account Contributor",
-                "acronym": "StoraContri",
-                "id": "17d1049b-9a84-46fb-8f53-869881c3d3ab"
-              },
-              {
-                "name": "Reader",
-                "acronym": "Reader",
-                "id": "acdd72a7-3385-48ef-bd42-f606fba81ae7"
-              }
-            ],
+            "storageRoleAssignments": "[union(createArray(createObject('name', 'Storage Account Contributor', 'acronym', 'StoraContri', 'id', '17d1049b-9a84-46fb-8f53-869881c3d3ab'), createObject('name', 'Reader', 'acronym', 'Reader', 'id', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')), if(endsWith(parameters('identityServiceProvider'), 'DS'), createArray(createObject('name', 'Key Vault Secrets User', 'acronym', 'KyVltScrtUsr', 'id', '4633458b-17de-408a-b874-0445c86b69e6')), createArray()))]",
             "appAttachEntraIDPrincpals": [
               {
                 "name": "AVD",
