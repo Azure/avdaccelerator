@@ -6,14 +6,6 @@ metadata owner = 'Azure/avdaccelerator'
 // Parameters //
 // ========== //
 
-@sys.description('The password for the principal used for domain joining.')
-@secure()
-param domainJoinPassword string
-
-@sys.description('The user name for the principal used for domain joining.')
-@secure()
-param domainJoinUserName string
-
 @sys.description('The identity service provider for the domain join operation.')
 param identityServiceProvider string
 
@@ -23,6 +15,9 @@ param identityServiceProvider string
 ])
 @sys.description('The type of encryption to use for Kerberos tickets.')
 param kerberosEncryption string
+
+@sys.description('The URI of the key vault containing the domain join credentials.')
+param keyVaultUri string
 
 @sys.description('Location where to deploy compute services.')
 param location string
@@ -73,16 +68,16 @@ module ntfsPermissions 'runCommand.bicep' = {
     name: 'Set-AzureFilesNtfsPermissions_Fslogix'
     parameters: [
       {
-        name: 'DomainJoinUserName'
-        value: domainJoinUserName
-      }
-      {
         name: 'IdentityServiceProvider'
         value: identityServiceProvider
       }
       {
         name: 'KerberosEncryption'
         value: kerberosEncryption
+      }
+      {
+        name: 'KeyVaultUri'
+        value: keyVaultUri
       }
       {
         name: 'OrganizationalUnitPath'
@@ -123,12 +118,6 @@ module ntfsPermissions 'runCommand.bicep' = {
       {
         name: 'UserAssignedIdentityClientId'
         value: userAssignedIdentityClientId
-      }
-    ]
-    protectedParameters: [
-      {
-        name: 'DomainJoinPassword'
-        value: domainJoinPassword
       }
     ]
     script: loadTextContent('../../../../scripts/Set-AzureFilesNtfsPermissions.ps1')
