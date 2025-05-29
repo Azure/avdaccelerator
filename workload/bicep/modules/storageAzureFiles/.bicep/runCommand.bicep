@@ -1,3 +1,7 @@
+// ========== //
+// Parameters //
+// ========== //
+
 @sys.description('Determine whether the run command should be executed asynchronously.')
 param asyncExecution bool = false
 
@@ -22,6 +26,9 @@ param treatFailureAsDeploymentFailure bool = true
 @sys.description('The name of the virtual machine to run the command on.')
 param virtualMachineName string
 
+// =========== //
+// Deployments //
+// =========== //
 
 resource virtualMachine 'Microsoft.Compute/virtualMachines@2024-11-01' existing = {
   name: virtualMachineName

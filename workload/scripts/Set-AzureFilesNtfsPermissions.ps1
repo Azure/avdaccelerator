@@ -101,7 +101,7 @@ if ($IdentityServiceProvider -like '*DS') {
         $AzureManagementHeader = @{
             'Content-Type'  = 'application/json'
             'Authorization' = 'Bearer ' + $AzureManagementAccessToken
-    }
+        }
 
         # Get / create kerberos key for Azure Storage Account
         Write-Host 'Checking Kerberos key for Azure Storage Account.'
@@ -109,7 +109,6 @@ if ($IdentityServiceProvider -like '*DS') {
             -Headers $AzureManagementHeader `
             -Method 'POST' `
             -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/listKeys?api-version=2023-05-01&$expand=kerb')).keys | Where-Object { $_.Keyname -contains 'kerb1' }).Value
-
 
         if (!$KerberosKey) 
         {
@@ -127,7 +126,6 @@ if ($IdentityServiceProvider -like '*DS') {
                 -Method 'POST' `
                 -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/listKeys?api-version=2023-05-01&$expand=kerb')).keys | Where-Object { $_.Keyname -contains 'kerb1' }).Value
             Write-Host 'Collected Kerberos key for Azure Storage Account.'
-
         } 
         else 
         {
