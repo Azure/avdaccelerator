@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "5697656677277821708"
+      "templateHash": "8986953013055528952"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -22947,7 +22947,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "6221223134828410968"
+              "templateHash": "14680160865556555056"
             }
           },
           "parameters": {
@@ -26826,7 +26826,7 @@
           "outputs": {
             "name": {
               "type": "string",
-              "value": "[format('MGMT-VM-{0}', parameters('time'))]"
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('MGMT-VM-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
             }
           }
         }
