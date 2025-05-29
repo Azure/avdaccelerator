@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "5556688213796210530"
+      "templateHash": "11188309463214689466"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -22936,7 +22936,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "14680160865556555056"
+              "templateHash": "10098496122537147758"
             }
           },
           "parameters": {
@@ -26816,6 +26816,10 @@
             "name": {
               "type": "string",
               "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('MGMT-VM-{0}', parameters('time'))), '2022-09-01').outputs.name.value]"
+            },
+            "resourceId": {
+              "type": "string",
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('workloadSubsId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('MGMT-VM-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
             }
           }
         }
@@ -38737,6 +38741,185 @@
         }
       },
       "dependsOn": [
+        "sessionHosts"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2022-09-01",
+      "name": "[format('Remove-MGMT-VM-{0}', parameters('time'))]",
+      "location": "[deployment().location]",
+      "properties": {
+        "expressionEvaluationOptions": {
+          "scope": "inner"
+        },
+        "mode": "Incremental",
+        "parameters": {
+          "location": "[if(parameters('avdDeploySessionHosts'), createObject('value', parameters('avdSessionHostLocation')), createObject('value', parameters('avdManagementPlaneLocation')))]",
+          "resourceGroupName": {
+            "value": "[variables('varServiceObjectsRgName')]"
+          },
+          "time": {
+            "value": "[parameters('time')]"
+          },
+          "userAssignedIdentityClientId": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time'))), '2022-09-01').outputs.managedIdentityStorageClientId.value]"
+          },
+          "virtualMachineResourceId": {
+            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-MGMT-VM-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value]"
+          }
+        },
+        "template": {
+          "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
+          "contentVersion": "1.0.0.0",
+          "metadata": {
+            "_generator": {
+              "name": "bicep",
+              "version": "0.35.1.17967",
+              "templateHash": "12944645231601057362"
+            }
+          },
+          "parameters": {
+            "location": {
+              "type": "string"
+            },
+            "resourceGroupName": {
+              "type": "string"
+            },
+            "time": {
+              "type": "string"
+            },
+            "userAssignedIdentityClientId": {
+              "type": "string"
+            },
+            "virtualMachineResourceId": {
+              "type": "string"
+            }
+          },
+          "variables": {
+            "$fxv#0": "param(\r\n    [string]$ResourceGroupName,\r\n    [string]$ResourceManagerUri,\r\n    [string]$UserAssignedIdentityClientId,\r\n    [string]$VirtualMachineResourceId\r\n)\r\n\r\n# Fix the resource manager URI since only AzureCloud contains a trailing slash\r\n$ResourceManagerUriFixed = if($ResourceManagerUri[-1] -eq '/'){$ResourceManagerUri.Substring(0,$ResourceManagerUri.Length - 1)} else {$ResourceManagerUri}\r\n\r\n# Get an access token for Azure resources\r\n$AzureManagementAccessToken = (Invoke-RestMethod `\r\n    -Headers @{Metadata=\"true\"} `\r\n    -Uri $('http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=' + $ResourceManagerUriFixed + '&client_id=' + $UserAssignedIdentityClientId)).access_token\r\n\r\n# Set header for Azure Management API\r\n$AzureManagementHeader = @{\r\n    'Content-Type'='application/json'\r\n    'Authorization'='Bearer ' + $AzureManagementAccessToken\r\n}\r\n\r\nStart-Sleep -Seconds 30\r\n\r\n# Use the access token to delete the virtual machine\r\nInvoke-RestMethod `\r\n    -Headers $AzureManagementHeader `\r\n    -Method 'Delete' `\r\n    -Uri $($ResourceManagerUriFixed + $VirtualMachineResourceId + '?forceDeletion=true&api-version=2024-07-01') | Out-Null"
+          },
+          "resources": [
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('clean-up-{0}', parameters('time'))]",
+              "resourceGroup": "[parameters('resourceGroupName')]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "asyncExecution": {
+                    "value": true
+                  },
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "name": {
+                    "value": "Remove-VirtualMachine"
+                  },
+                  "parameters": {
+                    "value": [
+                      {
+                        "name": "ResourceGroupName",
+                        "value": "[parameters('resourceGroupName')]"
+                      },
+                      {
+                        "name": "ResourceManagerUri",
+                        "value": "[environment().resourceManager]"
+                      },
+                      {
+                        "name": "UserAssignedIdentityClientId",
+                        "value": "[parameters('userAssignedIdentityClientId')]"
+                      },
+                      {
+                        "name": "VirtualMachineResourceId",
+                        "value": "[parameters('virtualMachineResourceId')]"
+                      }
+                    ]
+                  },
+                  "script": {
+                    "value": "[variables('$fxv#0')]"
+                  },
+                  "tags": {
+                    "value": {}
+                  },
+                  "treatFailureAsDeploymentFailure": {
+                    "value": true
+                  },
+                  "virtualMachineName": {
+                    "value": "[split(parameters('virtualMachineResourceId'), '/')[8]]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.35.1.17967",
+                      "templateHash": "15438584877844479881"
+                    }
+                  },
+                  "parameters": {
+                    "asyncExecution": {
+                      "type": "bool",
+                      "defaultValue": false
+                    },
+                    "location": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "parameters": {
+                      "type": "array",
+                      "defaultValue": []
+                    },
+                    "script": {
+                      "type": "string"
+                    },
+                    "tags": {
+                      "type": "object"
+                    },
+                    "treatFailureAsDeploymentFailure": {
+                      "type": "bool",
+                      "defaultValue": true
+                    },
+                    "virtualMachineName": {
+                      "type": "string"
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Compute/virtualMachines/runCommands",
+                      "apiVersion": "2023-09-01",
+                      "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "properties": {
+                        "asyncExecution": "[parameters('asyncExecution')]",
+                        "parameters": "[parameters('parameters')]",
+                        "source": {
+                          "script": "[parameters('script')]"
+                        },
+                        "treatFailureAsDeploymentFailure": "[parameters('treatFailureAsDeploymentFailure')]"
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-AppA-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-MGMT-VM-{0}', parameters('time')))]",
         "sessionHosts"
       ]
     }

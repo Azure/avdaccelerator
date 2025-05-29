@@ -183,3 +183,4 @@ module managementVm '../../../../../avm/1.0.0/res/compute/virtual-machine/main.b
 // =========== //
 
 output name string = managementVm.outputs.name
+output resourceId string = managementVm.outputs.resourceId

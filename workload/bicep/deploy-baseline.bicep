@@ -1638,3 +1638,20 @@ module defenderPolicySet './modules/azurePolicies/defenderSubscription.bicep' = 
     sessionHosts
   ]
 }
+
+// Deploys a run command to delete the management virtual machine
+module cleanUp 'modules/cleanUp/deploy.bicep' = {
+  name: 'Remove-MGMT-VM-${time}'
+  params: {
+    location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation
+    resourceGroupName: varServiceObjectsRgName
+    time: time
+    userAssignedIdentityClientId: identity.outputs.managedIdentityStorageClientId
+    virtualMachineResourceId: managementVm.outputs.resourceId
+  }
+  dependsOn: [
+    appAttachAzureFilesStorage
+    fslogixAzureFilesStorage
+    sessionHosts
+  ]
+}
