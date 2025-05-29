@@ -85,17 +85,23 @@ var storageRoleAssignments = union([
     name: 'Storage Account Contributor'
     acronym: 'StoraContri'
     id: '17d1049b-9a84-46fb-8f53-869881c3d3ab'
+    resourceGroupName: storageObjectsRgName
+    subscriptionId: subscriptionId
   }
   {
     name: 'Reader'
     acronym: 'Reader'
     id: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    resourceGroupName: storageObjectsRgName
+    subscriptionId: subscriptionId
   }
 ], endsWith(identityServiceProvider, 'DS') ? [
   {
     name: 'Key Vault Secrets User'
     acronym: 'KyVltScrtUsr'
     id: '4633458b-17de-408a-b874-0445c86b69e6'
+    resourceGroupName: serviceObjectsRgName
+    subscriptionId: subscriptionId
   }
 ] : [])
 
@@ -158,7 +164,7 @@ module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/rol
 module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [
   for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment && identityServiceProvider != 'EntraID') {
     name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
-    scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+    scope: resourceGroup('${storageRoleAssignment.subscriptionId}', '${storageRoleAssignment.resourceGroupName}')
     params: {
       roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageRoleAssignment.id}'
       principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
@@ -183,7 +189,6 @@ module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authoriza
 }
 
 // Azure Files Reader and Data Access for EntraID Identities with App Attach
-
 module storageReaderandDataAccessRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [
   for principal in appAttachEntraIDPrincpals: if (createAppAttachRoleAssignments) {
     name: 'Stora-ReaderData-RolAssign-${principal.name}-${time}'

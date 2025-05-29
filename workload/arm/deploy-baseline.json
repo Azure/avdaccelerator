@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "13762695368477345984"
+      "templateHash": "6332629335955819854"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -12803,7 +12803,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "16485164295715232283"
+              "templateHash": "17100981344666303825"
             }
           },
           "parameters": {
@@ -12932,7 +12932,7 @@
                 "rgName": "[parameters('serviceObjectsRgName')]"
               }
             ],
-            "storageRoleAssignments": "[union(createArray(createObject('name', 'Storage Account Contributor', 'acronym', 'StoraContri', 'id', '17d1049b-9a84-46fb-8f53-869881c3d3ab'), createObject('name', 'Reader', 'acronym', 'Reader', 'id', 'acdd72a7-3385-48ef-bd42-f606fba81ae7')), if(endsWith(parameters('identityServiceProvider'), 'DS'), createArray(createObject('name', 'Key Vault Secrets User', 'acronym', 'KyVltScrtUsr', 'id', '4633458b-17de-408a-b874-0445c86b69e6')), createArray()))]",
+            "storageRoleAssignments": "[union(createArray(createObject('name', 'Storage Account Contributor', 'acronym', 'StoraContri', 'id', '17d1049b-9a84-46fb-8f53-869881c3d3ab', 'resourceGroupName', parameters('storageObjectsRgName'), 'subscriptionId', parameters('subscriptionId')), createObject('name', 'Reader', 'acronym', 'Reader', 'id', 'acdd72a7-3385-48ef-bd42-f606fba81ae7', 'resourceGroupName', parameters('storageObjectsRgName'), 'subscriptionId', parameters('subscriptionId'))), if(endsWith(parameters('identityServiceProvider'), 'DS'), createArray(createObject('name', 'Key Vault Secrets User', 'acronym', 'KyVltScrtUsr', 'id', '4633458b-17de-408a-b874-0445c86b69e6', 'resourceGroupName', parameters('serviceObjectsRgName'), 'subscriptionId', parameters('subscriptionId'))), createArray()))]",
             "appAttachEntraIDPrincpals": [
               {
                 "name": "AVD",
@@ -13556,8 +13556,8 @@
               "type": "Microsoft.Resources/deployments",
               "apiVersion": "2022-09-01",
               "name": "[format('Stora-RolAssign-{0}-{1}', variables('storageRoleAssignments')[copyIndex()].acronym, parameters('time'))]",
-              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
-              "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
+              "subscriptionId": "[format('{0}', variables('storageRoleAssignments')[copyIndex()].subscriptionId)]",
+              "resourceGroup": "[format('{0}', variables('storageRoleAssignments')[copyIndex()].resourceGroupName)]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
