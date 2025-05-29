@@ -1,8 +1,7 @@
 param (
-    [string]$DomainJoinPassword,
-    [string]$DomainJoinUserName,
     [string]$IdentityServiceProvider,
     [string]$KerberosEncryption,
+    [string]$KeyVaultUri,
     [string]$OrganizationalUnitPath,
     [string]$ResourceManagerUri,
     [string]$SecurityPrincipalName,
@@ -18,9 +17,9 @@ param (
 $ErrorActionPreference = 'Stop'
 $WarningPreference = 'SilentlyContinue'
 
-Write-Host 'Turning off Windows firewall.'
-Set-NetFirewallProfile -Profile 'Domain', 'Public', 'Private' -Enabled 'False' | Out-Null
-Write-Host 'Turned off Windows firewall.'
+# Write-Host 'Turning off Windows firewall.'
+# Set-NetFirewallProfile -Profile 'Domain', 'Public', 'Private' -Enabled 'False' | Out-Null
+# Write-Host 'Turned off Windows firewall.'
 
 # Set UNC path for Azure Files file share
 $FilesSuffix = '.file.' + $StorageSuffix
@@ -54,6 +53,32 @@ if ($IdentityServiceProvider -like '*DS') {
 	Start-Sleep -Seconds 60
     Write-Host 'Waited for domain policies to be applied.'
 
+    # Fix the resource manager URI since only AzureCloud contains a trailing slash
+    $ResourceManagerUriFixed = if ($ResourceManagerUri[-1] -eq '/') { $ResourceManagerUri.Substring(0, $ResourceManagerUri.Length - 1) } else { $ResourceManagerUri }
+
+    # Get an access token for Azure resources
+    $AzureManagementAccessToken = (Invoke-RestMethod `
+        -Headers @{Metadata = "true" } `
+        -Uri $('http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=' + $ResourceManagerUriFixed + '&client_id=' + $UserAssignedIdentityClientId)).access_token
+
+    # Set header for Azure Management API
+    $AzureManagementHeader = @{
+        'Content-Type'  = 'application/json'
+        'Authorization' = 'Bearer ' + $AzureManagementAccessToken
+    }
+
+    # Get secret for domain join user name
+    $DomainJoinUserName = (Invoke-RestMethod `
+        -Headers $AzureManagementHeader `
+        -Method 'GET' `
+        -Uri $($KeyVaultUri + 'secrets/domainJoinUserName?api-version=7.4')).value
+
+    # Get secret for domain join password
+    $DomainJoinPassword = (Invoke-RestMethod `
+        -Headers $AzureManagementHeader `
+        -Method 'GET' `
+        -Uri $($KeyVaultUri + 'secrets/domainJoinUserPassword?api-version=7.4')).value
+
     # Create Domain credential
     $SecureDomainJoinPassword = ConvertTo-SecureString -String $DomainJoinPassword -AsPlainText -Force
     [pscredential]$DomainCredential = New-Object System.Management.Automation.PSCredential ($DomainJoinUserName, $SecureDomainJoinPassword)
@@ -67,20 +92,6 @@ if ($IdentityServiceProvider -like '*DS') {
     $Group = $Domain.NetBIOSName + '\' + $SecurityPrincipalName
 
     if ($IdentityServiceProvider -eq 'ADDS') {
-        # Fix the resource manager URI since only AzureCloud contains a trailing slash
-        $ResourceManagerUriFixed = if ($ResourceManagerUri[-1] -eq '/') { $ResourceManagerUri.Substring(0, $ResourceManagerUri.Length - 1) } else { $ResourceManagerUri }
-
-        # Get an access token for Azure resources
-        $AzureManagementAccessToken = (Invoke-RestMethod `
-            -Headers @{Metadata = "true" } `
-            -Uri $('http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=' + $ResourceManagerUriFixed + '&client_id=' + $UserAssignedIdentityClientId)).access_token
-
-        # Set header for Azure Management API
-        $AzureManagementHeader = @{
-            'Content-Type'  = 'application/json'
-            'Authorization' = 'Bearer ' + $AzureManagementAccessToken
-        }
-
         # Get / create kerberos key for Azure Storage Account
         Write-Host 'Checking Kerberos key for Azure Storage Account.'
         $KerberosKey = ((Invoke-RestMethod `
