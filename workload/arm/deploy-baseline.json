@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "3293366844812536189"
+      "templateHash": "8125161859694422235"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -5648,7 +5648,7 @@
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Mon-DCR-{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', subscription().id)]",
+      "subscriptionId": "[format('{0}', subscription().subscriptionId)]",
       "resourceGroup": "[format('{0}', variables('varMonitoringRgName'))]",
       "properties": {
         "expressionEvaluationOptions": {
@@ -33092,7 +33092,7 @@
           "customImageDefinitionId": {
             "value": "[parameters('avdCustomImageDefinitionId')]"
           },
-          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', subscription().id), format('{0}', variables('varMonitoringRgName'))), 'Microsoft.Resources/deployments', format('Mon-DCR-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRulesId.value), createObject('value', ''))]",
+          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', subscription().subscriptionId), format('{0}', variables('varMonitoringRgName'))), 'Microsoft.Resources/deployments', format('Mon-DCR-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRulesId.value), createObject('value', ''))]",
           "deployAntiMalwareExt": {
             "value": "[parameters('deployAntiMalwareExt')]"
           },
@@ -37867,7 +37867,7 @@
       },
       "dependsOn": [
         "baselineResourceGroups",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', subscription().id), format('{0}', variables('varMonitoringRgName'))), 'Microsoft.Resources/deployments', format('Mon-DCR-{0}', parameters('time')))]",
+        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', subscription().subscriptionId), format('{0}', variables('varMonitoringRgName'))), 'Microsoft.Resources/deployments', format('Mon-DCR-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('AVD-MGMT-Plane-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",

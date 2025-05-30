@@ -1144,7 +1144,7 @@ module identity './modules/identity/deploy.bicep' = {
 
 // data collection rules
 module dataCollectionRule 'modules/avdInsightsMonitoring/.bicep/dataCollectionRules.bicep' = {
-  scope: resourceGroup('${subscription().id}', '${varMonitoringRgName}')
+  scope: resourceGroup('${subscription().subscriptionId}', '${varMonitoringRgName}')
   name: 'Mon-DCR-${time}'
   params: {
     location: avdManagementPlaneLocation
