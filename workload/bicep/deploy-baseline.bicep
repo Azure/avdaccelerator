@@ -1098,7 +1098,6 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     deployAlaWorkspace: deployAlaWorkspace
     computeObjectsRgName: varComputeObjectsRgName
     serviceObjectsRgName: varServiceObjectsRgName
-    dataCollectionRulesName: varDataCollectionRulesName
     storageObjectsRgName: (createAvdFslogixDeployment || createAppAttachDeployment) ? varStorageObjectsRgName : ''
     networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
     monitoringRgName: varMonitoringRgName
@@ -1113,6 +1112,48 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     baselineNetworkResourceGroup
     baselineResourceGroups
     baselineStorageResourceGroup
+  ]
+}
+
+// Identity: managed identities and role assignments
+module identity './modules/identity/deploy.bicep' = {
+  name: 'Identities-And-RoleAssign-${time}'
+  params: {
+    location: avdSessionHostLocation
+    subscriptionId: avdWorkloadSubsId
+    computeObjectsRgName: varComputeObjectsRgName
+    createAppAttachRoleAssignments: createAppAttachDeployment && avdIdentityServiceProvider == 'EntraID'
+    serviceObjectsRgName: varServiceObjectsRgName
+    storageObjectsRgName: varStorageObjectsRgName
+    avdServicePrincipalObjectId: avdServicePrincipalObjectId
+    avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
+    deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
+    managedIdentityName: varManagedIdentityName
+    enableStartVmOnConnect: avdStartVmOnConnect
+    identityServiceProvider: avdIdentityServiceProvider
+    createStorageDeployment: varCreateStorageDeployment
+    securityPrincipalId: varSecurityPrincipalId
+    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+  }
+  dependsOn: [
+    baselineResourceGroups
+    baselineStorageResourceGroup
+    monitoringDiagnosticSettings
+  ]
+}
+
+// data collection rules
+module dataCollectionRule 'modules/avdInsightsMonitoring/.bicep/dataCollectionRules.bicep' = {
+  scope: resourceGroup('${subscription().id}', '${varMonitoringRgName}')
+  name: 'Mon-DCR-${time}'
+  params: {
+    location: avdManagementPlaneLocation
+    name: varDataCollectionRulesName
+    alaWorkspaceId: monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
+    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
+  }
+  dependsOn: [
+    identity // This is needed to separate the LAW and DCR deployments for timing issues
   ]
 }
 
@@ -1229,32 +1270,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
   ]
 }
 
-// Identity: managed identities and role assignments
-module identity './modules/identity/deploy.bicep' = {
-  name: 'Identities-And-RoleAssign-${time}'
-  params: {
-    location: avdSessionHostLocation
-    subscriptionId: avdWorkloadSubsId
-    computeObjectsRgName: varComputeObjectsRgName
-    createAppAttachRoleAssignments: createAppAttachDeployment && avdIdentityServiceProvider == 'EntraID'
-    serviceObjectsRgName: varServiceObjectsRgName
-    storageObjectsRgName: varStorageObjectsRgName
-    avdServicePrincipalObjectId: avdServicePrincipalObjectId
-    avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
-    deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
-    managedIdentityName: varManagedIdentityName
-    enableStartVmOnConnect: avdStartVmOnConnect
-    identityServiceProvider: avdIdentityServiceProvider
-    createStorageDeployment: varCreateStorageDeployment
-    securityPrincipalId: varSecurityPrincipalId
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-  }
-  dependsOn: [
-    baselineResourceGroups
-    baselineStorageResourceGroup
-    monitoringDiagnosticSettings
-  ]
-}
+
 
 // Zero trust
 module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDeploySessionHosts) {
@@ -1565,7 +1581,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
       createIntuneEnrollment: createIntuneEnrollment
       customImageDefinitionId: avdCustomImageDefinitionId
-      dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRuleId : ''
+      dataCollectionRuleId: avdDeployMonitoring ? dataCollectionRule.outputs.dataCollectionRulesId : ''
       deployAntiMalwareExt: deployAntiMalwareExt
       deployMonitoring: avdDeployMonitoring
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''

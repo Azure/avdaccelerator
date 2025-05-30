@@ -20,7 +20,7 @@ param deployAlaWorkspace bool
 @sys.description('Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
 param deployCustomPolicyMonitoring bool
 
-@sys.description('Exisintg Azure log analytics workspace resource.')
+@sys.description('Existing Azure log analytics workspace resource.')
 param alaWorkspaceId string = ''
 
 @sys.description('AVD Resource Group Name for monitoring resources.')
@@ -40,9 +40,6 @@ param networkObjectsRgName string
 
 @sys.description('Azure log analytics workspace name.')
 param alaWorkspaceName string
-
-@sys.description('Data collection rules name.')
-param dataCollectionRulesName string
 
 @sys.description(' Azure log analytics workspace name data retention.')
 param alaWorkspaceDataRetention int
@@ -112,32 +109,9 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
   ]
 }
 
-// Get existing LAW
-resource existingAlaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace && !empty(alaWorkspaceId)) {
-  scope: resourceGroup(varAlaWorkspaceIdSplitId[2], varAlaWorkspaceIdSplitId[4])
-  name: varAlaWorkspaceIdSplitId[8]
-}
-
-// data collection rules
-module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
-  scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
-  name: 'Mon-DCR-${time}'
-  params: {
-    location: deployAlaWorkspace ? alaWorkspace.outputs.location : existingAlaw.location
-    name: dataCollectionRulesName
-    alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
-    tags: tags
-  }
-  dependsOn: [
-    baselineMonitoringResourceGroup
-    deployDiagnosticsAzurePolicyForAvd
-  ]
-}
-
 // =========== //
 // Outputs //
 // =========== //
 
 output avdAlaWorkspaceResourceId string = deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
 output avdAlaWorkspaceId string = deployAlaWorkspace ? alaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid // We should be safe to remove this one as CARML modules use the resource ID instead
-output dataCollectionRuleId string = dataCollectionRule.outputs.dataCollectionRulesId
