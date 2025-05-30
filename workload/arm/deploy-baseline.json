@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "5386027195009878965"
+      "templateHash": "10913974343067687405"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -5674,7 +5674,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "4373748492833279297"
+              "templateHash": "870861866654312392"
             }
           },
           "parameters": {
@@ -5706,26 +5706,12 @@
           "resources": [
             {
               "type": "Microsoft.Insights/dataCollectionRules",
-              "apiVersion": "2022-06-01",
+              "apiVersion": "2021-04-01",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
               "kind": "Windows",
-              "identity": {
-                "type": "systemassigned"
-              },
               "properties": {
-                "dataFlows": [
-                  {
-                    "streams": [
-                      "Microsoft-Perf",
-                      "Microsoft-Event"
-                    ],
-                    "destinations": [
-                      "la-workspace"
-                    ]
-                  }
-                ],
                 "dataSources": {
                   "performanceCounters": [
                     {
@@ -5733,23 +5719,7 @@
                         "Microsoft-Perf"
                       ],
                       "samplingFrequencyInSeconds": 30,
-                      "counterSpecifiers": [
-                        "\\LogicalDisk(C:)\\Avg. Disk Queue Length",
-                        "\\LogicalDisk(C:)\\Current Disk Queue Length",
-                        "\\Memory\\Available Mbytes",
-                        "\\Memory\\Page Faults/sec",
-                        "\\Memory\\Pages/sec",
-                        "\\Memory\\% Committed Bytes In Use",
-                        "\\PhysicalDisk(*)\\Avg. Disk Queue Length",
-                        "\\PhysicalDisk(*)\\Avg. Disk sec/Read",
-                        "\\PhysicalDisk(*)\\Avg. Disk sec/Transfer",
-                        "\\PhysicalDisk(*)\\Avg. Disk sec/Write",
-                        "\\Processor Information(_Total)\\% Processor Time",
-                        "\\User Input Delay per Process(*)\\Max Input Delay",
-                        "\\User Input Delay per Session(*)\\Max Input Delay",
-                        "\\RemoteFX Network(*)\\Current TCP RTT",
-                        "\\RemoteFX Network(*)\\Current UDP Bandwidth"
-                      ],
+                      "counterSpecifiers": "[union(createArray('\\LogicalDisk(C:)\\Avg. Disk Queue Length', '\\LogicalDisk(C:)\\Current Disk Queue Length', '\\Memory\\Available Mbytes', '\\Memory\\Page Faults/sec', '\\Memory\\Pages/sec', '\\Memory\\% Committed Bytes In Use', '\\PhysicalDisk(*)\\Avg. Disk Queue Length', '\\PhysicalDisk(*)\\Avg. Disk sec/Read', '\\PhysicalDisk(*)\\Avg. Disk sec/Transfer', '\\PhysicalDisk(*)\\Avg. Disk sec/Write', '\\Processor Information(_Total)\\% Processor Time', '\\User Input Delay per Process(*)\\Max Input Delay', '\\User Input Delay per Session(*)\\Max Input Delay'), if(equals(environment().name, 'AzureCloud'), createArray('\\RemoteFX Network(*)\\Current TCP RTT', '\\RemoteFX Network(*)\\Current UDP Bandwidth'), createArray()))]",
                       "name": "perfCounterDataSource30"
                     },
                     {
@@ -5757,13 +5727,7 @@
                         "Microsoft-Perf"
                       ],
                       "samplingFrequencyInSeconds": 60,
-                      "counterSpecifiers": [
-                        "\\LogicalDisk(C:)\\% Free Space",
-                        "\\LogicalDisk(C:)\\Avg. Disk sec/Transfer",
-                        "\\Terminal Services(*)\\Active Sessions",
-                        "\\Terminal Services(*)\\Inactive Sessions",
-                        "\\Terminal Services(*)\\Total Sessions"
-                      ],
+                      "counterSpecifiers": "[union(createArray('\\LogicalDisk(C:)\\% Free Space', '\\LogicalDisk(C:)\\Avg. Disk sec/Transfer'), if(equals(environment().name, 'AzureCloud'), createArray('\\Terminal Services(*)\\Active Sessions', '\\Terminal Services(*)\\Inactive Sessions', '\\Terminal Services(*)\\Total Sessions'), createArray()))]",
                       "name": "perfCounterDataSource60"
                     }
                   ],
@@ -5773,7 +5737,7 @@
                         "Microsoft-Event"
                       ],
                       "xPathQueries": [
-                        "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0) ]]",
+                        "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
                         "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
                         "System!*",
                         "Microsoft-FSLogix-Apps/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
@@ -5784,16 +5748,25 @@
                     }
                   ]
                 },
-                "description": "AVD Insights settings",
                 "destinations": {
                   "logAnalytics": [
                     {
-                      "name": "la-workspace",
-                      "workspaceResourceId": "[parameters('alaWorkspaceId')]"
+                      "workspaceResourceId": "[parameters('alaWorkspaceId')]",
+                      "name": "la-workspace"
                     }
                   ]
                 },
-                "streamDeclarations": {}
+                "dataFlows": [
+                  {
+                    "streams": [
+                      "Microsoft-Perf",
+                      "Microsoft-Event"
+                    ],
+                    "destinations": [
+                      "la-workspace"
+                    ]
+                  }
+                ]
               }
             }
           ],
