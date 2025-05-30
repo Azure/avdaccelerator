@@ -89,7 +89,10 @@ if ($IdentityServiceProvider -like '*DS') {
     # Add domain join account to  Remote Management Users group
     Write-Host 'Adding domain join account to Remote Management Users group.'
     $User = $Domain.NetBIOSName + '\' + $DomainJoinUserName.Split('@')[0]
-    Add-LocalGroupMember -Group "Remote Management Users" -Member "$User" | Out-Null
+    $CurrentGroupMembers = (Get-LocalGroupMember -Group "Remote Management Users").Name
+    if ($CurrentGroupMembers -notcontains $User) {
+        Add-LocalGroupMember -Group "Remote Management Users" -Member "$User" | Out-Null
+    }
     Write-Host 'Added domain join account to Remote Management Users group.'
 
     # Set domain principal with NetBios for ACLs assignment
