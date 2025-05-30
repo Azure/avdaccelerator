@@ -95,6 +95,13 @@ var storageRoleAssignments = union([
     resourceGroupName: storageObjectsRgName
     subscriptionId: subscriptionId
   }
+  {
+    name: 'Virtual Machine Contributor'
+    acronym: 'VMCntrbtr'
+    id: '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+    resourceGroupName: serviceObjectsRgName
+    subscriptionId: subscriptionId 
+  }
 ], endsWith(identityServiceProvider, 'DS') ? [
   {
     name: 'Key Vault Secrets User'
