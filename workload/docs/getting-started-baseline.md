@@ -44,8 +44,6 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
   - [list of URLs](https://learn.microsoft.com/azure/virtual-desktop/safe-url-list?tabs=azure#session-host-virtual-machines) session host VMs need to access for Azure Virtual Desktop (During and after deployment).
   - List of URLs required during deployment:
     - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Set-SessionHostConfiguration.ps1>
-    - <https://raw.githubusercontent.com/Azure/avdaccelerator/main/workload/scripts/Manual-DSC-Storage-Scripts.ps1>
-    - https://github.com/Azure/avdaccelerator/raw/main/workload/scripts/DSCStorageScripts/<version_number>/DSCStorageScripts.zip
     - <https://wvdportalstorageblob.blob.core.windows.net/galleryartifacts/Configuration_09-08-2022.zip>
     - <https://go.microsoft.com/fwlink/?LinkID=627338&clcid=0x409>
     - <https://onegetcdn.azureedge.net/providers/providers.masterList.feed.swidtag>
@@ -67,7 +65,7 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
   - Scenario 4:
     - Specs: using private endpoints and an existing Azure Virtual Desktop vNet with custom DNS servers configured.
     - Existing private DNS zones MUST be linked to the vNet containing the custom DNS servers for FSLogix and/or App Attach file shares deployments to be successful, given DNS name resolution requests will go to custom DNS servers and their vNet will need to resolve private endpoints DNS records.
-    
+
   **Important**: for all scenarios that use custom DNS servers, conditional forwarding rules MUST be configured to send to Azure (168.63.129.16) the DNS requests targeting file.core.windows.net and vaultcore.azure.net name spaces.
 - [x] Required private DNS zone name spaces:
   - Azure Commercial: privatelink.file.core.windows.net (Azure Files) and privatelink.vaultcore.azure.net (Key Vault).
@@ -81,9 +79,8 @@ Prior to deploying the Baseline solution, you need to ensure you have met the fo
   - [Azure Gov/China Private Link Prerequisites](https://learn.microsoft.com/en-us/azure/virtual-desktop/private-link-setup?tabs=us-gov-21vianet%2Cportal%2Cportal-2#tabpanel_1_us-gov-21vianet).
 - [x]  If enabling Start VM on Connect or Scaling Plans features, it is required to provide the ObjectID for the enterprise application Azure Virtual Desktop (Name can also be displayed as 'Windows Virtual Desktops'). To get the ObjectID go to Microsoft Entra ID > Enterprise applications, remove all filters and search for 'Virtual Desktops' and copy the ObjectID that is paired with the Application ID: 9cdead84-a844-4324-93f2-b2e6bb768d07.
 - [x]  Account used for portal UI deployment, needs to be able to query Microsoft Entra tenant and get the ObjectID of the Azure Virtual Desktop enterprise app, query will be executed by the automation using the user context.
-- [x]  If complying with WAF, the Domain Controllers VMs if hosted in Azure should follow High Availability best practices as mentioned in [here](https://learn.microsoft.com/azure/architecture/example-scenario/identity/adds-extend-domain#reliability) and High availability for Entra Domain services can be setup using replica set as mentioned in [here](https://learn.microsoft.com/entra/identity/domain-services/concepts-replica-sets).
-- [x]  If customer selects "Compute gallery" as the image source then it is customer's responsibility to ensure the high availability of the images used and keep the number of replicas to a minimum for scaling the deployments, as mentioned in [here](https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery).
-
+- [x]  If complying with WAF, the Domain Controllers VMs if hosted in Azure should follow High Availability best practices as mentioned in [Microsoft Learn documentation](https://learn.microsoft.com/azure/architecture/example-scenario/identity/adds-extend-domain#reliability) and High availability for Entra Domain services can be setup using replica set as mentioned in the [Microsoft Learn documentation](https://learn.microsoft.com/entra/identity/domain-services/concepts-replica-sets).
+- [x]  If customer selects "Compute gallery" as the image source then it is customer's responsibility to ensure the high availability of the images used and keep the number of replicas to a minimum for scaling the deployments, as mentioned in the [Microsoft Learn documentation](https://learn.microsoft.com/azure/virtual-machines/azure-compute-gallery).
 
 ## Planning
 
@@ -136,7 +133,7 @@ This [diagram](/workload/docs/diagrams/avd-accelerator-resource-organization-nam
   - `avdUseCustomNaming`: false
   - `Unique string`: a1b2c3 (6 characters string calculated by the deployment)
 
-For baseline deployment cost estimate, see [here](./cost-estimate.md).
+For baseline deployment cost estimate, see [Cost Estimate](./cost-estimate.md).
 
 ## Naming standard
 
