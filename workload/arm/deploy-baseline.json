@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "610719644077425472"
+      "templateHash": "8616776297219984103"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -12781,7 +12781,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "5981202561050291055"
+              "templateHash": "12915839141101573743"
             }
           },
           "parameters": {
@@ -12929,7 +12929,7 @@
               "apiVersion": "2022-09-01",
               "name": "[format('MI-Storage-{0}', parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
-              "resourceGroup": "[format('{0}', parameters('storageObjectsRgName'))]",
+              "resourceGroup": "[format('{0}', parameters('serviceObjectsRgName'))]",
               "properties": {
                 "expressionEvaluationOptions": {
                   "scope": "inner"
@@ -13545,7 +13545,7 @@
                   "roleDefinitionIdOrName": {
                     "value": "[format('/subscriptions/{0}/providers/Microsoft.Authorization/roleDefinitions/{1}', parameters('subscriptionId'), variables('storageRoleAssignments')[copyIndex()].id)]"
                   },
-                  "principalId": "[if(parameters('createStorageDeployment'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('MI-Storage-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
+                  "principalId": "[if(parameters('createStorageDeployment'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('MI-Storage-{0}', parameters('time'))), '2022-09-01').outputs.principalId.value), createObject('value', ''))]",
                   "resourceGroupName": {
                     "value": "[parameters('storageObjectsRgName')]"
                   },
@@ -13701,7 +13701,7 @@
                 }
               },
               "dependsOn": [
-                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('MI-Storage-{0}', parameters('time')))]"
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('MI-Storage-{0}', parameters('time')))]"
               ]
             },
             {
@@ -14402,11 +14402,11 @@
           "outputs": {
             "managedIdentityStorageResourceId": {
               "type": "string",
-              "value": "[if(and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'EntraID'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('MI-Storage-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
+              "value": "[if(and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'EntraID'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('MI-Storage-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value, '')]"
             },
             "managedIdentityStorageClientId": {
               "type": "string",
-              "value": "[if(and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'EntraID'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('storageObjectsRgName'))), 'Microsoft.Resources/deployments', format('MI-Storage-{0}', parameters('time'))), '2022-09-01').outputs.clientId.value, '')]"
+              "value": "[if(and(parameters('createStorageDeployment'), not(equals(parameters('identityServiceProvider'), 'EntraID'))), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('serviceObjectsRgName'))), 'Microsoft.Resources/deployments', format('MI-Storage-{0}', parameters('time'))), '2022-09-01').outputs.clientId.value, '')]"
             }
           }
         }

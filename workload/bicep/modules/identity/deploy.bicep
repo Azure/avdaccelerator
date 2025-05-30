@@ -3,6 +3,7 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
+
 @sys.description('Location where to deploy AVD session hosts.')
 param location string
 
@@ -54,6 +55,7 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
+
 var varVirtualMachineUserLoginRole = {
   id: 'fb879df8-f326-4884-b1cf-06f3ad86be52'
   name: 'Virtual Machine User Login'
@@ -129,7 +131,7 @@ var appAttachEntraIDPrincpals = [
 
 // Managed identity for fslogix/App Attach
 module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = if (createStorageDeployment && identityServiceProvider != 'EntraID') {
-  scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'MI-Storage-${time}'
   params: {
     name: managedIdentityName
@@ -245,6 +247,7 @@ module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authoriza
 // =========== //
 // Outputs //
 // =========== //
+
 output managedIdentityStorageResourceId string = (createStorageDeployment && identityServiceProvider != 'EntraID')
   ? managedIdentityStorage.outputs.resourceId
   : ''
