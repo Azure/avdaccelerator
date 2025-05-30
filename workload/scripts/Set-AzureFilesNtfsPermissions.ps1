@@ -34,6 +34,7 @@ $DriveLetter = switch ($StoragePurpose) {
 
 # Domain join Azure Files for domain services scenarios
 if ($IdentityServiceProvider -like '*DS') {
+    # Install the RSAT-AD-PowerShell feature if not already installed
     Write-Host 'Installing the RSAT-AD-PowerShell feature.'
     $RsatInstalled = (Get-WindowsFeature -Name 'RSAT-AD-PowerShell').Installed
     if (!$RsatInstalled){
@@ -85,6 +86,12 @@ if ($IdentityServiceProvider -like '*DS') {
     $Domain = Get-ADDomain -Credential $DomainCredential -Current 'LocalComputer'
     Write-Host 'Collected domain information.'
 
+    # Add domain join account to  Remote Management Users group
+    Write-Host 'Adding domain join account to Remote Management Users group.'
+    $User = $Domain.NetBIOSName + '\' + $DomainJoinUserName.Split('@')[0]
+    Add-LocalGroupMember -Group "Remote Management Users" -Member "$User" | Out-Null
+    Write-Host 'Added domain join account to Remote Management Users group.'
+
     # Set domain principal with NetBios for ACLs assignment
     $Group = $Domain.NetBIOSName + '\' + $SecurityPrincipalName
 
@@ -117,7 +124,7 @@ if ($IdentityServiceProvider -like '*DS') {
                 -Body (@{keyName = 'kerb1' } | ConvertTo-Json) `
                 -Headers $AzureManagementHeader `
                 -Method 'POST' `
-                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/regenerateKey?api-version=2023-05-01')
+                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/regenerateKey?api-version=2023-05-01') | Out-Null
             Write-Host 'Created Kerberos key for Azure Storage Account.'
 
             Write-Host 'Getting Kerberos key for Azure Storage Account.'
@@ -142,16 +149,18 @@ if ($IdentityServiceProvider -like '*DS') {
         # Create the Description value for the Azure Storage Account; attribute for computer object in AD 
         $Description = "Computer account object for Azure storage account $($StorageAccountName)."
 
-        # Create the AD computer object for the Azure Storage Account
+        # Checking for an existing AD computer object for the Azure Storage Account and removing it if it exists
         Write-Host 'Checking AD computer object for Azure Storage Account.'
         $Computer = Get-ADComputer -Credential $DomainCredential -Filter {Name -eq $StorageAccountName}
         if($Computer){
             Write-Host 'Removing AD computer object for Azure Storage Account.'
-            Remove-ADComputer -Credential $DomainCredential -Identity $StorageAccountName -Confirm:$false
+            Remove-ADComputer -Credential $DomainCredential -Identity $StorageAccountName -Confirm:$false | Out-Null
             Write-Host 'Removed AD computer object for Azure Storage Account.'
         } else {
             Write-Host 'AD computer object for Azure Storage Account does not exist.'
         }
+
+        # Create the AD computer object for the Azure Storage Account
         Write-Host 'Creating AD computer object for Azure Storage Account.'
         $Parameters = @{
             Credential = $DomainCredential
@@ -188,7 +197,7 @@ if ($IdentityServiceProvider -like '*DS') {
             -Body $Body `
             -Headers $AzureManagementHeader `
             -Method 'PATCH' `
-            -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '?api-version=2023-05-01')
+            -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '?api-version=2023-05-01') | Out-Null
         Write-Host 'Domain joined the Azure Storage Account.'
 
         if ($KerberosEncryption -eq 'AES256') {
@@ -204,7 +213,7 @@ if ($IdentityServiceProvider -like '*DS') {
                 -Body (@{keyName = 'kerb1' } | ConvertTo-Json) `
                 -Headers $AzureManagementHeader `
                 -Method 'POST' `
-                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/regenerateKey?api-version=2023-05-01')
+                -Uri $($ResourceManagerUriFixed + '/subscriptions/' + $SubscriptionId + '/resourceGroups/' + $StorageAccountResourceGroupName + '/providers/Microsoft.Storage/storageAccounts/' + $StorageAccountName + '/regenerateKey?api-version=2023-05-01') | Out-Null
             Write-Host 'Regenerated the Kerberos key on the Azure Storage Account.'
 
             Write-Host 'Getting the new Kerberos key for the Azure Storage Account.'
@@ -226,7 +235,7 @@ if ($IdentityServiceProvider -like '*DS') {
 
     # Create a PowerShell session configuration for the Azure Storage Account
     Write-Host 'Creating PowerShell session configuration.'
-    Register-PSSessionConfiguration -Name $StorageAccountName -RunAsCredential $DomainCredential -Force
+    Register-PSSessionConfiguration -Name $StorageAccountName -RunAsCredential $DomainCredential -Force | Out-Null
     Write-Host 'Created PowerShell session configuration.'
 
     # Map the Azure Files file share to the drive letter and set NTFS permissions
