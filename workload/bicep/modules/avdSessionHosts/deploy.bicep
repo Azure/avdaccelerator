@@ -4,6 +4,13 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
+@allowed([
+  'AES256'
+  'RC4'
+])
+@sys.description('The encryption type to kerberos authentication.')
+param kerberosEncryption string
+
 @sys.description('Location where to deploy compute services.')
 param location string
 
@@ -362,6 +369,7 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
       fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
       hostPoolResourceId: hostPoolResourceId
       identityDomainName: identityDomainName
+      kerberosEncryption: kerberosEncryption
       extendOsDisk: customOsDiskSizeGB != 0 ? true : false
       identityServiceProvider: identityServiceProvider
       location: location

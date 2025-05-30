@@ -11,6 +11,13 @@ param identityServiceProvider string
 @sys.description('Identity domain name.')
 param identityDomainName string
 
+@allowed([
+  'AES256'
+  'RC4'
+])
+@sys.description('The encryption type for Kerberos authentication.')
+param kerberosEncryption string
+
 @sys.description('Location where to deploy compute services.')
 param location string
 
@@ -46,7 +53,7 @@ param hostPoolResourceId string
 
 var fslogixStorageAccountName = fslogix ? last(split(fslogixStorageAccountResourceId, '/')) : ''
 var varBaseScriptArguments = '-ExtendOsDisk ${extendOsDisk} -IdentityServiceProvider ${identityServiceProvider} -Fslogix ${fslogix} -HostPoolRegistrationToken "${hostPool.listRegistrationTokens().value[0].token}" -AmdVmSize ${varAmdVmSize} -NvidiaVmSize ${varNvidiaVmSize}'
-var varBaseFSLogixScriptArguments = '-FslogixFileShare "${fslogixSharePath}"'
+var varBaseFSLogixScriptArguments = '-FslogixFileShare "${fslogixSharePath}" -KerberosEncryption "${kerberosEncryption}"'
 var varFSLogixScriptArguments = identityServiceProvider == 'EntraID'
   ? '${varBaseFSLogixScriptArguments} -FslogixStorageAccountKey "${storageAccount.listkeys().keys[0].value}"'
   : identityServiceProvider == 'EntraIDKerberos'
