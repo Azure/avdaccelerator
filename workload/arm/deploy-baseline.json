@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "10913974343067687405"
+      "templateHash": "8654325924674001199"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -2175,31 +2175,34 @@
         },
         "mode": "Incremental",
         "parameters": {
-          "location": {
-            "value": "[parameters('avdManagementPlaneLocation')]"
+          "alaWorkspaceDataRetention": {
+            "value": "[parameters('avdAlaWorkspaceDataRetention')]"
+          },
+          "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', ''), createObject('value', parameters('alaExistingWorkspaceResourceId')))]",
+          "alaWorkspaceName": "[if(parameters('deployAlaWorkspace'), createObject('value', variables('varAlaWorkspaceName')), createObject('value', ''))]",
+          "computeObjectsRgName": {
+            "value": "[variables('varComputeObjectsRgName')]"
+          },
+          "dataCollectionRulesName": {
+            "value": "[variables('varDataCollectionRulesName')]"
           },
           "deployAlaWorkspace": {
             "value": "[parameters('deployAlaWorkspace')]"
           },
-          "computeObjectsRgName": {
-            "value": "[variables('varComputeObjectsRgName')]"
+          "deployCustomPolicyMonitoring": {
+            "value": "[parameters('deployCustomPolicyMonitoring')]"
           },
+          "location": {
+            "value": "[parameters('avdManagementPlaneLocation')]"
+          },
+          "monitoringRgName": {
+            "value": "[variables('varMonitoringRgName')]"
+          },
+          "networkObjectsRgName": "[if(parameters('createAvdVnet'), createObject('value', variables('varNetworkObjectsRgName')), createObject('value', ''))]",
           "serviceObjectsRgName": {
             "value": "[variables('varServiceObjectsRgName')]"
           },
           "storageObjectsRgName": "[if(or(parameters('createAvdFslogixDeployment'), parameters('createAppAttachDeployment')), createObject('value', variables('varStorageObjectsRgName')), createObject('value', ''))]",
-          "networkObjectsRgName": "[if(parameters('createAvdVnet'), createObject('value', variables('varNetworkObjectsRgName')), createObject('value', ''))]",
-          "monitoringRgName": {
-            "value": "[variables('varMonitoringRgName')]"
-          },
-          "deployCustomPolicyMonitoring": {
-            "value": "[parameters('deployCustomPolicyMonitoring')]"
-          },
-          "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', ''), createObject('value', parameters('alaExistingWorkspaceResourceId')))]",
-          "alaWorkspaceName": "[if(parameters('deployAlaWorkspace'), createObject('value', variables('varAlaWorkspaceName')), createObject('value', ''))]",
-          "alaWorkspaceDataRetention": {
-            "value": "[parameters('avdAlaWorkspaceDataRetention')]"
-          },
           "subscriptionId": {
             "value": "[parameters('avdWorkloadSubsId')]"
           },
@@ -2212,13 +2215,19 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "1259432455208990820"
+              "templateHash": "270530810412791646"
             },
             "name": "AVD LZA insights monitoring",
             "description": "This module deploys Log analytics workspace, DCR and policies",
             "owner": "Azure/avdaccelerator"
           },
           "parameters": {
+            "dataCollectionRulesName": {
+              "type": "string",
+              "metadata": {
+                "description": "The name for the data collection rule for AVD Insights."
+              }
+            },
             "location": {
               "type": "string",
               "metadata": {
@@ -2305,9 +2314,6 @@
                 "description": "Do not modify, used to set unique value for resource deployment."
               }
             }
-          },
-          "variables": {
-            "varAlaWorkspaceIdSplitId": "[split(parameters('alaWorkspaceId'), '/')]"
           },
           "resources": [
             {
@@ -3928,6 +3934,144 @@
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]",
                 "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('Monitoing-RG-{0}', parameters('time')))]"
               ]
+            },
+            {
+              "type": "Microsoft.Resources/deployments",
+              "apiVersion": "2022-09-01",
+              "name": "[format('Mon-DCR-{0}', parameters('time'))]",
+              "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
+              "resourceGroup": "[format('{0}', parameters('monitoringRgName'))]",
+              "properties": {
+                "expressionEvaluationOptions": {
+                  "scope": "inner"
+                },
+                "mode": "Incremental",
+                "parameters": {
+                  "location": {
+                    "value": "[parameters('location')]"
+                  },
+                  "name": {
+                    "value": "[parameters('dataCollectionRulesName')]"
+                  },
+                  "alaWorkspaceId": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.resourceId.value), createObject('value', parameters('alaWorkspaceId')))]",
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  }
+                },
+                "template": {
+                  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                  "contentVersion": "1.0.0.0",
+                  "metadata": {
+                    "_generator": {
+                      "name": "bicep",
+                      "version": "0.35.1.17967",
+                      "templateHash": "870861866654312392"
+                    }
+                  },
+                  "parameters": {
+                    "name": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Data colleciton rule name."
+                      }
+                    },
+                    "location": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Location where to deploy resources."
+                      }
+                    },
+                    "alaWorkspaceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "Exisintg Azure log analytics workspace."
+                      }
+                    },
+                    "tags": {
+                      "type": "object",
+                      "metadata": {
+                        "description": "Tags to be applied to resources"
+                      }
+                    }
+                  },
+                  "resources": [
+                    {
+                      "type": "Microsoft.Insights/dataCollectionRules",
+                      "apiVersion": "2021-04-01",
+                      "name": "[parameters('name')]",
+                      "location": "[parameters('location')]",
+                      "tags": "[parameters('tags')]",
+                      "kind": "Windows",
+                      "properties": {
+                        "dataSources": {
+                          "performanceCounters": [
+                            {
+                              "streams": [
+                                "Microsoft-Perf"
+                              ],
+                              "samplingFrequencyInSeconds": 30,
+                              "counterSpecifiers": "[union(createArray('\\LogicalDisk(C:)\\Avg. Disk Queue Length', '\\LogicalDisk(C:)\\Current Disk Queue Length', '\\Memory\\Available Mbytes', '\\Memory\\Page Faults/sec', '\\Memory\\Pages/sec', '\\Memory\\% Committed Bytes In Use', '\\PhysicalDisk(*)\\Avg. Disk Queue Length', '\\PhysicalDisk(*)\\Avg. Disk sec/Read', '\\PhysicalDisk(*)\\Avg. Disk sec/Transfer', '\\PhysicalDisk(*)\\Avg. Disk sec/Write', '\\Processor Information(_Total)\\% Processor Time', '\\User Input Delay per Process(*)\\Max Input Delay', '\\User Input Delay per Session(*)\\Max Input Delay'), if(equals(environment().name, 'AzureCloud'), createArray('\\RemoteFX Network(*)\\Current TCP RTT', '\\RemoteFX Network(*)\\Current UDP Bandwidth'), createArray()))]",
+                              "name": "perfCounterDataSource30"
+                            },
+                            {
+                              "streams": [
+                                "Microsoft-Perf"
+                              ],
+                              "samplingFrequencyInSeconds": 60,
+                              "counterSpecifiers": "[union(createArray('\\LogicalDisk(C:)\\% Free Space', '\\LogicalDisk(C:)\\Avg. Disk sec/Transfer'), if(equals(environment().name, 'AzureCloud'), createArray('\\Terminal Services(*)\\Active Sessions', '\\Terminal Services(*)\\Inactive Sessions', '\\Terminal Services(*)\\Total Sessions'), createArray()))]",
+                              "name": "perfCounterDataSource60"
+                            }
+                          ],
+                          "windowsEventLogs": [
+                            {
+                              "streams": [
+                                "Microsoft-Event"
+                              ],
+                              "xPathQueries": [
+                                "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
+                                "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
+                                "System!*",
+                                "Microsoft-FSLogix-Apps/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
+                                "Application!*[System[(Level=2 or Level=3)]]",
+                                "Microsoft-FSLogix-Apps/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]"
+                              ],
+                              "name": "eventLogsDataSource"
+                            }
+                          ]
+                        },
+                        "destinations": {
+                          "logAnalytics": [
+                            {
+                              "workspaceResourceId": "[parameters('alaWorkspaceId')]",
+                              "name": "la-workspace"
+                            }
+                          ]
+                        },
+                        "dataFlows": [
+                          {
+                            "streams": [
+                              "Microsoft-Perf",
+                              "Microsoft-Event"
+                            ],
+                            "destinations": [
+                              "la-workspace"
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ],
+                  "outputs": {
+                    "dataCollectionRulesId": {
+                      "type": "string",
+                      "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('name'))]"
+                    }
+                  }
+                }
+              },
+              "dependsOn": [
+                "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]"
+              ]
             }
           ],
           "outputs": {
@@ -3938,6 +4082,10 @@
             "avdAlaWorkspaceId": {
               "type": "string",
               "value": "[if(parameters('deployAlaWorkspace'), reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.logAnalyticsWorkspaceId.value, parameters('alaWorkspaceId'))]"
+            },
+            "dataCollectionRulesId": {
+              "type": "string",
+              "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('Mon-DCR-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRulesId.value]"
             }
           }
         }
@@ -5641,145 +5789,6 @@
       "dependsOn": [
         "baselineResourceGroups",
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Storage-RG-{0}', parameters('time')))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
-      ]
-    },
-    {
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
-      "name": "[format('Mon-DCR-{0}', parameters('time'))]",
-      "subscriptionId": "[format('{0}', subscription().subscriptionId)]",
-      "resourceGroup": "[format('{0}', variables('varMonitoringRgName'))]",
-      "properties": {
-        "expressionEvaluationOptions": {
-          "scope": "inner"
-        },
-        "mode": "Incremental",
-        "parameters": {
-          "location": {
-            "value": "[parameters('avdManagementPlaneLocation')]"
-          },
-          "name": {
-            "value": "[variables('varDataCollectionRulesName')]"
-          },
-          "alaWorkspaceId": {
-            "value": "[reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.avdAlaWorkspaceResourceId.value]"
-          },
-          "tags": "[if(parameters('createResourceTags'), createObject('value', union(variables('varCustomResourceTags'), variables('varAvdDefaultTags'))), createObject('value', variables('varAvdDefaultTags')))]"
-        },
-        "template": {
-          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-          "contentVersion": "1.0.0.0",
-          "metadata": {
-            "_generator": {
-              "name": "bicep",
-              "version": "0.35.1.17967",
-              "templateHash": "870861866654312392"
-            }
-          },
-          "parameters": {
-            "name": {
-              "type": "string",
-              "metadata": {
-                "description": "Data colleciton rule name."
-              }
-            },
-            "location": {
-              "type": "string",
-              "metadata": {
-                "description": "Location where to deploy resources."
-              }
-            },
-            "alaWorkspaceId": {
-              "type": "string",
-              "metadata": {
-                "description": "Exisintg Azure log analytics workspace."
-              }
-            },
-            "tags": {
-              "type": "object",
-              "metadata": {
-                "description": "Tags to be applied to resources"
-              }
-            }
-          },
-          "resources": [
-            {
-              "type": "Microsoft.Insights/dataCollectionRules",
-              "apiVersion": "2021-04-01",
-              "name": "[parameters('name')]",
-              "location": "[parameters('location')]",
-              "tags": "[parameters('tags')]",
-              "kind": "Windows",
-              "properties": {
-                "dataSources": {
-                  "performanceCounters": [
-                    {
-                      "streams": [
-                        "Microsoft-Perf"
-                      ],
-                      "samplingFrequencyInSeconds": 30,
-                      "counterSpecifiers": "[union(createArray('\\LogicalDisk(C:)\\Avg. Disk Queue Length', '\\LogicalDisk(C:)\\Current Disk Queue Length', '\\Memory\\Available Mbytes', '\\Memory\\Page Faults/sec', '\\Memory\\Pages/sec', '\\Memory\\% Committed Bytes In Use', '\\PhysicalDisk(*)\\Avg. Disk Queue Length', '\\PhysicalDisk(*)\\Avg. Disk sec/Read', '\\PhysicalDisk(*)\\Avg. Disk sec/Transfer', '\\PhysicalDisk(*)\\Avg. Disk sec/Write', '\\Processor Information(_Total)\\% Processor Time', '\\User Input Delay per Process(*)\\Max Input Delay', '\\User Input Delay per Session(*)\\Max Input Delay'), if(equals(environment().name, 'AzureCloud'), createArray('\\RemoteFX Network(*)\\Current TCP RTT', '\\RemoteFX Network(*)\\Current UDP Bandwidth'), createArray()))]",
-                      "name": "perfCounterDataSource30"
-                    },
-                    {
-                      "streams": [
-                        "Microsoft-Perf"
-                      ],
-                      "samplingFrequencyInSeconds": 60,
-                      "counterSpecifiers": "[union(createArray('\\LogicalDisk(C:)\\% Free Space', '\\LogicalDisk(C:)\\Avg. Disk sec/Transfer'), if(equals(environment().name, 'AzureCloud'), createArray('\\Terminal Services(*)\\Active Sessions', '\\Terminal Services(*)\\Inactive Sessions', '\\Terminal Services(*)\\Total Sessions'), createArray()))]",
-                      "name": "perfCounterDataSource60"
-                    }
-                  ],
-                  "windowsEventLogs": [
-                    {
-                      "streams": [
-                        "Microsoft-Event"
-                      ],
-                      "xPathQueries": [
-                        "Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
-                        "Microsoft-Windows-TerminalServices-LocalSessionManager/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
-                        "System!*",
-                        "Microsoft-FSLogix-Apps/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]",
-                        "Application!*[System[(Level=2 or Level=3)]]",
-                        "Microsoft-FSLogix-Apps/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]"
-                      ],
-                      "name": "eventLogsDataSource"
-                    }
-                  ]
-                },
-                "destinations": {
-                  "logAnalytics": [
-                    {
-                      "workspaceResourceId": "[parameters('alaWorkspaceId')]",
-                      "name": "la-workspace"
-                    }
-                  ]
-                },
-                "dataFlows": [
-                  {
-                    "streams": [
-                      "Microsoft-Perf",
-                      "Microsoft-Event"
-                    ],
-                    "destinations": [
-                      "la-workspace"
-                    ]
-                  }
-                ]
-              }
-            }
-          ],
-          "outputs": {
-            "dataCollectionRulesId": {
-              "type": "string",
-              "value": "[resourceId('Microsoft.Insights/dataCollectionRules', parameters('name'))]"
-            }
-          }
-        }
-      },
-      "dependsOn": [
-        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Identities-And-RoleAssign-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]"
       ]
     },
@@ -33084,7 +33093,7 @@
           "customImageDefinitionId": {
             "value": "[parameters('avdCustomImageDefinitionId')]"
           },
-          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', subscription().subscriptionId), format('{0}', variables('varMonitoringRgName'))), 'Microsoft.Resources/deployments', format('Mon-DCR-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRulesId.value), createObject('value', ''))]",
+          "dataCollectionRuleId": "[if(parameters('avdDeployMonitoring'), createObject('value', reference(subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time'))), '2022-09-01').outputs.dataCollectionRulesId.value), createObject('value', ''))]",
           "deployAntiMalwareExt": {
             "value": "[parameters('deployAntiMalwareExt')]"
           },
@@ -37859,9 +37868,9 @@
       },
       "dependsOn": [
         "baselineResourceGroups",
-        "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', subscription().subscriptionId), format('{0}', variables('varMonitoringRgName'))), 'Microsoft.Resources/deployments', format('Mon-DCR-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Storage-FSLogix-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('AVD-MGMT-Plane-{0}', parameters('time')))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', format('Monitoring-{0}', parameters('time')))]",
         "[subscriptionResourceId('Microsoft.Resources/deployments', format('Networking-{0}', parameters('time')))]",
         "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('avdWorkloadSubsId')), format('{0}', variables('varServiceObjectsRgName'))), 'Microsoft.Resources/deployments', format('Workload-KeyVault-{0}', parameters('time')))]",
         "[subscriptionResourceId(parameters('avdWorkloadSubsId'), 'Microsoft.Resources/deployments', format('Zero-Trust-{0}', parameters('time')))]"

@@ -8,6 +8,9 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
+@sys.description('The name for the data collection rule for AVD Insights.')
+param dataCollectionRulesName string
+
 @sys.description('Location where to deploy AVD management plane.')
 param location string
 
@@ -49,12 +52,6 @@ param tags object
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
-
-// =========== //
-// Variable declaration //
-// =========== //
-
-var varAlaWorkspaceIdSplitId = split(alaWorkspaceId, '/')
 
 // =========== //
 // Deployments //
@@ -109,9 +106,22 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
   ]
 }
 
+// data collection rules
+module dataCollectionRules '.bicep/dataCollectionRules.bicep' = {
+  scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
+  name: 'Mon-DCR-${time}'
+  params: {
+    location: location
+    name: dataCollectionRulesName
+    alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
+    tags: tags
+  }
+}
+
 // =========== //
 // Outputs //
 // =========== //
 
 output avdAlaWorkspaceResourceId string = deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
 output avdAlaWorkspaceId string = deployAlaWorkspace ? alaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid // We should be safe to remove this one as CARML modules use the resource ID instead
+output dataCollectionRulesId string = dataCollectionRules.outputs.dataCollectionRulesId

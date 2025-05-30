@@ -1094,17 +1094,18 @@ module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-grou
 module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bicep' = if (avdDeployMonitoring) {
   name: 'Monitoring-${time}'
   params: {
-    location: avdManagementPlaneLocation
-    deployAlaWorkspace: deployAlaWorkspace
-    computeObjectsRgName: varComputeObjectsRgName
-    serviceObjectsRgName: varServiceObjectsRgName
-    storageObjectsRgName: (createAvdFslogixDeployment || createAppAttachDeployment) ? varStorageObjectsRgName : ''
-    networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
-    monitoringRgName: varMonitoringRgName
-    deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
+    alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
     alaWorkspaceId: deployAlaWorkspace ? '' : alaExistingWorkspaceResourceId
     alaWorkspaceName: deployAlaWorkspace ? varAlaWorkspaceName : ''
-    alaWorkspaceDataRetention: avdAlaWorkspaceDataRetention
+    computeObjectsRgName: varComputeObjectsRgName
+    dataCollectionRulesName: varDataCollectionRulesName
+    deployAlaWorkspace: deployAlaWorkspace
+    deployCustomPolicyMonitoring: deployCustomPolicyMonitoring
+    location: avdManagementPlaneLocation
+    monitoringRgName: varMonitoringRgName
+    networkObjectsRgName: (createAvdVnet) ? varNetworkObjectsRgName : ''
+    serviceObjectsRgName: varServiceObjectsRgName
+    storageObjectsRgName: (createAvdFslogixDeployment || createAppAttachDeployment) ? varStorageObjectsRgName : ''
     subscriptionId: avdWorkloadSubsId
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
@@ -1139,21 +1140,6 @@ module identity './modules/identity/deploy.bicep' = {
     baselineResourceGroups
     baselineStorageResourceGroup
     monitoringDiagnosticSettings
-  ]
-}
-
-// data collection rules
-module dataCollectionRule 'modules/avdInsightsMonitoring/.bicep/dataCollectionRules.bicep' = {
-  scope: resourceGroup('${subscription().subscriptionId}', '${varMonitoringRgName}')
-  name: 'Mon-DCR-${time}'
-  params: {
-    location: avdManagementPlaneLocation
-    name: varDataCollectionRulesName
-    alaWorkspaceId: monitoringDiagnosticSettings.outputs.avdAlaWorkspaceResourceId
-    tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
-  }
-  dependsOn: [
-    identity // This is needed to separate the LAW and DCR deployments for timing issues
   ]
 }
 
@@ -1581,7 +1567,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
         : (((i - 1) * varMaxSessionHostsPerTemplate) + avdSessionHostCountIndex)
       createIntuneEnrollment: createIntuneEnrollment
       customImageDefinitionId: avdCustomImageDefinitionId
-      dataCollectionRuleId: avdDeployMonitoring ? dataCollectionRule.outputs.dataCollectionRulesId : ''
+      dataCollectionRuleId: avdDeployMonitoring ? monitoringDiagnosticSettings.outputs.dataCollectionRulesId : ''
       deployAntiMalwareExt: deployAntiMalwareExt
       deployMonitoring: avdDeployMonitoring
       diskEncryptionSetResourceId: diskZeroTrust ? zeroTrust.outputs.ztDiskEncryptionSetResourceId : ''
