@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "8616776297219984103"
+      "templateHash": "15545218463156552242"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -2215,7 +2215,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "14734372605379961551"
+              "templateHash": "4060648801702206349"
             },
             "name": "AVD LZA insights monitoring",
             "description": "This module deploys Log analytics workspace, DCR and policies",
@@ -4080,7 +4080,8 @@
               },
               "dependsOn": [
                 "[extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time')))]",
-                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('Monitoing-RG-{0}', parameters('time')))]"
+                "[subscriptionResourceId(parameters('subscriptionId'), 'Microsoft.Resources/deployments', format('Monitoing-RG-{0}', parameters('time')))]",
+                "[subscriptionResourceId(format('{0}', parameters('subscriptionId')), 'Microsoft.Resources/deployments', format('Custom-Policy-Monitoring-{0}', parameters('time')))]"
               ]
             }
           ],

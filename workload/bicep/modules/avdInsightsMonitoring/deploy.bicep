@@ -7,6 +7,7 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
+
 @sys.description('Location where to deploy AVD management plane.')
 param location string
 
@@ -107,7 +108,6 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
     networkObjectsRgName: networkObjectsRgName
   }
   dependsOn: [
-    alaWorkspace
     baselineMonitoringResourceGroup
   ]
 }
@@ -129,9 +129,8 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
     tags: tags
   }
   dependsOn: [
-    alaWorkspace
-    existingAlaw
     baselineMonitoringResourceGroup
+    deployDiagnosticsAzurePolicyForAvd
   ]
 }
 
