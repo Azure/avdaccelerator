@@ -40,7 +40,7 @@ param securityPrincipalId string
 param deployScalingPlan bool
 
 @sys.description('Storage managed identity name.')
-param storageManagedIdentityName string
+param managedIdentityName string
 
 @sys.description('Deploy Storage setup.')
 param createStorageDeployment bool
@@ -132,7 +132,7 @@ module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-a
   scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
   name: 'MI-Storage-${time}'
   params: {
-    name: storageManagedIdentityName
+    name: managedIdentityName
     location: location
     tags: tags
   }

@@ -651,7 +651,7 @@ var varSessionHostNamePrefix = avdUseCustomNaming
   ? avdSessionHostCustomNamePrefix
   : 'vm${varDeploymentPrefixLowercase}${varDeploymentEnvironmentComputeStorage}${varSessionHostLocationAcronym}'
 //var varVmssFlexNamePrefix = avdUseCustomNaming ? '${vmssFlexCustomNamePrefix}-${varComputeStorageResourcesNamingStandard}' : 'vmss-${varComputeStorageResourcesNamingStandard}'
-var varStorageManagedIdentityName = 'id-storage-${varComputeStorageResourcesNamingStandard}-001'
+var varManagedIdentityName = 'id-${varComputeStorageResourcesNamingStandard}-001'
 var varFslogixFileShareName = avdUseCustomNaming
   ? fslogixFileShareCustomName
   : 'fslogix-pc-${varDeploymentPrefixLowercase}-${varDeploymentEnvironmentLowercase}-${varSessionHostLocationAcronym}-001'
@@ -1242,7 +1242,7 @@ module identity './modules/identity/deploy.bicep' = {
     avdServicePrincipalObjectId: avdServicePrincipalObjectId
     avdArmServicePrincipalObjectId: avdArmServicePrincipalObjectId
     deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
-    storageManagedIdentityName: varStorageManagedIdentityName
+    managedIdentityName: varManagedIdentityName
     enableStartVmOnConnect: avdStartVmOnConnect
     identityServiceProvider: avdIdentityServiceProvider
     createStorageDeployment: varCreateStorageDeployment

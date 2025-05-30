@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "1218919254912148377"
+      "templateHash": "13034364958335920219"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1450,7 +1450,7 @@
     "varWrklKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varWrklKvName'))]",
     "varWrklKeyVaultSku": "[if(or(equals(variables('varAzureCloudName'), 'AzureCloud'), equals(variables('varAzureCloudName'), 'AzureUSGovernment')), 'premium', if(equals(variables('varAzureCloudName'), 'AzureChinaCloud'), 'standard', null()))]",
     "varSessionHostNamePrefix": "[if(parameters('avdUseCustomNaming'), parameters('avdSessionHostCustomNamePrefix'), format('vm{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varSessionHostLocationAcronym')))]",
-    "varStorageManagedIdentityName": "[format('id-storage-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
+    "varManagedIdentityName": "[format('id-{0}-001', variables('varComputeStorageResourcesNamingStandard'))]",
     "varFslogixFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('fslogixFileShareCustomName'), format('fslogix-pc-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varAppAttachFileShareName": "[if(parameters('avdUseCustomNaming'), parameters('appAttachFileShareCustomName'), format('appa-{0}-{1}-{2}-001', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentLowercase'), variables('varSessionHostLocationAcronym')))]",
     "varFslogixStorageName": "[if(parameters('avdUseCustomNaming'), format('{0}fsl{1}{2}{3}', parameters('storageAccountPrefixCustomName'), variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')), format('stfsl{0}{1}{2}', variables('varDeploymentPrefixLowercase'), variables('varDeploymentEnvironmentComputeStorage'), variables('varNamingUniqueStringThreeChar')))]",
@@ -12779,8 +12779,8 @@
             "value": "[parameters('avdArmServicePrincipalObjectId')]"
           },
           "deployScalingPlan": "[if(not(empty(parameters('avdServicePrincipalObjectId'))), createObject('value', variables('varDeployScalingPlan')), createObject('value', false()))]",
-          "storageManagedIdentityName": {
-            "value": "[variables('varStorageManagedIdentityName')]"
+          "managedIdentityName": {
+            "value": "[variables('varManagedIdentityName')]"
           },
           "enableStartVmOnConnect": {
             "value": "[parameters('avdStartVmOnConnect')]"
@@ -12803,7 +12803,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "8691528449280941486"
+              "templateHash": "5981202561050291055"
             }
           },
           "parameters": {
@@ -12879,7 +12879,7 @@
                 "description": "Deploy scaling plan."
               }
             },
-            "storageManagedIdentityName": {
+            "managedIdentityName": {
               "type": "string",
               "metadata": {
                 "description": "Storage managed identity name."
@@ -12959,7 +12959,7 @@
                 "mode": "Incremental",
                 "parameters": {
                   "name": {
-                    "value": "[parameters('storageManagedIdentityName')]"
+                    "value": "[parameters('managedIdentityName')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
