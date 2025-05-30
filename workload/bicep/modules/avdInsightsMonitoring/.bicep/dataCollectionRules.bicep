@@ -16,12 +16,6 @@ param alaWorkspaceId string
 param tags object
 
 // =========== //
-// Variable declaration //
-// =========== //
-
-var varAlaWorkspaceName = split(alaWorkspaceId, '/')[8]
-
-// =========== //
 // Deployments //
 // =========== //
 
@@ -41,7 +35,7 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
           'Microsoft-Event'
         ]
         destinations: [
-          varAlaWorkspaceName
+          'la-workspace'
         ]
       }
     ]
@@ -52,7 +46,7 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
                 'Microsoft-Perf'
             ]
             samplingFrequencyInSeconds: 30
-            counterSpecifiers: union([
+            counterSpecifiers: [
                 '\\LogicalDisk(C:)\\Avg. Disk Queue Length'
                 '\\LogicalDisk(C:)\\Current Disk Queue Length'
                 '\\Memory\\Available Mbytes'
@@ -66,10 +60,9 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
                 '\\Processor Information(_Total)\\% Processor Time'
                 '\\User Input Delay per Process(*)\\Max Input Delay'
                 '\\User Input Delay per Session(*)\\Max Input Delay'
-            ], environment().name == 'AzureCloud' ? [
                 '\\RemoteFX Network(*)\\Current TCP RTT'
                 '\\RemoteFX Network(*)\\Current UDP Bandwidth'
-            ] : [])
+            ]
             name: 'perfCounterDataSource30'
         }
         {
@@ -77,39 +70,38 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
                 'Microsoft-Perf'
             ]
             samplingFrequencyInSeconds: 60
-            counterSpecifiers: union([
+            counterSpecifiers: [
               '\\LogicalDisk(C:)\\% Free Space'
               '\\LogicalDisk(C:)\\Avg. Disk sec/Transfer'
-            ], environment().name == 'AzureCloud' ? [
               '\\Terminal Services(*)\\Active Sessions'
               '\\Terminal Services(*)\\Inactive Sessions'
               '\\Terminal Services(*)\\Total Sessions'
-            ] : [])
+            ]
             name: 'perfCounterDataSource60'
         }
-    ]
-    windowsEventLogs: [
-        {
-            streams: [
-                'Microsoft-Event'
-            ]
-            xPathQueries: [
-                'Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0) ]]'
-                'Microsoft-Windows-TerminalServices-LocalSessionManager/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]'
-                'System!*'
-                'Microsoft-FSLogix-Apps/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]'
-                'Application!*[System[(Level=2 or Level=3)]]'
-                'Microsoft-FSLogix-Apps/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]'
-            ]
-            name: 'eventLogsDataSource'
-        }
-    ]
+      ]
+      windowsEventLogs: [
+          {
+              streams: [
+                  'Microsoft-Event'
+              ]
+              xPathQueries: [
+                  'Microsoft-Windows-TerminalServices-RemoteConnectionManager/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0) ]]'
+                  'Microsoft-Windows-TerminalServices-LocalSessionManager/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]'
+                  'System!*'
+                  'Microsoft-FSLogix-Apps/Operational!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]'
+                  'Application!*[System[(Level=2 or Level=3)]]'
+                  'Microsoft-FSLogix-Apps/Admin!*[System[(Level=2 or Level=3 or Level=4 or Level=0)]]'
+              ]
+              name: 'eventLogsDataSource'
+          }
+      ]
     }
     description: 'AVD Insights settings'
     destinations: {
       logAnalytics: [
         {
-          name: varAlaWorkspaceName
+          name: 'la-workspace'
           workspaceResourceId: alaWorkspaceId
         }
       ]
