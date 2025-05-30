@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.35.1.17967",
-      "templateHash": "16412344100798649578"
+      "templateHash": "16747182742624017893"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -2215,7 +2215,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.35.1.17967",
-              "templateHash": "10402486244847824919"
+              "templateHash": "14734372605379961551"
             },
             "name": "AVD LZA insights monitoring",
             "description": "This module deploys Log analytics workspace, DCR and policies",
@@ -3966,7 +3966,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.35.1.17967",
-                      "templateHash": "18277808991052181561"
+                      "templateHash": "7495398014357008252"
                     }
                   },
                   "parameters": {
@@ -4028,38 +4028,16 @@
                                 "Microsoft-Perf"
                               ],
                               "samplingFrequencyInSeconds": 30,
-                              "counterSpecifiers": [
-                                "\\LogicalDisk(C:)\\Avg. Disk Queue Length",
-                                "\\LogicalDisk(C:)\\Current Disk Queue Length",
-                                "\\Memory\\Available Mbytes",
-                                "\\Memory\\Page Faults/sec",
-                                "\\Memory\\Pages/sec",
-                                "\\Memory\\% Committed Bytes In Use",
-                                "\\PhysicalDisk(*)\\Avg. Disk Queue Length",
-                                "\\PhysicalDisk(*)\\Avg. Disk sec/Read",
-                                "\\PhysicalDisk(*)\\Avg. Disk sec/Transfer",
-                                "\\PhysicalDisk(*)\\Avg. Disk sec/Write",
-                                "\\Processor Information(_Total)\\% Processor Time",
-                                "\\User Input Delay per Process(*)\\Max Input Delay",
-                                "\\User Input Delay per Session(*)\\Max Input Delay",
-                                "\\RemoteFX Network(*)\\Current TCP RTT",
-                                "\\RemoteFX Network(*)\\Current UDP Bandwidth"
-                              ],
-                              "name": "perfCounterDataSource10"
+                              "counterSpecifiers": "[union(createArray('\\LogicalDisk(C:)\\Avg. Disk Queue Length', '\\LogicalDisk(C:)\\Current Disk Queue Length', '\\Memory\\Available Mbytes', '\\Memory\\Page Faults/sec', '\\Memory\\Pages/sec', '\\Memory\\% Committed Bytes In Use', '\\PhysicalDisk(*)\\Avg. Disk Queue Length', '\\PhysicalDisk(*)\\Avg. Disk sec/Read', '\\PhysicalDisk(*)\\Avg. Disk sec/Transfer', '\\PhysicalDisk(*)\\Avg. Disk sec/Write', '\\Processor Information(_Total)\\% Processor Time', '\\User Input Delay per Process(*)\\Max Input Delay', '\\User Input Delay per Session(*)\\Max Input Delay'), if(equals(environment().name, 'AzureCloud'), createArray('\\RemoteFX Network(*)\\Current TCP RTT', '\\RemoteFX Network(*)\\Current UDP Bandwidth'), createArray()))]",
+                              "name": "perfCounterDataSource30"
                             },
                             {
                               "streams": [
                                 "Microsoft-Perf"
                               ],
                               "samplingFrequencyInSeconds": 60,
-                              "counterSpecifiers": [
-                                "\\LogicalDisk(C:)\\% Free Space",
-                                "\\LogicalDisk(C:)\\Avg. Disk sec/Transfer",
-                                "\\Terminal Services(*)\\Active Sessions",
-                                "\\Terminal Services(*)\\Inactive Sessions",
-                                "\\Terminal Services(*)\\Total Sessions"
-                              ],
-                              "name": "perfCounterDataSource30"
+                              "counterSpecifiers": "[union(createArray('\\LogicalDisk(C:)\\% Free Space', '\\LogicalDisk(C:)\\Avg. Disk sec/Transfer'), if(equals(environment().name, 'AzureCloud'), createArray('\\Terminal Services(*)\\Active Sessions', '\\Terminal Services(*)\\Inactive Sessions', '\\Terminal Services(*)\\Total Sessions'), createArray()))]",
+                              "name": "perfCounterDataSource60"
                             }
                           ],
                           "windowsEventLogs": [

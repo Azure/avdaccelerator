@@ -18,11 +18,13 @@ param tags object
 // =========== //
 // Variable declaration //
 // =========== //
+
 var varAlaWorkspaceName = split(alaWorkspaceId, '/')[8]
 
 // =========== //
 // Deployments //
 // =========== //
+
 resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
   name: name
   location: location
@@ -50,7 +52,7 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
                 'Microsoft-Perf'
             ]
             samplingFrequencyInSeconds: 30
-            counterSpecifiers: [
+            counterSpecifiers: union([
                 '\\LogicalDisk(C:)\\Avg. Disk Queue Length'
                 '\\LogicalDisk(C:)\\Current Disk Queue Length'
                 '\\Memory\\Available Mbytes'
@@ -64,24 +66,26 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
                 '\\Processor Information(_Total)\\% Processor Time'
                 '\\User Input Delay per Process(*)\\Max Input Delay'
                 '\\User Input Delay per Session(*)\\Max Input Delay'
+            ], environment().name == 'AzureCloud' ? [
                 '\\RemoteFX Network(*)\\Current TCP RTT'
                 '\\RemoteFX Network(*)\\Current UDP Bandwidth'
-            ]
-            name: 'perfCounterDataSource10'
+            ] : [])
+            name: 'perfCounterDataSource30'
         }
         {
             streams: [
                 'Microsoft-Perf'
             ]
             samplingFrequencyInSeconds: 60
-            counterSpecifiers: [
-                '\\LogicalDisk(C:)\\% Free Space'
-                '\\LogicalDisk(C:)\\Avg. Disk sec/Transfer'
-                '\\Terminal Services(*)\\Active Sessions'
-                '\\Terminal Services(*)\\Inactive Sessions'
-                '\\Terminal Services(*)\\Total Sessions'
-            ]
-            name: 'perfCounterDataSource30'
+            counterSpecifiers: union([
+              '\\LogicalDisk(C:)\\% Free Space'
+              '\\LogicalDisk(C:)\\Avg. Disk sec/Transfer'
+            ], environment().name == 'AzureCloud' ? [
+              '\\Terminal Services(*)\\Active Sessions'
+              '\\Terminal Services(*)\\Inactive Sessions'
+              '\\Terminal Services(*)\\Total Sessions'
+            ] : [])
+            name: 'perfCounterDataSource60'
         }
     ]
     windowsEventLogs: [
@@ -117,4 +121,5 @@ resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01'
 // =========== //
 // Outputs //
 // =========== //
+
 output dataCollectionRulesId string = dataCollectionRules.id
