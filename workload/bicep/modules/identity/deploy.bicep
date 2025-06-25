@@ -129,8 +129,8 @@ var appAttachEntraIDPrincpals = [
 // Deployments //
 // =========== //
 
-// Managed identity for fslogix/App Attach
-module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = if (createStorageDeployment && identityServiceProvider != 'EntraID') {
+// Managed identity for fslogix, App Attach, and run commands
+module managedIdentity '../../../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = if (createStorageDeployment && identityServiceProvider != 'EntraID') {
   scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'MI-Storage-${time}'
   params: {
@@ -176,7 +176,7 @@ module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/rol
     scope: resourceGroup('${storageRoleAssignment.subscriptionId}', '${storageRoleAssignment.resourceGroupName}')
     params: {
       roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageRoleAssignment.id}'
-      principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
+      principalId: createStorageDeployment ? managedIdentity.outputs.principalId : ''
       resourceGroupName: storageObjectsRgName
       subscriptionId: subscriptionId
       principalType: 'ServicePrincipal'
@@ -249,6 +249,6 @@ module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authoriza
 // =========== //
 
 output managedIdentityStorageResourceId string = (createStorageDeployment && identityServiceProvider != 'EntraID')
-  ? managedIdentityStorage.outputs.resourceId
+  ? managedIdentity.outputs.resourceId
   : ''
-output managedIdentityStorageClientId string = (createStorageDeployment && identityServiceProvider != 'EntraID') ? managedIdentityStorage.outputs.clientId : ''
+output managedIdentityStorageClientId string = (createStorageDeployment && identityServiceProvider != 'EntraID') ? managedIdentity.outputs.clientId : ''
