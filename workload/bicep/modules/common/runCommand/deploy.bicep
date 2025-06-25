@@ -14,6 +14,10 @@ param name string
 @sys.description('The parameters required by the script to run on the virtual machine.')
 param parameters array = []
 
+@sys.description('The protected parameters required by the script to run on the virtual machine.')
+@sys.secure()
+param protectedParameters string = ''
+
 @sys.description('The inline script to run on the virtual machine.')
 param script string
 
@@ -44,6 +48,7 @@ resource runCommand 'Microsoft.Compute/virtualMachines/runCommands@2024-11-01' =
   properties: {
     asyncExecution: asyncExecution
     parameters: parameters
+    protectedParameters: json(protectedParameters)
     source: {
       script: script
     }

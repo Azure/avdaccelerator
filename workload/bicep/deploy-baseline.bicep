@@ -677,9 +677,6 @@ var varZtKvPrivateEndpointName = 'pe-${varZtKvName}-vault'
 var varFslogixSharePath = createAvdFslogixDeployment
   ? '\\\\${varFslogixStorageName}.file.${environment().suffixes.storage}\\${varFslogixFileShareName}'
   : ''
-var varBaseScriptUri = 'https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/'
-var varSessionHostConfigurationScriptUri = '${varBaseScriptUri}scripts/Set-SessionHostConfiguration.ps1'
-var varSessionHostConfigurationScript = 'Set-SessionHostConfiguration.ps1'
 var varCreateStorageDeployment = (createAvdFslogixDeployment || varCreateAppAttachDeployment == true) ? true : false
 var varFslogixStorageSku = zoneRedundantStorage
   ? '${fslogixStoragePerformance}_ZRS'
@@ -1591,8 +1588,6 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       namePrefix: varSessionHostNamePrefix
       secureBootEnabled: secureBootEnabled
       securityType: securityType == 'Standard' ? '' : securityType
-      sessionHostConfigurationScriptUri: varSessionHostConfigurationScriptUri
-      sessionHostConfigurationScript: varSessionHostConfigurationScript
       sessionHostOuPath: avdOuPath
       subscriptionId: avdWorkloadSubsId
       subnetId: createAvdVnet

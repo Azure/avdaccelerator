@@ -61,7 +61,7 @@ param virtualMachineName string
 // =========== //
 
 // Add Azure Files to AD DS domain.
-module ntfsPermissions 'runCommand.bicep' = {
+module ntfsPermissions '../../common/runCommand/deploy.bicep' = {
   name: 'NTFS-Permissions-${time}'
   params: {
     location: location

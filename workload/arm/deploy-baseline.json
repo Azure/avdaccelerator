@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "6601777833667404962"
+      "templateHash": "18420510065664370942"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1461,9 +1461,6 @@
     "varZtKvName": "[if(parameters('avdUseCustomNaming'), format('{0}-{1}-{2}', parameters('ztKvPrefixCustomName'), variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')), format('kv-key-{0}-{1}', variables('varComputeStorageResourcesNamingStandard'), variables('varNamingUniqueStringTwoChar')))]",
     "varZtKvPrivateEndpointName": "[format('pe-{0}-vault', variables('varZtKvName'))]",
     "varFslogixSharePath": "[if(parameters('createAvdFslogixDeployment'), format('\\\\{0}.file.{1}\\{2}', variables('varFslogixStorageName'), environment().suffixes.storage, variables('varFslogixFileShareName')), '')]",
-    "varBaseScriptUri": "https://raw.githubusercontent.com/jamasten/avdaccelerator/main/workload/",
-    "varSessionHostConfigurationScriptUri": "[format('{0}scripts/Set-SessionHostConfiguration.ps1', variables('varBaseScriptUri'))]",
-    "varSessionHostConfigurationScript": "Set-SessionHostConfiguration.ps1",
     "varCreateStorageDeployment": "[if(or(parameters('createAvdFslogixDeployment'), equals(variables('varCreateAppAttachDeployment'), true())), true(), false())]",
     "varFslogixStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('fslogixStoragePerformance')), format('{0}_LRS', parameters('fslogixStoragePerformance')))]",
     "varAppAttachStorageSku": "[if(parameters('zoneRedundantStorage'), format('{0}_ZRS', parameters('appAttachStoragePerformance')), format('{0}_LRS', parameters('appAttachStoragePerformance')))]",
@@ -26878,7 +26875,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13160379556184541137"
+              "templateHash": "11738984575337656694"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29628,7 +29625,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "18270959477358048980"
+                      "templateHash": "16704625863583604058"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -29822,7 +29819,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "848406622603260637"
+                              "templateHash": "12758654933428306565"
                             }
                           },
                           "parameters": {
@@ -29850,6 +29847,13 @@
                               "defaultValue": [],
                               "metadata": {
                                 "description": "The parameters required by the script to run on the virtual machine."
+                              }
+                            },
+                            "protectedParameters": {
+                              "type": "securestring",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "The protected parameters required by the script to run on the virtual machine."
                               }
                             },
                             "script": {
@@ -29888,6 +29892,7 @@
                               "properties": {
                                 "asyncExecution": "[parameters('asyncExecution')]",
                                 "parameters": "[parameters('parameters')]",
+                                "protectedParameters": "[json(parameters('protectedParameters'))]",
                                 "source": {
                                   "script": "[parameters('script')]"
                                 },
@@ -30003,7 +30008,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "13160379556184541137"
+              "templateHash": "11738984575337656694"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -32753,7 +32758,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "18270959477358048980"
+                      "templateHash": "16704625863583604058"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -32947,7 +32952,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "848406622603260637"
+                              "templateHash": "12758654933428306565"
                             }
                           },
                           "parameters": {
@@ -32975,6 +32980,13 @@
                               "defaultValue": [],
                               "metadata": {
                                 "description": "The parameters required by the script to run on the virtual machine."
+                              }
+                            },
+                            "protectedParameters": {
+                              "type": "securestring",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "The protected parameters required by the script to run on the virtual machine."
                               }
                             },
                             "script": {
@@ -33013,6 +33025,7 @@
                               "properties": {
                                 "asyncExecution": "[parameters('asyncExecution')]",
                                 "parameters": "[parameters('parameters')]",
+                                "protectedParameters": "[json(parameters('protectedParameters'))]",
                                 "source": {
                                   "script": "[parameters('script')]"
                                 },
@@ -33149,12 +33162,6 @@
             "value": "[parameters('secureBootEnabled')]"
           },
           "securityType": "[if(equals(parameters('securityType'), 'Standard'), createObject('value', ''), createObject('value', parameters('securityType')))]",
-          "sessionHostConfigurationScriptUri": {
-            "value": "[variables('varSessionHostConfigurationScriptUri')]"
-          },
-          "sessionHostConfigurationScript": {
-            "value": "[variables('varSessionHostConfigurationScript')]"
-          },
           "sessionHostOuPath": {
             "value": "[parameters('avdOuPath')]"
           },
@@ -33183,7 +33190,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "10135614208968340720"
+              "templateHash": "16668969983010468498"
             }
           },
           "parameters": {
@@ -33416,18 +33423,6 @@
               "type": "string",
               "metadata": {
                 "description": "Host pool resource ID."
-              }
-            },
-            "sessionHostConfigurationScriptUri": {
-              "type": "string",
-              "metadata": {
-                "description": "URI for AVD session host configuration script URI."
-              }
-            },
-            "sessionHostConfigurationScript": {
-              "type": "string",
-              "metadata": {
-                "description": "URI for AVD session host configuration script."
               }
             },
             "tags": {
@@ -37672,9 +37667,7 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "baseScriptUri": {
-                    "value": "[parameters('sessionHostConfigurationScriptUri')]"
-                  },
+                  "extendOsDisk": "[if(not(equals(parameters('customOsDiskSizeGB'), 0)), createObject('value', true()), createObject('value', false()))]",
                   "fslogix": {
                     "value": "[parameters('configureFslogix')]"
                   },
@@ -37690,23 +37683,22 @@
                   "identityDomainName": {
                     "value": "[parameters('identityDomainName')]"
                   },
-                  "kerberosEncryption": {
-                    "value": "[parameters('kerberosEncryption')]"
-                  },
-                  "extendOsDisk": "[if(not(equals(parameters('customOsDiskSizeGB'), 0)), createObject('value', true()), createObject('value', false()))]",
                   "identityServiceProvider": {
                     "value": "[parameters('identityServiceProvider')]"
+                  },
+                  "kerberosEncryption": {
+                    "value": "[parameters('kerberosEncryption')]"
                   },
                   "location": {
                     "value": "[parameters('location')]"
                   },
-                  "name": {
+                  "tags": {
+                    "value": "[parameters('tags')]"
+                  },
+                  "virtualMachineName": {
                     "value": "[format('{0}{1}', parameters('namePrefix'), padLeft(add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), 4, '0'))]"
                   },
-                  "scriptName": {
-                    "value": "[parameters('sessionHostConfigurationScript')]"
-                  },
-                  "vmSize": {
+                  "virtualMachineSize": {
                     "value": "[parameters('vmSize')]"
                   }
                 },
@@ -37717,26 +37709,50 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "18029532292112419789"
+                      "templateHash": "14126519187543558233"
                     }
                   },
                   "parameters": {
-                    "name": {
-                      "type": "string",
+                    "extendOsDisk": {
+                      "type": "bool",
                       "metadata": {
-                        "description": "Extension deployment name."
+                        "description": "Specifies whether to extend the OS disk."
                       }
                     },
-                    "identityServiceProvider": {
+                    "fslogix": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Deploy FSlogix configuration."
+                      }
+                    },
+                    "fslogixSharePath": {
                       "type": "string",
                       "metadata": {
-                        "description": "The service providing domain services for Azure Virtual Desktop."
+                        "description": "File share name for FSlogix storage."
+                      }
+                    },
+                    "fslogixStorageAccountResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "FSLogix storage account resource ID."
+                      }
+                    },
+                    "hostPoolResourceId": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "AVD Host Pool Resource Id"
                       }
                     },
                     "identityDomainName": {
                       "type": "string",
                       "metadata": {
                         "description": "Identity domain name."
+                      }
+                    },
+                    "identityServiceProvider": {
+                      "type": "string",
+                      "metadata": {
+                        "description": "The service providing domain services for Azure Virtual Desktop."
                       }
                     },
                     "kerberosEncryption": {
@@ -37755,65 +37771,42 @@
                         "description": "Location where to deploy compute services."
                       }
                     },
-                    "extendOsDisk": {
-                      "type": "bool",
+                    "tags": {
+                      "type": "object",
                       "metadata": {
-                        "description": "Specifies whether to extend the OS disk."
+                        "description": "Tags to be applied to resources"
                       }
                     },
-                    "baseScriptUri": {
+                    "time": {
+                      "type": "string",
+                      "defaultValue": "[utcNow()]",
+                      "metadata": {
+                        "description": "Do not modify, used to set unique value for resource deployment."
+                      }
+                    },
+                    "virtualMachineName": {
                       "type": "string",
                       "metadata": {
-                        "description": "URI for AVD session host configuration URI path."
+                        "description": "The name of the virtual machine."
                       }
                     },
-                    "scriptName": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "URI for AVD session host configuration script."
-                      }
-                    },
-                    "fslogix": {
-                      "type": "bool",
-                      "metadata": {
-                        "description": "Deploy FSlogix configuration."
-                      }
-                    },
-                    "fslogixStorageAccountResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "FSLogix storage account resource ID."
-                      }
-                    },
-                    "fslogixSharePath": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "File share name for FSlogix storage."
-                      }
-                    },
-                    "vmSize": {
+                    "virtualMachineSize": {
                       "type": "string",
                       "metadata": {
                         "description": "Session host VM size."
                       }
-                    },
-                    "hostPoolResourceId": {
-                      "type": "string",
-                      "metadata": {
-                        "description": "AVD Host Pool Resource Id"
-                      }
                     }
                   },
                   "variables": {
+                    "$fxv#0": "Param(\r\n        [parameter(Mandatory = $false)]\r\n        [string]\r\n        $IdentityDomainName,\r\n\r\n        [parameter(Mandatory = $false)]\r\n        [string]\r\n        $KerberosEncryption,\r\n\r\n        [parameter(Mandatory)]\r\n        [string]\r\n        $AmdVmSize, \r\n\r\n        [parameter(Mandatory)]\r\n        [string]\r\n        $IdentityServiceProvider,\r\n\r\n        [parameter(Mandatory)]\r\n        [string]\r\n        $FSLogix,\r\n\r\n        [parameter(Mandatory = $false)]\r\n        [string]\r\n        $FSLogixStorageAccountKey,\r\n\r\n        [parameter(Mandatory = $false)]\r\n        [string]\r\n        $FSLogixFileShare,\r\n\r\n        [parameter(Mandatory)]\r\n        [string]\r\n        $HostPoolRegistrationToken,    \r\n\r\n        [parameter(Mandatory)]\r\n        [string]\r\n        $NvidiaVmSize,\r\n\r\n        [parameter(Mandatory = $false)]\r\n        [string]\r\n        $ExtendOsDisk\r\n\r\n        # [parameter(Mandatory)]\r\n        # [string]\r\n        # $ScreenCaptureProtection\r\n)\r\n\r\nfunction New-Log {\r\n        Param (\r\n                [Parameter(Mandatory = $true, Position = 0)]\r\n                [string] $Path\r\n        )\r\n    \r\n        $date = Get-Date -UFormat \"%Y-%m-%d %H-%M-%S\"\r\n        Set-Variable logFile -Scope Script\r\n        $script:logFile = \"$Script:Name-$date.log\"\r\n    \r\n        if ((Test-Path $path ) -eq $false) {\r\n                $null = New-Item -Path $path -ItemType directory\r\n        }\r\n    \r\n        $script:Log = Join-Path $path $logfile\r\n    \r\n        Add-Content $script:Log \"Date`t`t`tCategory`t`tDetails\"\r\n}\r\n\r\nfunction Write-Log {\r\n        Param (\r\n                [Parameter(Mandatory = $false, Position = 0)]\r\n                [ValidateSet(\"Info\", \"Warning\", \"Error\")]\r\n                $Category = 'Info',\r\n                [Parameter(Mandatory = $true, Position = 1)]\r\n                $Message\r\n        )\r\n    \r\n        $Date = get-date\r\n        $Content = \"[$Date]`t$Category`t`t$Message`n\" \r\n        Add-Content $Script:Log $content -ErrorAction Stop\r\n        If ($Verbose) {\r\n                Write-Verbose $Content\r\n        }\r\n        Else {\r\n                Switch ($Category) {\r\n                        'Info' { Write-Host $content }\r\n                        'Error' { Write-Error $Content }\r\n                        'Warning' { Write-Warning $Content }\r\n                }\r\n        }\r\n}\r\n\r\nfunction Get-WebFile {\r\n        param(\r\n                [parameter(Mandatory)]\r\n                [string]$FileName,\r\n\r\n                [parameter(Mandatory)]\r\n                [string]$URL\r\n        )\r\n        $Counter = 0\r\n        do {\r\n                Invoke-WebRequest -Uri $URL -OutFile $FileName -ErrorAction 'SilentlyContinue'\r\n                if ($Counter -gt 0) {\r\n                        Start-Sleep -Seconds 30\r\n                }\r\n                $Counter++\r\n        }\r\n        until((Test-Path $FileName) -or $Counter -eq 9)\r\n}\r\n\r\nFunction Set-RegistryValue {\r\n        [CmdletBinding()]\r\n        param (\r\n                [Parameter()]\r\n                [string]\r\n                $Name,\r\n                [Parameter()]\r\n                [string]\r\n                $Path,\r\n                [Parameter()]\r\n                [string]$PropertyType,\r\n                [Parameter()]\r\n                $Value\r\n        )\r\n        Begin {\r\n                Write-Log -message \"[Set-RegistryValue]: Setting Registry Value: $Name\"\r\n        }\r\n        Process {\r\n                # Create the registry Key(s) if necessary.\r\n                If (!(Test-Path -Path $Path)) {\r\n                        Write-Log -message \"[Set-RegistryValue]: Creating Registry Key: $Path\"\r\n                        New-Item -Path $Path -Force | Out-Null\r\n                }\r\n                # Check for existing registry setting\r\n                $RemoteValue = Get-ItemProperty -Path $Path -Name $Name -ErrorAction SilentlyContinue\r\n                If ($RemoteValue) {\r\n                        # Get current Value\r\n                        $CurrentValue = Get-ItemPropertyValue -Path $Path -Name $Name\r\n                        Write-Log -message \"[Set-RegistryValue]: Current Value of $($Path)\\$($Name) : $CurrentValue\"\r\n                        If ($Value -ne $CurrentValue) {\r\n                                Write-Log -message \"[Set-RegistryValue]: Setting Value of $($Path)\\$($Name) : $Value\"\r\n                                Set-ItemProperty -Path $Path -Name $Name -Value $Value -Force | Out-Null\r\n                        }\r\n                        Else {\r\n                                Write-Log -message \"[Set-RegistryValue]: Value of $($Path)\\$($Name) is already set to $Value\"\r\n                        }           \r\n                }\r\n                Else {\r\n                        Write-Log -message \"[Set-RegistryValue]: Setting Value of $($Path)\\$($Name) : $Value\"\r\n                        New-ItemProperty -Path $Path -Name $Name -PropertyType $PropertyType -Value $Value -Force | Out-Null\r\n                }\r\n                Start-Sleep -Milliseconds 500\r\n        }\r\n        End {\r\n        }\r\n}\r\n\r\n$ErrorActionPreference = 'Stop'\r\n$Script:Name = 'Set-SessionHostConfiguration'\r\nNew-Log -Path (Join-Path -Path $env:SystemRoot -ChildPath 'Logs')\r\ntry {\r\n\r\n        ##############################################################\r\n        #  Add Recommended AVD Settings\r\n        ##############################################################\r\n        $Settings = @(\r\n\r\n                # Disable Automatic Updates: https://docs.microsoft.com/en-us/azure/virtual-desktop/set-up-customize-master-image#disable-automatic-updates\r\n                [PSCustomObject]@{\r\n                        Name         = 'NoAutoUpdate'\r\n                        Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows\\WindowsUpdate\\AU'\r\n                        PropertyType = 'DWord'\r\n                        Value        = 1\r\n                },\r\n\r\n                # Enable Time Zone Redirection: https://docs.microsoft.com/en-us/azure/virtual-desktop/set-up-customize-master-image#set-up-time-zone-redirection\r\n                [PSCustomObject]@{\r\n                        Name         = 'fEnableTimeZoneRedirection'\r\n                        Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n                        PropertyType = 'DWord'\r\n                        Value        = 1\r\n                }\r\n        )\r\n\r\n        ##############################################################\r\n        #  Add GPU Settings\r\n        ##############################################################\r\n        # This setting applies to the VM Size's recommended for AVD with a GPU\r\n        if ($AmdVmSize -eq 'true' -or $NvidiaVmSize -eq 'true') {\r\n                $Settings += @(\r\n\r\n                        # Configure GPU-accelerated app rendering: https://docs.microsoft.com/en-us/azure/virtual-desktop/configure-vm-gpu#configure-gpu-accelerated-app-rendering\r\n                        [PSCustomObject]@{\r\n                                Name         = 'bEnumerateHWBeforeSW'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        },\r\n                        # Configure fullscreen video encoding: https://docs.microsoft.com/en-us/azure/virtual-desktop/configure-vm-gpu#configure-fullscreen-video-encoding\r\n                        [PSCustomObject]@{\r\n                                Name         = 'AVC444ModePreferred'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'KeepAliveEnable'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'KeepAliveInterval'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'MinEncryptionLevel'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 3\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'AVCHardwareEncodePreferred'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        }\r\n                )\r\n        }\r\n        # This setting applies only to VM Size's recommended for AVD with a Nvidia GPU\r\n        if ($NvidiaVmSize -eq 'true') {\r\n                $Settings += @(\r\n\r\n                        # Configure GPU-accelerated frame encoding: https://docs.microsoft.com/en-us/azure/virtual-desktop/configure-vm-gpu#configure-gpu-accelerated-frame-encoding\r\n                        [PSCustomObject]@{\r\n                                Name         = 'AVChardwareEncodePreferred'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        }\r\n                )\r\n        }\r\n\r\n        # Set Kerberos Encryption for AES256\r\n        if ($KerberosEncryption -eq 'AES256' -and $IdentityServiceProvider -like \"*DS\") {\r\n                $Settings += @(\r\n                        [PSCustomObject]@{\r\n                                Name         = 'SupportedEncryptionTypes'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System\\Kerberos\\Parameters'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 2147483640\r\n                        }\r\n                )\r\n        }\r\n\r\n        # ##############################################################\r\n        # #  Add Screen Capture Protection Setting\r\n        # ##############################################################\r\n        # if ($ScreenCaptureProtection -eq 'true') {\r\n        #         $Settings += @(\r\n\r\n        #                 # Enable Screen Capture Protection: https://docs.microsoft.com/en-us/azure/virtual-desktop/screen-capture-protection\r\n        #                 [PSCustomObject]@{\r\n        #                         Name         = 'fEnableScreenCaptureProtect'\r\n        #                         Path         = 'HKLM:\\SOFTWARE\\Policies\\Microsoft\\Windows NT\\Terminal Services'\r\n        #                         PropertyType = 'DWord'\r\n        #                         Value        = 1\r\n        #                 }\r\n        #         )\r\n        # }\r\n\r\n        ##############################################################\r\n        #  Add Fslogix Settings\r\n        ##############################################################\r\n        if ($Fslogix -eq 'true') {\r\n                $FSLogixStorageFQDN = $FSLogixFileShare.Split('\\')[2]                \r\n                $Settings += @(\r\n                        # Enables Fslogix profile containers: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#enabled\r\n                        [PSCustomObject]@{\r\n                                Name         = 'Enabled'\r\n                                Path         = 'HKLM:\\SOFTWARE\\Fslogix\\Profiles'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        },\r\n                        # Deletes a local profile if it exists and matches the profile being loaded from VHD: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#deletelocalprofilewhenvhdshouldapply\r\n                        [PSCustomObject]@{\r\n                                Name         = 'DeleteLocalProfileWhenVHDShouldApply'\r\n                                Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        },\r\n                        # The folder created in the Fslogix fileshare will begin with the username instead of the SID: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#flipflopprofiledirectoryname\r\n                        [PSCustomObject]@{\r\n                                Name         = 'FlipFlopProfileDirectoryName'\r\n                                Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        },\r\n                        # # Loads FRXShell if there's a failure attaching to, or using an existing profile VHD(X): https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#preventloginwithfailure\r\n                        # [PSCustomObject]@{\r\n                        #         Name         = 'PreventLoginWithFailure'\r\n                        #         Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                        #         PropertyType = 'DWord'\r\n                        #         Value        = 1\r\n                        # },\r\n                        # # Loads FRXShell if it's determined a temp profile has been created: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#preventloginwithtempprofile\r\n                        # [PSCustomObject]@{\r\n                        #         Name         = 'PreventLoginWithTempProfile'\r\n                        #         Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                        #         PropertyType = 'DWord'\r\n                        #         Value        = 1\r\n                        # },\r\n                        # List of file system locations to search for the user's profile VHD(X) file: https://docs.microsoft.com/en-us/fslogix/profile-container-configuration-reference#vhdlocations\r\n                        [PSCustomObject]@{\r\n                                Name         = 'VHDLocations'\r\n                                Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                PropertyType = 'MultiString'\r\n                                Value        = $FSLogixFileShare\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'VolumeType'\r\n                                Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                PropertyType = 'String'\r\n                                Value        = 'vhdx'\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'LockedRetryCount'\r\n                                Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 3\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'LockedRetryInterval'\r\n                                Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 15\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'ReAttachIntervalSeconds'\r\n                                Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 15\r\n                        },\r\n                        [PSCustomObject]@{\r\n                                Name         = 'ReAttachRetryCount'\r\n                                Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 3\r\n                        }\r\n                )\r\n                if ($IdentityServiceProvider -eq \"EntraIDKerberos\" -and $Fslogix -eq 'true') {\r\n                        $Settings += @(\r\n                                [PSCustomObject]@{\r\n                                        Name         = 'CloudKerberosTicketRetrievalEnabled'\r\n                                        Path         = 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\Kerberos\\Parameters'\r\n                                        PropertyType = 'DWord'\r\n                                        Value        = 1\r\n                                },\r\n                                [PSCustomObject]@{\r\n                                        Name         = 'LoadCredKeyFromProfile'\r\n                                        Path         = 'HKLM:\\Software\\Policies\\Microsoft\\AzureADAccount'\r\n                                        PropertyType = 'DWord'\r\n                                        Value        = 1\r\n                                },\r\n                                [PSCustomObject]@{\r\n                                        Name         = $IdentityDomainName\r\n                                        Path         = 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\Kerberos\\domain_realm'\r\n                                        PropertyType = 'String'\r\n                                        Value        = $FSLogixStorageFQDN\r\n                                }\r\n\r\n                        )\r\n                }\r\n                If ($FsLogixStorageAccountKey -ne '') {                \r\n                        $SAName = $FSLogixStorageFQDN.Split('.')[0]\r\n                        Write-Log -Message \"Adding Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager\" -Category 'Info'\r\n                        $CMDKey = Start-Process -FilePath 'cmdkey.exe' -ArgumentList \"/add:$FSLogixStorageFQDN /user:localhost\\$SAName /pass:$FSLogixStorageAccountKey\" -Wait -PassThru\r\n                        If ($CMDKey.ExitCode -ne 0) {\r\n                                Write-Log -Message \"CMDKey Failed with '$($CMDKey.ExitCode)'. Failed to add Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager\" -Category 'Error'\r\n                        }\r\n                        Else {\r\n                                Write-Log -Message \"Successfully added Local Storage Account Key for '$FSLogixStorageFQDN' to Credential Manager\" -Category 'Info'\r\n                        }\r\n                        $Settings += @(\r\n                                # Attach the users VHD(x) as the computer: https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#accessnetworkascomputerobject\r\n                                [PSCustomObject]@{\r\n                                        Name         = 'AccessNetworkAsComputerObject'\r\n                                        Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Profiles'\r\n                                        PropertyType = 'DWord'\r\n                                        Value        = 1\r\n                                }                                \r\n                        )\r\n                        $Settings += @(\r\n                                # Disable Roaming the Recycle Bin because it corrupts. https://learn.microsoft.com/en-us/fslogix/reference-configuration-settings?tabs=profiles#roamrecyclebin\r\n                                [PSCustomObject]@{\r\n                                        Name         = 'RoamRecycleBin'\r\n                                        Path         = 'HKLM:\\SOFTWARE\\FSLogix\\Apps'\r\n                                        PropertyType = 'DWord'\r\n                                        Value        = 0\r\n                                }\r\n                        )\r\n                        # Disable the Recycle Bin\r\n                        Reg LOAD \"HKLM\\TempHive\" \"$env:SystemDrive\\Users\\Default User\\NtUser.dat\"\r\n                        Set-RegistryValue -Path 'HKLM:\\TempHive\\Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer' -Name NoRecycleFiles -PropertyType DWord -Value 1\r\n                        Write-Log -Message \"Unloading default user hive.\"\r\n                        $null = cmd /c REG UNLOAD \"HKLM\\TempHive\" '2>&1'\r\n                        If ($LastExitCode -ne 0) {\r\n                                # sometimes the registry doesn't unload properly so we have to perform powershell garbage collection first.\r\n                                [GC]::Collect()\r\n                                [GC]::WaitForPendingFinalizers()\r\n                                Start-Sleep -Seconds 5\r\n                                $null = cmd /c REG UNLOAD \"HKLM\\TempHive\" '2>&1'\r\n                                If ($LastExitCode -eq 0) {\r\n                                        Write-Log -Message \"Hive unloaded successfully.\"\r\n                                }\r\n                                Else {\r\n                                        Write-Log -category Error -Message \"Default User hive unloaded with exit code [$LastExitCode].\"\r\n                                }\r\n                        }\r\n                        Else {\r\n                                Write-Log -Message \"Hive unloaded successfully.\"\r\n                        }\r\n                }\r\n                $LocalAdministrator = (Get-LocalUser | Where-Object { $_.SID -like '*-500' }).Name\r\n                $LocalGroups = 'FSLogix Profile Exclude List', 'FSLogix ODFC Exclude List'\r\n                ForEach ($Group in $LocalGroups) {\r\n                        If (-not (Get-LocalGroupMember -Group $Group | Where-Object { $_.Name -like \"*$LocalAdministrator\" })) {\r\n                                Add-LocalGroupMember -Group $Group -Member $LocalAdministrator\r\n                        }\r\n                }\r\n        }\r\n\r\n        ##############################################################\r\n        #  Add Microsoft Entra ID Join Setting\r\n        ##############################################################\r\n        if ($IdentityServiceProvider -match \"EntraID\") {\r\n                $Settings += @(\r\n\r\n                        # Enable PKU2U: https://docs.microsoft.com/en-us/azure/virtual-desktop/troubleshoot-azure-ad-connections#windows-desktop-client\r\n                        [PSCustomObject]@{\r\n                                Name         = 'AllowOnlineID'\r\n                                Path         = 'HKLM:\\SYSTEM\\CurrentControlSet\\Control\\Lsa\\pku2u'\r\n                                PropertyType = 'DWord'\r\n                                Value        = 1\r\n                        }\r\n                )\r\n        }\r\n\r\n        # Set registry settings\r\n        foreach ($Setting in $Settings) {\r\n                Set-RegistryValue -Name $Setting.Name -Path $Setting.Path -PropertyType $Setting.PropertyType -Value $Setting.Value -Verbose\r\n        }\r\n\r\n        # Resize OS Disk\r\n\r\n        if ($ExtendOsDisk -eq 'true') {\r\n                Write-Log -message \"Resizing OS Disk\"\r\n                $driveLetter = $env:SystemDrive.Substring(0, 1)\r\n                $size = Get-PartitionSupportedSize -DriveLetter $driveLetter\r\n                Resize-Partition -DriveLetter $driveLetter -Size $size.SizeMax\r\n                Write-Log -message \"OS Disk Resized\"\r\n        }\r\n\r\n        ##############################################################\r\n        # Add Defender Exclusions for FSLogix \r\n        ##############################################################\r\n        # https://docs.microsoft.com/en-us/azure/architecture/example-scenario/wvd/windows-virtual-desktop-fslogix#antivirus-exclusions\r\n        if ($Fslogix -eq 'true') {\r\n\r\n                $Files = @(\r\n                        \"%ProgramFiles%\\FSLogix\\Apps\\frxdrv.sys\",\r\n                        \"%ProgramFiles%\\FSLogix\\Apps\\frxdrvvt.sys\",\r\n                        \"%ProgramFiles%\\FSLogix\\Apps\\frxccd.sys\",\r\n                        \"%TEMP%\\*.VHD\",\r\n                        \"%TEMP%\\*.VHDX\",\r\n                        \"%Windir%\\TEMP\\*.VHD\",\r\n                        \"%Windir%\\TEMP\\*.VHDX\"\r\n                        \"$FslogixFileShareName\\*.VHD\"\r\n                        \"$FslogixFileShareName\\*.VHDX\"\r\n                )\r\n\r\n                foreach ($File in $Files) {\r\n                        Add-MpPreference -ExclusionPath $File\r\n                }\r\n                Write-Log -Message 'Enabled Defender exlusions for FSLogix paths' -Category 'Info'\r\n\r\n                $Processes = @(\r\n                        \"%ProgramFiles%\\FSLogix\\Apps\\frxccd.exe\",\r\n                        \"%ProgramFiles%\\FSLogix\\Apps\\frxccds.exe\",\r\n                        \"%ProgramFiles%\\FSLogix\\Apps\\frxsvc.exe\"\r\n                )\r\n\r\n                foreach ($Process in $Processes) {\r\n                        Add-MpPreference -ExclusionProcess $Process\r\n                }\r\n                Write-Log -Message 'Enabled Defender exlusions for FSLogix processes' -Category 'Info'\r\n        }\r\n\r\n\r\n        ##############################################################\r\n        #  Install the AVD Agent\r\n        ##############################################################\r\n        $BootInstaller = 'AVD-Bootloader.msi'\r\n        Get-WebFile -FileName $BootInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrxrH'\r\n        Start-Process -FilePath 'msiexec.exe' -ArgumentList \"/i $BootInstaller /quiet /qn /norestart /passive\" -Wait -Passthru\r\n        Write-Log -Message 'Installed AVD Bootloader' -Category 'Info'\r\n        Start-Sleep -Seconds 5\r\n\r\n        $AgentInstaller = 'AVD-Agent.msi'\r\n        Get-WebFile -FileName $AgentInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrmXv'\r\n        Start-Process -FilePath 'msiexec.exe' -ArgumentList \"/i $AgentInstaller /quiet /qn /norestart /passive REGISTRATIONTOKEN=$HostPoolRegistrationToken\" -Wait -PassThru\r\n        Write-Log -Message 'Installed AVD Agent' -Category 'Info'\r\n        Start-Sleep -Seconds 5\r\n\r\n        ##############################################################\r\n        #  Restart VM\r\n        ##############################################################\r\n        if ($IdentityServiceProvider -eq \"EntraIDKerberos\" -and $AmdVmSize -eq 'false' -and $NvidiaVmSize -eq 'false') {\r\n                Start-Process -FilePath 'shutdown' -ArgumentList '/r /t 30'\r\n        }\r\n}\r\ncatch {\r\n        Write-Log -Message $_ -Category 'Error'\r\n        throw\r\n}",
                     "fslogixStorageAccountName": "[if(parameters('fslogix'), last(split(parameters('fslogixStorageAccountResourceId'), '/')), '')]",
-                    "varBaseFSLogixScriptArguments": "[format('-FslogixFileShare \"{0}\" -KerberosEncryption \"{1}\"', parameters('fslogixSharePath'), parameters('kerberosEncryption'))]",
                     "varAmdVmSizes": [
                       "Standard_NV4as_v4",
                       "Standard_NV8as_v4",
                       "Standard_NV16as_v4",
                       "Standard_NV32as_v4"
                     ],
-                    "varAmdVmSize": "[contains(variables('varAmdVmSizes'), parameters('vmSize'))]",
+                    "varAmdVmSize": "[contains(variables('varAmdVmSizes'), parameters('virtualMachineSize'))]",
                     "varNvidiaVmSizes": [
                       "Standard_NV6",
                       "Standard_NV12",
@@ -37832,24 +37825,129 @@
                       "Standard_NV36adms_A10_v5",
                       "Standard_NV72ads_A10_v5"
                     ],
-                    "varNvidiaVmSize": "[contains(variables('varNvidiaVmSizes'), parameters('vmSize'))]"
+                    "varNvidiaVmSize": "[contains(variables('varNvidiaVmSizes'), parameters('virtualMachineSize'))]"
                   },
                   "resources": [
                     {
-                      "type": "Microsoft.Compute/virtualMachines/extensions",
-                      "apiVersion": "2023-09-01",
-                      "name": "[format('{0}/SessionHostConfig', parameters('name'))]",
-                      "location": "[parameters('location')]",
+                      "type": "Microsoft.Resources/deployments",
+                      "apiVersion": "2022-09-01",
+                      "name": "[format('Session-Host-Configuration-{0}', parameters('time'))]",
                       "properties": {
-                        "publisher": "Microsoft.Compute",
-                        "type": "CustomScriptExtension",
-                        "typeHandlerVersion": "1.10",
-                        "autoUpgradeMinorVersion": true,
-                        "settings": {
-                          "fileUris": "[array(parameters('baseScriptUri'))]"
+                        "expressionEvaluationOptions": {
+                          "scope": "inner"
                         },
-                        "protectedSettings": {
-                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -Command .\\{0} {1}', parameters('scriptName'), if(parameters('fslogix'), format('{0} {1}', format('-ExtendOsDisk {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken \"{3}\" -AmdVmSize {4} -NvidiaVmSize {5}', parameters('extendOsDisk'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').value[0].token, variables('varAmdVmSize'), variables('varNvidiaVmSize')), if(equals(parameters('identityServiceProvider'), 'EntraID'), format('{0} -FslogixStorageAccountKey \"{1}\"', variables('varBaseFSLogixScriptArguments'), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', variables('fslogixStorageAccountName')), '2023-05-01').keys[0].value), if(equals(parameters('identityServiceProvider'), 'EntraIDKerberos'), format('{0} -IdentityDomainName {1}', variables('varBaseFSLogixScriptArguments'), parameters('identityDomainName')), variables('varBaseFSLogixScriptArguments')))), format('-ExtendOsDisk {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken \"{3}\" -AmdVmSize {4} -NvidiaVmSize {5}', parameters('extendOsDisk'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').value[0].token, variables('varAmdVmSize'), variables('varNvidiaVmSize'))))]"
+                        "mode": "Incremental",
+                        "parameters": {
+                          "location": {
+                            "value": "[parameters('location')]"
+                          },
+                          "name": {
+                            "value": "Set-SessionHostConfiguration"
+                          },
+                          "parameters": {
+                            "value": "[union(createArray(createObject('name', 'AmdVmSize', 'value', variables('varAmdVmSize')), createObject('name', 'ExtendOsDisk', 'value', parameters('extendOsDisk')), createObject('name', 'Fslogix', 'value', parameters('fslogix')), createObject('name', 'IdentityServiceProvider', 'value', parameters('identityServiceProvider')), createObject('name', 'NvidiaVmSize', 'value', variables('varNvidiaVmSize'))), if(parameters('fslogix'), createArray(createObject('name', 'FslogixFileShare', 'value', parameters('fslogixSharePath')), createObject('name', 'KerberosEncryption', 'value', parameters('kerberosEncryption'))), createArray()), if(and(parameters('fslogix'), equals(parameters('identityServiceProvider'), 'EntraID')), createArray(createObject('name', 'FslogixStorageAccountKey', 'value', if(parameters('fslogix'), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', variables('fslogixStorageAccountName')), '2023-05-01').keys[0].value, ''))), createArray()), if(and(parameters('fslogix'), equals(parameters('identityServiceProvider'), 'EntraIDKerberos')), createArray(createObject('name', 'IdentityDomainName', 'value', parameters('identityDomainName'))), createArray()))]"
+                          },
+                          "protectedParameters": {
+                            "value": "[format('[{{''name'':''HostPoolRegistrationToken''}},{{''value'':''{0}''}}]', listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').value[0].token)]"
+                          },
+                          "script": {
+                            "value": "[variables('$fxv#0')]"
+                          },
+                          "tags": {
+                            "value": "[parameters('tags')]"
+                          },
+                          "virtualMachineName": {
+                            "value": "[parameters('virtualMachineName')]"
+                          }
+                        },
+                        "template": {
+                          "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                          "contentVersion": "1.0.0.0",
+                          "metadata": {
+                            "_generator": {
+                              "name": "bicep",
+                              "version": "0.36.1.42791",
+                              "templateHash": "12758654933428306565"
+                            }
+                          },
+                          "parameters": {
+                            "asyncExecution": {
+                              "type": "bool",
+                              "defaultValue": false,
+                              "metadata": {
+                                "description": "Determine whether the run command should be executed asynchronously."
+                              }
+                            },
+                            "location": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The Azure location where the run command resource will be created."
+                              }
+                            },
+                            "name": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the run command resource."
+                              }
+                            },
+                            "parameters": {
+                              "type": "array",
+                              "defaultValue": [],
+                              "metadata": {
+                                "description": "The parameters required by the script to run on the virtual machine."
+                              }
+                            },
+                            "protectedParameters": {
+                              "type": "securestring",
+                              "defaultValue": "",
+                              "metadata": {
+                                "description": "The protected parameters required by the script to run on the virtual machine."
+                              }
+                            },
+                            "script": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The inline script to run on the virtual machine."
+                              }
+                            },
+                            "tags": {
+                              "type": "object",
+                              "metadata": {
+                                "description": "Metadata tags to apply to the run command resource."
+                              }
+                            },
+                            "treatFailureAsDeploymentFailure": {
+                              "type": "bool",
+                              "defaultValue": true,
+                              "metadata": {
+                                "description": "Determine whether the run command should be treated as a deployment failure if it fails."
+                              }
+                            },
+                            "virtualMachineName": {
+                              "type": "string",
+                              "metadata": {
+                                "description": "The name of the virtual machine to run the command on."
+                              }
+                            }
+                          },
+                          "resources": [
+                            {
+                              "type": "Microsoft.Compute/virtualMachines/runCommands",
+                              "apiVersion": "2024-11-01",
+                              "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
+                              "location": "[parameters('location')]",
+                              "tags": "[parameters('tags')]",
+                              "properties": {
+                                "asyncExecution": "[parameters('asyncExecution')]",
+                                "parameters": "[parameters('parameters')]",
+                                "protectedParameters": "[json(parameters('protectedParameters'))]",
+                                "source": {
+                                  "script": "[parameters('script')]"
+                                },
+                                "treatFailureAsDeploymentFailure": "[parameters('treatFailureAsDeploymentFailure')]"
+                              }
+                            }
+                          ]
                         }
                       }
                     }
@@ -38742,7 +38840,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "11894359414926729890"
+              "templateHash": "12757945095578850808"
             }
           },
           "parameters": {
@@ -38826,48 +38924,80 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "8974006685460406786"
+                      "templateHash": "12758654933428306565"
                     }
                   },
                   "parameters": {
                     "asyncExecution": {
                       "type": "bool",
-                      "defaultValue": false
+                      "defaultValue": false,
+                      "metadata": {
+                        "description": "Determine whether the run command should be executed asynchronously."
+                      }
                     },
                     "location": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "The Azure location where the run command resource will be created."
+                      }
                     },
                     "name": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the run command resource."
+                      }
                     },
                     "parameters": {
                       "type": "array",
-                      "defaultValue": []
+                      "defaultValue": [],
+                      "metadata": {
+                        "description": "The parameters required by the script to run on the virtual machine."
+                      }
+                    },
+                    "protectedParameters": {
+                      "type": "securestring",
+                      "defaultValue": "",
+                      "metadata": {
+                        "description": "The protected parameters required by the script to run on the virtual machine."
+                      }
                     },
                     "script": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "The inline script to run on the virtual machine."
+                      }
                     },
                     "tags": {
-                      "type": "object"
+                      "type": "object",
+                      "metadata": {
+                        "description": "Metadata tags to apply to the run command resource."
+                      }
                     },
                     "treatFailureAsDeploymentFailure": {
                       "type": "bool",
-                      "defaultValue": true
+                      "defaultValue": true,
+                      "metadata": {
+                        "description": "Determine whether the run command should be treated as a deployment failure if it fails."
+                      }
                     },
                     "virtualMachineName": {
-                      "type": "string"
+                      "type": "string",
+                      "metadata": {
+                        "description": "The name of the virtual machine to run the command on."
+                      }
                     }
                   },
                   "resources": [
                     {
                       "type": "Microsoft.Compute/virtualMachines/runCommands",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
                       "properties": {
                         "asyncExecution": "[parameters('asyncExecution')]",
                         "parameters": "[parameters('parameters')]",
+                        "protectedParameters": "[json(parameters('protectedParameters'))]",
                         "source": {
                           "script": "[parameters('script')]"
                         },

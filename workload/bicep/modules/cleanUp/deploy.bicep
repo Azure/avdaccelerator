@@ -6,7 +6,7 @@ param time string
 param userAssignedIdentityClientId string
 param virtualMachineResourceId string
 
-module cleanUp '.bicep/runCommand.bicep' = {
+module cleanUp '../common/runCommand/deploy.bicep' = {
   scope: resourceGroup(resourceGroupName)
   name: 'clean-up-${time}'
   params: {

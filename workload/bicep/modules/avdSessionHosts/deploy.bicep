@@ -128,12 +128,6 @@ param fslogixStorageAccountResourceId string
 @sys.description('Host pool resource ID.')
 param hostPoolResourceId string
 
-@sys.description('URI for AVD session host configuration script URI.')
-param sessionHostConfigurationScriptUri string
-
-@sys.description('URI for AVD session host configuration script.')
-param sessionHostConfigurationScript string
-
 @sys.description('Tags to be applied to resources')
 param tags object
 
@@ -363,19 +357,18 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
     params: {
-      baseScriptUri: sessionHostConfigurationScriptUri
+      extendOsDisk: customOsDiskSizeGB != 0 ? true : false
       fslogix: configureFslogix
       fslogixSharePath: fslogixSharePath
       fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
       hostPoolResourceId: hostPoolResourceId
       identityDomainName: identityDomainName
-      kerberosEncryption: kerberosEncryption
-      extendOsDisk: customOsDiskSizeGB != 0 ? true : false
       identityServiceProvider: identityServiceProvider
+      kerberosEncryption: kerberosEncryption
       location: location
-      name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-      scriptName: sessionHostConfigurationScript
-      vmSize: vmSize
+      tags: tags
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      virtualMachineSize: vmSize
     }
     dependsOn: [
       sessionHosts
