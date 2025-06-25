@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "15561925445374385265"
+      "templateHash": "6601777833667404962"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -2215,7 +2215,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "6315344871504042405"
+              "templateHash": "15622082196129504306"
             },
             "name": "AVD LZA insights monitoring",
             "description": "This module deploys Log analytics workspace, DCR and policies",
@@ -3947,9 +3947,7 @@
                 },
                 "mode": "Incremental",
                 "parameters": {
-                  "location": {
-                    "value": "[parameters('location')]"
-                  },
+                  "location": "[if(parameters('deployAlaWorkspace'), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', parameters('subscriptionId')), format('{0}', parameters('monitoringRgName'))), 'Microsoft.Resources/deployments', format('LA-Workspace-{0}', parameters('time'))), '2022-09-01').outputs.location.value), createObject('value', reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('alaWorkspaceId'), '/')[2], split(parameters('alaWorkspaceId'), '/')[4]), 'Microsoft.OperationalInsights/workspaces', split(parameters('alaWorkspaceId'), '/')[8]), '2022-10-01', 'full').location))]",
                   "name": {
                     "value": "[parameters('dataCollectionRulesName')]"
                   },
