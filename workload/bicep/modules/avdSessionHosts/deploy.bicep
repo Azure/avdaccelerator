@@ -4,6 +4,13 @@ targetScope = 'subscription'
 // Parameters //
 // ========== //
 
+@allowed([
+  'AES256'
+  'RC4'
+])
+@sys.description('The encryption type to kerberos authentication.')
+param kerberosEncryption string
+
 @sys.description('Location where to deploy compute services.')
 param location string
 
@@ -120,12 +127,6 @@ param fslogixStorageAccountResourceId string
 
 @sys.description('Host pool resource ID.')
 param hostPoolResourceId string
-
-@sys.description('URI for AVD session host configuration script URI.')
-param sessionHostConfigurationScriptUri string
-
-@sys.description('URI for AVD session host configuration script.')
-param sessionHostConfigurationScript string
 
 @sys.description('Tags to be applied to resources')
 param tags object
@@ -356,18 +357,18 @@ module sessionHostConfiguration '.bicep/configureSessionHost.bicep' = [
     scope: resourceGroup('${subscriptionId}', '${computeObjectsRgName}')
     name: 'SH-Config-${batchId + 1}-${i + countIndex}-${time}'
     params: {
-      baseScriptUri: sessionHostConfigurationScriptUri
+      extendOsDisk: customOsDiskSizeGB != 0 ? true : false
       fslogix: configureFslogix
       fslogixSharePath: fslogixSharePath
       fslogixStorageAccountResourceId: fslogixStorageAccountResourceId
       hostPoolResourceId: hostPoolResourceId
       identityDomainName: identityDomainName
-      extendOsDisk: customOsDiskSizeGB != 0 ? true : false
       identityServiceProvider: identityServiceProvider
+      kerberosEncryption: kerberosEncryption
       location: location
-      name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
-      scriptName: sessionHostConfigurationScript
-      vmSize: vmSize
+      tags: tags
+      virtualMachineName: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
+      virtualMachineSize: vmSize
     }
     dependsOn: [
       sessionHosts

@@ -3,6 +3,7 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
+
 @sys.description('Location where to deploy AVD session hosts.')
 param location string
 
@@ -40,7 +41,7 @@ param securityPrincipalId string
 param deployScalingPlan bool
 
 @sys.description('Storage managed identity name.')
-param storageManagedIdentityName string
+param managedIdentityName string
 
 @sys.description('Deploy Storage setup.')
 param createStorageDeployment bool
@@ -54,6 +55,7 @@ param time string = utcNow()
 // =========== //
 // Variable declaration //
 // =========== //
+
 var varVirtualMachineUserLoginRole = {
   id: 'fb879df8-f326-4884-b1cf-06f3ad86be52'
   name: 'Virtual Machine User Login'
@@ -80,18 +82,37 @@ var computeAndServiceObjectsRgs = [
     rgName: serviceObjectsRgName
   }
 ]
-var storageRoleAssignments = [
+var storageRoleAssignments = union([
   {
     name: 'Storage Account Contributor'
     acronym: 'StoraContri'
     id: '17d1049b-9a84-46fb-8f53-869881c3d3ab'
+    resourceGroupName: storageObjectsRgName
+    subscriptionId: subscriptionId
   }
   {
     name: 'Reader'
     acronym: 'Reader'
     id: 'acdd72a7-3385-48ef-bd42-f606fba81ae7'
+    resourceGroupName: storageObjectsRgName
+    subscriptionId: subscriptionId
   }
-]
+  {
+    name: 'Virtual Machine Contributor'
+    acronym: 'VMCntrbtr'
+    id: '9980e02c-c2be-4d73-94e8-173b1dc7cf3c'
+    resourceGroupName: serviceObjectsRgName
+    subscriptionId: subscriptionId 
+  }
+], endsWith(identityServiceProvider, 'DS') ? [
+  {
+    name: 'Key Vault Secrets User'
+    acronym: 'KyVltScrtUsr'
+    id: '4633458b-17de-408a-b874-0445c86b69e6'
+    resourceGroupName: serviceObjectsRgName
+    subscriptionId: subscriptionId
+  }
+] : [])
 
 var appAttachEntraIDPrincpals = [
   {
@@ -108,12 +129,12 @@ var appAttachEntraIDPrincpals = [
 // Deployments //
 // =========== //
 
-// Managed identity for fslogix/App Attach
-module managedIdentityStorage '../../../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = if (createStorageDeployment && identityServiceProvider != 'EntraID') {
-  scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+// Managed identity for fslogix, App Attach, and run commands
+module managedIdentity '../../../../avm/1.0.0/res/managed-identity/user-assigned-identity/main.bicep' = if (createStorageDeployment && identityServiceProvider != 'EntraID') {
+  scope: resourceGroup('${subscriptionId}', '${serviceObjectsRgName}')
   name: 'MI-Storage-${time}'
   params: {
-    name: storageManagedIdentityName
+    name: managedIdentityName
     location: location
     tags: tags
   }
@@ -152,10 +173,10 @@ module scalingPlanRoleAssignCompute '../../../../avm/1.0.0/ptn/authorization/rol
 module storageContributorRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [
   for storageRoleAssignment in storageRoleAssignments: if (createStorageDeployment && identityServiceProvider != 'EntraID') {
     name: 'Stora-RolAssign-${storageRoleAssignment.acronym}-${time}'
-    scope: resourceGroup('${subscriptionId}', '${storageObjectsRgName}')
+    scope: resourceGroup('${storageRoleAssignment.subscriptionId}', '${storageRoleAssignment.resourceGroupName}')
     params: {
       roleDefinitionIdOrName: '/subscriptions/${subscriptionId}/providers/Microsoft.Authorization/roleDefinitions/${storageRoleAssignment.id}'
-      principalId: createStorageDeployment ? managedIdentityStorage.outputs.principalId : ''
+      principalId: createStorageDeployment ? managedIdentity.outputs.principalId : ''
       resourceGroupName: storageObjectsRgName
       subscriptionId: subscriptionId
       principalType: 'ServicePrincipal'
@@ -177,7 +198,6 @@ module storageSmbShareContributorRoleAssign '../../../../avm/1.0.0/ptn/authoriza
 }
 
 // Azure Files Reader and Data Access for EntraID Identities with App Attach
-
 module storageReaderandDataAccessRoleAssign '../../../../avm/1.0.0/ptn/authorization/role-assignment/modules/resource-group.bicep' = [
   for principal in appAttachEntraIDPrincpals: if (createAppAttachRoleAssignments) {
     name: 'Stora-ReaderData-RolAssign-${principal.name}-${time}'
@@ -227,7 +247,8 @@ module aadIdentityLoginAccessServiceObjects '../../../../avm/1.0.0/ptn/authoriza
 // =========== //
 // Outputs //
 // =========== //
+
 output managedIdentityStorageResourceId string = (createStorageDeployment && identityServiceProvider != 'EntraID')
-  ? managedIdentityStorage.outputs.resourceId
+  ? managedIdentity.outputs.resourceId
   : ''
-output managedIdentityStorageClientId string = (createStorageDeployment && identityServiceProvider != 'EntraID') ? managedIdentityStorage.outputs.clientId : ''
+output managedIdentityStorageClientId string = (createStorageDeployment && identityServiceProvider != 'EntraID') ? managedIdentity.outputs.clientId : ''

@@ -7,6 +7,10 @@ targetScope = 'subscription'
 // ========== //
 // Parameters //
 // ========== //
+
+@sys.description('The name for the data collection rule for AVD Insights.')
+param dataCollectionRulesName string
+
 @sys.description('Location where to deploy AVD management plane.')
 param location string
 
@@ -19,7 +23,7 @@ param deployAlaWorkspace bool
 @sys.description('Create and assign custom Azure Policy for diagnostic settings for the AVD Log Analytics workspace.')
 param deployCustomPolicyMonitoring bool
 
-@sys.description('Exisintg Azure log analytics workspace resource.')
+@sys.description('Existing Azure log analytics workspace resource.')
 param alaWorkspaceId string = ''
 
 @sys.description('AVD Resource Group Name for monitoring resources.')
@@ -40,9 +44,6 @@ param networkObjectsRgName string
 @sys.description('Azure log analytics workspace name.')
 param alaWorkspaceName string
 
-@sys.description('Data collection rules name.')
-param dataCollectionRulesName string
-
 @sys.description(' Azure log analytics workspace name data retention.')
 param alaWorkspaceDataRetention int
 
@@ -51,12 +52,6 @@ param tags object
 
 @sys.description('Do not modify, used to set unique value for resource deployment.')
 param time string = utcNow()
-
-// =========== //
-// Variable declaration //
-// =========== //
-
-var varAlaWorkspaceIdSplitId = split(alaWorkspaceId, '/')
 
 // =========== //
 // Deployments //
@@ -107,19 +102,18 @@ module deployDiagnosticsAzurePolicyForAvd '../azurePolicies/avdMonitoring.bicep'
     networkObjectsRgName: networkObjectsRgName
   }
   dependsOn: [
-    alaWorkspace
     baselineMonitoringResourceGroup
   ]
 }
 
 // Get existing LAW
 resource existingAlaw 'Microsoft.OperationalInsights/workspaces@2022-10-01' existing = if (!deployAlaWorkspace && !empty(alaWorkspaceId)) {
-  scope: resourceGroup(varAlaWorkspaceIdSplitId[2], varAlaWorkspaceIdSplitId[4])
-  name: varAlaWorkspaceIdSplitId[8]
+  scope: resourceGroup(split(alaWorkspaceId, '/')[2], split(alaWorkspaceId, '/')[4])
+  name: split(alaWorkspaceId, '/')[8]
 }
 
 // data collection rules
-module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
+module dataCollectionRules '.bicep/dataCollectionRules.bicep' = {
   scope: resourceGroup('${subscriptionId}', '${monitoringRgName}')
   name: 'Mon-DCR-${time}'
   params: {
@@ -128,11 +122,6 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
     alaWorkspaceId: deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
     tags: tags
   }
-  dependsOn: [
-    alaWorkspace
-    existingAlaw
-    baselineMonitoringResourceGroup
-  ]
 }
 
 // =========== //
@@ -141,4 +130,4 @@ module dataCollectionRule './.bicep/dataCollectionRules.bicep' = {
 
 output avdAlaWorkspaceResourceId string = deployAlaWorkspace ? alaWorkspace.outputs.resourceId : alaWorkspaceId
 output avdAlaWorkspaceId string = deployAlaWorkspace ? alaWorkspace.outputs.logAnalyticsWorkspaceId : alaWorkspaceId // may need to call on existing LGA to get workspace guid // We should be safe to remove this one as CARML modules use the resource ID instead
-output dataCollectionRuleId string = dataCollectionRule.outputs.dataCollectionRulesId
+output dataCollectionRulesId string = dataCollectionRules.outputs.dataCollectionRulesId
