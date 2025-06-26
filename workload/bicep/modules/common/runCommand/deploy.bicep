@@ -48,7 +48,7 @@ resource runCommand 'Microsoft.Compute/virtualMachines/runCommands@2024-11-01' =
   properties: {
     asyncExecution: asyncExecution
     parameters: parameters
-    protectedParameters: json(protectedParameters)
+    protectedParameters: empty(protectedParameters) ? [] : json(protectedParameters)
     source: {
       script: script
     }
