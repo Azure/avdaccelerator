@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "11998406010490932349"
+      "templateHash": "7443251825349004364"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -26875,7 +26875,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "11738984575337656694"
+              "templateHash": "15453274593606729881"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -29625,7 +29625,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "16704625863583604058"
+                      "templateHash": "7395179640018288264"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -29819,7 +29819,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "12758654933428306565"
+                              "templateHash": "13074168792048787937"
                             }
                           },
                           "parameters": {
@@ -29892,7 +29892,7 @@
                               "properties": {
                                 "asyncExecution": "[parameters('asyncExecution')]",
                                 "parameters": "[parameters('parameters')]",
-                                "protectedParameters": "[json(parameters('protectedParameters'))]",
+                                "protectedParameters": "[if(empty(parameters('protectedParameters')), createArray(), json(parameters('protectedParameters')))]",
                                 "source": {
                                   "script": "[parameters('script')]"
                                 },
@@ -30008,7 +30008,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "11738984575337656694"
+              "templateHash": "15453274593606729881"
             },
             "name": "AVD LZA storage",
             "description": "This module deploys storage account, azure files. domain join logic",
@@ -32758,7 +32758,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "16704625863583604058"
+                      "templateHash": "7395179640018288264"
                     },
                     "name": "AVD LZA storage",
                     "description": "Configures domain join settings on storage account via VM custom script extension",
@@ -32952,7 +32952,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "12758654933428306565"
+                              "templateHash": "13074168792048787937"
                             }
                           },
                           "parameters": {
@@ -33025,7 +33025,7 @@
                               "properties": {
                                 "asyncExecution": "[parameters('asyncExecution')]",
                                 "parameters": "[parameters('parameters')]",
-                                "protectedParameters": "[json(parameters('protectedParameters'))]",
+                                "protectedParameters": "[if(empty(parameters('protectedParameters')), createArray(), json(parameters('protectedParameters')))]",
                                 "source": {
                                   "script": "[parameters('script')]"
                                 },
@@ -33190,7 +33190,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "7108831551908752496"
+              "templateHash": "13968476295951412049"
             }
           },
           "parameters": {
@@ -37709,7 +37709,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "3918523458397580002"
+                      "templateHash": "5632404687409135381"
                     }
                   },
                   "parameters": {
@@ -37867,7 +37867,7 @@
                             "_generator": {
                               "name": "bicep",
                               "version": "0.36.1.42791",
-                              "templateHash": "12758654933428306565"
+                              "templateHash": "13074168792048787937"
                             }
                           },
                           "parameters": {
@@ -37940,7 +37940,7 @@
                               "properties": {
                                 "asyncExecution": "[parameters('asyncExecution')]",
                                 "parameters": "[parameters('parameters')]",
-                                "protectedParameters": "[json(parameters('protectedParameters'))]",
+                                "protectedParameters": "[if(empty(parameters('protectedParameters')), createArray(), json(parameters('protectedParameters')))]",
                                 "source": {
                                   "script": "[parameters('script')]"
                                 },
@@ -38840,7 +38840,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "12757945095578850808"
+              "templateHash": "10148294088781248742"
             }
           },
           "parameters": {
@@ -38924,7 +38924,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "12758654933428306565"
+                      "templateHash": "13074168792048787937"
                     }
                   },
                   "parameters": {
@@ -38997,7 +38997,7 @@
                       "properties": {
                         "asyncExecution": "[parameters('asyncExecution')]",
                         "parameters": "[parameters('parameters')]",
-                        "protectedParameters": "[json(parameters('protectedParameters'))]",
+                        "protectedParameters": "[if(empty(parameters('protectedParameters')), createArray(), json(parameters('protectedParameters')))]",
                         "source": {
                           "script": "[parameters('script')]"
                         },
