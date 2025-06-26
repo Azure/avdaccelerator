@@ -134,7 +134,7 @@ module sessionHostConfig '../../common/runCommand/deploy.bicep' = {
       fslogix && identityServiceProvider == 'EntraID' ? [
         {
           name: 'FslogixStorageAccountKey'
-          value: fslogix ? storageAccount.listkeys().keys[0].value : ''
+          value: fslogix && identityServiceProvider == 'EntraID' ? storageAccount.listkeys().keys[0].value : ''
         }
       ] : [],
       fslogix && identityServiceProvider == 'EntraIDKerberos' ? [
@@ -144,7 +144,7 @@ module sessionHostConfig '../../common/runCommand/deploy.bicep' = {
         }
       ] : []
     )
-    protectedParameters: '[{\'name\':\'HostPoolRegistrationToken\'},{\'value\':\'${hostPool.listRegistrationTokens().value[0].token}\'}]'
+    protectedParameters: '[{\'name\':\'HostPoolRegistrationToken\',\'value\':\'${hostPool.listRegistrationTokens().value[0].token}\'}]'
     script: loadTextContent('../../../../scripts/Set-SessionHostConfiguration.ps1')
     tags: tags
     virtualMachineName: virtualMachineName
