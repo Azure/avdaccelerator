@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "18420510065664370942"
+      "templateHash": "11998406010490932349"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -33190,7 +33190,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.36.1.42791",
-              "templateHash": "16668969983010468498"
+              "templateHash": "7108831551908752496"
             }
           },
           "parameters": {
@@ -37709,7 +37709,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.36.1.42791",
-                      "templateHash": "14126519187543558233"
+                      "templateHash": "3918523458397580002"
                     }
                   },
                   "parameters": {
@@ -37845,10 +37845,10 @@
                             "value": "Set-SessionHostConfiguration"
                           },
                           "parameters": {
-                            "value": "[union(createArray(createObject('name', 'AmdVmSize', 'value', variables('varAmdVmSize')), createObject('name', 'ExtendOsDisk', 'value', parameters('extendOsDisk')), createObject('name', 'Fslogix', 'value', parameters('fslogix')), createObject('name', 'IdentityServiceProvider', 'value', parameters('identityServiceProvider')), createObject('name', 'NvidiaVmSize', 'value', variables('varNvidiaVmSize'))), if(parameters('fslogix'), createArray(createObject('name', 'FslogixFileShare', 'value', parameters('fslogixSharePath')), createObject('name', 'KerberosEncryption', 'value', parameters('kerberosEncryption'))), createArray()), if(and(parameters('fslogix'), equals(parameters('identityServiceProvider'), 'EntraID')), createArray(createObject('name', 'FslogixStorageAccountKey', 'value', if(parameters('fslogix'), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', variables('fslogixStorageAccountName')), '2023-05-01').keys[0].value, ''))), createArray()), if(and(parameters('fslogix'), equals(parameters('identityServiceProvider'), 'EntraIDKerberos')), createArray(createObject('name', 'IdentityDomainName', 'value', parameters('identityDomainName'))), createArray()))]"
+                            "value": "[union(createArray(createObject('name', 'AmdVmSize', 'value', variables('varAmdVmSize')), createObject('name', 'ExtendOsDisk', 'value', parameters('extendOsDisk')), createObject('name', 'Fslogix', 'value', parameters('fslogix')), createObject('name', 'IdentityServiceProvider', 'value', parameters('identityServiceProvider')), createObject('name', 'NvidiaVmSize', 'value', variables('varNvidiaVmSize'))), if(parameters('fslogix'), createArray(createObject('name', 'FslogixFileShare', 'value', parameters('fslogixSharePath')), createObject('name', 'KerberosEncryption', 'value', parameters('kerberosEncryption'))), createArray()), if(and(parameters('fslogix'), equals(parameters('identityServiceProvider'), 'EntraID')), createArray(createObject('name', 'FslogixStorageAccountKey', 'value', if(and(parameters('fslogix'), equals(parameters('identityServiceProvider'), 'EntraID')), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', variables('fslogixStorageAccountName')), '2023-05-01').keys[0].value, ''))), createArray()), if(and(parameters('fslogix'), equals(parameters('identityServiceProvider'), 'EntraIDKerberos')), createArray(createObject('name', 'IdentityDomainName', 'value', parameters('identityDomainName'))), createArray()))]"
                           },
                           "protectedParameters": {
-                            "value": "[format('[{{''name'':''HostPoolRegistrationToken''}},{{''value'':''{0}''}}]', listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').value[0].token)]"
+                            "value": "[format('[{{''name'':''HostPoolRegistrationToken'',''value'':''{0}''}}]', listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').value[0].token)]"
                           },
                           "script": {
                             "value": "[variables('$fxv#0')]"
