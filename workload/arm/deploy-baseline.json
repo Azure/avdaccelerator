@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.36.1.42791",
-      "templateHash": "7443251825349004364"
+      "templateHash": "3421898002345632208"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -38809,6 +38809,7 @@
       ]
     },
     {
+      "condition": "[and(not(equals(parameters('avdIdentityServiceProvider'), 'EntraID')), or(parameters('createAvdFslogixDeployment'), variables('varCreateAppAttachDeployment')))]",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2022-09-01",
       "name": "[format('Remove-MGMT-VM-{0}', parameters('time'))]",
