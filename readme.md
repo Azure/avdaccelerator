@@ -2,7 +2,7 @@
 
 [![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/azure/avdaccelerator.svg)](http://isitmaintained.com/project/azure/avdaccelerator "Average time to resolve an issue") [![Percentage of issues still open](http://isitmaintained.com/badge/open/azure/avdaccelerator.svg)](http://isitmaintained.com/project/azure/avdaccelerator "Percentage of issues still open")
 
-[LZA Baseline](#azure-virtual-desktop---lza-baseline) | [Browfield Scenarios](#brownfield-scenarios) | [Custom Image Build](#custom-image-build) | [Architectural Diagram](#architectural-diagram)
+[LZA Baseline](#azure-virtual-desktop---lza-baseline) | [Optional Deployments](#azure-virtual-desktop---lza-optional-deployments) | [Custom Image Build](#custom-image-build) | [Architectural Diagram](#architectural-diagram)
 
 ## Overview
 
