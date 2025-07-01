@@ -1592,7 +1592,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       enableAcceleratedNetworking: enableAcceleratedNetworking
       encryptionAtHost: diskZeroTrust
       fslogixSharePath: varFslogixSharePath
-      fslogixStorageAccountResourceId: avdIdentityServiceProvider == 'EntraID'
+      fslogixStorageAccountResourceId: (avdIdentityServiceProvider == 'EntraID' && createAvdFslogixDeployment)
         ? fslogixAzureFilesStorage.outputs.storageAccountResourceId
         : ''
       hostPoolResourceId: managementPLane.outputs.hostPoolResourceId
