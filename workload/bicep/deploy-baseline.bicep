@@ -1141,8 +1141,10 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     createVnetPeering: varCreateVnetPeering
     deployDDoSNetworkProtection: deployDDoSNetworkProtection
     ddosProtectionPlanName: varDDosProtectionPlanName
-    deployPrivateEndpointSubnet: (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService) ? true : false //adding logic that will be used when also including AVD control plane PEs
+
+    deployPrivateEndpointKeyvaultStorage: deployPrivateEndpointKeyvaultStorage
     deployAvdPrivateLinkService: deployAvdPrivateLinkService
+    
     vNetworkGatewayOnHub: vNetworkGatewayOnHub
     existingHubVnetResourceId: existingHubVnetResourceId
     location: avdDeploySessionHosts ? avdSessionHostLocation : avdManagementPlaneLocation

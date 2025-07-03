@@ -64,10 +64,10 @@ param ddosProtectionPlanName string
 @sys.description('Deploy DDoS Network Protection for virtual network.')
 param deployDDoSNetworkProtection bool
 
-@sys.description('Optional. AVD Accelerator will deploy with private endpoints by default.')
-param deployPrivateEndpointSubnet bool
+@sys.description('Deploys private endpoints for storage and key vault Services.')
+param deployPrivateEndpointKeyvaultStorage bool
 
-@sys.description('Optional. Deploys private endpoints for the AVD Private Link Service. (Default: false)')
+@sys.description('Deploys private endpoints for the AVD Private Link Service.')
 param deployAvdPrivateLinkService bool
 
 @sys.description('AVD VNet address prefixes.')
@@ -88,7 +88,7 @@ param vnetPrivateEndpointSubnetAddressPrefix string
 @sys.description('custom DNS servers IPs')
 param dnsServers array
 
-@sys.description('Optional. Use Azure private DNS zones for private endpoints.')
+@sys.description('Use Azure private DNS zones for private endpoints.')
 param createPrivateDnsZones bool
 
 @sys.description('Location where to deploy resources.')
@@ -463,7 +463,7 @@ module networksecurityGroupAvd '../../../../avm/1.0.0/res/network/network-securi
 }
 
 // Private endpoint network security group.
-module networksecurityGroupPrivateEndpoint '../../../../avm/1.0.0/res/network/network-security-group/main.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
+module networksecurityGroupPrivateEndpoint '../../../../avm/1.0.0/res/network/network-security-group/main.bicep' = if (createVnet && (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService)) {
   scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
   name: 'NSG-Private-Endpoint-${time}'
   params: {
@@ -502,7 +502,7 @@ module routeTableAvd '../../../../avm/1.0.0/res/network/route-table/main.bicep' 
 }
 
 // Private endpoint route table.
-module routeTablePrivateEndpoint '../../../../avm/1.0.0/res/network/route-table/main.bicep' = if (createVnet && deployPrivateEndpointSubnet) {
+module routeTablePrivateEndpoint '../../../../avm/1.0.0/res/network/route-table/main.bicep' = if (createVnet && (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService)) {
   scope: resourceGroup('${workloadSubsId}', '${networkObjectsRgName}')
   name: 'Route-Table-PE-${time}'
   params: {
@@ -554,7 +554,7 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
           }
         ]
       : []
-    subnets: deployPrivateEndpointSubnet
+    subnets: (deployPrivateEndpointKeyvaultStorage && deployAvdPrivateLinkService) || (deployPrivateEndpointKeyvaultStorage && !deployAvdPrivateLinkService)
       ? [
           {
             name: vnetAvdSubnetName
@@ -569,15 +569,47 @@ module virtualNetwork '../../../../avm/1.0.0/res/network/virtual-network/main.bi
             addressPrefix: vnetPrivateEndpointSubnetAddressPrefix
             privateEndpointNetworkPolicies: 'Disabled'
             privateLinkServiceNetworkPolicies: 'Enabled'
-            networkSecurityGroupResourceId: (createVnet && deployPrivateEndpointSubnet)
+            networkSecurityGroupResourceId: (createVnet && (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService))
               ? networksecurityGroupPrivateEndpoint.outputs.resourceId
               : ''
-            routeTableResourceId: (createVnet && deployPrivateEndpointSubnet)
+            routeTableResourceId: (createVnet && (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService))
               ? routeTablePrivateEndpoint.outputs.resourceId
               : ''
           }
         ]
-      : [
+      : (!deployPrivateEndpointKeyvaultStorage && deployAvdPrivateLinkService)
+      ?[
+          {
+            name: vnetAvdSubnetName
+            addressPrefix: vnetAvdSubnetAddressPrefix
+            privateEndpointNetworkPolicies: 'Disabled'
+            privateLinkServiceNetworkPolicies: 'Enabled'
+            networkSecurityGroupResourceId: createVnet ? networksecurityGroupAvd.outputs.resourceId : ''
+            routeTableResourceId: createVnet ? routeTableAvd.outputs.resourceId : ''
+            serviceEndpoints: [
+              {
+                service: 'Microsoft.Storage'
+                locations: ['${location}']
+              }
+              {
+                service: 'Microsoft.KeyVault'
+                locations: ['${location}']
+              }
+            ]
+          }
+          {
+            name: vnetPrivateEndpointSubnetName
+            addressPrefix: vnetPrivateEndpointSubnetAddressPrefix
+            privateEndpointNetworkPolicies: 'Disabled'
+            privateLinkServiceNetworkPolicies: 'Enabled'
+            networkSecurityGroupResourceId: (createVnet && (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService))
+              ? networksecurityGroupPrivateEndpoint.outputs.resourceId
+              : ''
+            routeTableResourceId: (createVnet && (deployPrivateEndpointKeyvaultStorage || deployAvdPrivateLinkService))
+              ? routeTablePrivateEndpoint.outputs.resourceId
+              : ''
+          }
+        ] : [
           {
             name: vnetAvdSubnetName
             addressPrefix: vnetAvdSubnetAddressPrefix
