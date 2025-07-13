@@ -119,7 +119,7 @@ var varAlerts = enableMonitoringAlerts ? [
       criterias: {
           allOf: [
               {
-                  query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "Image Template build failed"'
+                  query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category == "JobLogs"\n| where ResultType == "Failed" or ResultType == "Stopped" or ResultType == "Suspended"\n| where RunbookName_s == "${varRunbookName}"'
                   TimeAggregation: 'Count'
                   dimensions: [
                       {
@@ -149,7 +149,7 @@ var varAlerts = enableMonitoringAlerts ? [
       criterias: {
           allOf: [
               {
-                  query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "New Capacity"'
+                  query: 'AzureDiagnostics\n| where ResourceProvider == "MICROSOFT.AUTOMATION"\n| where Category  == "JobStreams"\n| where ResultDescription has "New Capacity" | where RunbookName_s == "${varRunbookName}"'
                   TimeAggregation: 'Count'
                   dimensions: [
                       {
