@@ -63,13 +63,13 @@
       "location": "[parameters('location')]",
       "apiVersion": "2019-12-01",
       "tags": {
-        "displayName": "adPubIP"
+      "displayName": "adPubIP"
+      },
+      "sku": {
+        "name": "Standard"
       },
       "properties": {
-        "publicIPAllocationMethod": "Dynamic",
-        "sku": {
-          "name": "Standard"
-        }
+        "publicIPAllocationMethod": "Static"
       }
     },
     {
