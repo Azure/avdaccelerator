@@ -4,7 +4,7 @@
   "parameters": {
     "assetLocation": {
       "type": "string",
-      "defaultValue": "https://raw.github.com/Azure/avdaccelerator/tree/main/workload/workshop/AAD-Hybrid-Lab/",
+      "defaultValue": "https://raw.github.com/Azure/avdaccelerator/tree/pip-fix/workload/workshop/AAD-Hybrid-Lab/",
       "metadata": {
         "description": "This is the location in which all the linked templates are stored."
       }
