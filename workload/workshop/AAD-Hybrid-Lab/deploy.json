@@ -4,7 +4,7 @@
   "parameters": {
     "assetLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/PeterR-msft/M365AVDWS/master/AAD-Hybrid-Lab/",
+      "defaultValue": "https://raw.githubusercontent.com/azure/avdaccelerator/main/workload/workshop/AAD-Hybrid-Lab/",
       "metadata": {
         "description": "This is the location in which all the linked templates are stored."
       }
@@ -107,7 +107,9 @@
         "Standard_D2s_v3",
         "Standard_D2s_v4",
         "Standard_D4_v4",
-        "Standard_D4s_v4"
+        "Standard_D4s_v4",
+        "Standard_DS2_v5",
+        "Standard_D2_v5"
       ],
       "metadata": {
         "description": "Select a VM SKU (please ensure the SKU is available in your selected region)."
