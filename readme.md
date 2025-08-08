@@ -64,7 +64,7 @@ The brownfield, add-ons and tools section, contains templates to deploy addition
 
 ### Monitoring and alerts
 
-- [Deep Insights Workbook](./workload/workbooks/deepInsightsWorkbook/readme.md)
+- [Deep Insights Workbook (External resource)](https://blog.itprocloud.de/AVD-Azure-Virtual-Desktop-Error-Drill-Down-Workbook/)
 - [Error Reporting Workbook](./workload/workbooks/errorReporting/readme.md)
 - [Error Tracking Workbook](./workload/workbooks/errorTracking/readme.md)
 - [Alerts](./workload/bicep/brownfield/alerts/readme.md)
