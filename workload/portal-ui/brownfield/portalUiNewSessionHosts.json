@@ -136,7 +136,7 @@
 							"name": "identityDomainName",
 							"type": "Microsoft.Common.TextBox",
 							"label": "Domain name",
-							"visible": "[contains(steps('identity').identityServiceProvider, 'DS')]",
+							"visible": "[not(equals(steps('identity').identityServiceProvider, 'EntraID'))]",
 							"toolTip": "The full qualified domain name of the domain to which the virtual machines will be joined.",
 							"placeholder": "Example: contoso.com",
 							"constraints": {
@@ -1037,7 +1037,7 @@
 				"deployAntiMalwareExt": "[steps('sessionHosts').settings.enableAntiMalwareExt]",
 				"identityServiceProvider": "[steps('identity').identityServiceProvider]",
 				"createIntuneEnrollment": "[if(contains(steps('identity').identityServiceProvider, 'ID'), steps('identity').intuneEnrollment, false)]",
-				"identityDomainName": "[if(contains(steps('identity').identityServiceProvider, 'DS'), steps('identity').identityDomainName, '')]",
+				"identityDomainName": "[if(not(equals(steps('identity').identityServiceProvider, 'EntraID')), steps('identity').identityDomainName, '')]",
 				"sessionHostOuPath": "[if(contains(steps('identity').identityServiceProvider, 'DS'), steps('identity').ouPath, '')]",
 				"keyVaultResourceId": "[steps('identity').keyVault.id]",
 				"domainJoinUserPrincipalName": "[if(contains(steps('identity').identityServiceProvider, 'DS'), steps('identity').domainJoinUserPrincipalName, '')]",
