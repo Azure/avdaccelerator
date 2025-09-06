@@ -67,7 +67,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       ]
     }
     retentionInterval: 'P1D'
-    scriptContent: 'echo \'Enviornment variable value is: \' $var1'
+    scriptContent: 'echo \'Environment variable value is: \' $var1'
     storageAccountResourceId: '<storageAccountResourceId>'
   }
 }
@@ -120,7 +120,7 @@ module deploymentScript 'br/public:avm/res/resources/deployment-script:<version>
       "value": "P1D"
     },
     "scriptContent": {
-      "value": "echo \"Enviornment variable value is: \" $var1"
+      "value": "echo \"Environment variable value is: \" $var1"
     },
     "storageAccountResourceId": {
       "value": "<storageAccountResourceId>"
