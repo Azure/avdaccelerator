@@ -62,7 +62,7 @@ module testDeployment '../../../main.bicep' = {
         }
       ]
     }
-    scriptContent: 'echo \'Enviornment variable value is: \' $var1'
+    scriptContent: 'echo \'Environment variable value is: \' $var1'
     storageAccountResourceId: nestedDependencies.outputs.storageAccountResourceId
     managedIdentities: {
       userAssignedResourcesIds: [
