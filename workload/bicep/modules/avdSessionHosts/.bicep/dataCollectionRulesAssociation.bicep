@@ -20,12 +20,12 @@ param dataCollectionRuleId string
 // Deployments //
 // =========== //
 // Get Vm object
-resource getVm 'Microsoft.Compute/virtualMachines@2023-09-01' existing = {
+resource getVm 'Microsoft.Compute/virtualMachines@2024-11-01' existing = {
   name: virtualMachineName
 }
 
 // Deploy VM data rule collection association
-resource symbolicname 'Microsoft.Insights/dataCollectionRuleAssociations@2022-06-01' = {
+resource symbolicname 'Microsoft.Insights/dataCollectionRuleAssociations@2023-03-11' = {
   name: virtualMachineName
   scope: getVm
   properties: {
