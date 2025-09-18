@@ -26,11 +26,11 @@ param shares array?
 
 var defaultShareAccessTier = storageAccount.kind == 'FileStorage' ? 'Premium' : 'TransactionOptimized' // default share accessTier depends on the Storage Account kind: 'Premium' for 'FileStorage' kind, 'TransactionOptimized' otherwise
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
   name: storageAccountName
 }
 
-resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2023-04-01' = {
+resource fileServices 'Microsoft.Storage/storageAccounts/fileServices@2025-01-01' = {
   name: name
   parent: storageAccount
   properties: {

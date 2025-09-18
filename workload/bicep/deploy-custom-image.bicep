@@ -507,7 +507,7 @@ var varVmSize = 'Standard_D4s_v3'
 // =========== //
 
 // Telemetry Deployment.
-resource telemetryDeployment 'Microsoft.Resources/deployments@2021-04-01' = if (enableTelemetry) {
+resource telemetryDeployment 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: varTelemetryId
   location: deploymentLocation
   properties: {

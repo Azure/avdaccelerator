@@ -1034,7 +1034,7 @@ var varSecurityPrincipalName = !empty(avdSecurityGroups) ? avdSecurityGroups[0].
 // =========== //
 
 //  Telemetry Deployment
-resource telemetrydeployment 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource telemetrydeployment 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: varTelemetryId
   location: avdManagementPlaneLocation
   properties: {

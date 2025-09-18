@@ -47,7 +47,7 @@ param enableTelemetry bool = true
 //   )
 // }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.network-networksecuritygroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -65,7 +65,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' = if (enableT
   }
 }
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-11-01' = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-07-01' = {
   name: name
   location: location
   tags: tags

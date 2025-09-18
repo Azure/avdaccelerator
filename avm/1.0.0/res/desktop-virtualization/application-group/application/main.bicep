@@ -37,11 +37,11 @@ param iconPath string = ''
 @sys.description('Optional. Index of the icon.')
 param iconIndex int = 0
 
-resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2023-09-05' existing = {
+resource appGroup 'Microsoft.DesktopVirtualization/applicationGroups@2025-03-01-preview' existing = {
   name: applicationGroupName
 }
 
-resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2023-09-05' = {
+resource application 'Microsoft.DesktopVirtualization/applicationGroups/applications@2025-03-01-preview' = {
   name: name
   parent: appGroup
   properties: {

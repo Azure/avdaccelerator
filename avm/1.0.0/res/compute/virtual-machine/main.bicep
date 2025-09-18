@@ -425,7 +425,7 @@ var identity = !empty(managedIdentities)
 //   )
 // }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' =
   if (enableTelemetry) {
     name: '46d3xbcp.res.compute-virtualmachine.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {
@@ -473,7 +473,7 @@ module vm_nic 'modules/nic-configuration.bicep' = [
   }
 ]
 
-resource vm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
+resource vm 'Microsoft.Compute/virtualMachines@2024-11-01' = {
   name: name
   location: location
   identity: identity

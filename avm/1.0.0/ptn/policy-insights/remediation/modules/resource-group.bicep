@@ -47,7 +47,7 @@ param location string = resourceGroup().location
 // Resources        //
 // ================ //
 
-resource remediation 'Microsoft.PolicyInsights/remediations@2021-10-01' = {
+resource remediation 'Microsoft.PolicyInsights/remediations@2024-10-01' = {
   name: name
   properties: {
     failureThreshold: {

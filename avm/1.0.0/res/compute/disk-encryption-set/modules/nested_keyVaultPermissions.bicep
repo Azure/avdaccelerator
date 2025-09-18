@@ -13,15 +13,15 @@ param keyVaultResourceId string
 @description('Required. Name of the key to set the permissions for.')
 param keyName string
 
-resource keyVault 'Microsoft.KeyVault/vaults@2021-10-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: last(split(keyVaultResourceId, '/'))!
 
-  resource key 'keys@2021-10-01' existing = {
+  resource key 'keys@2024-12-01-preview' existing = {
     name: keyName
   }
 }
 
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' existing = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' existing = {
   name: last(split(userAssignedIdentityResourceId, '/'))!
   scope: resourceGroup(split(userAssignedIdentityResourceId, '/')[2], split(userAssignedIdentityResourceId, '/')[4])
 

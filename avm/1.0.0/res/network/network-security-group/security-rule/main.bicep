@@ -70,11 +70,11 @@ param sourcePortRange string = ''
 @sys.description('Optional. The source port ranges.')
 param sourcePortRanges array = []
 
-resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2023-04-01' existing = {
+resource networkSecurityGroup 'Microsoft.Network/networkSecurityGroups@2024-07-01' existing = {
   name: networkSecurityGroupName
 }
 
-resource securityRule 'Microsoft.Network/networkSecurityGroups/securityRules@2023-11-01' = {
+resource securityRule 'Microsoft.Network/networkSecurityGroups/securityRules@2024-07-01' = {
   name: name
   parent: networkSecurityGroup
   properties: {

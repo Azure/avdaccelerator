@@ -60,7 +60,7 @@ param diagnosticSettings diagnosticSettingType
 //   'Desktop Virtualization Workspace Reader': '/providers/Microsoft.Authorization/roleDefinitions/0fa44ee9-7a7d-466b-9bb2-2bf446b1204d'
 // }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' =
   if (enableTelemetry) {
     name: take(
       '46d3xbcp.res.desktopvirtualization-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
@@ -82,7 +82,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource workspace 'Microsoft.DesktopVirtualization/workspaces@2023-09-05' = {
+resource workspace 'Microsoft.DesktopVirtualization/workspaces@2025-03-01-preview' = {
   name: name
   location: location
   tags: tags
