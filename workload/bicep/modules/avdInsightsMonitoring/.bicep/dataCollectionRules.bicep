@@ -23,7 +23,7 @@ var varAlaWorkspaceName = split(alaWorkspaceId, '/')[8]
 // =========== //
 // Deployments //
 // =========== //
-resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2022-06-01' = {
+resource dataCollectionRules 'Microsoft.Insights/dataCollectionRules@2023-03-11' = {
   name: name
   location: location
   tags: tags

@@ -97,7 +97,7 @@ var varManagedDisk = empty(diskEncryptionSetResourceId) ? {
 // =========== //
 
 // Call on the KV.
-resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2021-06-01-preview' existing = {
+resource avdWrklKeyVaultget 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
     name: wrklKvName
     scope: resourceGroup('${workloadSubsId}', '${serviceObjectsRgName}')
 }

@@ -11,7 +11,7 @@ param hostPoolName string
 // ========== //
 
 // Host pool.
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' existing = {
   name: hostPoolName
 }
 

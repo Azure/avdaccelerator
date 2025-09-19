@@ -113,7 +113,7 @@ var varRoles = union(empty(existingVirtualNetworkResourceId) ? [] : [
 // =========== //
 
 // Resource group
-resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (!existingResourceGroup) {
+resource rg 'Microsoft.Resources/resourceGroups@2025-04-01' = if (!existingResourceGroup) {
   name: resourceGroupName
   location: location
   tags: tags[?'Microsoft.Resources/resourceGroups'] ?? {}
@@ -121,7 +121,7 @@ resource rg 'Microsoft.Resources/resourceGroups@2024-03-01' = if (!existingResou
 }
 
 // Role definitions
-resource roleDefinitions 'Microsoft.Authorization/roleDefinitions@2015-07-01' = [for i in range(0, length(varRoles)): {
+resource roleDefinitions 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' = [for i in range(0, length(varRoles)): {
   name: guid(varRoles[i].name, subscription().id)
   properties: {
     roleName: '${varRoles[i].name} (${subscription().subscriptionId})'

@@ -83,17 +83,17 @@ var varNvidiaVmSize = contains(varNvidiaVmSizes, vmSize)
 // =========== //
 // Deployments //
 // =========== //
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' existing = {
   name: last(split(hostPoolResourceId, '/'))
   scope: resourceGroup(split(hostPoolResourceId, '/')[4])
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = if (!empty(fslogixStorageAccountResourceId)) {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(fslogixStorageAccountResourceId)) {
   name: fslogixStorageAccountName
   scope: resourceGroup(split(fslogixStorageAccountResourceId, '/')[4])
 }
 
-resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
+resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2024-11-01' = {
   name: '${name}/SessionHostConfig'
   location: location
   properties: {

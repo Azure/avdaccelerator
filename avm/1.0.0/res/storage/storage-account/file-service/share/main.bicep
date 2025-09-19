@@ -50,7 +50,7 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-04-01' existing 
   }
 }
 
-resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2023-01-01' = {
+resource fileShare 'Microsoft.Storage/storageAccounts/fileServices/shares@2025-01-01' = {
   name: name
   parent: storageAccount::fileService
   properties: {

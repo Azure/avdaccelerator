@@ -39,7 +39,7 @@ param policyRule object
 // Deployments //
 // =========== //
 // Policy definition creation.
-resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2023-04-01' = {
+resource policyDefinition 'Microsoft.Authorization/policyDefinitions@2025-03-01' = {
   name: name
   properties: {
     policyType: 'Custom'

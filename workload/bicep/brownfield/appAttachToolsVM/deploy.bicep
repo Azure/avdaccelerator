@@ -52,7 +52,7 @@ var VNetName = VNet.name
 var KVLocalAdminSubId = adminPassUseKv ? split(adminPassKv.id, '/')[2] : ''
 var KVLocalAdminRG = adminPassUseKv ? split(adminPassKv.id, '/')[4] : ''
 
-resource kvVMPassword 'Microsoft.KeyVault/vaults@2023-02-01' existing = if(adminPassUseKv) {
+resource kvVMPassword 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = if(adminPassUseKv) {
   name: adminPassKv.name
   scope: resourceGroup(KVLocalAdminSubId, KVLocalAdminRG)
 }

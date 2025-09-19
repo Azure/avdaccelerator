@@ -30,7 +30,7 @@ param parameters object = {}
 // =========== //
 // Deployments //
 // =========== //
-resource policySetDefinition 'Microsoft.Authorization/policySetDefinitions@2023-04-01' = {
+resource policySetDefinition 'Microsoft.Authorization/policySetDefinitions@2025-03-01' = {
   name: name
   properties: {
     policyType: 'Custom'

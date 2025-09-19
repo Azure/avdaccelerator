@@ -8,11 +8,11 @@ param automationAccountName string
 @description('Required. The credential definition.')
 param credentials credentialType
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
 
-resource automationAccount_credential 'Microsoft.Automation/automationAccounts/credentials@2023-11-01' = [
+resource automationAccount_credential 'Microsoft.Automation/automationAccounts/credentials@2024-10-23' = [
   for credential in credentials: {
     name: credential.name
     parent: automationAccount

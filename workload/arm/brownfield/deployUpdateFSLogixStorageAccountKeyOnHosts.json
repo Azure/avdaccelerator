@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "16128536374539072804"
+      "version": "0.37.4.10188",
+      "templateHash": "14821765847758307412"
     }
   },
   "parameters": {
@@ -42,7 +42,7 @@
         "count": "[length(parameters('vmNames'))]"
       },
       "type": "Microsoft.Compute/virtualMachines/runCommands",
-      "apiVersion": "2023-09-01",
+      "apiVersion": "2024-11-01",
       "name": "[format('{0}/{1}', parameters('vmNames')[copyIndex()], format('RunCommand-{0}-{1}', parameters('vmNames')[copyIndex()], parameters('timeStamp')))]",
       "location": "[parameters('location')]",
       "properties": {
@@ -60,7 +60,7 @@
           },
           {
             "name": "StorageAccountKey",
-            "value": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2023-05-01').keys[variables('varKeyIndex')].value]"
+            "value": "[listKeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', split(parameters('storageAccountResourceId'), '/')[2], split(parameters('storageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', last(split(parameters('storageAccountResourceId'), '/'))), '2025-01-01').keys[variables('varKeyIndex')].value]"
           }
         ],
         "timeoutInSeconds": 30,

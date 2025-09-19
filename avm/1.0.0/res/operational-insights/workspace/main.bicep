@@ -150,7 +150,7 @@ var identity = !empty(managedIdentities)
 //   )
 // }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' =
   if (enableTelemetry) {
     name: '46d3xbcp.res.operationalinsights-workspace.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {
@@ -169,7 +169,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' = {
+resource logAnalyticsWorkspace 'Microsoft.OperationalInsights/workspaces@2025-02-01' = {
   location: location
   name: name
   tags: tags

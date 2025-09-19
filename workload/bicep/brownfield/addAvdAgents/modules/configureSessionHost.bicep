@@ -27,7 +27,7 @@ var varScriptArguments = '-AmdVmSize $false -IdentityServiceProvider ${varIdenti
 // =========== //
 // Deployments //
 // =========== //
-resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
+resource sessionHostConfig 'Microsoft.Compute/virtualMachines/extensions@2024-11-01' = {
   name: '${name}/SessionHostConfig'
   location: location
   properties: {

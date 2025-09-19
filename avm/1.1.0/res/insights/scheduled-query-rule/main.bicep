@@ -101,7 +101,7 @@ var formattedRoleAssignments = [
 ]
 
 #disable-next-line no-deployments-resources
-resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableTelemetry) {
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' = if (enableTelemetry) {
   name: '46d3xbcp.res.insights-scheduledqueryrule.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
   properties: {
     mode: 'Incremental'
@@ -119,7 +119,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2024-03-01' = if (enableT
   }
 }
 
-resource queryRule 'Microsoft.Insights/scheduledQueryRules@2023-03-15-preview' = {
+resource queryRule 'Microsoft.Insights/scheduledQueryRules@2025-01-01-preview' = {
   name: name
   location: location
   tags: tags
