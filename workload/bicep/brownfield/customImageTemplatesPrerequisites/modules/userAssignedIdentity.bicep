@@ -13,7 +13,7 @@ param tags object
 // Deployments //
 // =========== //
 
-resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2023-01-31' = {
+resource userAssignedIdentity 'Microsoft.ManagedIdentity/userAssignedIdentities@2025-01-31-preview' = {
   name: name
   location: location
   tags: tags[?'Microsoft.ManagedIdentity/userAssignedIdentities'] ?? {}

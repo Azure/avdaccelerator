@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "8194596416019707182"
+      "version": "0.37.4.10188",
+      "templateHash": "17359131749414643339"
     }
   },
   "parameters": {
@@ -71,50 +71,50 @@
             "value": "[variables('varHostPoolName')]"
           },
           "friendlyName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').friendlyName]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').friendlyName]"
           },
           "location": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05', 'full').location]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview', 'full').location]"
           },
           "keyVaultResourceId": {
             "value": "[parameters('keyVaultResourceId')]"
           },
-          "hostPoolType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').hostPoolType, 'Personal'), createObject('value', 'Personal'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').hostPoolType, 'Pooled'), createObject('value', 'Pooled'), createObject('value', null())))]",
+          "hostPoolType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').hostPoolType, 'Personal'), createObject('value', 'Personal'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').hostPoolType, 'Pooled'), createObject('value', 'Pooled'), createObject('value', null())))]",
           "startVMOnConnect": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').startVMOnConnect]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').startVMOnConnect]"
           },
           "customRdpProperty": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').customRdpProperty]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').customRdpProperty]"
           },
-          "loadBalancerType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').loadBalancerType, 'BreadthFirst'), createObject('value', 'BreadthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').loadBalancerType, 'DepthFirst'), createObject('value', 'DepthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').loadBalancerType, 'Persistent'), createObject('value', 'Persistent'), createObject('value', null()))))]",
+          "loadBalancerType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').loadBalancerType, 'BreadthFirst'), createObject('value', 'BreadthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').loadBalancerType, 'DepthFirst'), createObject('value', 'DepthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').loadBalancerType, 'Persistent'), createObject('value', 'Persistent'), createObject('value', null()))))]",
           "maxSessionLimit": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').maxSessionLimit]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').maxSessionLimit]"
           },
-          "preferredAppGroupType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').preferredAppGroupType, 'Desktop'), createObject('value', 'Desktop'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').preferredAppGroupType, 'RailApplications'), createObject('value', 'RailApplications'), createObject('value', null())))]",
-          "personalDesktopAssignmentType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').personalDesktopAssignmentType, 'Automatic'), createObject('value', 'Automatic'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').personalDesktopAssignmentType, 'Direct'), createObject('value', 'Direct'), createObject('value', null())))]",
+          "preferredAppGroupType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').preferredAppGroupType, 'Desktop'), createObject('value', 'Desktop'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').preferredAppGroupType, 'RailApplications'), createObject('value', 'RailApplications'), createObject('value', null())))]",
+          "personalDesktopAssignmentType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').personalDesktopAssignmentType, 'Automatic'), createObject('value', 'Automatic'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').personalDesktopAssignmentType, 'Direct'), createObject('value', 'Direct'), createObject('value', null())))]",
           "description": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').description]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').description]"
           },
           "ssoadfsAuthority": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').ssoadfsAuthority]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').ssoadfsAuthority]"
           },
           "ssoClientId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').ssoClientId]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').ssoClientId]"
           },
           "ssoClientSecretKeyVaultPath": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').ssoClientSecretKeyVaultPath]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').ssoClientSecretKeyVaultPath]"
           },
           "validationEnvironment": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').validationEnvironment]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').validationEnvironment]"
           },
           "ring": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').ring]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').ring]"
           },
           "tags": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05', 'full').tags]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview', 'full').tags]"
           },
           "agentUpdate": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2023-09-05').agentUpdate]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', format('{0}', variables('varHostpoolSubId')), format('{0}', variables('varHostpoolRgName'))), 'Microsoft.DesktopVirtualization/hostPools', variables('varHostPoolName')), '2025-03-01-preview').agentUpdate]"
           }
         },
         "template": {
@@ -124,8 +124,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4797298004221587284"
+              "version": "0.37.4.10188",
+              "templateHash": "5122103505143978330"
             },
             "name": "Azure Virtual Desktop Host Pool",
             "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -622,7 +622,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('46d3xbcp.res.desktopvirtualization-hostpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "properties": {
                 "mode": "Incremental",
@@ -641,7 +641,7 @@
             },
             "hostPool": {
               "type": "Microsoft.DesktopVirtualization/hostPools",
-              "apiVersion": "2023-09-05",
+              "apiVersion": "2025-03-01-preview",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -735,8 +735,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "17400304622639006546"
+                      "version": "0.37.4.10188",
+                      "templateHash": "17350432618025491251"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret.",
@@ -889,12 +889,12 @@
                     "keyVault": {
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2024-12-01-preview",
                       "name": "[parameters('keyVaultName')]"
                     },
                     "secret": {
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2024-12-01-preview",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -1646,7 +1646,7 @@
               "metadata": {
                 "description": "The location of the host pool."
               },
-              "value": "[reference('hostPool', '2023-09-05', 'full').location]"
+              "value": "[reference('hostPool', '2025-03-01-preview', 'full').location]"
             },
             "keyVaultTokenSecretResourceId": {
               "type": "string",
@@ -1698,8 +1698,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "12732844867802063090"
+              "version": "0.37.4.10188",
+              "templateHash": "15256934575543065757"
             }
           },
           "parameters": {
@@ -1741,7 +1741,7 @@
           "resources": [
             {
               "type": "Microsoft.Compute/virtualMachines/extensions",
-              "apiVersion": "2023-09-01",
+              "apiVersion": "2024-11-01",
               "name": "[format('{0}/SessionHostConfig', parameters('name'))]",
               "location": "[parameters('location')]",
               "properties": {

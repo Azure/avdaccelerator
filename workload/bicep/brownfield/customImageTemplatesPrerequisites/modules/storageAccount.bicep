@@ -15,7 +15,7 @@ param userAssignedIdentityResourceId string
 // Deployments //
 // =========== //
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' = {
   name: storageAccountName
   location: location
   tags: tags[?'Microsoft.Storage/storageAccounts'] ?? {}
@@ -49,12 +49,12 @@ resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   }
 }
 
-resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2023-05-01' = {
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2025-01-01' = {
   parent: storageAccount
   name: 'default'
 }
 
-resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2023-05-01' = {
+resource container 'Microsoft.Storage/storageAccounts/blobServices/containers@2025-01-01' = {
   parent: blobService
   name: 'artifacts'
   properties: {
