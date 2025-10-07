@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.37.4.10188",
-      "templateHash": "3715992396016671208"
+      "version": "0.38.5.1644",
+      "templateHash": "7781060513677003346"
     }
   },
   "parameters": {
@@ -688,6 +688,11 @@
         "acronym": "usw3",
         "timeDifference": "-7:00",
         "timeZone": "Mountain Standard Time"
+      },
+      "chilecentral": {
+        "acronym": "clc",
+        "timeDifference": "-4:00",
+        "timeZone": "Chile Standard Time"
       }
     },
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
@@ -717,7 +722,7 @@
   "resources": [
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('HostPool-{0}', parameters('time'))]",
       "resourceGroup": "[split(parameters('hostPoolResourceId'), '/')[4]]",
       "properties": {
@@ -783,8 +788,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "5122103505143978330"
+              "version": "0.38.5.1644",
+              "templateHash": "16067663369701024674"
             },
             "name": "Azure Virtual Desktop Host Pool",
             "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -1364,7 +1369,7 @@
             },
             "keyVaultHostPoolSecret": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-HP-Token-Secret', uniqueString(deployment().name, parameters('location')))]",
               "subscriptionId": "[format('{0}', variables('varKeyVaultSubId'))]",
               "resourceGroup": "[format('{0}', variables('varKeyVaultRgName'))]",
@@ -1394,8 +1399,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "17350432618025491251"
+                      "version": "0.38.5.1644",
+                      "templateHash": "12771086185846762251"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret.",
@@ -1624,7 +1629,7 @@
                 "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-hostPool-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
               "properties": {
@@ -2326,7 +2331,7 @@
         "batchSize": 10
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('SH-Batch-{0}-{1}', range(1, variables('varSessionHostBatchCount'))[copyIndex()], parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
@@ -2457,8 +2462,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.37.4.10188",
-              "templateHash": "16410970166167977469"
+              "version": "0.38.5.1644",
+              "templateHash": "3289704006583641900"
             }
           },
           "parameters": {
@@ -2757,7 +2762,7 @@
                 "count": "[length(range(0, parameters('count')))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('SH-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -2839,8 +2844,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "8110618340383780936"
+                      "version": "0.38.5.1644",
+                      "templateHash": "2405354165819386748"
                     },
                     "name": "Virtual Machines",
                     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -3627,7 +3632,7 @@
                         "count": "[length(parameters('nicConfigurations'))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-Nic-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -3669,8 +3674,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "1689784755455059642"
+                              "version": "0.38.5.1644",
+                              "templateHash": "2315159270524036404"
                             }
                           },
                           "definitions": {
@@ -3961,7 +3966,7 @@
                               },
                               "condition": "[contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-publicIP-{1}', deployment().name, copyIndex())]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -4611,7 +4616,7 @@
                             },
                             "networkInterface": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-NetworkInterface', deployment().name)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -5183,7 +5188,7 @@
                     "vm_aadJoinExtension": {
                       "condition": "[parameters('extensionAadJoinConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-AADLogin', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5222,8 +5227,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "13335286348222370921"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -5380,7 +5385,7 @@
                     "vm_domainJoinExtension": {
                       "condition": "[parameters('extensionDomainJoinConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5428,8 +5433,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "13335286348222370921"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -5587,7 +5592,7 @@
                     "vm_desiredStateConfigurationExtension": {
                       "condition": "[parameters('extensionDSCConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-DesiredStateConfiguration', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5629,8 +5634,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "13335286348222370921"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -5787,7 +5792,7 @@
                     "vm_customScriptExtension": {
                       "condition": "[parameters('extensionCustomScriptConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-CustomScriptExtension', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5837,8 +5842,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "13335286348222370921"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -5996,7 +6001,7 @@
                     "vm_azureDiskEncryptionExtension": {
                       "condition": "[parameters('extensionAzureDiskEncryptionConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-AzureDiskEncryption', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6038,8 +6043,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "13335286348222370921"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -6196,7 +6201,7 @@
                     "vm_nvidiaGpuDriverWindowsExtension": {
                       "condition": "[parameters('extensionNvidiaGpuDriverWindows').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-NvidiaGpuDriverWindows', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6236,8 +6241,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.37.4.10188",
-                              "templateHash": "13335286348222370921"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -6440,7 +6445,7 @@
               },
               "condition": "[parameters('deployAntiMalwareExt')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('SH-Antimal-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -6495,8 +6500,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "13335286348222370921"
+                      "version": "0.38.5.1644",
+                      "templateHash": "6641117318959164611"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension.",
@@ -6657,7 +6662,7 @@
               },
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('SH-Mon-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -6699,8 +6704,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "13335286348222370921"
+                      "version": "0.38.5.1644",
+                      "templateHash": "6641117318959164611"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension.",
@@ -6861,7 +6866,7 @@
               },
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('DCR-Asso-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -6884,8 +6889,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "15067733333636105280"
+                      "version": "0.38.5.1644",
+                      "templateHash": "2562106205462073585"
                     }
                   },
                   "parameters": {
@@ -6927,7 +6932,7 @@
                 "count": "[length(range(0, parameters('count')))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('SH-Config-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -6978,8 +6983,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.37.4.10188",
-                      "templateHash": "3921075134235671087"
+                      "version": "0.38.5.1644",
+                      "templateHash": "6887932212929399592"
                     }
                   },
                   "parameters": {
