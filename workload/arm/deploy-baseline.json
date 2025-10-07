@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "14668353902035254911"
+      "templateHash": "7171917561541610636"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1308,7 +1308,7 @@
       "chilecentral": {
         "acronym": "clc",
         "timeDifference": "-4:00",
-        "timeZone": "Chile Standard Time"
+        "timeZone": "Pacific SA Standard Time"
       }
     },
     "$fxv#1": {

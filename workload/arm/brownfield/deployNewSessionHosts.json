@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.38.5.1644",
-      "templateHash": "7781060513677003346"
+      "templateHash": "5874908384357929073"
     }
   },
   "parameters": {
@@ -692,7 +692,7 @@
       "chilecentral": {
         "acronym": "clc",
         "timeDifference": "-4:00",
-        "timeZone": "Chile Standard Time"
+        "timeZone": "Pacific SA Standard Time"
       }
     },
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
