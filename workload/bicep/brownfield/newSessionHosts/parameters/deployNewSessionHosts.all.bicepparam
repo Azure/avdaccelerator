@@ -1,4 +1,4 @@
-using '../deployNewSessionHosts.bicep'
+using '../deploy.bicep'
 
 param location = ''
 param computeRgResourceGroupName = ''
