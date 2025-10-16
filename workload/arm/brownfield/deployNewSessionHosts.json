@@ -4,8 +4,8 @@
   "metadata": {
     "_generator": {
       "name": "bicep",
-      "version": "0.33.93.31351",
-      "templateHash": "9665906661952777717"
+      "version": "0.38.5.1644",
+      "templateHash": "5874908384357929073"
     }
   },
   "parameters": {
@@ -688,6 +688,11 @@
         "acronym": "usw3",
         "timeDifference": "-7:00",
         "timeZone": "Mountain Standard Time"
+      },
+      "chilecentral": {
+        "acronym": "clc",
+        "timeDifference": "-4:00",
+        "timeZone": "Pacific SA Standard Time"
       }
     },
     "varDeploymentPrefixLowercase": "[toLower(parameters('deploymentPrefix'))]",
@@ -717,7 +722,7 @@
   "resources": [
     {
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('HostPool-{0}', parameters('time'))]",
       "resourceGroup": "[split(parameters('hostPoolResourceId'), '/')[4]]",
       "properties": {
@@ -730,50 +735,50 @@
             "value": "[last(split(parameters('hostPoolResourceId'), '/'))]"
           },
           "friendlyName": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').friendlyName]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').friendlyName]"
           },
           "location": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05', 'full').location]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview', 'full').location]"
           },
           "keyVaultResourceId": {
             "value": "[parameters('keyVaultResourceId')]"
           },
-          "hostPoolType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').hostPoolType, 'Personal'), createObject('value', 'Personal'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').hostPoolType, 'Pooled'), createObject('value', 'Pooled'), createObject('value', null())))]",
+          "hostPoolType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').hostPoolType, 'Personal'), createObject('value', 'Personal'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').hostPoolType, 'Pooled'), createObject('value', 'Pooled'), createObject('value', null())))]",
           "startVMOnConnect": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').startVMOnConnect]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').startVMOnConnect]"
           },
           "customRdpProperty": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').customRdpProperty]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').customRdpProperty]"
           },
-          "loadBalancerType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').loadBalancerType, 'BreadthFirst'), createObject('value', 'BreadthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').loadBalancerType, 'DepthFirst'), createObject('value', 'DepthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').loadBalancerType, 'Persistent'), createObject('value', 'Persistent'), createObject('value', null()))))]",
+          "loadBalancerType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').loadBalancerType, 'BreadthFirst'), createObject('value', 'BreadthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').loadBalancerType, 'DepthFirst'), createObject('value', 'DepthFirst'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').loadBalancerType, 'Persistent'), createObject('value', 'Persistent'), createObject('value', null()))))]",
           "maxSessionLimit": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').maxSessionLimit]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').maxSessionLimit]"
           },
-          "preferredAppGroupType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').preferredAppGroupType, 'Desktop'), createObject('value', 'Desktop'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').preferredAppGroupType, 'RailApplications'), createObject('value', 'RailApplications'), createObject('value', null())))]",
-          "personalDesktopAssignmentType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').personalDesktopAssignmentType, 'Automatic'), createObject('value', 'Automatic'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').personalDesktopAssignmentType, 'Direct'), createObject('value', 'Direct'), createObject('value', null())))]",
+          "preferredAppGroupType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').preferredAppGroupType, 'Desktop'), createObject('value', 'Desktop'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').preferredAppGroupType, 'RailApplications'), createObject('value', 'RailApplications'), createObject('value', null())))]",
+          "personalDesktopAssignmentType": "[if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').personalDesktopAssignmentType, 'Automatic'), createObject('value', 'Automatic'), if(equals(reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').personalDesktopAssignmentType, 'Direct'), createObject('value', 'Direct'), createObject('value', null())))]",
           "description": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').description]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').description]"
           },
           "ssoadfsAuthority": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').ssoadfsAuthority]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').ssoadfsAuthority]"
           },
           "ssoClientId": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').ssoClientId]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').ssoClientId]"
           },
           "ssoClientSecretKeyVaultPath": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').ssoClientSecretKeyVaultPath]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').ssoClientSecretKeyVaultPath]"
           },
           "validationEnvironment": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').validationEnvironment]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').validationEnvironment]"
           },
           "ring": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').ring]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').ring]"
           },
           "tags": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05', 'full').tags]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview', 'full').tags]"
           },
           "agentUpdate": {
-            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').agentUpdate]"
+            "value": "[reference(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').agentUpdate]"
           }
         },
         "template": {
@@ -783,8 +788,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "4797298004221587284"
+              "version": "0.38.5.1644",
+              "templateHash": "16067663369701024674"
             },
             "name": "Azure Virtual Desktop Host Pool",
             "description": "This module deploys an Azure Virtual Desktop Host Pool",
@@ -1281,7 +1286,7 @@
             "avmTelemetry": {
               "condition": "[parameters('enableTelemetry')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2023-07-01",
+              "apiVersion": "2025-04-01",
               "name": "[take(format('46d3xbcp.res.desktopvirtualization-hostpool.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4)), 64)]",
               "properties": {
                 "mode": "Incremental",
@@ -1300,7 +1305,7 @@
             },
             "hostPool": {
               "type": "Microsoft.DesktopVirtualization/hostPools",
-              "apiVersion": "2023-09-05",
+              "apiVersion": "2025-03-01-preview",
               "name": "[parameters('name')]",
               "location": "[parameters('location')]",
               "tags": "[parameters('tags')]",
@@ -1364,7 +1369,7 @@
             },
             "keyVaultHostPoolSecret": {
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-HP-Token-Secret', uniqueString(deployment().name, parameters('location')))]",
               "subscriptionId": "[format('{0}', variables('varKeyVaultSubId'))]",
               "resourceGroup": "[format('{0}', variables('varKeyVaultRgName'))]",
@@ -1394,8 +1399,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "17400304622639006546"
+                      "version": "0.38.5.1644",
+                      "templateHash": "12771086185846762251"
                     },
                     "name": "Key Vault Secrets",
                     "description": "This module deploys a Key Vault Secret.",
@@ -1548,12 +1553,12 @@
                     "keyVault": {
                       "existing": true,
                       "type": "Microsoft.KeyVault/vaults",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2024-12-01-preview",
                       "name": "[parameters('keyVaultName')]"
                     },
                     "secret": {
                       "type": "Microsoft.KeyVault/vaults/secrets",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2024-12-01-preview",
                       "name": "[format('{0}/{1}', parameters('keyVaultName'), parameters('name'))]",
                       "tags": "[parameters('tags')]",
                       "properties": {
@@ -1624,7 +1629,7 @@
                 "count": "[length(coalesce(parameters('privateEndpoints'), createArray()))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('{0}-hostPool-PrivateEndpoint-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
               "resourceGroup": "[coalesce(tryGet(coalesce(parameters('privateEndpoints'), createArray())[copyIndex()], 'resourceGroupName'), '')]",
               "properties": {
@@ -2305,7 +2310,7 @@
               "metadata": {
                 "description": "The location of the host pool."
               },
-              "value": "[reference('hostPool', '2023-09-05', 'full').location]"
+              "value": "[reference('hostPool', '2025-03-01-preview', 'full').location]"
             },
             "keyVaultTokenSecretResourceId": {
               "type": "string",
@@ -2326,7 +2331,7 @@
         "batchSize": 10
       },
       "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2022-09-01",
+      "apiVersion": "2025-04-01",
       "name": "[format('SH-Batch-{0}-{1}', range(1, variables('varSessionHostBatchCount'))[copyIndex()], parameters('time'))]",
       "location": "[deployment().location]",
       "properties": {
@@ -2457,8 +2462,8 @@
           "metadata": {
             "_generator": {
               "name": "bicep",
-              "version": "0.33.93.31351",
-              "templateHash": "14644484978386040734"
+              "version": "0.38.5.1644",
+              "templateHash": "3289704006583641900"
             }
           },
           "parameters": {
@@ -2757,7 +2762,7 @@
                 "count": "[length(range(0, parameters('count')))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('SH-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -2839,8 +2844,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "11050393703898934384"
+                      "version": "0.38.5.1644",
+                      "templateHash": "2405354165819386748"
                     },
                     "name": "Virtual Machines",
                     "description": "This module deploys a Virtual Machine with one or multiple NICs and optionally one or multiple public IPs.",
@@ -3495,7 +3500,7 @@
                     "avmTelemetry": {
                       "condition": "[parameters('enableTelemetry')]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2023-07-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('46d3xbcp.res.compute-virtualmachine.{0}.{1}', replace('-..--..-', '.', '-'), substring(uniqueString(deployment().name, parameters('location')), 0, 4))]",
                       "properties": {
                         "mode": "Incremental",
@@ -3514,7 +3519,7 @@
                     },
                     "vm": {
                       "type": "Microsoft.Compute/virtualMachines",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[parameters('name')]",
                       "location": "[parameters('location')]",
                       "identity": "[variables('identity')]",
@@ -3627,7 +3632,7 @@
                         "count": "[length(parameters('nicConfigurations'))]"
                       },
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-Nic-{1}', uniqueString(deployment().name, parameters('location')), copyIndex())]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -3669,8 +3674,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "11733090358061195696"
+                              "version": "0.38.5.1644",
+                              "templateHash": "2315159270524036404"
                             }
                           },
                           "definitions": {
@@ -3961,7 +3966,7 @@
                               },
                               "condition": "[contains(parameters('ipConfigurations')[copyIndex()], 'pipConfiguration')]",
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-publicIP-{1}', deployment().name, copyIndex())]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -4611,7 +4616,7 @@
                             },
                             "networkInterface": {
                               "type": "Microsoft.Resources/deployments",
-                              "apiVersion": "2022-09-01",
+                              "apiVersion": "2025-04-01",
                               "name": "[format('{0}-NetworkInterface', deployment().name)]",
                               "properties": {
                                 "expressionEvaluationOptions": {
@@ -5183,7 +5188,7 @@
                     "vm_aadJoinExtension": {
                       "condition": "[parameters('extensionAadJoinConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-AADLogin', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5222,8 +5227,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "6738255057321581868"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -5319,12 +5324,12 @@
                             "virtualMachine": {
                               "existing": true,
                               "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[parameters('virtualMachineName')]"
                             },
                             "extension": {
                               "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -5368,7 +5373,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('extension', '2022-11-01', 'full').location]"
+                              "value": "[reference('extension', '2024-11-01', 'full').location]"
                             }
                           }
                         }
@@ -5380,7 +5385,7 @@
                     "vm_domainJoinExtension": {
                       "condition": "[parameters('extensionDomainJoinConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-DomainJoin', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5428,8 +5433,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "6738255057321581868"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -5525,12 +5530,12 @@
                             "virtualMachine": {
                               "existing": true,
                               "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[parameters('virtualMachineName')]"
                             },
                             "extension": {
                               "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -5574,7 +5579,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('extension', '2022-11-01', 'full').location]"
+                              "value": "[reference('extension', '2024-11-01', 'full').location]"
                             }
                           }
                         }
@@ -5587,7 +5592,7 @@
                     "vm_desiredStateConfigurationExtension": {
                       "condition": "[parameters('extensionDSCConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-DesiredStateConfiguration', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5629,8 +5634,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "6738255057321581868"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -5726,12 +5731,12 @@
                             "virtualMachine": {
                               "existing": true,
                               "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[parameters('virtualMachineName')]"
                             },
                             "extension": {
                               "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -5775,7 +5780,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('extension', '2022-11-01', 'full').location]"
+                              "value": "[reference('extension', '2024-11-01', 'full').location]"
                             }
                           }
                         }
@@ -5787,7 +5792,7 @@
                     "vm_customScriptExtension": {
                       "condition": "[parameters('extensionCustomScriptConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-CustomScriptExtension', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -5837,8 +5842,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "6738255057321581868"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -5934,12 +5939,12 @@
                             "virtualMachine": {
                               "existing": true,
                               "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[parameters('virtualMachineName')]"
                             },
                             "extension": {
                               "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -5983,7 +5988,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('extension', '2022-11-01', 'full').location]"
+                              "value": "[reference('extension', '2024-11-01', 'full').location]"
                             }
                           }
                         }
@@ -5996,7 +6001,7 @@
                     "vm_azureDiskEncryptionExtension": {
                       "condition": "[parameters('extensionAzureDiskEncryptionConfig').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-AzureDiskEncryption', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6038,8 +6043,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "6738255057321581868"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -6135,12 +6140,12 @@
                             "virtualMachine": {
                               "existing": true,
                               "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[parameters('virtualMachineName')]"
                             },
                             "extension": {
                               "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -6184,7 +6189,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('extension', '2022-11-01', 'full').location]"
+                              "value": "[reference('extension', '2024-11-01', 'full').location]"
                             }
                           }
                         }
@@ -6196,7 +6201,7 @@
                     "vm_nvidiaGpuDriverWindowsExtension": {
                       "condition": "[parameters('extensionNvidiaGpuDriverWindows').enabled]",
                       "type": "Microsoft.Resources/deployments",
-                      "apiVersion": "2022-09-01",
+                      "apiVersion": "2025-04-01",
                       "name": "[format('{0}-VM-NvidiaGpuDriverWindows', uniqueString(deployment().name, parameters('location')))]",
                       "properties": {
                         "expressionEvaluationOptions": {
@@ -6236,8 +6241,8 @@
                           "metadata": {
                             "_generator": {
                               "name": "bicep",
-                              "version": "0.33.93.31351",
-                              "templateHash": "6738255057321581868"
+                              "version": "0.38.5.1644",
+                              "templateHash": "6641117318959164611"
                             },
                             "name": "Virtual Machine Extensions",
                             "description": "This module deploys a Virtual Machine Extension.",
@@ -6333,12 +6338,12 @@
                             "virtualMachine": {
                               "existing": true,
                               "type": "Microsoft.Compute/virtualMachines",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[parameters('virtualMachineName')]"
                             },
                             "extension": {
                               "type": "Microsoft.Compute/virtualMachines/extensions",
-                              "apiVersion": "2022-11-01",
+                              "apiVersion": "2024-11-01",
                               "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                               "location": "[parameters('location')]",
                               "tags": "[parameters('tags')]",
@@ -6382,7 +6387,7 @@
                               "metadata": {
                                 "description": "The location the resource was deployed into."
                               },
-                              "value": "[reference('extension', '2022-11-01', 'full').location]"
+                              "value": "[reference('extension', '2024-11-01', 'full').location]"
                             }
                           }
                         }
@@ -6420,14 +6425,14 @@
                       "metadata": {
                         "description": "The principal ID of the system assigned identity."
                       },
-                      "value": "[coalesce(tryGet(tryGet(reference('vm', '2023-09-01', 'full'), 'identity'), 'principalId'), '')]"
+                      "value": "[coalesce(tryGet(tryGet(reference('vm', '2024-11-01', 'full'), 'identity'), 'principalId'), '')]"
                     },
                     "location": {
                       "type": "string",
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('vm', '2023-09-01', 'full').location]"
+                      "value": "[reference('vm', '2024-11-01', 'full').location]"
                     }
                   }
                 }
@@ -6440,7 +6445,7 @@
               },
               "condition": "[parameters('deployAntiMalwareExt')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('SH-Antimal-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -6495,8 +6500,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "6738255057321581868"
+                      "version": "0.38.5.1644",
+                      "templateHash": "6641117318959164611"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension.",
@@ -6592,12 +6597,12 @@
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
-                      "apiVersion": "2022-11-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[parameters('virtualMachineName')]"
                     },
                     "extension": {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
-                      "apiVersion": "2022-11-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -6641,7 +6646,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('extension', '2022-11-01', 'full').location]"
+                      "value": "[reference('extension', '2024-11-01', 'full').location]"
                     }
                   }
                 }
@@ -6657,7 +6662,7 @@
               },
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('SH-Mon-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -6699,8 +6704,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "6738255057321581868"
+                      "version": "0.38.5.1644",
+                      "templateHash": "6641117318959164611"
                     },
                     "name": "Virtual Machine Extensions",
                     "description": "This module deploys a Virtual Machine Extension.",
@@ -6796,12 +6801,12 @@
                     "virtualMachine": {
                       "existing": true,
                       "type": "Microsoft.Compute/virtualMachines",
-                      "apiVersion": "2022-11-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[parameters('virtualMachineName')]"
                     },
                     "extension": {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
-                      "apiVersion": "2022-11-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[format('{0}/{1}', parameters('virtualMachineName'), parameters('name'))]",
                       "location": "[parameters('location')]",
                       "tags": "[parameters('tags')]",
@@ -6845,7 +6850,7 @@
                       "metadata": {
                         "description": "The location the resource was deployed into."
                       },
-                      "value": "[reference('extension', '2022-11-01', 'full').location]"
+                      "value": "[reference('extension', '2024-11-01', 'full').location]"
                     }
                   }
                 }
@@ -6861,7 +6866,7 @@
               },
               "condition": "[parameters('deployMonitoring')]",
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('DCR-Asso-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -6884,8 +6889,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "6919490302839277834"
+                      "version": "0.38.5.1644",
+                      "templateHash": "2562106205462073585"
                     }
                   },
                   "parameters": {
@@ -6905,7 +6910,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Insights/dataCollectionRuleAssociations",
-                      "apiVersion": "2022-06-01",
+                      "apiVersion": "2023-03-11",
                       "scope": "[format('Microsoft.Compute/virtualMachines/{0}', parameters('virtualMachineName'))]",
                       "name": "[parameters('virtualMachineName')]",
                       "properties": {
@@ -6927,7 +6932,7 @@
                 "count": "[length(range(0, parameters('count')))]"
               },
               "type": "Microsoft.Resources/deployments",
-              "apiVersion": "2022-09-01",
+              "apiVersion": "2025-04-01",
               "name": "[format('SH-Config-{0}-{1}-{2}', add(parameters('batchId'), 1), add(range(0, parameters('count'))[copyIndex()], parameters('countIndex')), parameters('time'))]",
               "subscriptionId": "[format('{0}', parameters('subscriptionId'))]",
               "resourceGroup": "[format('{0}', parameters('computeObjectsRgName'))]",
@@ -6955,6 +6960,7 @@
                   "identityDomainName": {
                     "value": "[parameters('identityDomainName')]"
                   },
+                  "extendOsDisk": "[if(not(equals(parameters('customOsDiskSizeGB'), 0)), createObject('value', true()), createObject('value', false()))]",
                   "identityServiceProvider": {
                     "value": "[parameters('identityServiceProvider')]"
                   },
@@ -6977,8 +6983,8 @@
                   "metadata": {
                     "_generator": {
                       "name": "bicep",
-                      "version": "0.33.93.31351",
-                      "templateHash": "1457171873160232908"
+                      "version": "0.38.5.1644",
+                      "templateHash": "6887932212929399592"
                     }
                   },
                   "parameters": {
@@ -7004,6 +7010,12 @@
                       "type": "string",
                       "metadata": {
                         "description": "Location where to deploy compute services."
+                      }
+                    },
+                    "extendOsDisk": {
+                      "type": "bool",
+                      "metadata": {
+                        "description": "Specifies whether to extend the OS disk."
                       }
                     },
                     "baseScriptUri": {
@@ -7082,7 +7094,7 @@
                   "resources": [
                     {
                       "type": "Microsoft.Compute/virtualMachines/extensions",
-                      "apiVersion": "2023-09-01",
+                      "apiVersion": "2024-11-01",
                       "name": "[format('{0}/SessionHostConfig', parameters('name'))]",
                       "location": "[parameters('location')]",
                       "properties": {
@@ -7094,7 +7106,7 @@
                           "fileUris": "[array(parameters('baseScriptUri'))]"
                         },
                         "protectedSettings": {
-                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -Command .\\{0} {1}', parameters('scriptName'), if(parameters('fslogix'), format('{0} {1}', format('-IdentityServiceProvider {0} -Fslogix {1} -HostPoolRegistrationToken \"{2}\" -AmdVmSize {3} -NvidiaVmSize {4}', parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').value[0].token, variables('varAmdVmSize'), variables('varNvidiaVmSize')), if(equals(parameters('identityServiceProvider'), 'EntraID'), format('{0} -FslogixStorageAccountKey \"{1}\"', variables('varBaseFSLogixScriptArguments'), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', variables('fslogixStorageAccountName')), '2023-05-01').keys[0].value), if(equals(parameters('identityServiceProvider'), 'EntraIDKerberos'), format('{0} -IdentityDomainName {1}', variables('varBaseFSLogixScriptArguments'), parameters('identityDomainName')), variables('varBaseFSLogixScriptArguments')))), format('-IdentityServiceProvider {0} -Fslogix {1} -HostPoolRegistrationToken \"{2}\" -AmdVmSize {3} -NvidiaVmSize {4}', parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2023-09-05').value[0].token, variables('varAmdVmSize'), variables('varNvidiaVmSize'))))]"
+                          "commandToExecute": "[format('powershell -ExecutionPolicy Unrestricted -Command .\\{0} {1}', parameters('scriptName'), if(parameters('fslogix'), format('{0} {1}', format('-ExtendOsDisk {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken \"{3}\" -AmdVmSize {4} -NvidiaVmSize {5}', parameters('extendOsDisk'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').value[0].token, variables('varAmdVmSize'), variables('varNvidiaVmSize')), if(equals(parameters('identityServiceProvider'), 'EntraID'), format('{0} -FslogixStorageAccountKey \"{1}\"', variables('varBaseFSLogixScriptArguments'), listkeys(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('fslogixStorageAccountResourceId'), '/')[4]), 'Microsoft.Storage/storageAccounts', variables('fslogixStorageAccountName')), '2025-01-01').keys[0].value), if(equals(parameters('identityServiceProvider'), 'EntraIDKerberos'), format('{0} -IdentityDomainName {1}', variables('varBaseFSLogixScriptArguments'), parameters('identityDomainName')), variables('varBaseFSLogixScriptArguments')))), format('-ExtendOsDisk {0} -IdentityServiceProvider {1} -Fslogix {2} -HostPoolRegistrationToken \"{3}\" -AmdVmSize {4} -NvidiaVmSize {5}', parameters('extendOsDisk'), parameters('identityServiceProvider'), parameters('fslogix'), listRegistrationTokens(extensionResourceId(format('/subscriptions/{0}/resourceGroups/{1}', subscription().subscriptionId, split(parameters('hostPoolResourceId'), '/')[4]), 'Microsoft.DesktopVirtualization/hostPools', last(split(parameters('hostPoolResourceId'), '/'))), '2025-03-01-preview').value[0].token, variables('varAmdVmSize'), variables('varNvidiaVmSize'))))]"
                         }
                       }
                     }

@@ -34,7 +34,7 @@ param enableTelemetry bool = true
 //   )
 // }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' =
   if (enableTelemetry) {
     name: '46d3xbcp.res.network-applicationsecuritygroup.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}'
     properties: {
@@ -53,7 +53,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2023-04-01' = {
+resource applicationSecurityGroup 'Microsoft.Network/applicationSecurityGroups@2024-07-01' = {
   name: name
   location: location
   tags: tags

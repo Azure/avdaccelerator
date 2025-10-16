@@ -38,7 +38,7 @@ var varSessionHostConfigurationScript = './Set-SessionHostConfiguration.ps1'
 // =========== //
 
 // Call on the hotspool
-resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' existing = {
   name: varHostPoolName
   scope: resourceGroup('${varHostpoolSubId}', '${varHostpoolRgName}')
 }
@@ -71,7 +71,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
 }
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: split(hostPool.outputs.keyVaultTokenSecretResourceId, '/')[8]
   scope: resourceGroup('${varKeyVaultSubId}', '${varKeyVaultRgName}')
 }

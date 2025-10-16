@@ -257,7 +257,7 @@ var varCustomResourceTags = createResourceTags ? varTagsWithValues : {}
 // =========== //
 
 // Call on the hotspool
-resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2023-09-05' existing = {
+resource hostPoolGet 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' existing = {
   name: last(split(hostPoolResourceId, '/'))
   scope: resourceGroup(split(hostPoolResourceId, '/')[4])
 }

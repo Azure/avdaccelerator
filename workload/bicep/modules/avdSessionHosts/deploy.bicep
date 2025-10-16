@@ -174,7 +174,7 @@ var varZones = [for zone in availabilityZones: int(zone)]
 // =========== //
 
 // call on the keyvault
-resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: last(split(keyVaultResourceId, '/'))
   scope: resourceGroup(split(keyVaultResourceId, '/')[4])
 }

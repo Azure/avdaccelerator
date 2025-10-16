@@ -278,5 +278,10 @@
         "acronym": "usw3",
         "timeDifference": "-7:00",
         "timeZone": "Mountain Standard Time"
+    },
+    "chilecentral": {
+        "acronym": "clc",
+        "timeDifference": "-4:00",
+        "timeZone": "Pacific SA Standard Time"
     }
 }

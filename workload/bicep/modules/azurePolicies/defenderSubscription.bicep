@@ -71,7 +71,7 @@ param enableDefForArm bool = false
 // =========== //
 // Deployments //
 // =========== //
-resource initiative 'Microsoft.Authorization/policySetDefinitions@2023-04-01' = {
+resource initiative 'Microsoft.Authorization/policySetDefinitions@2025-03-01' = {
   name: initiativeName
   properties: {
     displayName: initiativeDisplayName

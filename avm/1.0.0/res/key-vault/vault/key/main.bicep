@@ -100,11 +100,11 @@ var builtInRoleNames = {
   )
 }
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: keyVaultName
 }
 
-resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
+resource key 'Microsoft.KeyVault/vaults/keys@2024-12-01-preview' = {
   name: name
   parent: keyVault
   tags: tags
@@ -123,7 +123,7 @@ resource key 'Microsoft.KeyVault/vaults/keys@2022-07-01' = {
   }
 }
 
-resource key_roleAssignments 'Microsoft.Authorization/roleAssignments@2022-04-01' = [
+resource key_roleAssignments 'Microsoft.Authorization/roleAssignments@2024-12-01-preview' = [
   for (roleAssignment, index) in (roleAssignments ?? []): {
     name: guid(key.id, roleAssignment.principalId, roleAssignment.roleDefinitionIdOrName)
     properties: {

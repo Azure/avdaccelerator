@@ -21,17 +21,17 @@ var varKeyIndex = storageAccountKey - 1
 // Deployments //
 // =========== //
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' existing = {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = {
     name: last(split(storageAccountResourceId, '/'))
     scope: resourceGroup(split(storageAccountResourceId, '/')[2], split(storageAccountResourceId, '/')[4])
 }
 
-resource vms 'Microsoft.Compute/virtualMachines@2024-03-01' existing = [for (vm, i) in vmNames: {
+resource vms 'Microsoft.Compute/virtualMachines@2024-11-01' existing = [for (vm, i) in vmNames: {
     name: vm
     scope: resourceGroup()
 }]
 
-resource runCommand 'Microsoft.Compute/virtualMachines/runCommands@2023-09-01' = [for (vm, i) in vmNames: {
+resource runCommand 'Microsoft.Compute/virtualMachines/runCommands@2024-11-01' = [for (vm, i) in vmNames: {
     location: location
     name: 'RunCommand-${vm}-${timeStamp}'
     

@@ -15,11 +15,11 @@ var formattedAccessPolicies = [for accessPolicy in (accessPolicies ?? []): {
   tenantId: accessPolicy.?tenantId ?? tenant().tenantId
 }]
 
-resource keyVault 'Microsoft.KeyVault/vaults@2022-07-01' existing = {
+resource keyVault 'Microsoft.KeyVault/vaults@2024-12-01-preview' existing = {
   name: keyVaultName
 }
 
-resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2022-07-01' = {
+resource policies 'Microsoft.KeyVault/vaults/accessPolicies@2024-12-01-preview' = {
   name: 'add'
   parent: keyVault
   properties: {

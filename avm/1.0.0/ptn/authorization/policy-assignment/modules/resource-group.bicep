@@ -76,7 +76,7 @@ var identityVar = identity == 'SystemAssigned' ? {
   }
 } : null
 
-resource policyAssignment 'Microsoft.Authorization/policyAssignments@2022-06-01' = {
+resource policyAssignment 'Microsoft.Authorization/policyAssignments@2025-03-01' = {
   name: name
   location: location
   properties: {

@@ -28,7 +28,7 @@ resource workspace 'Microsoft.OperationalInsights/workspaces@2022-10-01' existin
   name: logAnalyticsWorkspaceName
 }
 
-resource storageinsightconfig 'Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2020-08-01' = {
+resource storageinsightconfig 'Microsoft.OperationalInsights/workspaces/storageInsightConfigs@2025-02-01' = {
   name: name
   parent: workspace
   tags: tags

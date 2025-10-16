@@ -44,7 +44,7 @@ param enableTelemetry bool = true
 //   )
 // }
 
-resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
+resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' =
   if (enableTelemetry) {
     name: take(
       '46d3xbcp.res.network-routetable.${replace('-..--..-', '.', '-')}.${substring(uniqueString(deployment().name, location), 0, 4)}',
@@ -66,7 +66,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2023-07-01' =
     }
   }
 
-resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
+resource routeTable 'Microsoft.Network/routeTables@2024-07-01' = {
   name: name
   location: location
   tags: tags

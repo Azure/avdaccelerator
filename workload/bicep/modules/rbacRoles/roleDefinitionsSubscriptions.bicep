@@ -27,7 +27,7 @@ param assignableScopes array = []
 // =========== //
 // Deployments //
 // =========== //
-resource roleDefinition 'Microsoft.Authorization/roleDefinitions@2022-04-01' = {
+resource roleDefinition 'Microsoft.Authorization/roleDefinitions@2022-05-01-preview' = {
   name: guid(roleName, subscriptionId)
   properties: {
     roleName: roleName

@@ -53,11 +53,11 @@ var accountSasProperties = {
   signedProtocol: 'https'
 }
 
-resource automationAccount 'Microsoft.Automation/automationAccounts@2022-08-08' existing = {
+resource automationAccount 'Microsoft.Automation/automationAccounts@2024-10-23' existing = {
   name: automationAccountName
 }
 
-resource storageAccount 'Microsoft.Storage/storageAccounts@2022-09-01' existing = if (!empty(scriptStorageAccountResourceId)) {
+resource storageAccount 'Microsoft.Storage/storageAccounts@2025-01-01' existing = if (!empty(scriptStorageAccountResourceId)) {
   name: last(split((scriptStorageAccountResourceId ?? 'dummyVault'), '/'))
   scope: resourceGroup(
     split((scriptStorageAccountResourceId ?? '//'), '/')[2],
@@ -71,12 +71,12 @@ var publishContentLink = empty(uri)
       uri: !empty(uri)
         ? (empty(scriptStorageAccountResourceId)
             ? uri
-            : '${uri}?${storageAccount.listAccountSas('2021-04-01', accountSasProperties).accountSasToken}')
+            : '${uri}?${storageAccount.listAccountSas('2025-01-01', accountSasProperties).accountSasToken}')
         : null
       version: !empty(version) ? version : null
     }
 
-resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2023-11-01' = {
+resource runbook 'Microsoft.Automation/automationAccounts/runbooks@2024-10-23' = {
   name: name
   parent: automationAccount
   location: location
