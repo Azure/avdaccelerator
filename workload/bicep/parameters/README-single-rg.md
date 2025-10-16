@@ -20,7 +20,7 @@ $avdVmLocalUserPassword = Read-Host -Prompt "Local user password" -AsSecureStrin
 New-AzSubscriptionDeployment `
   -Name "AVDSingleRGDeployment" `
   -Location "eastus2" `
-  -TemplateParameterFile "./parameters/deploy-baseline-single-rg.bicepparam" `
+  -TemplateParameterFile "./workload/bicep/parameters/deploy-baseline-single-rg.bicepparam" `
   -avdWorkloadSubsId $SubID `
   -avdVmLocalUserPassword $avdVmLocalUserPassword
 ```
@@ -33,7 +33,7 @@ SubID="<subscription-ID>"
 az deployment sub create \
   --name "AVDSingleRGDeployment" \
   --location "eastus2" \
-  --parameters ./parameters/deploy-baseline-single-rg.bicepparam \
+  --parameters ./workload/bicep/parameters/deploy-baseline-single-rg.bicepparam \
   --parameters avdWorkloadSubsId="$SubID"
 ```
 
