@@ -65,6 +65,55 @@ az deployment sub create `
 ```
 > Note: above AZ CLI deployment sample, deploys AVD with most of the default options in the AVD LZA using  Entra ID Kerberos as identity provider and deploying new virtual network.
 
+### Single Resource Group Topology
+
+To deploy with a single resource group topology (all resources in one RG), add the `resourceGroupTopology` parameter:
+
+#### PowerShell
+
+```powershell
+New-AzSubscriptionDeployment `
+  -Name "AVDAcceleratorDeployment" `
+  -Location "<deployment-location>" `
+  -TemplateFile "./workload/bicep/deploy-baseline.bicep" `
+  -avdWorkloadSubsId $SubID `
+  -resourceGroupTopology "SingleResourceGroup" `
+  -avdSessionHostLocation "<session-host-location>" `
+  -avdManagementPlaneLocation "<management-plane-location>" `
+  -avdVmLocalUserName "<local-username>" `
+  -avdVmLocalUserPassword $avdVmLocalUserPassword `
+  -avdIdentityServiceProvider "EntraIDKerberos" `
+  -identityDomainName "<domain-name>" `
+  -avdServicePrincipalObjectId "<object-id>" `
+  -avdSecurityGroups @(@{objectId="00000000-0000-0000-0000-000000000000"; displayName="Example-Security-Group"}) `
+  -avdVnetworkAddressPrefixes "10.10.0.0/16" `
+  -vNetworkAvdSubnetAddressPrefix "10.10.1.0/24" `
+  -vNetworkPrivateEndpointSubnetAddressPrefix "10.10.2.0/27"
+```
+
+#### Azure CLI
+
+```powershell
+az deployment sub create `
+--name "AVDAcceleratorDeployment" `
+--location "<deployment-location>" `
+--template-file "./workload/bicep/deploy-baseline.bicep" `
+--parameters `
+  avdWorkloadSubsId "$SubID" `
+  resourceGroupTopology "SingleResourceGroup" `
+  avdSessionHostLocation "<session-host-location>" `
+  avdManagementPlaneLocation "<management-plane-location>" `
+  avdVmLocalUserName "<local-username>" `
+  avdVmLocalUserPassword "$avdVmLocalUserPassword" `
+  avdIdentityServiceProvider "EntraIDKerberos" `
+  identityDomainName "<domain-name>" `
+  avdServicePrincipalObjectId "<object-id>" `
+  avdSecurityGroups @(@{objectId="00000000-0000-0000-0000-000000000000"; displayName="Example-Security-Group"}) `
+  avdVnetworkAddressPrefixes "10.10.0.0/16" `
+  vNetworkAvdSubnetAddressPrefix "10.10.1.0/24" `
+  vNetworkPrivateEndpointSubnetAddressPrefix "10.10.2.0/27"
+```
+
 ## Optional: Custom Image Build deployment
 
 ### PowerShell

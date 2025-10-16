@@ -21,6 +21,13 @@ param deploymentPrefix string = 'AVD1'
 @sys.description('The name of the resource group to deploy. (Default: Dev)')
 param deploymentEnvironment string = 'Dev'
 
+@allowed([
+  'MultiResourceGroup' // Cloud Adoption Framework aligned topology with separate resource groups for service objects, pool compute, network, and storage
+  'SingleResourceGroup' // Simplified topology with all resources in a single resource group
+])
+@sys.description('Resource group topology for AVD deployment. MultiResourceGroup follows Cloud Adoption Framework with separate RGs. SingleResourceGroup consolidates all resources into one RG for simpler scenarios. (Default: MultiResourceGroup)')
+param resourceGroupTopology string = 'MultiResourceGroup'
+
 @maxValue(730)
 @minValue(30)
 @sys.description('This value is used to set the expiration date on the disk encryption key. (Default: 60)')
@@ -338,6 +345,10 @@ param avdComputeObjectsRgCustomName string = 'rg-avd-app1-dev-use2-pool-compute'
 param avdStorageObjectsRgCustomName string = 'rg-avd-app1-dev-use2-storage'
 
 @maxLength(90)
+@sys.description('AVD single resource group custom name. Used when resourceGroupTopology is SingleResourceGroup. (Default: rg-avd-app1-dev-use2)')
+param avdSingleResourceGroupCustomName string = 'rg-avd-app1-dev-use2'
+
+@maxLength(90)
 @sys.description('AVD monitoring resource group custom name. (Default: rg-avd-dev-use2-monitoring)')
 param avdMonitoringRgCustomName string = 'rg-avd-dev-use2-monitoring'
 
@@ -561,18 +572,33 @@ var varDiskEncryptionSetName = avdUseCustomNaming
   : 'des-zt-${varComputeStorageResourcesNamingStandard}-001'
 var varSessionHostLocationLowercase = toLower(replace(avdSessionHostLocation, ' ', ''))
 var varManagementPlaneLocationLowercase = toLower(replace(avdManagementPlaneLocation, ' ', ''))
-var varServiceObjectsRgName = avdUseCustomNaming
-  ? avdServiceObjectsRgCustomName
-  : 'rg-avd-${varManagementPlaneNamingStandard}-service-objects' // max length limit 90 characters
-var varNetworkObjectsRgName = avdUseCustomNaming
-  ? avdNetworkObjectsRgCustomName
-  : 'rg-avd-${varComputeStorageResourcesNamingStandard}-network' // max length limit 90 characters
-var varComputeObjectsRgName = avdUseCustomNaming
-  ? avdComputeObjectsRgCustomName
-  : 'rg-avd-${varComputeStorageResourcesNamingStandard}-pool-compute' // max length limit 90 characters
-var varStorageObjectsRgName = avdUseCustomNaming
-  ? avdStorageObjectsRgCustomName
-  : 'rg-avd-${varComputeStorageResourcesNamingStandard}-storage' // max length limit 90 characters
+
+// Single Resource Group name - used when resourceGroupTopology is SingleResourceGroup
+var varSingleResourceGroupName = avdUseCustomNaming
+  ? avdSingleResourceGroupCustomName
+  : 'rg-avd-${varComputeStorageResourcesNamingStandard}' // max length limit 90 characters
+
+// Resource Group names - use single RG name or separate RG names based on topology
+var varServiceObjectsRgName = resourceGroupTopology == 'SingleResourceGroup'
+  ? varSingleResourceGroupName
+  : (avdUseCustomNaming
+      ? avdServiceObjectsRgCustomName
+      : 'rg-avd-${varManagementPlaneNamingStandard}-service-objects') // max length limit 90 characters
+var varNetworkObjectsRgName = resourceGroupTopology == 'SingleResourceGroup'
+  ? varSingleResourceGroupName
+  : (avdUseCustomNaming
+      ? avdNetworkObjectsRgCustomName
+      : 'rg-avd-${varComputeStorageResourcesNamingStandard}-network') // max length limit 90 characters
+var varComputeObjectsRgName = resourceGroupTopology == 'SingleResourceGroup'
+  ? varSingleResourceGroupName
+  : (avdUseCustomNaming
+      ? avdComputeObjectsRgCustomName
+      : 'rg-avd-${varComputeStorageResourcesNamingStandard}-pool-compute') // max length limit 90 characters
+var varStorageObjectsRgName = resourceGroupTopology == 'SingleResourceGroup'
+  ? varSingleResourceGroupName
+  : (avdUseCustomNaming
+      ? avdStorageObjectsRgCustomName
+      : 'rg-avd-${varComputeStorageResourcesNamingStandard}-storage') // max length limit 90 characters
 var varMonitoringRgName = avdUseCustomNaming
   ? avdMonitoringRgCustomName
   : 'rg-avd-${varDeploymentEnvironmentLowercase}-${varManagementPlaneLocationAcronym}-monitoring' // max length limit 90 characters
@@ -1048,9 +1074,24 @@ resource telemetrydeployment 'Microsoft.Resources/deployments@2025-04-01' = if (
 }
 
 // Resource groups.
-// Compute, service objects, network
-// Network
-module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (createAvdVnet || createPrivateDnsZones) {
+// For SingleResourceGroup topology, deploy one RG. For MultiResourceGroup topology, deploy separate RGs.
+
+// Single Resource Group (when resourceGroupTopology is SingleResourceGroup)
+module singleResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (resourceGroupTopology == 'SingleResourceGroup') {
+  scope: subscription(avdWorkloadSubsId)
+  name: 'Deploy-Single-RG-${time}'
+  params: {
+    name: varSingleResourceGroupName
+    location: avdSessionHostLocation
+    enableTelemetry: false
+    tags: createResourceTags
+      ? union(varCustomResourceTags, varAvdDefaultTags, varAllComputeStorageTags)
+      : union(varAvdDefaultTags, varAllComputeStorageTags)
+  }
+}
+
+// Network Resource Group (when resourceGroupTopology is MultiResourceGroup)
+module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (resourceGroupTopology == 'MultiResourceGroup' && (createAvdVnet || createPrivateDnsZones)) {
   scope: subscription(avdWorkloadSubsId)
   name: 'Deploy-Network-RG-${time}'
   params: {
@@ -1061,9 +1102,9 @@ module baselineNetworkResourceGroup '../../avm/1.0.0/res/resources/resource-grou
   }
 }
 
-// Compute, service objects
+// Compute and Service Objects Resource Groups (when resourceGroupTopology is MultiResourceGroup)
 module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main.bicep' = [
-  for resourceGroup in varResourceGroups: {
+  for resourceGroup in varResourceGroups: if (resourceGroupTopology == 'MultiResourceGroup') {
     scope: subscription(avdWorkloadSubsId)
     name: '${resourceGroup.purpose}-${time}'
     params: {
@@ -1075,8 +1116,8 @@ module baselineResourceGroups '../../avm/1.0.0/res/resources/resource-group/main
   }
 ]
 
-// Storage
-module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (varCreateStorageDeployment) {
+// Storage Resource Group (when resourceGroupTopology is MultiResourceGroup)
+module baselineStorageResourceGroup '../../avm/1.0.0/res/resources/resource-group/main.bicep' = if (resourceGroupTopology == 'MultiResourceGroup' && varCreateStorageDeployment) {
   scope: subscription(avdWorkloadSubsId)
   name: 'Storage-RG-${time}'
   params: {
@@ -1109,6 +1150,7 @@ module monitoringDiagnosticSettings './modules/avdInsightsMonitoring/deploy.bice
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
   dependsOn: [
+    singleResourceGroup
     baselineNetworkResourceGroup
     baselineResourceGroups
     baselineStorageResourceGroup
@@ -1161,6 +1203,7 @@ module networking './modules/networking/deploy.bicep' = if (createAvdVnet || cre
     customStaticRoutes: customStaticRoutes
   }
   dependsOn: [
+    singleResourceGroup
     baselineNetworkResourceGroup
     baselineResourceGroups
   ]
@@ -1225,6 +1268,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     privateEndpointWorkspaceName: varPrivateEndPointWorkspaceName
   }
   dependsOn: [
+    singleResourceGroup
     baselineResourceGroups
     identity
   ]
@@ -1251,6 +1295,7 @@ module identity './modules/identity/deploy.bicep' = {
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
   dependsOn: [
+    singleResourceGroup
     baselineResourceGroups
     baselineStorageResourceGroup
     monitoringDiagnosticSettings
@@ -1284,6 +1329,7 @@ module zeroTrust './modules/zeroTrust/deploy.bicep' = if (diskZeroTrust && avdDe
     kvTags: varZtKeyvaultTag
   }
   dependsOn: [
+    singleResourceGroup
     baselineResourceGroups
     baselineStorageResourceGroup
     identity
@@ -1390,6 +1436,7 @@ module wrklKeyVault '../../avm/1.0.0/res/key-vault/vault/main.bicep' = {
       : union(varAvdDefaultTags, varWorkloadKeyvaultTag)
   }
   dependsOn: [
+    singleResourceGroup
     baselineResourceGroups
   ]
 }
@@ -1428,6 +1475,7 @@ module managementVm './modules/storageAzureFiles/.bicep/managementVm.bicep' = if
     tags: createResourceTags ? union(varCustomResourceTags, varAvdDefaultTags) : varAvdDefaultTags
   }
   dependsOn: [
+    singleResourceGroup
     baselineStorageResourceGroup
     wrklKeyVault
   ]
@@ -1482,6 +1530,7 @@ module fslogixAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = if 
       : ''
   }
   dependsOn: [
+    singleResourceGroup
     baselineStorageResourceGroup
     wrklKeyVault
     managementVm
@@ -1538,6 +1587,7 @@ module appAttachAzureFilesStorage './modules/storageAzureFiles/deploy.bicep' = i
   }
   dependsOn: [
     fslogixAzureFilesStorage
+    singleResourceGroup
     baselineStorageResourceGroup
     wrklKeyVault
     managementVm
@@ -1624,6 +1674,7 @@ module sessionHosts './modules/avdSessionHosts/deploy.bicep' = [
       //useVmssFlex: deployVmssFlex
     }
     dependsOn: [
+      singleResourceGroup
       baselineResourceGroups
     ]
   }

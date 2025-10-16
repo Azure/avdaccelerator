@@ -91,6 +91,40 @@ This Azure Virtual Desktop accelerator supports deployment into greenfield scena
 
 > **Note**: Enabling Microsoft Defender for Cloud solutions (e.g., Defender for Servers, Defender for Storage, Defender for Key Vault, Defender for Azure Resource Manager) may incur additional costs. Pricing depends on the specific service enabled and the associated usage. It is recommended to review the [Azure Defender Pricing](https://azure.microsoft.com/en-us/pricing/details/defender/) page for detailed information before enabling these features.
 
+### Resource Group Topology Options
+
+The AVD Landing Zone Accelerator provides flexible resource group topology options to accommodate different organizational requirements and operational models:
+
+#### Multi-Resource Group Topology (Default - Cloud Adoption Framework Aligned)
+
+The default deployment follows Cloud Adoption Framework best practices with separate resource groups for different resource types:
+
+- **Service Objects RG**: Contains AVD management plane resources (workspace, host pools, application groups, scaling plans)
+- **Compute Objects RG**: Contains session host VMs and related compute resources
+- **Network Objects RG**: Contains networking resources (VNets, NSGs, Route Tables, ASGs)
+- **Storage Objects RG**: Contains storage accounts for FSLogix profiles and App Attach
+
+This topology provides:
+- Clear separation of concerns for lifecycle management
+- Granular RBAC and access control per resource type
+- Easier cost tracking and resource organization
+- Alignment with Cloud Adoption Framework principles
+
+#### Single Resource Group Topology (Simplified)
+
+For smaller deployments, greenfield scenarios, or organizations preferring simplified resource management, you can deploy all resources to a single resource group. This option:
+
+- Consolidates all AVD resources into one resource group for simpler operations
+- Reduces the number of resource groups to manage
+- Is ideal for dev/test environments or smaller production workloads
+- Simplifies compliance and governance for teams with simpler requirements
+
+To enable single resource group topology:
+- Set the `resourceGroupTopology` parameter to `SingleResourceGroup`
+- Specify the resource group name using `avdSingleResourceGroupCustomName` when using custom naming
+
+**Note**: Regardless of topology choice, you maintain the flexibility to manually reorganize resources post-deployment using Azure's resource move capabilities for supported resource types.
+
 ## Greenfield deployment
 
 In the Greenfield scenario, there are no existing Azure infrastructure components for Azure Virtual Desktop deployment. The automation framework will create an Azure Virtual Desktop workload in the desired Azure region, create a new VNet or reuse an existing VNet, and configure basic connectivity.
