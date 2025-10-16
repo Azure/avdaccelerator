@@ -236,12 +236,7 @@ param avdSessionHostCountIndex int = 1
 ])
 param availability string = 'None'
 
-@sys.description('The Availability Zones to use for the session hosts.')
-@allowed([
-  '1'
-  '2'
-  '3'
-])
+@sys.description('The Availability Zones to use for the session hosts. Valid values are combinations of \'1\', \'2\', \'3\', or an empty array for regions without availability zones.')
 param availabilityZones array = ['1', '2', '3']
 
 @sys.description('When true, Zone Redundant Storage (ZRS) is used, when set to false, Locally Redundant Storage (LRS) is used. (Default: false)')
