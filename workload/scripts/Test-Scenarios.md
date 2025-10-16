@@ -162,10 +162,21 @@ To run basic syntax and structure validation:
 ```powershell
 # Test 1: Check script exists and has valid syntax
 $scriptPath = ".\Test-AvdSkuZoneAvailability.ps1"
-Test-Path $scriptPath
+if (Test-Path $scriptPath) {
+    Write-Host "✓ Script file exists" -ForegroundColor Green
+} else {
+    Write-Host "✗ Script file not found" -ForegroundColor Red
+    exit 1
+}
 
 # Test 2: Validate script can be loaded
-$null = Get-Command $scriptPath
+try {
+    $null = Get-Command $scriptPath -ErrorAction Stop
+    Write-Host "✓ Script syntax is valid" -ForegroundColor Green
+} catch {
+    Write-Host "✗ Script syntax error: $_" -ForegroundColor Red
+    exit 1
+}
 
 # Test 3: Check script has expected parameters
 $params = (Get-Command $scriptPath).Parameters.Keys
@@ -180,10 +191,10 @@ $expectedParams | ForEach-Object {
 
 # Test 4: Validate help content exists
 $help = Get-Help $scriptPath
-if ($help.Synopsis) {
-    Write-Host "✓ Help documentation exists" -ForegroundColor Green
+if ($help.Synopsis -and $help.Synopsis.Trim()) {
+    Write-Host "✓ Help documentation exists and has content" -ForegroundColor Green
 } else {
-    Write-Host "✗ Help documentation missing" -ForegroundColor Red
+    Write-Host "✗ Help documentation missing or empty" -ForegroundColor Red
 }
 ```
 
@@ -255,6 +266,6 @@ If tests fail:
 6. Check Azure service health for regional issues
 
 For additional support, refer to:
-- [SKU Zone Validator README](SkuZoneValidator-Readme.md)
+- [SKU Zone Validator README](./SkuZoneValidator-Readme.md)
 - [Baseline Troubleshooting Guide](../docs/baseline-troubleshooting-guide.md)
 - [GitHub Issues](https://github.com/Azure/avdaccelerator/issues)
