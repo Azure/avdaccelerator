@@ -18,7 +18,7 @@ Set-Location -Path C:\\Optimize\\Virtual-Desktop-Optimization-Tool-main
 
 
 Write-Host 'Patch: Disabling Set-NetAdapterAdvancedProperty in Windows_VDOT.ps1'
-$updatePath = 'C:\optimize\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1'
+$updatePath = 'C:\Optimize\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1'
  ((Get-Content -Path $updatePath -Raw) -replace 'Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB', '#Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB') | Set-Content -Path $updatePath
 
 
