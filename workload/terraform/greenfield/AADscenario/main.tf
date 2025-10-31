@@ -26,7 +26,7 @@ module "network" {
 # Create Azure Log Analytics workspace for Azure Virtual Desktop
 module "avm_res_operationalinsights_workspace" {
   source              = "Azure/avm-res-operationalinsights-workspace/azurerm"
-  version             = "0.1.3"
+  version             = "0.2.2"
   enable_telemetry    = var.enable_telemetry
   resource_group_name = azurerm_resource_group.mon.name
   location            = var.avdLocation
