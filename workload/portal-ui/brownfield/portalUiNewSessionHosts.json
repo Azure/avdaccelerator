@@ -557,11 +557,7 @@
 									"name": "availabilityZones",
 									"type": "Microsoft.Common.DropDown",
 									"label": "Select Availability Zones",
-									"defaultValue": [
-										"Zone 1",
-										"Zone 2",
-										"Zone 3"
-									],
+									"defaultValue": "[map(first(map(first(map(filter(steps('sessionHosts').resourceSkusApi.value, (sku) => contains(sku.name, steps('sessionHosts').settings.vmSize)), (sku) => sku.locationInfo)), (sku) => sku.zones)), (zone) => parse(concat('{\"label\":\"Zone ', zone, '\",\"value\":\"', zone, '\"}')))]",
 									"multiselect": true,
 									"selectAll": true,
 									"toolTip": "Select the desired Availability Zones",
