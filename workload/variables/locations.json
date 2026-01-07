@@ -283,5 +283,10 @@
         "acronym": "clc",
         "timeDifference": "-4:00",
         "timeZone": "Pacific SA Standard Time"
+    },
+    "denmarkeast": {
+        "acronym": "dke",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
     }
 }
