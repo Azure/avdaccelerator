@@ -110,6 +110,13 @@ param ssoClientSecretKeyVaultPath string = ''
 #disable-next-line secure-secrets-in-params
 param ssoSecretType string = ''
 
+@sys.description('Optional. Specifies the type of management for the host pool. Use "Unmanaged" for manual session host management or "AutomaticSessionHostConfiguration" to enable automated session host provisioning (Preview).')
+@allowed([
+  'Unmanaged'
+  'AutomaticSessionHostConfiguration'
+])
+param managedBy string = 'Unmanaged'
+
 @sys.description('Optional. Tags of the resource.')
 param tags object?
 
@@ -176,7 +183,7 @@ resource avmTelemetry 'Microsoft.Resources/deployments@2025-04-01' =
     }
   }
 
-resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview' = {
+resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-04-01-preview' = {
   name: name
   location: location
   tags: tags
@@ -184,6 +191,7 @@ resource hostPool 'Microsoft.DesktopVirtualization/hostPools@2025-03-01-preview'
     friendlyName: friendlyName
     description: description
     hostPoolType: hostPoolType
+    managedBy: managedBy
     publicNetworkAccess: publicNetworkAccess
     customRdpProperty: customRdpProperty
     personalDesktopAssignmentType: any(personalDesktopAssignmentType)
