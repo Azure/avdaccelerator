@@ -288,5 +288,15 @@
         "acronym": "dke",
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
+    },
+    "belgiumcentral": {
+        "acronym": "bec",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+    },
+    "austriaeast": {
+        "acronym": "ate",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
     }
 }
