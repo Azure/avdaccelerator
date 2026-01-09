@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "6897846193765543040"
+      "templateHash": "17833887003820458376"
     }
   },
   "parameters": {
@@ -527,6 +527,16 @@
       },
       "denmarkeast": {
         "acronym": "dke",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "belgiumcentral": {
+        "acronym": "bec",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "austriaeast": {
+        "acronym": "ate",
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
       }

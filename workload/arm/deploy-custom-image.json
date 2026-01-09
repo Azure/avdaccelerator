@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "10245847524822854235"
+      "templateHash": "3426247416749151431"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -690,6 +690,16 @@
       },
       "denmarkeast": {
         "acronym": "dke",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "belgiumcentral": {
+        "acronym": "bec",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "austriaeast": {
+        "acronym": "ate",
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
       }

@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "5195403338848050959"
+      "templateHash": "14031792536171675391"
     },
     "name": "AVD Accelerator - Baseline Deployment",
     "description": "AVD Accelerator - Deployment Baseline",
@@ -1312,6 +1312,16 @@
       },
       "denmarkeast": {
         "acronym": "dke",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "belgiumcentral": {
+        "acronym": "bec",
+        "timeDifference": "+1:00",
+        "timeZone": "Central Europe Standard Time"
+      },
+      "austriaeast": {
+        "acronym": "ate",
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
       }
