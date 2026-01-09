@@ -570,6 +570,26 @@
 										"required": true
 									},
 									"visible": "[equals(steps('sessionHosts').availability.option, 'AvailabilityZones')]"
+								},
+								{
+									"name": "skuZoneValidationInfo",
+									"type": "Microsoft.Common.InfoBox",
+									"visible": true,
+									"options": {
+										"text": "SKU and Zone Validation: The available zones shown above are dynamically filtered based on the selected VM size and region. If zones are not available or deployment fails due to SKU/quota issues, consider: (1) Selecting a different VM size, (2) Choosing a different region, or (3) Requesting a quota increase via Azure Support. You can also use the Test-AvdSkuZoneAvailability.ps1 script to validate SKU availability before deployment.",
+										"uri": "https://github.com/Azure/avdaccelerator/blob/main/workload/scripts/SkuZoneValidator-Readme.md",
+										"style": "Info"
+									}
+								},
+								{
+									"name": "quotaIncreaseInfo",
+									"type": "Microsoft.Common.InfoBox",
+									"visible": true,
+									"options": {
+										"text": "Need more quota? If your deployment fails due to insufficient quota, you can request an increase through Azure Support.",
+										"uri": "https://portal.azure.com/#view/Microsoft_Azure_Support/NewSupportRequestV3Blade/issueType/quota/subscriptionId/00000000-0000-0000-0000-000000000000/topicId/06bfd9d3-516b-d5c6-5802-169c800dec89",
+										"style": "Warning"
+									}
 								}
 							]
 						},
