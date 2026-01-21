@@ -298,5 +298,10 @@
         "acronym": "ate",
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
+    },
+    "indonesiacentral": {
+        "acronym": "idc",
+        "timeDifference": "+8:00",
+        "timeZone": "Singapore Standard Time"
     }
 }

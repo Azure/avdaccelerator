@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.39.26.7824",
-      "templateHash": "3426247416749151431"
+      "templateHash": "11033197939472428320"
     },
     "name": "AVD Accelerator - Baseline Custom Image Deployment",
     "description": "AVD Accelerator - Custom Image Baseline"
@@ -702,6 +702,11 @@
         "acronym": "ate",
         "timeDifference": "+1:00",
         "timeZone": "Central Europe Standard Time"
+      },
+      "indonesiacentral": {
+        "acronym": "idc",
+        "timeDifference": "+8:00",
+        "timeZone": "Singapore Standard Time"
       }
     },
     "varActionGroupName": "[if(parameters('customNaming'), parameters('alertsActionGroupCustomName'), format('ag-avd-{0}', variables('varNamingStandard')))]",
@@ -2303,7 +2308,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "10217867563579819079"
+              "templateHash": "15061836443076256044"
             },
             "name": "Azure Compute Galleries",
             "description": "This module deploys an Azure Compute Gallery (formerly known as Shared Image Gallery)."
@@ -2910,7 +2915,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "example": "  {\r\n      key1: 'value1'\r\n      key2: 'value2'\r\n  }\r\n  ",
+                "example": "  {\n      key1: 'value1'\n      key2: 'value2'\n  }\n  ",
                 "description": "Optional. Tags for all resources."
               }
             },
@@ -3524,7 +3529,7 @@
                     "_generator": {
                       "name": "bicep",
                       "version": "0.39.26.7824",
-                      "templateHash": "15535922620884430689"
+                      "templateHash": "1077383604853287281"
                     },
                     "name": "Compute Galleries Image Definitions",
                     "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -3635,7 +3640,7 @@
                             "type": "string"
                           },
                           "metadata": {
-                            "example": "  [\r\n    'Standard_LRS'\r\n  ]",
+                            "example": "  [\n    'Standard_LRS'\n  ]",
                             "description": "Required. A list of disk types."
                           }
                         }
@@ -3894,7 +3899,7 @@
                       "type": "object",
                       "nullable": true,
                       "metadata": {
-                        "example": "{\r\n    key1: 'value1'\r\n    key2: 'value2'\r\n}\r\n",
+                        "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
                         "description": "Optional. Tags for all the image."
                       }
                     }
@@ -4117,7 +4122,7 @@
             "_generator": {
               "name": "bicep",
               "version": "0.39.26.7824",
-              "templateHash": "15535922620884430689"
+              "templateHash": "1077383604853287281"
             },
             "name": "Compute Galleries Image Definitions",
             "description": "This module deploys an Azure Compute Gallery Image Definition."
@@ -4228,7 +4233,7 @@
                     "type": "string"
                   },
                   "metadata": {
-                    "example": "  [\r\n    'Standard_LRS'\r\n  ]",
+                    "example": "  [\n    'Standard_LRS'\n  ]",
                     "description": "Required. A list of disk types."
                   }
                 }
@@ -4487,7 +4492,7 @@
               "type": "object",
               "nullable": true,
               "metadata": {
-                "example": "{\r\n    key1: 'value1'\r\n    key2: 'value2'\r\n}\r\n",
+                "example": "{\n    key1: 'value1'\n    key2: 'value2'\n}\n",
                 "description": "Optional. Tags for all the image."
               }
             }
