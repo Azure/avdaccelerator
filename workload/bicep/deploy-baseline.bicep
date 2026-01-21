@@ -126,6 +126,13 @@ param avdHostPoolLoadBalancerType string = 'BreadthFirst'
 @sys.description('AVD host pool maximum number of user sessions per session host. (Default: 8)')
 param hostPoolMaxSessions int = 8
 
+@allowed([
+  'Unmanaged'
+  'AutomaticSessionHostConfiguration'
+])
+@sys.description('AVD host pool management type. Use "Unmanaged" for manual session host management or "AutomaticSessionHostConfiguration" to enable automated session host provisioning (Preview). (Default: Unmanaged)')
+param avdHostPoolManagedBy string = 'Unmanaged'
+
 @sys.description('AVD host pool start VM on Connect. (Default: true)')
 param avdStartVmOnConnect bool = true
 
@@ -1182,6 +1189,7 @@ module managementPLane './modules/avdManagementPlane/deploy.bicep' = {
     hostPoolRdpProperties: avdHostPoolRdpProperties
     hostPoolLoadBalancerType: avdHostPoolLoadBalancerType
     hostPoolType: avdHostPoolType
+    hostPoolManagedBy: avdHostPoolManagedBy
     preferredAppGroupType: (hostPoolPreferredAppGroupType == 'RemoteApp') ? 'RailApplications' : 'Desktop'
     deployScalingPlan: !empty(avdServicePrincipalObjectId) ? varDeployScalingPlan : false
     scalingPlanExclusionTag: varScalingPlanExclusionTag
