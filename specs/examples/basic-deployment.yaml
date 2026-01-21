@@ -1,0 +1,99 @@
+apiVersion: avd.azure.com/v1
+kind: AVDDeployment
+metadata:
+  name: dev-avd-test
+  environment: dev
+  region: eastus
+  description: "Basic AVD deployment for development and testing"
+
+spec:
+  deploymentPrefix: "DAVD"
+  subscriptionId: "00000000-0000-0000-0000-000000000000"
+  
+  # Using Entra ID (cloud-only identity)
+  identity:
+    provider: EntraID
+    intuneEnrollment: true
+  
+  # Single host pool
+  hostPools:
+    - name: hp-pooled-dev
+      type: Pooled
+      location: eastus
+      preferredAppGroupType: Desktop
+      publicNetworkAccess: Enabled
+      maxSessionLimit: 5
+      loadBalancerType: DepthFirst
+      startVMOnConnect: false
+      
+      sessionHosts:
+        count: 2
+        vmSize: Standard_D2s_v5
+        imageSource: marketplace
+        marketplace:
+          publisher: MicrosoftWindowsDesktop
+          offer: windows-11
+          sku: win11-23h2-avd
+          version: latest
+        diskType: StandardSSD_LRS
+        acceleratedNetworking: false
+        localAdminCredentials:
+          username: "avdadmin"
+          passwordKeyVaultSecret: "local-admin-password"
+      
+      applicationGroups:
+        - name: ag-desktop-dev
+          type: Desktop
+  
+  # Simple networking
+  networking:
+    createNew: true
+    vnet:
+      name: vnet-avd-dev
+      addressSpace: "10.200.0.0/16"
+      subnets:
+        - name: snet-avd-hosts
+          addressPrefix: "10.200.1.0/24"
+    hubVnet:
+      enabled: false
+  
+  # Basic storage
+  storage:
+    fslogix:
+      enabled: true
+      storageType: AzureFiles
+      azureFiles:
+        sku: Standard_LRS
+        quota: 512
+        privateEndpoint: false
+    appAttach:
+      enabled: false
+  
+  # Minimal security
+  security:
+    encryption:
+      encryptionAtHost: false
+    privateLink:
+      enabled: false
+    trustedLaunch: false
+  
+  # Basic monitoring
+  monitoring:
+    logAnalytics:
+      enabled: true
+      retentionDays: 30
+    insights:
+      enabled: false
+    alerts:
+      enabled: false
+  
+  # Minimal policies
+  policies:
+    gpu: false
+    monitoring: false
+    networking: false
+    zeroTrust: false
+  
+  tags:
+    Environment: "Development"
+    Purpose: "Testing"

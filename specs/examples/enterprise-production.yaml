@@ -1,0 +1,156 @@
+apiVersion: avd.azure.com/v1
+kind: AVDDeployment
+metadata:
+  name: contoso-avd-prod
+  environment: production
+  region: eastus2
+  description: "Contoso production AVD deployment for enterprise users"
+
+spec:
+  deploymentPrefix: "CAVD"
+  subscriptionId: "00000000-0000-0000-0000-000000000000"  # Replace with your subscription ID
+  
+  # Identity configuration using Active Directory Domain Services
+  identity:
+    provider: ADDS
+    domainName: contoso.com
+    ouPath: "OU=AVDSessionHosts,OU=AVD,DC=contoso,DC=com"
+    domainJoinCredentials:
+      username: "avd-domainjoin@contoso.com"
+      passwordKeyVaultSecret: "domain-join-password"
+    intuneEnrollment: false
+  
+  # Host pool configuration
+  hostPools:
+    - name: hp-pooled-production
+      type: Pooled
+      location: eastus2
+      preferredAppGroupType: Desktop
+      publicNetworkAccess: EnabledForClientsOnly
+      maxSessionLimit: 10
+      loadBalancerType: BreadthFirst
+      startVMOnConnect: true
+      
+      # Session hosts configuration
+      sessionHosts:
+        count: 10
+        vmSize: Standard_D4s_v5
+        availabilityZones: ["1", "2", "3"]
+        imageSource: marketplace
+        marketplace:
+          publisher: MicrosoftWindowsDesktop
+          offer: office-365
+          sku: win11-23h2-avd-m365
+          version: latest
+        diskType: Premium_LRS
+        diskSizeGB: 256
+        acceleratedNetworking: true
+        localAdminCredentials:
+          username: "avdadmin"
+          passwordKeyVaultSecret: "session-host-admin-password"
+      
+      # Autoscaling configuration
+      scaling:
+        enabled: true
+        schedules:
+          - name: weekday-schedule
+            days: [Monday, Tuesday, Wednesday, Thursday, Friday]
+            rampUpStartTime: "07:00"
+            peakStartTime: "09:00"
+            rampDownStartTime: "17:00"
+            offPeakStartTime: "20:00"
+          - name: weekend-schedule
+            days: [Saturday, Sunday]
+            rampUpStartTime: "09:00"
+            peakStartTime: "10:00"
+            rampDownStartTime: "16:00"
+            offPeakStartTime: "18:00"
+      
+      # Application groups
+      applicationGroups:
+        - name: ag-desktop-production
+          type: Desktop
+          assignedUsers:
+            - "00000000-0000-0000-0000-000000000001"  # Azure AD Group Object ID
+  
+  # Networking configuration
+  networking:
+    createNew: true
+    vnet:
+      name: vnet-avd-prod-eastus2
+      addressSpace: "10.100.0.0/16"
+      subnets:
+        - name: snet-avd-sessionhosts
+          addressPrefix: "10.100.1.0/24"
+          networkSecurityGroup: true
+        - name: snet-avd-privateendpoints
+          addressPrefix: "10.100.2.0/24"
+          networkSecurityGroup: true
+      dnsServers:
+        - "10.0.1.4"
+        - "10.0.1.5"
+    
+    # Hub VNet peering
+    hubVnet:
+      enabled: true
+      resourceId: "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-network-hub/providers/Microsoft.Network/virtualNetworks/vnet-hub"
+      allowGatewayTransit: true
+  
+  # Storage configuration
+  storage:
+    # FSLogix profile storage
+    fslogix:
+      enabled: true
+      storageType: AzureFiles
+      azureFiles:
+        sku: Premium_LRS
+        quota: 2048
+        privateEndpoint: true
+    
+    # App Attach storage
+    appAttach:
+      enabled: true
+      storageType: AzureFiles
+  
+  # Security configuration
+  security:
+    encryption:
+      encryptionAtHost: true
+      diskEncryptionKeyExpiration: 90
+    privateLink:
+      enabled: true
+      dnsZones:
+        - "privatelink.file.core.windows.net"
+        - "privatelink.vaultcore.azure.net"
+    confidentialVm: false
+    trustedLaunch: true
+    securityGroups:
+      - "00000000-0000-0000-0000-000000000002"  # AVD Users Group
+      - "00000000-0000-0000-0000-000000000003"  # AVD Admins Group
+  
+  # Monitoring configuration
+  monitoring:
+    logAnalytics:
+      enabled: true
+      retentionDays: 90
+    insights:
+      enabled: true
+    alerts:
+      enabled: true
+      actionGroupEmail: "avd-alerts@contoso.com"
+  
+  # Policy assignments
+  policies:
+    gpu: false
+    monitoring: true
+    networking: true
+    zeroTrust: true
+  
+  # Resource tags
+  tags:
+    CostCenter: "IT-Operations"
+    Environment: "Production"
+    Owner: "AVD-Team"
+    BusinessUnit: "Enterprise-IT"
+    Compliance: "SOC2"
+    DataClassification: "Internal"
