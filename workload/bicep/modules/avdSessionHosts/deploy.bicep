@@ -168,6 +168,7 @@ var varCustomOsDiskProperties = {
   diskSizeGB: customOsDiskSizeGB != 0 ? customOsDiskSizeGB : null
 }
 var varZones = [for zone in availabilityZones: int(zone)]
+var varHasZones = length(availabilityZones) > 0
 
 // =========== //
 // Deployments //
@@ -188,7 +189,7 @@ module sessionHosts '../../../../avm/1.0.0/res/compute/virtual-machine/main.bice
       name: '${namePrefix}${padLeft((i + countIndex), 4, '0')}'
       location: location
       timeZone: timeZone
-      zone: availability == 'AvailabilityZones' ? varZones[i % length(varZones)] : 0
+      zone: availability == 'AvailabilityZones' && varHasZones ? varZones[i % length(varZones)] : 0
       managedIdentities: contains(identityServiceProvider, 'EntraID') || deployMonitoring
         ? {
             systemAssigned: true

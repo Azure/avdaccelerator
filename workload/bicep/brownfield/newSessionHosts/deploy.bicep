@@ -57,12 +57,7 @@ param enableAcceleratedNetworking bool = true
 ])
 param availability string = 'None'
 
-@sys.description('The Availability Zones to use for the session hosts.')
-@allowed([
-  '1'
-  '2'
-  '3'
-])
+@sys.description('The Availability Zones to use for the session hosts. Valid values are combinations of \'1\', \'2\', \'3\', or an empty array for regions without availability zones.')
 param availabilityZones array = ['1', '2', '3']
 
 @sys.description('Set to deploy image from Azure Compute Gallery. (Default: false)')
