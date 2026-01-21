@@ -49,6 +49,7 @@ The brownfield, add-ons and tools section, contains templates to deploy addition
 - [Start VM On Connect](./workload/bicep/brownfield/startVmOnConnect/readme.md)
 
 ### Add-ons and tools
+- [SKU Zone Availability Validator](./workload/scripts/SkuZoneValidator-Readme.md) - Pre-deployment validation tool to check VM SKU and zone availability
 - [AVD Client (Remote Desktop) Kiosk](https://github.com/Azure/AVDClientKiosk)
 - [Scaling Tool](./workload/bicep/brownfield/scalingTool/readme.md)
 - [App Attach Tools VM](./workload/bicep/brownfield/appAttachToolsVM/Readme.md)

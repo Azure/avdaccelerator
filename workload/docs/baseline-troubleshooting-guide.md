@@ -1,5 +1,62 @@
 # Troubleshooting Guide: Azure Virtual Desktop Landing Zone Accelerator
 
+## SKU and Zone Availability Issues
+
+Deployment failures can occur when the requested VM SKU is not available in the selected region or availability zones, or when subscription quota is insufficient. To prevent these issues, use the SKU Zone Validator before deployment.
+
+### Validate SKU and Zone Availability
+
+**Pre-Deployment Validation**:
+- Use the `Test-AvdSkuZoneAvailability.ps1` script to validate SKU availability before deployment
+- Check if the SKU is available in your target region
+- Verify zone support and compatibility
+- Identify quota limitations
+
+**Example Usage**:
+```powershell
+.\Test-AvdSkuZoneAvailability.ps1 `
+    -SubscriptionId "your-subscription-id" `
+    -Location "eastus" `
+    -VmSize "Standard_D4ads_v5" `
+    -Zones @('1','2','3')
+```
+
+For detailed information, see [SKU Zone Validator Documentation](../scripts/SkuZoneValidator-Readme.md).
+
+### Common SKU and Zone Issues
+
+| Issue | Description | Solution |
+|-------|-------------|----------|
+| SKU Not Available in Region | The selected VM size is not available in the target Azure region | Use the validator script with `-SuggestAlternatives` to find similar SKUs, or select a different region where the SKU is available |
+| SKU Not Available in Zone | The VM size is available in the region but not in the selected availability zones | Use the validator to identify which zones support the SKU, then adjust your zone selection accordingly |
+| Insufficient Quota | Subscription quota is insufficient for the requested VM size and quantity | Request a quota increase through the Azure portal. The validator provides a direct link to the quota increase workflow |
+| Zone Restrictions | Azure policies or restrictions prevent deployment to certain zones | Review the restrictions reported by the validator and adjust deployment parameters or request policy exceptions |
+
+### Requesting Quota Increases
+
+If deployment fails due to insufficient quota:
+
+1. Use the quota increase link provided by the validator script or portal UI
+2. Navigate to [Azure Support - Quota Requests](https://portal.azure.com/#view/Microsoft_Azure_Support/NewSupportRequestV3Blade/issueType/quota/subscriptionId/00000000-0000-0000-0000-000000000000/topicId/06bfd9d3-516b-d5c6-5802-169c800dec89)
+3. Select "Compute VM (cores-vCPUs) subscription limit increase"
+4. Specify the region, VM series, and number of vCPUs needed
+5. Submit the request and wait for approval (typically takes a few hours to a few days)
+
+### Best Practices
+
+- **Validate Early**: Run the SKU validator before starting any deployment to avoid mid-deployment failures
+- **Plan for Zones**: If using availability zones, verify all selected zones support your chosen SKU
+- **Monitor Quota**: Regularly review subscription quota usage to avoid surprises during deployment
+- **Have Alternatives**: Identify 2-3 alternative SKUs that meet your requirements in case the primary choice is unavailable
+- **Regional Strategy**: Consider deploying to multiple regions for better availability and disaster recovery
+
+### Portal UI Integration
+
+The Azure portal deployment UI automatically filters available zones based on your selected VM size and region. Information boxes in the portal provide:
+- Links to the SKU validator documentation
+- Direct access to quota increase requests
+- Guidance on handling SKU/zone availability issues
+
 ## Domain Join Failure
 
 When encountering a domain join failure in Azure Virtual Desktop, you may receive an error message similar to the following:
