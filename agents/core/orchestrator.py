@@ -20,6 +20,8 @@ class AgentType(Enum):
     DEPLOYMENT = "deployment"
     DOCUMENTATION = "documentation"
     VALIDATION = "validation"
+    CHAT_ADVISOR = "chat_advisor"  # Interactive deployment advisor
+    PRE_DEPLOYMENT_VALIDATOR = "pre_deployment_validator"  # Pre-deployment validation
 
 
 @dataclass
@@ -179,6 +181,17 @@ class AVDOrchestrator:
             from agents.validation.validator import ValidationAgent
             agent = ValidationAgent(self.spec, self.output_dir, self.results)
             return agent.execute()
+        
+        elif agent_type == AgentType.CHAT_ADVISOR:
+            # Chat advisor is interactive and doesn't fit the standard agent pattern
+            # It generates a spec from user interaction
+            return AgentResult(
+                agent_type=agent_type,
+                success=True,
+                artifacts=[],
+                messages=["Chat advisor should be run interactively via: python agents/chat/deployment_advisor.py"],
+                errors=[]
+            )
         
         else:
             return AgentResult(
