@@ -1,0 +1,44 @@
+name: Accessibility Scan
+
+on: [push, pull_request]
+
+jobs:
+  accessibility:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout AVD Accelerator Repo
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Install @axe-core/cli and http-server
+        run: npm install -g @axe-core/cli http-server
+
+      - name: Start local server
+        run: |
+          nohup http-server ./ -p 8080 &
+          sleep 5  # Give server time to start
+
+      - name: Create axe-reports directory
+        run: mkdir -p ./axe-reports
+
+      - name: Run axe-core accessibility scan and save results
+        run: |
+          npx @axe-core/cli http://localhost:8080 --chromedriver-path $(which chromedriver) --save ./axe-reports/accessibility-report.json
+
+      - name: Verify if the report is created
+        run: |
+          ls -la ./axe-reports/
+          cat ./axe-reports/accessibility-report.json || echo "Report not created"
+
+      - name: Upload axe-core report
+        uses: actions/upload-artifact@v4
+        with:
+          name: axe-accessibility-report
+          path: ./axe-reports/accessibility-report.json
