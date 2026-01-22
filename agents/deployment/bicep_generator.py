@@ -6,6 +6,8 @@ This agent converts AVD specifications into deployable IaC:
 - Parameter files
 - Deployment scripts
 - Naming conventions (CAF compliant)
+
+Reference Architecture: workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx
 """
 
 from pathlib import Path
@@ -14,6 +16,85 @@ import sys
 import json
 sys.path.append(str(Path(__file__).parent.parent))
 from core.orchestrator import AgentResult, AgentType
+
+
+# AVD Accelerator Baseline Architecture Defaults
+# Based on: workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx
+# Aligned with: workload/bicep/deploy-baseline.bicep defaults
+BASELINE_DEFAULTS = {
+    'deployment': {
+        'prefix': 'AVD1',
+        'environment': 'Dev',
+        'diskEncryptionKeyExpirationDays': 60
+    },
+    'hostPool': {
+        'type': 'Pooled',
+        'loadBalancerType': 'BreadthFirst',
+        'maxSessionLimit': 8,
+        'preferredAppGroupType': 'Desktop',
+        'publicNetworkAccess': 'Enabled',
+        'workspacePublicNetworkAccess': 'Enabled',
+        'startVMOnConnect': True,
+        'rdpProperties': 'audiocapturemode:i:1;audiomode:i:0;drivestoredirect:s:;redirectclipboard:i:1;redirectcomports:i:1;redirectprinters:i:1;redirectsmartcards:i:1;screen mode id:i:2',
+        'deployScalingPlan': True
+    },
+    'sessionHosts': {
+        'deploy': True,
+        'count': 1,
+        'countIndex': 1,
+        'vmSize': 'Standard_D4ads_v5',
+        'diskType': 'Premium_LRS',
+        'customOsDiskSizeGB': 0,
+        'acceleratedNetworking': True,
+        'availability': 'None',
+        'availabilityZones': ['1', '2', '3'],
+        'securityType': 'TrustedLaunch',
+        'secureBoot': True,
+        'vTpm': True,
+        'imageOffer': 'Office-365',
+        'imageSku': 'win11-24h2-avd-m365',
+        'useSharedImage': False,
+        'managementVmImage': 'winServer_2022_Datacenter_smalldisk_g2'
+    },
+    'identity': {
+        'provider': 'ADDS',
+        'intuneEnrollment': False
+    },
+    'networking': {
+        'createNew': True,
+        'vnetAddressSpace': '10.10.0.0/16',
+        'avdSubnetPrefix': '10.10.1.0/24',
+        'privateEndpointSubnetPrefix': '10.10.2.0/27',
+        'deployDDoSProtection': False,
+        'vnetGatewayOnHub': False
+    },
+    'storage': {
+        'fslogix': {
+            'enabled': True,
+            'performance': 'Premium',
+            'quotaSizeGB': 1
+        },
+        'appAttach': {
+            'enabled': False,
+            'performance': 'Premium',
+            'quotaSizeGB': 1
+        },
+        'zoneRedundant': False
+    },
+    'security': {
+        'deployPrivateEndpoints': True,
+        'deployAvdPrivateLink': False,
+        'createPrivateDnsZones': True,
+        'diskZeroTrust': False,
+        'deployGpuPolicies': False
+    },
+    'monitoring': {
+        'enabled': False,
+        'deployLogAnalytics': True,
+        'retentionDays': 90,
+        'deployCustomPolicies': False
+    }
+}
 
 
 class NamingService:
@@ -90,18 +171,34 @@ class NamingService:
 
 
 class DeploymentAgent:
-    """Generates IaC from AVD specifications"""
+    """Generates IaC from AVD specifications
+    
+    Uses AVD Accelerator Baseline Architecture as default reference:
+    workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx
+    """
     
     def __init__(self, spec: Dict[str, Any], output_dir: Path):
         self.spec = spec
         self.output_dir = output_dir
         self.spec_data = spec.get('spec', {})
         self.metadata = spec.get('metadata', {})
+        self.defaults = BASELINE_DEFAULTS
         
-        # Initialize naming service
-        prefix = self.spec_data.get('deploymentPrefix', 'AVD')
-        env = self.metadata.get('environment', 'dev')
+        # Initialize naming service with baseline defaults
+        prefix = self.spec_data.get('deploymentPrefix', self.defaults['deployment']['prefix'])
+        env = self.metadata.get('environment', self.defaults['deployment']['environment'])
         self.naming = NamingService(prefix, env)
+    
+    def _get_default(self, path: str) -> Any:
+        """Get default value from baseline defaults"""
+        parts = path.split('.')
+        value = self.defaults
+        for part in parts:
+            if isinstance(value, dict):
+                value = value.get(part)
+            else:
+                return None
+        return value
     
     def execute(self) -> AgentResult:
         """Execute the deployment agent"""
@@ -161,140 +258,423 @@ class DeploymentAgent:
         return output_path
     
     def _build_bicep_template(self) -> str:
-        """Build the main Bicep template"""
+        """Build the main Bicep template based on AVD Accelerator Baseline Architecture
+        
+        Reference: workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx
+        Aligned with: workload/bicep/deploy-baseline.bicep
+        """
         deployment_name = self.metadata.get('name', 'avd-deployment')
+        region = self.metadata.get('region', 'eastus2')
+        environment = self.metadata.get('environment', self.defaults['deployment']['environment'])
+        deployment_prefix = self.spec_data.get('deploymentPrefix', self.defaults['deployment']['prefix'])
         
         lines = [
             f"// AVD Deployment: {deployment_name}",
-            f"// Generated from specification",
-            f"// Environment: {self.metadata.get('environment')}",
+            f"// Generated from specification - AVD Accelerator Baseline Architecture",
+            f"// Reference: workload/docs/diagrams/avd-accelerator-baseline-architecture.vsdx",
+            f"// Environment: {environment}",
             "",
             "targetScope = 'subscription'",
             "",
-            "// ========== Parameters ==========",
+            "// ========== Parameters (Baseline Defaults) ==========",
+            "",
+            "@minLength(2)",
+            "@maxLength(4)",
+            "@description('Deployment prefix for resource naming')",
+            f"param deploymentPrefix string = '{deployment_prefix}'",
+            "",
+            "@allowed(['Dev', 'Test', 'Prod'])",
+            "@description('Environment type')",
+            f"param deploymentEnvironment string = '{environment}'",
             "",
             "@description('Primary Azure region for deployment')",
-            f"param location string = '{self.metadata.get('region', 'eastus2')}'",
+            f"param location string = '{region}'",
             "",
-            "@description('Deployment prefix for resource naming')",
-            f"param deploymentPrefix string = '{self.spec_data.get('deploymentPrefix', 'AVD')}'",
+            "@description('AVD session host region (can differ from management plane)')",
+            f"param avdSessionHostLocation string = '{region}'",
             "",
-            "@description('Environment name')",
-            f"param environment string = '{self.metadata.get('environment', 'dev')}'",
+            "@description('AVD management plane region')",
+            f"param avdManagementPlaneLocation string = '{region}'",
+            "",
+            f"@maxValue(730)",
+            f"@minValue(30)",
+            f"@description('Disk encryption key expiration in days')",
+            f"param diskEncryptionKeyExpirationInDays int = {self.defaults['deployment']['diskEncryptionKeyExpirationDays']}",
+            "",
+            "// ========== Identity Parameters ==========",
+            "",
+            "@allowed(['ADDS', 'EntraDS', 'EntraID', 'EntraIDKerberos'])",
+            f"@description('Identity service provider')",
+            f"param avdIdentityServiceProvider string = '{self.defaults['identity']['provider']}'",
+            "",
+            f"@description('Enroll session hosts on Intune')",
+            f"param createIntuneEnrollment bool = {str(self.defaults['identity']['intuneEnrollment']).lower()}",
+            "",
+            "// ========== Host Pool Parameters ==========",
+            "",
+            "@allowed(['Personal', 'Pooled'])",
+            f"@description('AVD host pool type')",
+            f"param avdHostPoolType string = '{self.defaults['hostPool']['type']}'",
+            "",
+            "@allowed(['Desktop', 'RemoteApp'])",
+            f"@description('Preferred application group type')",
+            f"param hostPoolPreferredAppGroupType string = '{self.defaults['hostPool']['preferredAppGroupType']}'",
+            "",
+            "@allowed(['Disabled', 'Enabled', 'EnabledForClientsOnly', 'EnabledForSessionHostsOnly'])",
+            f"@description('Host pool public network access')",
+            f"param hostPoolPublicNetworkAccess string = '{self.defaults['hostPool']['publicNetworkAccess']}'",
+            "",
+            "@allowed(['BreadthFirst', 'DepthFirst'])",
+            f"@description('Host pool load balancing type')",
+            f"param avdHostPoolLoadBalancerType string = '{self.defaults['hostPool']['loadBalancerType']}'",
+            "",
+            f"@description('Maximum sessions per host')",
+            f"param hostPoolMaxSessions int = {self.defaults['hostPool']['maxSessionLimit']}",
+            "",
+            f"@description('Start VM on connect')",
+            f"param avdStartVmOnConnect bool = {str(self.defaults['hostPool']['startVMOnConnect']).lower()}",
+            "",
+            f"@description('Deploy scaling plan')",
+            f"param avdDeployScalingPlan bool = {str(self.defaults['hostPool']['deployScalingPlan']).lower()}",
+            "",
+            "// ========== Session Host Parameters ==========",
+            "",
+            f"@description('Deploy session hosts')",
+            f"param avdDeploySessionHosts bool = {str(self.defaults['sessionHosts']['deploy']).lower()}",
+            "",
+            f"@minValue(1)",
+            f"@maxValue(1999)",
+            f"@description('Number of session hosts to deploy')",
+            f"param avdDeploySessionHostsCount int = {self.defaults['sessionHosts']['count']}",
+            "",
+            f"@description('Session host VM size')",
+            f"param avdSessionHostsSize string = '{self.defaults['sessionHosts']['vmSize']}'",
+            "",
+            f"@description('OS disk type')",
+            f"param avdSessionHostDiskType string = '{self.defaults['sessionHosts']['diskType']}'",
+            "",
+            f"@description('Enable accelerated networking')",
+            f"param enableAcceleratedNetworking bool = {str(self.defaults['sessionHosts']['acceleratedNetworking']).lower()}",
+            "",
+            "@allowed(['None', 'AvailabilityZones'])",
+            f"@description('VM availability option')",
+            f"param availability string = '{self.defaults['sessionHosts']['availability']}'",
+            "",
+            "@allowed(['Standard', 'TrustedLaunch'])",
+            f"@description('Security type for VMs')",
+            f"param securityType string = '{self.defaults['sessionHosts']['securityType']}'",
+            "",
+            f"@description('Enable secure boot')",
+            f"param secureBootEnabled bool = {str(self.defaults['sessionHosts']['secureBoot']).lower()}",
+            "",
+            f"@description('Enable vTPM')",
+            f"param vTpmEnabled bool = {str(self.defaults['sessionHosts']['vTpm']).lower()}",
+            "",
+            f"@description('Marketplace image offer')",
+            f"param mpImageOffer string = '{self.defaults['sessionHosts']['imageOffer']}'",
+            "",
+            f"@description('Marketplace image SKU')",
+            f"param mpImageSku string = '{self.defaults['sessionHosts']['imageSku']}'",
+            "",
+            "// ========== Networking Parameters ==========",
+            "",
+            f"@description('Create new virtual network')",
+            f"param createAvdVnet bool = {str(self.defaults['networking']['createNew']).lower()}",
+            "",
+            f"@description('VNet address space')",
+            f"param avdVnetworkAddressPrefixes string = '{self.defaults['networking']['vnetAddressSpace']}'",
+            "",
+            f"@description('AVD subnet address prefix')",
+            f"param vNetworkAvdSubnetAddressPrefix string = '{self.defaults['networking']['avdSubnetPrefix']}'",
+            "",
+            f"@description('Private endpoint subnet address prefix')",
+            f"param vNetworkPrivateEndpointSubnetAddressPrefix string = '{self.defaults['networking']['privateEndpointSubnetPrefix']}'",
+            "",
+            f"@description('Deploy DDoS network protection')",
+            f"param deployDDoSNetworkProtection bool = {str(self.defaults['networking']['deployDDoSProtection']).lower()}",
+            "",
+            "// ========== Storage Parameters ==========",
+            "",
+            f"@description('Deploy FSLogix setup')",
+            f"param createAvdFslogixDeployment bool = {str(self.defaults['storage']['fslogix']['enabled']).lower()}",
+            "",
+            f"@description('Deploy App Attach setup')",
+            f"param createAppAttachDeployment bool = {str(self.defaults['storage']['appAttach']['enabled']).lower()}",
+            "",
+            "@allowed(['Standard', 'Premium'])",
+            f"@description('FSLogix storage performance tier')",
+            f"param fslogixStoragePerformance string = '{self.defaults['storage']['fslogix']['performance']}'",
+            "",
+            f"@description('FSLogix file share quota (GB)')",
+            f"param fslogixFileShareQuotaSize int = {self.defaults['storage']['fslogix']['quotaSizeGB']}",
+            "",
+            f"@description('Use zone redundant storage')",
+            f"param zoneRedundantStorage bool = {str(self.defaults['storage']['zoneRedundant']).lower()}",
+            "",
+            "// ========== Security Parameters ==========",
+            "",
+            f"@description('Deploy private endpoints for Key Vault and Storage')",
+            f"param deployPrivateEndpointKeyvaultStorage bool = {str(self.defaults['security']['deployPrivateEndpoints']).lower()}",
+            "",
+            f"@description('Deploy AVD private link service')",
+            f"param deployAvdPrivateLinkService bool = {str(self.defaults['security']['deployAvdPrivateLink']).lower()}",
+            "",
+            f"@description('Create private DNS zones')",
+            f"param createPrivateDnsZones bool = {str(self.defaults['security']['createPrivateDnsZones']).lower()}",
+            "",
+            f"@description('Enable zero trust disk configuration')",
+            f"param diskZeroTrust bool = {str(self.defaults['security']['diskZeroTrust']).lower()}",
+            "",
+            "// ========== Monitoring Parameters ==========",
+            "",
+            f"@description('Deploy AVD monitoring')",
+            f"param avdDeployMonitoring bool = {str(self.defaults['monitoring']['enabled']).lower()}",
+            "",
+            f"@description('Deploy Log Analytics workspace')",
+            f"param deployAlaWorkspace bool = {str(self.defaults['monitoring']['deployLogAnalytics']).lower()}",
+            "",
+            f"@description('Log Analytics data retention days')",
+            f"param avdAlaWorkspaceDataRetention int = {self.defaults['monitoring']['retentionDays']}",
+            "",
+            f"@description('Deploy custom monitoring policies')",
+            f"param deployCustomPolicyMonitoring bool = {str(self.defaults['monitoring']['deployCustomPolicies']).lower()}",
             "",
             "@description('Tags to apply to all resources')",
-            "param tags object = " + json.dumps(self.spec_data.get('tags', {}), indent=2),
+            "param tags object = " + json.dumps(self.spec_data.get('tags', {'Environment': environment, 'ManagedBy': 'AVD-SpecDriven'}), indent=2),
             "",
             "// ========== Variables ==========",
             "",
-            f"var resourceGroupName = 'rg-${{deploymentPrefix}}-${{environment}}-${{location}}'",
+            f"var resourceGroupName = 'rg-${{deploymentPrefix}}-${{deploymentEnvironment}}-${{location}}-service-objects'",
+            "var networkResourceGroupName = 'rg-${deploymentPrefix}-${deploymentEnvironment}-${location}-network'",
+            "var computeResourceGroupName = 'rg-${deploymentPrefix}-${deploymentEnvironment}-${location}-pool-compute'",
+            "var storageResourceGroupName = 'rg-${deploymentPrefix}-${deploymentEnvironment}-${location}-storage'",
+            "var monitoringResourceGroupName = 'rg-${deploymentPrefix}-${deploymentEnvironment}-${location}-monitoring'",
             "",
-            "// ========== Resource Group ==========",
+            "// ========== Resource Groups (Baseline Architecture) ==========",
             "",
-            "resource rg 'Microsoft.Resources/resourceGroups@2021-04-01' = {",
+            "resource rgServiceObjects 'Microsoft.Resources/resourceGroups@2021-04-01' = {",
             "  name: resourceGroupName",
+            "  location: location",
+            "  tags: tags",
+            "}",
+            "",
+            "resource rgNetwork 'Microsoft.Resources/resourceGroups@2021-04-01' = if (createAvdVnet) {",
+            "  name: networkResourceGroupName",
+            "  location: location",
+            "  tags: tags",
+            "}",
+            "",
+            "resource rgCompute 'Microsoft.Resources/resourceGroups@2021-04-01' = if (avdDeploySessionHosts) {",
+            "  name: computeResourceGroupName",
+            "  location: avdSessionHostLocation",
+            "  tags: tags",
+            "}",
+            "",
+            "resource rgStorage 'Microsoft.Resources/resourceGroups@2021-04-01' = if (createAvdFslogixDeployment || createAppAttachDeployment) {",
+            "  name: storageResourceGroupName",
+            "  location: location",
+            "  tags: tags",
+            "}",
+            "",
+            "resource rgMonitoring 'Microsoft.Resources/resourceGroups@2021-04-01' = if (avdDeployMonitoring || deployAlaWorkspace) {",
+            "  name: monitoringResourceGroupName",
             "  location: location",
             "  tags: tags",
             "}",
             "",
         ]
         
-        # Add networking module if creating new VNet
-        if self.spec_data.get('networking', {}).get('createNew', True):
+        # Add networking module if creating new VNet (Baseline Architecture)
+        if self.spec_data.get('networking', {}).get('createNew', self.defaults['networking']['createNew']):
+            vnet_address = self.spec_data.get('networking', {}).get('vnet', {}).get('addressSpace', 
+                self.defaults['networking']['vnetAddressSpace'])
             lines.extend([
-                "// ========== Networking ==========",
+                "// ========== Networking (Baseline Architecture) ==========",
                 "",
-                "module networking 'modules/networking.bicep' = {",
-                "  scope: rg",
+                "module networking 'modules/networking.bicep' = if (createAvdVnet) {",
+                "  scope: rgNetwork",
                 "  name: 'networking-deployment'",
                 "  params: {",
                 "    location: location",
                 f"    vnetName: '{self._get_vnet_name()}'",
-                f"    addressSpace: '{self.spec_data.get('networking', {}).get('vnet', {}).get('addressSpace', '10.100.0.0/16')}'",
+                f"    vnetAddressSpace: avdVnetworkAddressPrefixes",
+                f"    avdSubnetPrefix: vNetworkAvdSubnetAddressPrefix",
+                f"    privateEndpointSubnetPrefix: vNetworkPrivateEndpointSubnetAddressPrefix",
+                "    deployDDoSProtection: deployDDoSNetworkProtection",
                 "    tags: tags",
                 "  }",
                 "}",
                 "",
             ])
         
-        # Add storage module
-        if self.spec_data.get('storage', {}).get('fslogix', {}).get('enabled', True):
+        # Add storage module (Baseline Architecture - FSLogix + App Attach)
+        fslogix_enabled = self.spec_data.get('storage', {}).get('fslogix', {}).get('enabled', 
+            self.defaults['storage']['fslogix']['enabled'])
+        if fslogix_enabled:
             lines.extend([
-                "// ========== Storage ==========",
+                "// ========== Storage (Baseline Architecture) ==========",
                 "",
-                "module storage 'modules/storage.bicep' = {",
-                "  scope: rg",
+                "module storage 'modules/storage.bicep' = if (createAvdFslogixDeployment || createAppAttachDeployment) {",
+                "  scope: rgStorage",
                 "  name: 'storage-deployment'",
                 "  params: {",
                 "    location: location",
                 f"    storageAccountName: '{self.naming.generate('storageAccount', 'fslogix')}'",
+                "    fslogixEnabled: createAvdFslogixDeployment",
+                "    fslogixPerformance: fslogixStoragePerformance",
+                "    fslogixQuotaSize: fslogixFileShareQuotaSize",
+                "    appAttachEnabled: createAppAttachDeployment",
+                "    zoneRedundant: zoneRedundantStorage",
+                "    deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage",
                 "    tags: tags",
                 "  }",
+                "  dependsOn: [",
+                "    networking",
+                "  ]",
                 "}",
                 "",
             ])
         
-        # Add Key Vault module
+        # Add Key Vault module (Baseline Architecture)
         lines.extend([
-            "// ========== Key Vault ==========",
+            "// ========== Key Vault (Baseline Architecture) ==========",
             "",
             "module keyVault 'modules/keyvault.bicep' = {",
-            "  scope: rg",
+            "  scope: rgServiceObjects",
             "  name: 'keyvault-deployment'",
             "  params: {",
             "    location: location",
             f"    keyVaultName: '{self.naming.generate('keyVault', 'avd')}'",
+            "    diskEncryptionKeyExpirationInDays: diskEncryptionKeyExpirationInDays",
+            "    deployPrivateEndpoint: deployPrivateEndpointKeyvaultStorage",
             "    tags: tags",
             "  }",
+            "  dependsOn: [",
+            "    networking",
+            "  ]",
             "}",
             "",
         ])
         
-        # Add host pool module
-        for hp in self.spec_data.get('hostPools', []):
-            hp_name = hp.get('name', 'hostpool')
+        # Add host pool module (Baseline Architecture)
+        host_pools = self.spec_data.get('hostPools', [])
+        if not host_pools:
+            # Use default host pool configuration from baseline
+            host_pools = [{
+                'name': f"vdpool-{self.naming.prefix}-{self.naming.env}",
+                'type': self.defaults['hostPool']['type'],
+                'location': self.metadata.get('region', 'eastus2'),
+                'loadBalancerType': self.defaults['hostPool']['loadBalancerType'],
+                'maxSessionLimit': self.defaults['hostPool']['maxSessionLimit']
+            }]
+        
+        for hp in host_pools:
+            hp_name = hp.get('name', f"vdpool-{self.naming.prefix}-{self.naming.env}")
+            hp_type = hp.get('type', self.defaults['hostPool']['type'])
+            hp_location = hp.get('location', self.metadata.get('region', 'eastus2'))
+            load_balancer = hp.get('loadBalancerType', self.defaults['hostPool']['loadBalancerType'])
+            max_sessions = hp.get('maxSessionLimit', self.defaults['hostPool']['maxSessionLimit'])
+            
             lines.extend([
-                f"// ========== Host Pool: {hp_name} ==========",
+                f"// ========== Host Pool: {hp_name} (Baseline Architecture) ==========",
                 "",
                 f"module hostPool_{hp_name.replace('-', '_')} 'modules/hostpool.bicep' = {{",
-                "  scope: rg",
+                "  scope: rgServiceObjects",
                 f"  name: 'hostpool-{hp_name}-deployment'",
                 "  params: {",
-                f"    location: '{hp.get('location', self.metadata.get('region'))}'",
+                f"    location: '{hp_location}'",
                 f"    hostPoolName: '{hp_name}'",
-                f"    hostPoolType: '{hp.get('type', 'Pooled')}'",
-                f"    loadBalancerType: '{hp.get('loadBalancerType', 'BreadthFirst')}'",
-                f"    maxSessionLimit: {hp.get('maxSessionLimit', 10)}",
+                f"    hostPoolType: avdHostPoolType",
+                f"    loadBalancerType: avdHostPoolLoadBalancerType",
+                f"    maxSessionLimit: hostPoolMaxSessions",
+                f"    preferredAppGroupType: hostPoolPreferredAppGroupType",
+                f"    publicNetworkAccess: hostPoolPublicNetworkAccess",
+                f"    startVmOnConnect: avdStartVmOnConnect",
+                "    tags: tags",
+                "  }",
+                "}",
+                "",
+                f"// Scaling Plan for {hp_name}",
+                f"module scalingPlan_{hp_name.replace('-', '_')} 'modules/scalingplan.bicep' = if (avdDeployScalingPlan) {{",
+                "  scope: rgServiceObjects",
+                f"  name: 'scalingplan-{hp_name}-deployment'",
+                "  params: {",
+                f"    location: '{hp_location}'",
+                f"    hostPoolResourceId: hostPool_{hp_name.replace('-', '_')}.outputs.hostPoolResourceId",
                 "    tags: tags",
                 "  }",
                 "}",
                 "",
             ])
         
-        # Add monitoring module
-        if self.spec_data.get('monitoring', {}).get('logAnalytics', {}).get('enabled', True):
+        # Add monitoring module (Baseline Architecture)
+        monitoring_enabled = self.spec_data.get('monitoring', {}).get('enabled', 
+            self.defaults['monitoring']['enabled'])
+        deploy_law = self.spec_data.get('monitoring', {}).get('deployLogAnalytics', 
+            self.defaults['monitoring']['deployLogAnalytics'])
+        retention_days = self.spec_data.get('monitoring', {}).get('retentionDays', 
+            self.defaults['monitoring']['retentionDays'])
+        
+        if deploy_law or monitoring_enabled:
             lines.extend([
-                "// ========== Monitoring ==========",
+                "// ========== Monitoring (Baseline Architecture) ==========",
                 "",
-                "module monitoring 'modules/monitoring.bicep' = {",
-                "  scope: rg",
+                "module monitoring 'modules/monitoring.bicep' = if (avdDeployMonitoring || deployAlaWorkspace) {",
+                "  scope: rgMonitoring",
                 "  name: 'monitoring-deployment'",
                 "  params: {",
                 "    location: location",
                 f"    logAnalyticsName: '{self.naming.generate('logAnalyticsWorkspace', 'avd')}'",
-                f"    retentionInDays: {self.spec_data.get('monitoring', {}).get('logAnalytics', {}).get('retentionDays', 90)}",
+                f"    retentionInDays: avdAlaWorkspaceDataRetention",
+                "    deployCustomPolicies: deployCustomPolicyMonitoring",
                 "    tags: tags",
                 "  }",
                 "}",
                 "",
             ])
         
-        # Outputs
+        # Add session hosts module (Baseline Architecture)
         lines.extend([
-            "// ========== Outputs ==========",
+            "// ========== Session Hosts (Baseline Architecture) ==========",
             "",
-            "output resourceGroupName string = rg.name",
+            "module sessionHosts 'modules/sessionhosts.bicep' = if (avdDeploySessionHosts) {",
+            "  scope: rgCompute",
+            "  name: 'sessionhosts-deployment'",
+            "  params: {",
+            "    location: avdSessionHostLocation",
+            "    vmSize: avdSessionHostsSize",
+            "    vmCount: avdDeploySessionHostsCount",
+            "    diskType: avdSessionHostDiskType",
+            "    enableAcceleratedNetworking: enableAcceleratedNetworking",
+            "    availability: availability",
+            "    securityType: securityType",
+            "    secureBootEnabled: secureBootEnabled",
+            "    vTpmEnabled: vTpmEnabled",
+            "    imageOffer: mpImageOffer",
+            "    imageSku: mpImageSku",
+            "    identityProvider: avdIdentityServiceProvider",
+            "    tags: tags",
+            "  }",
+            "  dependsOn: [",
+            "    networking",
+            "    keyVault",
+            "    storage",
+            "  ]",
+            "}",
+            "",
+        ])
+        
+        # Outputs (Baseline Architecture)
+        lines.extend([
+            "// ========== Outputs (Baseline Architecture) ==========",
+            "",
+            "output serviceObjectsResourceGroupName string = rgServiceObjects.name",
+            "output networkResourceGroupName string = createAvdVnet ? rgNetwork.name : ''",
+            "output computeResourceGroupName string = avdDeploySessionHosts ? rgCompute.name : ''",
+            "output storageResourceGroupName string = (createAvdFslogixDeployment || createAppAttachDeployment) ? rgStorage.name : ''",
+            "output monitoringResourceGroupName string = (avdDeployMonitoring || deployAlaWorkspace) ? rgMonitoring.name : ''",
             "output location string = location",
+            "output deploymentEnvironment string = deploymentEnvironment",
         ])
         
         return "\n".join(lines)
@@ -309,27 +689,121 @@ class DeploymentAgent:
         return self.naming.generate('virtualNetwork', 'avd', region)
     
     def _generate_parameters(self) -> Path:
-        """Generate parameters file"""
+        """Generate parameters file based on AVD Accelerator Baseline Architecture"""
         deployment_name = self.metadata.get('name', 'avd-deployment')
         output_path = self.output_dir / 'iac' / 'bicep' / 'parameters.json'
+        
+        region = self.metadata.get('region', 'eastus2')
+        environment = self.metadata.get('environment', self.defaults['deployment']['environment'])
         
         params = {
             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
             "contentVersion": "1.0.0.0",
             "parameters": {
-                "location": {
-                    "value": self.metadata.get('region', 'eastus2')
-                },
+                # Deployment
                 "deploymentPrefix": {
-                    "value": self.spec_data.get('deploymentPrefix', 'AVD')
+                    "value": self.spec_data.get('deploymentPrefix', self.defaults['deployment']['prefix'])
                 },
-                "environment": {
-                    "value": self.metadata.get('environment', 'dev')
+                "deploymentEnvironment": {
+                    "value": environment
                 },
+                "location": {
+                    "value": region
+                },
+                "avdSessionHostLocation": {
+                    "value": region
+                },
+                "avdManagementPlaneLocation": {
+                    "value": region
+                },
+                # Identity
+                "avdIdentityServiceProvider": {
+                    "value": self.spec_data.get('identity', {}).get('provider', self.defaults['identity']['provider'])
+                },
+                # Host Pool
+                "avdHostPoolType": {
+                    "value": self.defaults['hostPool']['type']
+                },
+                "avdHostPoolLoadBalancerType": {
+                    "value": self.defaults['hostPool']['loadBalancerType']
+                },
+                "hostPoolMaxSessions": {
+                    "value": self.defaults['hostPool']['maxSessionLimit']
+                },
+                "avdStartVmOnConnect": {
+                    "value": self.defaults['hostPool']['startVMOnConnect']
+                },
+                "avdDeployScalingPlan": {
+                    "value": self.defaults['hostPool']['deployScalingPlan']
+                },
+                # Session Hosts
+                "avdDeploySessionHosts": {
+                    "value": self.defaults['sessionHosts']['deploy']
+                },
+                "avdDeploySessionHostsCount": {
+                    "value": self.defaults['sessionHosts']['count']
+                },
+                "avdSessionHostsSize": {
+                    "value": self.defaults['sessionHosts']['vmSize']
+                },
+                "avdSessionHostDiskType": {
+                    "value": self.defaults['sessionHosts']['diskType']
+                },
+                "enableAcceleratedNetworking": {
+                    "value": self.defaults['sessionHosts']['acceleratedNetworking']
+                },
+                "securityType": {
+                    "value": self.defaults['sessionHosts']['securityType']
+                },
+                "secureBootEnabled": {
+                    "value": self.defaults['sessionHosts']['secureBoot']
+                },
+                "vTpmEnabled": {
+                    "value": self.defaults['sessionHosts']['vTpm']
+                },
+                # Networking
+                "createAvdVnet": {
+                    "value": self.defaults['networking']['createNew']
+                },
+                "avdVnetworkAddressPrefixes": {
+                    "value": self.defaults['networking']['vnetAddressSpace']
+                },
+                "vNetworkAvdSubnetAddressPrefix": {
+                    "value": self.defaults['networking']['avdSubnetPrefix']
+                },
+                "vNetworkPrivateEndpointSubnetAddressPrefix": {
+                    "value": self.defaults['networking']['privateEndpointSubnetPrefix']
+                },
+                # Storage
+                "createAvdFslogixDeployment": {
+                    "value": self.defaults['storage']['fslogix']['enabled']
+                },
+                "fslogixStoragePerformance": {
+                    "value": self.defaults['storage']['fslogix']['performance']
+                },
+                # Security
+                "deployPrivateEndpointKeyvaultStorage": {
+                    "value": self.defaults['security']['deployPrivateEndpoints']
+                },
+                "createPrivateDnsZones": {
+                    "value": self.defaults['security']['createPrivateDnsZones']
+                },
+                # Monitoring
+                "avdDeployMonitoring": {
+                    "value": self.defaults['monitoring']['enabled']
+                },
+                "deployAlaWorkspace": {
+                    "value": self.defaults['monitoring']['deployLogAnalytics']
+                },
+                "avdAlaWorkspaceDataRetention": {
+                    "value": self.defaults['monitoring']['retentionDays']
+                },
+                # Tags
                 "tags": {
                     "value": self.spec_data.get('tags', {
-                        "Environment": self.metadata.get('environment'),
-                        "ManagedBy": "AVD-SpecDriven"
+                        "Environment": environment,
+                        "ManagedBy": "AVD-SpecDriven",
+                        "Architecture": "AVD-Accelerator-Baseline"
                     })
                 }
             }
