@@ -485,13 +485,15 @@ try {
         #  Install the AVD Agent
         ##############################################################
         $BootInstaller = 'AVD-Bootloader.msi'
-        Get-WebFile -FileName $BootInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrxrH'
+        #Get-WebFile -FileName $BootInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrxrH'
+        Get-WebFile -FileName $BootInstaller -URL 'https://go.microsoft.com/fwlink/?linkid=2311028' #workaround CDN issue
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $BootInstaller /quiet /qn /norestart /passive" -Wait -Passthru
         Write-Log -Message 'Installed AVD Bootloader' -Category 'Info'
         Start-Sleep -Seconds 5
 
         $AgentInstaller = 'AVD-Agent.msi'
-        Get-WebFile -FileName $AgentInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrmXv'
+        #Get-WebFile -FileName $AgentInstaller -URL 'https://query.prod.cms.rt.microsoft.com/cms/api/am/binary/RWrmXv'
+        Get-WebFile -FileName $AgentInstaller -URL 'https://go.microsoft.com/fwlink/?linkid=2310011' #workaround CDN issue
         Start-Process -FilePath 'msiexec.exe' -ArgumentList "/i $AgentInstaller /quiet /qn /norestart /passive REGISTRATIONTOKEN=$HostPoolRegistrationToken" -Wait -PassThru
         Write-Log -Message 'Installed AVD Agent' -Category 'Info'
         Start-Sleep -Seconds 5
