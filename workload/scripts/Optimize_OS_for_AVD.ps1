@@ -16,20 +16,9 @@ Expand-Archive -LiteralPath 'C:\\Optimize\\Windows_10_VDI_Optimize-main.zip' -De
 Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope Process
 Set-Location -Path C:\\Optimize\\Virtual-Desktop-Optimization-Tool-main
 
-# instrumentation
-$osOptURL = 'https://raw.githubusercontent.com/The-Virtual-Desktop-Team/Virtual-Desktop-Optimization-Tool/main/Windows_VDOT.ps1'
-$osOptURLexe = 'optimize.ps1'
-Invoke-WebRequest -Uri $osOptURL -OutFile $osOptURLexe
-
-# Patch: override the Win10_VirtualDesktop_Optimize.ps1 - setting 'Set-NetAdapterAdvancedProperty'(see readme.md)
-Write-Host 'Patch: Disabling Set-NetAdapterAdvancedProperty'
-$updatePath = 'C:\optimize\Virtual-Desktop-Optimization-Tool-main\Win10_VirtualDesktop_Optimize.ps1'
- ((Get-Content -Path $updatePath -Raw) -replace 'Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB', '#Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB') | Set-Content -Path $updatePath
-
-
 
 Write-Host 'Patch: Disabling Set-NetAdapterAdvancedProperty in Windows_VDOT.ps1'
-$updatePath = 'C:\optimize\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1'
+$updatePath = 'C:\Optimize\Virtual-Desktop-Optimization-Tool-main\Windows_VDOT.ps1'
  ((Get-Content -Path $updatePath -Raw) -replace 'Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB', '#Set-NetAdapterAdvancedProperty -DisplayName "Send Buffer Size" -DisplayValue 4MB') | Set-Content -Path $updatePath
 
 
@@ -72,15 +61,5 @@ if (Test-Path $WinstationsKey) {
 Set-Content $updatePath $file
 
 # run script
-# .\optimize -WindowsVersion 2004 -Verbose
-.\Win10_VirtualDesktop_Optimize.ps1 -Verbose -AcceptEULA
-Write-Host 'AIB Customization: Finished OS Optimizations script Win10_VirtualDesktop_Optimize.ps1'
-
-# Sleep for a min
-Start-Sleep -Seconds 60
-#Running new file
-
-#Write-Host 'Running new AIB Customization script'
-.\Windows_VDOT.ps1 -Verbose -AcceptEULA
-
-Write-Host 'AIB Customization: Finished OS Optimizations script Windows_VDOT.ps1'
+.\Windows_VDOT.ps1 -Optimizations All -Verbose -AcceptEULA
+Write-Host 'AIB Customization: Finished OS Optimizations script'
