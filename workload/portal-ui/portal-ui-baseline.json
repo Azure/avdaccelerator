@@ -446,6 +446,40 @@
 									}
 								},
 								{
+									"name": "hostPoolManagementType",
+									"type": "Microsoft.Common.DropDown",
+									"visible": true,
+									"label": "Host pool management type",
+									"defaultValue": "Without Session Host Configuration (Default)",
+									"multiLine": true,
+									"toolTip": "Select whether to enable automated session host provisioning. 'With Session Host Configuration' enables automated provisioning (Preview). 'Without Session Host Configuration' requires manual session host registration using a registration key.",
+									"constraints": {
+										"required": true,
+										"allowedValues": [
+											{
+												"label": "Without Session Host Configuration (Default)",
+												"description": "Manually add session hosts using a registration key",
+												"value": "Unmanaged"
+											},
+											{
+												"label": "With Session Host Configuration (Preview)",
+												"description": "Enables automated session host provisioning",
+												"value": "AutomaticSessionHostConfiguration"
+											}
+										]
+									}
+								},
+								{
+									"name": "hostPoolManagementTypeInfo",
+									"type": "Microsoft.Common.InfoBox",
+									"visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolManagementType, 'AutomaticSessionHostConfiguration')]",
+									"options": {
+										"style": "Info",
+										"text": "Session Host Configuration is currently in Preview. This feature enables automated provisioning and management of session hosts. Learn more about this preview feature.",
+										"uri": "https://learn.microsoft.com/en-us/azure/virtual-desktop/host-pool-management-approaches"
+									}
+								},
+								{
 									"name": "loadBalancerType",
 									"type": "Microsoft.Common.DropDown",
 									"visible": "[equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled')]",
@@ -2768,6 +2802,7 @@
 				"avdHostPoolLoadBalancerType": "[steps('managementPlane').managementPlaneHostPoolSettings.loadBalancerType]",
 				"hostPoolMaxSessions": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Pooled'), steps('managementPlane').managementPlaneHostPoolSettings.maxSessions, 1)]",
 				"avdPersonalAssignType": "[if(equals(steps('managementPlane').managementPlaneHostPoolSettings.hostPoolType, 'Personal'), steps('managementPlane').managementPlaneHostPoolSettings.assignmentType, 'Automatic')]",
+				"avdHostPoolManagedBy": "[steps('managementPlane').managementPlaneHostPoolSettings.hostPoolManagementType]",
 				"avdIdentityServiceProvider": "[steps('identity').identityDomainInformation.identityServiceProvider]",
 				"createIntuneEnrollment": "[if(contains(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), steps('identity').identityDomainInformation.identityServiceProviderIntuneEnrollment, false)]",
 				"identityDomainName": "[if(equals(steps('identity').identityDomainInformation.identityServiceProvider, 'EntraID'), '', steps('identity').identityDomainInformation.identityDomainName)]",

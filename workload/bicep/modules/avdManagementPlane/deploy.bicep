@@ -121,6 +121,13 @@ param workspacePublicNetworkAccess string = 'Enabled'
 param personalAssignType string
 
 @allowed([
+  'Unmanaged'
+  'AutomaticSessionHostConfiguration'
+])
+@sys.description('Optional. Specifies the type of management for the host pool. Use "Unmanaged" for manual session host management or "AutomaticSessionHostConfiguration" to enable automated session host provisioning (Preview).')
+param hostPoolManagedBy string = 'Unmanaged'
+
+@allowed([
   'BreadthFirst'
   'DepthFirst'
 ])
@@ -239,6 +246,7 @@ module hostPool '../../../../avm/1.0.0/res/desktop-virtualization/host-pool/main
     friendlyName: hostPoolFriendlyName
     location: managementPlaneLocation
     hostPoolType: hostPoolType
+    managedBy: hostPoolManagedBy
     startVMOnConnect: startVmOnConnect
     customRdpProperty: varHostPoolRdpPropertiesDomainServiceCheck
     loadBalancerType: hostPoolLoadBalancerType
